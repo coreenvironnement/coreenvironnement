@@ -12,6 +12,7 @@
   --font-heading: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --color-brand-sky: var(--brand-sky);
   --color-brand-sky-soft: var(--brand-sky-soft);
+  --color-brand-navy: var(--brand-navy);
   --color-brand-green: var(--brand-green);
   --color-brand-green-dark: var(--brand-green-dark);
   --color-brand-green-soft: var(--brand-green-soft);
@@ -55,32 +56,36 @@
 }
 
 :root {
-  /* Palette logo Core Environnement (extrait pipette) */
-  --brand-sky: #2498d8;
-  --brand-sky-soft: #5cb6d7;
-  --brand-green: #3b9d36;
-  --brand-green-dark: #207c33;
-  --brand-green-soft: #88bc81;
-  --brand-lime: #81c532;
+  /*
+   * Charte serrée : vert #38a234 (signature) + bleu #1b418f (structure).
+   * --brand-sky / sky-soft : alias visuel ≈ bleu structure (éviter trop de teintes proches).
+   */
+  --brand-green: #38a234;
+  --brand-navy: #1b418f;
+  --brand-sky: #1b418f;
+  --brand-sky-soft: color-mix(in srgb, #1b418f 75%, white);
+  --brand-green-dark: #2d8029;
+  --brand-green-soft: color-mix(in srgb, #38a234 16%, white);
+  --brand-lime: #38a234;
 
-  --background: #f7f7f7;
-  --foreground: #0f172a;
+  --background: #f5f7f6;
+  --foreground: #14231a;
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #14231a;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #182f75;
+  --popover-foreground: #14231a;
+  --primary: #38a234;
   --primary-foreground: #ffffff;
-  --secondary: #e8eef6;
-  --secondary-foreground: #182f75;
-  --muted: #eef1f6;
-  --muted-foreground: #475569;
-  --accent: #e8f4fc;
-  --accent-foreground: #182f75;
+  --secondary: color-mix(in srgb, #38a234 9%, #f5f7f6);
+  --secondary-foreground: #1b418f;
+  --muted: #e8eeea;
+  --muted-foreground: #3d5346;
+  --accent: color-mix(in srgb, #38a234 8%, white);
+  --accent-foreground: #1b418f;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: color-mix(in srgb, #182f75 12%, transparent);
-  --input: color-mix(in srgb, #182f75 14%, transparent);
-  --ring: #2498d8;
+  --border: color-mix(in srgb, #1b418f 11%, transparent);
+  --input: color-mix(in srgb, #1b418f 12%, transparent);
+  --ring: #38a234;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);

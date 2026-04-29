@@ -1,78 +1,96 @@
 import { CheckCircle2, ShieldCheck, Truck } from "lucide-react"
 
 import { OrderWidget } from "@/components/order-widget"
+import { TestimonialsSection } from "@/components/testimonials-section"
+
+const reassurance = [
+  {
+    icon: Truck,
+    title: "Réactivité 78",
+    text: "Intervention rapide — créneaux serrés, priorité chantier.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Tarifs clairs",
+    text: "Devis lisible après validation terrain — pas de mauvaise surprise.",
+  },
+  {
+    icon: CheckCircle2,
+    title: "Traçabilité",
+    text: "Conformité et documents fournis avec chaque rotation.",
+  },
+] as const
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-[calc(100vh-6rem)] overflow-hidden">
-      {/* Fond premium discret */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_100%_80%_at_50%_-40%,color-mix(in_srgb,var(--brand-sky)_22%,transparent),transparent_55%),radial-gradient(ellipse_70%_60%_at_100%_50%,color-mix(in_srgb,var(--brand-green)_14%,transparent),transparent_50%)]"
-        aria-hidden
-      />
+    <div className="relative min-h-[calc(100vh-5rem)]">
+      {/* Section 1 : promesse courte + widget remonté */}
+      <section className="relative border-b border-border/30 bg-background">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-90"
+          style={{
+            background:
+              "radial-gradient(ellipse 90% 70% at 50% -15%, color-mix(in srgb, #38a234 14%, transparent), transparent 50%), radial-gradient(ellipse 60% 50% at 100% 0%, color-mix(in srgb, #1b418f 8%, transparent), transparent 45%)",
+          }}
+          aria-hidden
+        />
 
-      <main className="mx-auto max-w-6xl px-4 pb-24 pt-6 sm:px-6 lg:px-8 lg:pt-10">
-        <section className="flex flex-col gap-14 lg:gap-20">
-          {/* Hero */}
-          <div className="mx-auto max-w-3xl text-center lg:max-w-4xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-green-dark sm:text-sm">
-              Bennes &amp; valorisation — Yvelines (78)
+        <div className="relative mx-auto max-w-6xl px-4 pb-14 pt-4 sm:px-6 lg:pb-16 lg:pt-6 lg:px-8">
+          <div className="mx-auto mb-8 max-w-2xl text-center lg:mb-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+              Bennes & valorisation — Yvelines (78)
             </p>
-            <h1 className="mt-4 text-balance bg-gradient-to-br from-primary via-primary to-brand-sky-soft bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">
+            <h1 className="mt-3 text-balance text-3xl font-bold tracking-tight text-brand-navy sm:text-4xl lg:text-[2.65rem] lg:leading-[1.12]">
               La solution locale pour vos chantiers.
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p className="mx-auto mt-4 max-w-xl text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base">
               <strong className="font-semibold text-foreground">
                 Nous prenons en charge
               </strong>{" "}
-              la mise à disposition, le suivi terrain et l’enlèvement des
-              bennes — vous pilotez votre chantier, nous assurons la logistique
-              des déchets avec{" "}
-              <span className="font-medium text-primary">
-                une équipe experte et réactive sur le 78.
-              </span>
-            </p>
-            <ul className="mx-auto mt-8 flex max-w-xl flex-col items-start gap-3 text-left sm:max-w-2xl">
-              {[
-                {
-                  icon: Truck,
-                  text: "Intervention rapide sur le 78 — créneaux serrés, priorité chantier.",
-                },
-                {
-                  icon: ShieldCheck,
-                  text: "Tarification directe et transparente — pas de surprise, devis clair après validation.",
-                },
-                {
-                  icon: CheckCircle2,
-                  text: "Traçabilité garantie — conformité et documents fournis avec chaque rotation.",
-                },
-              ].map(({ icon: Icon, text }) => (
-                <li
-                  key={text}
-                  className="flex gap-3 rounded-2xl border border-primary/8 bg-card/60 px-4 py-3 shadow-sm shadow-primary/5 backdrop-blur-sm"
-                >
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                    <Icon className="size-5" aria-hidden />
-                  </span>
-                  <span className="text-sm leading-snug text-foreground sm:text-[0.95rem]">
-                    {text}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <p className="mx-auto mt-8 max-w-xl text-sm text-muted-foreground">
-              Vous commandez directement auprès de Core Environnement — une
-              équipe terrain qui centralise planification, enlèvement et suivi
-              de bout en bout.
+              mise à disposition, suivi terrain et enlèvements — équipe réactive sur
+              le&nbsp;78, tarification transparente.
             </p>
           </div>
 
-          {/* Widget */}
-          <div className="relative mx-auto w-full max-w-xl lg:max-w-2xl">
+          <div
+            id="commande"
+            className="mx-auto w-full max-w-xl scroll-mt-36 lg:max-w-2xl lg:scroll-mt-40"
+          >
             <OrderWidget />
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
+
+      {/* Section 2 : réassurance — cartes scroll horizontal mobile */}
+      <section className="border-b border-border/30 bg-white py-12 sm:py-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <h2 className="mb-8 text-center text-xl font-bold text-brand-navy sm:text-2xl">
+            Pourquoi nous faire confiance
+          </h2>
+          <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-sm px-4 pb-2 sm:-mx-0 sm:grid sm:grid-cols-3 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0">
+            {reassurance.map((item) => (
+              <div
+                key={item.title}
+                className="w-[82vw] max-w-[320px] shrink-0 snap-center rounded-2xl border border-primary/12 bg-muted/40 p-5 shadow-sm sm:w-auto sm:max-w-none sm:p-6"
+              >
+                <span className="flex size-11 items-center justify-center rounded-xl bg-primary/12 text-primary">
+                  <item.icon className="size-5" aria-hidden />
+                </span>
+                <h3 className="mt-4 font-semibold text-brand-navy">{item.title}</h3>
+                <p className="mt-2 text-sm leading-snug text-muted-foreground">
+                  {item.text}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-10 max-w-2xl text-center text-sm text-muted-foreground">
+            Vous commandez directement auprès de Core Environnement — une équipe qui
+            centralise planification, enlèvement et suivi de bout en bout.
+          </p>
+        </div>
+      </section>
+
+      <TestimonialsSection />
     </div>
   )
 }

@@ -84,6 +84,8 @@ const demoSuggestions = [
 
 type StepId = "address" | "waste" | "summary"
 
+type Audience = "particulier" | "professionnel"
+
 export function OrderWidget() {
   const prefersReducedMotion = useReducedMotion()
   const t = prefersReducedMotion
@@ -102,6 +104,7 @@ export function OrderWidget() {
   )
   const [chipDemoHint, setChipDemoHint] = useState(false)
   const [submitStubMessage, setSubmitStubMessage] = useState(false)
+  const [audience, setAudience] = useState<Audience>("particulier")
 
   useEffect(() => {
     if (step !== "summary") setSubmitStubMessage(false)
@@ -179,10 +182,51 @@ export function OrderWidget() {
   const currentStepIdx = steps.findIndex((s) => s.id === step)
 
   return (
-    <Card className="relative mx-auto w-full max-w-xl overflow-hidden border-white/60 bg-card/95 shadow-[0_24px_80px_-32px_rgba(24,47,117,0.45)] ring-1 ring-primary/10 backdrop-blur-sm">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-sky/[0.06] via-transparent to-brand-green/[0.05]" />
+    <Card className="relative mx-auto w-full max-w-xl overflow-hidden border-white/70 bg-card/95 shadow-[0_22px_70px_-32px_color-mix(in_srgb,var(--brand-navy)_38%,transparent)] ring-1 ring-primary/15 backdrop-blur-sm">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.07] via-transparent to-brand-navy/[0.05]" />
 
-      <CardContent className="relative pt-8">
+      <CardContent className="relative space-y-6 pt-8">
+        <div className="space-y-2">
+          <p className="text-center text-xs font-medium uppercase tracking-wide text-brand-navy">
+            Vous êtes&nbsp;?
+          </p>
+          <div
+            className="flex rounded-2xl border border-brand-navy/12 bg-muted/50 p-1"
+            role="group"
+            aria-label="Type de client"
+          >
+            <button
+              type="button"
+              onClick={() => setAudience("particulier")}
+              className={cn(
+                "flex-1 rounded-xl py-2.5 text-xs font-semibold transition sm:text-sm",
+                audience === "particulier"
+                  ? "bg-card text-brand-navy shadow-sm ring-1 ring-primary/25"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Particulier
+            </button>
+            <button
+              type="button"
+              onClick={() => setAudience("professionnel")}
+              className={cn(
+                "flex-1 rounded-xl py-2.5 text-xs font-semibold transition sm:text-sm",
+                audience === "professionnel"
+                  ? "bg-card text-brand-navy shadow-sm ring-1 ring-primary/25"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Professionnel
+            </button>
+          </div>
+          <p className="text-center text-[0.72rem] leading-relaxed text-muted-foreground sm:text-xs">
+            {audience === "professionnel"
+              ? "Chantiers, entreprises du BTP : livraisons et rotations adaptées à votre planning."
+              : "Maison, jardin ou petit chantier — même processus simple et réactif."}
+          </p>
+        </div>
+
         {/* Step indicator */}
         <div className="mb-8 flex items-center justify-center gap-1 sm:gap-2">
           {steps.map((s, i) => {
@@ -232,18 +276,23 @@ export function OrderWidget() {
               className="space-y-4"
             >
               <div className="text-center">
-                <CardDescription className="text-base font-medium text-foreground">
-                  Où doit être livrée la benne&nbsp;?
+                <CardDescription className="text-base font-medium text-brand-navy">
+                  {audience === "professionnel"
+                    ? "Où livrer la benne sur le chantier&nbsp;?"
+                    : "Où livrer la benne&nbsp;?"}
                 </CardDescription>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Démo locale — saisissez une adresse&nbsp;; la zone est contrôlée
                   automatiquement.
+                  {audience === "professionnel"
+                    ? " Préparez l’accès poids lourds si besoin."
+                    : " Indiquez un accès praticable pour la benne."}
                 </p>
               </div>
 
               <div className="space-y-3">
                 <div className="relative">
-                  <MapPin className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-brand-sky" />
+                  <MapPin className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-brand-navy" />
                   <Input
                     value={address}
                     onChange={(e) => {
@@ -256,7 +305,7 @@ export function OrderWidget() {
                       e.key === "Enter" && (e.preventDefault(), handleVerify())
                     }
                     placeholder="Adresse complète ou ville (ex. 78280 Élancourt)"
-                    className="h-11 border-primary/15 bg-white/90 pl-10 pr-4 text-base shadow-inner shadow-primary/5 focus-visible:ring-brand-sky/40"
+                    className="h-11 border-primary/15 bg-white/90 pl-10 pr-4 text-base shadow-inner shadow-primary/5 focus-visible:ring-brand-navy/40"
                     autoComplete="street-address"
                   />
                 </div>
@@ -272,7 +321,7 @@ export function OrderWidget() {
                       key={d.value}
                       type="button"
                       onClick={() => applyDemoSuggestion(d.value)}
-                      className="rounded-full border border-primary/10 bg-accent/70 px-3 py-1.5 text-xs font-medium text-primary transition hover:border-brand-sky/40 hover:bg-accent"
+                      className="rounded-full border border-primary/10 bg-accent/70 px-3 py-1.5 text-xs font-medium text-primary transition hover:border-brand-navy/35 hover:bg-accent"
                     >
                       <span>{d.label}</span>
                       <span className="ml-1.5 text-muted-foreground">
@@ -353,7 +402,7 @@ export function OrderWidget() {
                 <p className="text-xs font-semibold uppercase tracking-wide text-brand-green-dark">
                   Zone desservie
                 </p>
-                <p className="truncate text-sm text-primary">
+                <p className="truncate text-sm text-brand-navy">
                   {geocode?.label ?? address.trim()}
                   {distanceKm !== null ? (
                     <span className="text-muted-foreground">
@@ -383,9 +432,9 @@ export function OrderWidget() {
                       transition={{ ...t, delay: prefersReducedMotion ? 0 : i * 0.05 }}
                       onClick={() => setSelectedWaste(w.id)}
                       className={cn(
-                        "flex flex-col items-start rounded-2xl border p-4 text-left shadow-sm outline-none ring-offset-2 transition hover:border-brand-sky/50 focus-visible:ring-2 focus-visible:ring-brand-sky",
+                        "flex flex-col items-start rounded-2xl border p-4 text-left shadow-sm outline-none ring-offset-2 transition hover:border-brand-navy/45 focus-visible:ring-2 focus-visible:ring-brand-navy",
                         selected
-                          ? "border-brand-sky bg-gradient-to-br from-accent to-white shadow-[0_12px_40px_-20px_rgba(36,152,216,0.55)] ring-2 ring-brand-sky"
+                          ? "border-brand-navy bg-gradient-to-br from-accent to-white shadow-[0_12px_40px_-20px_color-mix(in_srgb,var(--brand-navy)_45%,transparent)] ring-2 ring-brand-navy"
                           : "border-border/80 bg-card/90 hover:bg-white"
                       )}
                     >
@@ -399,7 +448,7 @@ export function OrderWidget() {
                       >
                         <w.Icon className="size-6" aria-hidden />
                       </span>
-                      <span className="font-semibold text-primary">
+                      <span className="font-semibold text-brand-navy">
                         {w.title}
                       </span>
                       <span className="mt-1 text-xs leading-snug text-muted-foreground">
@@ -465,7 +514,7 @@ export function OrderWidget() {
               >
                 <li className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                   <span className="text-muted-foreground">Chantier</span>
-                  <span className="font-medium text-primary">
+                  <span className="font-medium text-brand-navy">
                     {geocode.label}
                   </span>
                 </li>
@@ -473,16 +522,16 @@ export function OrderWidget() {
                   <span className="text-muted-foreground">
                     Distance / base Élancourt
                   </span>
-                  <span className="font-medium text-primary">
+                  <span className="font-medium text-brand-navy">
                     {distanceKm !== null ? `${distanceKm} km` : "—"}
                   </span>
                 </li>
                 <li className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                   <span className="text-muted-foreground">Flux</span>
-                  <span className="font-medium text-primary">{waste.title}</span>
+                  <span className="font-medium text-brand-navy">{waste.title}</span>
                 </li>
                 <li className="flex flex-col gap-1 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-                  <span className="font-semibold text-primary">
+                  <span className="font-semibold text-brand-navy">
                     Estimation à partir de
                   </span>
                   <motion.span
