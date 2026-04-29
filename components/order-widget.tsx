@@ -492,19 +492,20 @@ export function OrderWidget() {
                 ))}
               </div>
 
-              <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
+              <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                 <Button
                   variant="outline"
                   type="button"
-                  className="h-10 rounded-xl"
+                  className="h-10 rounded-xl sm:flex-1"
                   onClick={() => setStep("intent")}
                 >
                   <ArrowLeft className="mr-2 size-4" />
                   Retour
                 </Button>
                 <Button
+                  variant="outline"
                   type="button"
-                  className="h-10 flex-1 rounded-xl sm:max-w-[220px]"
+                  className="h-10 rounded-xl sm:flex-1"
                   disabled={!selectedPrestationId}
                   onClick={goToPayment}
                 >

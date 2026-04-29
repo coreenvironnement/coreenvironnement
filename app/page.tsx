@@ -37,18 +37,19 @@ export default function HomePage() {
 
         <div className="relative mx-auto max-w-6xl px-4 pb-14 pt-4 sm:px-6 lg:pb-16 lg:pt-6 lg:px-8">
           <div className="mx-auto mb-8 max-w-2xl text-center lg:mb-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-              Bennes & valorisation — Yvelines (78)
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-navy">
+              Commandez une benne en 2 min — nous intervenons en moins de 24 h — Yvelines
+              (78)
             </p>
-            <h1 className="mt-3 text-balance text-3xl font-bold tracking-tight text-brand-navy sm:text-4xl lg:text-[2.65rem] lg:leading-[1.12]">
-              La solution locale pour vos chantiers.
+            <h1 className="mt-3 text-balance text-3xl font-bold tracking-tight text-primary sm:text-4xl lg:text-[2.65rem] lg:leading-[1.12]">
+              Benne livrée ou rotation terrain en moins de 24 h.
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base">
               <strong className="font-semibold text-foreground">
-                Nous prenons en charge
-              </strong>{" "}
-              mise à disposition, suivi terrain et enlèvements — équipe réactive sur
-              le&nbsp;78, tarification transparente.
+                Core Environnement
+              </strong>
+              , c’est une équipe locale qui planifie, livre et enlève — sans surprise, avec
+              des forfaits clairs sur le&nbsp;78.
             </p>
           </div>
 

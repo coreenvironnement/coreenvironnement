@@ -17,11 +17,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Core Environnement — Bennes & gestion des déchets (78)",
+    default: "Core Environnement — Bennes sous 24 h sur les Yvelines (78)",
     template: "%s | Core Environnement",
   },
   description:
-    "Mise à disposition de bennes, suivi terrain et enlèvement pour le BTP et les particuliers — équipe locale basée à Élancourt, réactive sur les Yvelines.",
+    "Commandez une benne en quelques minutes. Livraison et intervention terrain en moins de 24 h — équipe locale basée à Élancourt, forfaits clairs sur le 78.",
 };
 
 export default function RootLayout({
