@@ -1,26 +1,34 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import {
-  AnimatePresence,
-  motion,
-  useReducedMotion,
-} from "framer-motion"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import {
   ArrowLeft,
+  Calendar,
   CheckCircle2,
-  Construction,
-  Leaf,
+  ChevronRight,
+  Info,
   Loader2,
   MapPin,
   MapPinOff,
   Package,
   Sparkles,
-  TreePine,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import {
   ELIANCOURT_CENTER,
@@ -29,51 +37,27 @@ import {
   isWithinRadiusKm,
 } from "@/lib/geo/haversine"
 import { mockGeocodeAddress, type MockGeocodeHit } from "@/lib/geo/mock-geocode"
+import {
+  type BenneFamily,
+  type Prestation,
+  FAMILY_LABELS,
+  prestationsByFamily,
+  prestationById,
+  systemLabel,
+} from "@/lib/prestations"
+import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 const steps = [
-  { id: "address" as const, label: "Chantier" },
-  { id: "waste" as const, label: "Déchet" },
-  { id: "summary" as const, label: "Résumé" },
+  { id: "intent" as const, label: "Votre demande" },
+  { id: "forfait" as const, label: "Forfait" },
+  { id: "payment" as const, label: "Paiement" },
 ]
 
-export type WasteTypeId = "gravats" | "dib" | "bois" | "verts"
-
-const wasteTypes: Array<{
-  id: WasteTypeId
-  title: string
-  description: string
-  prixIndicatif: number
-  Icon: typeof Construction
-}> = [
-  {
-    id: "gravats",
-    title: "Gravats",
-    description: "Béton, briques — benne lourde",
-    prixIndicatif: 349,
-    Icon: Construction,
-  },
-  {
-    id: "dib",
-    title: "DIB (tout-venant)",
-    description: "Mélangé hors dangereux",
-    prixIndicatif: 289,
-    Icon: Package,
-  },
-  {
-    id: "bois",
-    title: "Bois",
-    description: "Palette, hors traité CU",
-    prixIndicatif: 269,
-    Icon: TreePine,
-  },
-  {
-    id: "verts",
-    title: "Déchets verts",
-    description: "Tonte, coupe, léger",
-    prixIndicatif: 239,
-    Icon: Leaf,
-  },
+const FAMILIES: BenneFamily[] = [
+  "melange_dnd",
+  "gravats_melanges",
+  "gravats_propres",
 ]
 
 const demoSuggestions = [
@@ -82,9 +66,22 @@ const demoSuggestions = [
   { label: "Paris", value: "Paris 75015", hint: "Hors zone démo" },
 ] as const
 
-type StepId = "address" | "waste" | "summary"
-
 type Audience = "particulier" | "professionnel"
+type StepId = "intent" | "forfait" | "payment"
+
+function fmtHt(n: number) {
+  return new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 2,
+  }).format(n)
+}
+
+function todayISODate() {
+  const d = new Date()
+  d.setHours(0, 0, 0, 0)
+  return d.toISOString().slice(0, 10)
+}
 
 export function OrderWidget() {
   const prefersReducedMotion = useReducedMotion()
@@ -92,91 +89,103 @@ export function OrderWidget() {
     ? { duration: 0.01 }
     : { duration: 0.38, ease: [0.22, 1, 0.36, 1] as const }
 
-  const [step, setStep] = useState<StepId>("address")
+  const [step, setStep] = useState<StepId>("intent")
+  const [audience, setAudience] = useState<Audience>("particulier")
   const [address, setAddress] = useState("")
   const [geocode, setGeocode] = useState<MockGeocodeHit | null>(null)
   const [distanceKm, setDistanceKm] = useState<number | null>(null)
+  const [zoneOk, setZoneOk] = useState(false)
   const [outOfZone, setOutOfZone] = useState(false)
   const [addressError, setAddressError] = useState<string | null>(null)
   const [checking, setChecking] = useState(false)
-  const [selectedWaste, setSelectedWaste] = useState<WasteTypeId | null>(
-    null
-  )
   const [chipDemoHint, setChipDemoHint] = useState(false)
-  const [submitStubMessage, setSubmitStubMessage] = useState(false)
-  const [audience, setAudience] = useState<Audience>("particulier")
+  const [family, setFamily] = useState<BenneFamily | null>(null)
+  const [deliveryDate, setDeliveryDate] = useState("")
+  const [pickupDate, setPickupDate] = useState("")
+  const [selectedPrestationId, setSelectedPrestationId] = useState<
+    string | null
+  >(null)
+  const [paymentStub, setPaymentStub] = useState(false)
+
+  const prestation = useMemo(
+    () => (selectedPrestationId ? prestationById(selectedPrestationId) : null),
+    [selectedPrestationId]
+  )
+
+  const filteredPrestations = useMemo(
+    () => (family ? prestationsByFamily(family) : []),
+    [family]
+  )
 
   useEffect(() => {
-    if (step !== "summary") setSubmitStubMessage(false)
+    if (step !== "payment") setPaymentStub(false)
   }, [step])
 
-  const waste = useMemo(
-    () => wasteTypes.find((w) => w.id === selectedWaste) ?? null,
-    [selectedWaste]
-  )
-
-  const resetZoneState = () => {
+  const resetZone = () => {
+    setZoneOk(false)
     setOutOfZone(false)
     setGeocode(null)
     setDistanceKm(null)
   }
 
-  const handleVerify = () => {
+  const runZoneCheck = (raw: string) => {
+    const hit = mockGeocodeAddress(raw)
+    const dist = haversineDistanceKm(hit, ELIANCOURT_CENTER)
+    const ok = isWithinRadiusKm(hit)
+    setGeocode(hit)
+    setDistanceKm(Math.round(dist * 10) / 10)
+    setOutOfZone(!ok)
+    setZoneOk(ok)
+    return ok
+  }
+
+  const handleVerifyAddress = () => {
     const raw = address.trim()
     setAddressError(null)
     if (!raw.length) {
       setAddressError("Indiquez l’adresse de livraison de la benne.")
-      resetZoneState()
+      resetZone()
       return
     }
-
     setChecking(true)
     setChipDemoHint(false)
-    /* Petit délai pour l’effet “vérification” en démo */
     window.setTimeout(() => {
-      const hit = mockGeocodeAddress(raw)
-      const dist = haversineDistanceKm(hit, ELIANCOURT_CENTER)
-      const ok = isWithinRadiusKm(hit)
-
-      setGeocode(hit)
-      setDistanceKm(Math.round(dist * 10) / 10)
-
+      runZoneCheck(raw)
       setChecking(false)
-      if (!ok) {
-        setOutOfZone(true)
-        setStep("address")
-        return
-      }
-      setOutOfZone(false)
-      setStep("waste")
-    }, prefersReducedMotion ? 0 : 520)
+    }, prefersReducedMotion ? 0 : 480)
   }
 
   const applyDemoSuggestion = (value: string) => {
     setAddress(value)
     setAddressError(null)
     setChipDemoHint(true)
-    setOutOfZone(false)
     setChecking(true)
-    const delay = prefersReducedMotion ? 0 : 480
     window.setTimeout(() => {
-      const hit = mockGeocodeAddress(value)
-      const dist = haversineDistanceKm(hit, ELIANCOURT_CENTER)
-      const ok = isWithinRadiusKm(hit)
-      setGeocode(hit)
-      setDistanceKm(Math.round(dist * 10) / 10)
+      runZoneCheck(value)
       setChecking(false)
-      setOutOfZone(!ok)
-      if (ok) {
-        setStep("waste")
-      } else {
-        setStep("address")
-      }
-    }, delay)
+    }, prefersReducedMotion ? 0 : 450)
   }
 
-  const goSummary = () => {
-    if (selectedWaste) setStep("summary")
+  const canLeaveIntent =
+    zoneOk &&
+    family !== null &&
+    deliveryDate.length > 0 &&
+    !outOfZone
+
+  const goToForfait = () => {
+    if (!canLeaveIntent) {
+      if (!zoneOk) setAddressError("Vérifiez d’abord que l’adresse est dans la zone.")
+      else if (!family) setAddressError("Choisissez un type de déchet.")
+      else if (!deliveryDate) setAddressError("Indiquez une date de livraison souhaitée.")
+      return
+    }
+    setAddressError(null)
+    setStep("forfait")
+  }
+
+  const goToPayment = () => {
+    if (!selectedPrestationId) return
+    setStep("payment")
   }
 
   const currentStepIdx = steps.findIndex((s) => s.id === step)
@@ -222,13 +231,12 @@ export function OrderWidget() {
           </div>
           <p className="text-center text-[0.72rem] leading-relaxed text-muted-foreground sm:text-xs">
             {audience === "professionnel"
-              ? "Chantiers, entreprises du BTP : livraisons et rotations adaptées à votre planning."
-              : "Maison, jardin ou petit chantier — même processus simple et réactif."}
+              ? "Chantiers et pros du BTP — livraisons et rotations adaptées."
+              : "Maison, jardin ou petit chantier — même parcours simple."}
           </p>
         </div>
 
-        {/* Step indicator */}
-        <div className="mb-8 flex items-center justify-center gap-1 sm:gap-2">
+        <div className="mb-6 flex items-center justify-center gap-1 sm:gap-2">
           {steps.map((s, i) => {
             const active = currentStepIdx === i
             const done = currentStepIdx > i
@@ -236,11 +244,9 @@ export function OrderWidget() {
               <div key={s.id} className="flex items-center">
                 <motion.div
                   className={cn(
-                    "flex h-8 min-w-[2rem] items-center justify-center rounded-full px-2 text-xs font-semibold transition-colors sm:h-9 sm:min-w-[2.75rem] sm:px-3 sm:text-[0.8rem]",
-                    done && "bg-brand-green text-white shadow-sm shadow-brand-green/25",
-                    active &&
-                      !done &&
-                      "bg-primary text-primary-foreground shadow-md",
+                    "flex h-8 min-w-[2rem] items-center justify-center rounded-full px-2 text-xs font-semibold transition-colors sm:h-9 sm:min-w-[2.5rem] sm:px-2.5 sm:text-[0.75rem]",
+                    done && "bg-primary text-primary-foreground shadow-sm",
+                    active && !done && "bg-brand-navy text-white shadow-md",
                     !active && !done && "bg-muted text-muted-foreground"
                   )}
                   layout
@@ -255,8 +261,8 @@ export function OrderWidget() {
                 {i < steps.length - 1 && (
                   <div
                     className={cn(
-                      "mx-1 h-0.5 w-4 rounded-full bg-border sm:w-8",
-                      currentStepIdx > i && "bg-brand-green"
+                      "mx-1 h-0.5 w-3 rounded-full bg-border sm:w-6",
+                      currentStepIdx > i && "bg-primary"
                     )}
                   />
                 )}
@@ -266,27 +272,22 @@ export function OrderWidget() {
         </div>
 
         <AnimatePresence mode="wait">
-          {step === "address" && (
+          {step === "intent" && (
             <motion.div
-              key="step-address"
-              initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 28 }}
+              key="intent"
+              initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 24 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -24 }}
+              exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
-              className="space-y-4"
+              className="space-y-5"
             >
               <div className="text-center">
                 <CardDescription className="text-base font-medium text-brand-navy">
-                  {audience === "professionnel"
-                    ? "Où livrer la benne sur le chantier&nbsp;?"
-                    : "Où livrer la benne&nbsp;?"}
+                  Adresse & type de flux
                 </CardDescription>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Démo locale — saisissez une adresse&nbsp;; la zone est contrôlée
-                  automatiquement.
-                  {audience === "professionnel"
-                    ? " Préparez l’accès poids lourds si besoin."
-                    : " Indiquez un accès praticable pour la benne."}
+                  Livraison dans un rayon de {DEFAULT_INTERVENTION_RADIUS_KM}&nbsp;km
+                  autour d’Élancourt — forfaits visibles à l’étape suivante.
                 </p>
               </div>
 
@@ -297,31 +298,27 @@ export function OrderWidget() {
                     value={address}
                     onChange={(e) => {
                       setAddress(e.target.value)
-                      if (outOfZone) setOutOfZone(false)
+                      setOutOfZone(false)
+                      setZoneOk(false)
                       setAddressError(null)
                       setChipDemoHint(false)
                     }}
                     onKeyDown={(e) =>
-                      e.key === "Enter" && (e.preventDefault(), handleVerify())
+                      e.key === "Enter" &&
+                      (e.preventDefault(), handleVerifyAddress())
                     }
                     placeholder="Adresse complète ou ville (ex. 78280 Élancourt)"
-                    className="h-11 border-primary/15 bg-white/90 pl-10 pr-4 text-base shadow-inner shadow-primary/5 focus-visible:ring-brand-navy/40"
+                    className="h-11 border-primary/15 bg-white/90 pl-10 pr-4 text-base shadow-inner focus-visible:ring-brand-navy/40"
                     autoComplete="street-address"
                   />
                 </div>
-                {addressError && (
-                  <p className="text-xs font-medium text-amber-800">
-                    {addressError}
-                  </p>
-                )}
-
                 <div className="flex flex-wrap justify-center gap-2">
                   {demoSuggestions.map((d) => (
                     <button
                       key={d.value}
                       type="button"
                       onClick={() => applyDemoSuggestion(d.value)}
-                      className="rounded-full border border-primary/10 bg-accent/70 px-3 py-1.5 text-xs font-medium text-primary transition hover:border-brand-navy/35 hover:bg-accent"
+                      className="rounded-full border border-primary/10 bg-accent/70 px-3 py-1.5 text-xs font-medium text-primary transition hover:border-brand-navy/35"
                     >
                       <span>{d.label}</span>
                       <span className="ml-1.5 text-muted-foreground">
@@ -330,36 +327,53 @@ export function OrderWidget() {
                     </button>
                   ))}
                 </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-10 w-full rounded-xl border-brand-navy/20"
+                  onClick={handleVerifyAddress}
+                  disabled={checking}
+                >
+                  {checking ? (
+                    <Loader2 className="mr-2 size-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="mr-2 size-4" />
+                  )}
+                  Vérifier l’adresse
+                </Button>
               </div>
+
+              {zoneOk && geocode && (
+                <p className="rounded-xl border border-primary/25 bg-primary/8 px-3 py-2 text-center text-xs text-brand-green-dark">
+                  Adresse dans la zone — {geocode.label} ({distanceKm} km)
+                </p>
+              )}
 
               <AnimatePresence>
                 {outOfZone && geocode && distanceKm !== null && (
                   <motion.div
-                    initial={{ opacity: 0, y: 8, height: 0 }}
-                    animate={{ opacity: 1, y: 0, height: "auto" }}
-                    exit={{ opacity: 0, y: 4 }}
-                    transition={t}
-                    className="overflow-hidden rounded-2xl border border-rose-200/80 bg-gradient-to-br from-rose-50/95 to-white p-4 text-left shadow-sm"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="rounded-2xl border border-rose-200/80 bg-gradient-to-br from-rose-50/95 to-white p-4 text-left text-sm text-rose-950"
                   >
                     <div className="flex gap-3">
-                      <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-rose-500/10 text-rose-700">
-                        <MapPinOff className="size-5" />
-                      </div>
-                      <div className="min-w-0 flex-1 space-y-1">
-                        <p className="text-sm font-semibold text-rose-950">
-                          Hors zone d’intervention
-                        </p>
-                        <p className="text-sm leading-relaxed text-rose-900/90">
-                          Cette adresse est à environ{" "}
-                          <strong>{distanceKm} km</strong> de notre base
-                          d’Élancourt. Aujourd’hui nous intervenons dans un rayon
-                          de {DEFAULT_INTERVENTION_RADIUS_KM}&nbsp;km pour garantir
-                          une réponse terrain immédiate.
+                      <MapPinOff className="size-5 shrink-0 text-rose-700" />
+                      <div>
+                        <p className="font-semibold">Hors zone d’intervention</p>
+                        <p className="mt-1 text-rose-900/90">
+                          Environ {distanceKm} km de notre base. Appelez le{" "}
+                          <a
+                            href={SITE_PHONE_HREF}
+                            className="font-semibold underline decoration-rose-400"
+                          >
+                            {SITE_PHONE_DISPLAY}
+                          </a>{" "}
+                          pour étudier un cas particulier.
                         </p>
                         {chipDemoHint && (
-                          <p className="text-xs text-rose-800/80">
-                            Suggestion démo appliquée — modifiez l’adresse pour
-                            tester un autre cas.
+                          <p className="mt-2 text-xs text-rose-800/80">
+                            Suggestion démo — modifiez l’adresse pour tester.
                           </p>
                         )}
                       </div>
@@ -368,215 +382,232 @@ export function OrderWidget() {
                 )}
               </AnimatePresence>
 
+              <div className="space-y-3">
+                <p className="text-center text-xs font-semibold uppercase tracking-wide text-brand-navy">
+                  Type de déchet
+                </p>
+                <div className="grid gap-2 sm:grid-cols-1">
+                  {FAMILIES.map((fid) => {
+                    const meta = FAMILY_LABELS[fid]
+                    const selected = family === fid
+                    return (
+                      <button
+                        key={fid}
+                        type="button"
+                        onClick={() => setFamily(fid)}
+                        className={cn(
+                          "rounded-2xl border p-3 text-left transition",
+                          selected
+                            ? "border-primary bg-primary/10 ring-2 ring-primary/30"
+                            : "border-border/80 hover:border-brand-navy/25"
+                        )}
+                      >
+                        <span className="font-semibold text-brand-navy">
+                          {meta.title}
+                        </span>
+                        <span className="mt-1 block text-xs text-muted-foreground">
+                          {meta.description}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-brand-navy">
+                    <Calendar className="size-3.5" />
+                    Date de livraison souhaitée *
+                  </label>
+                  <Input
+                    type="date"
+                    min={todayISODate()}
+                    value={deliveryDate}
+                    onChange={(e) => setDeliveryDate(e.target.value)}
+                    className="h-10 border-primary/15"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                    <Calendar className="size-3.5" />
+                    Enlèvement souhaité (optionnel)
+                  </label>
+                  <Input
+                    type="date"
+                    min={deliveryDate || todayISODate()}
+                    value={pickupDate}
+                    onChange={(e) => setPickupDate(e.target.value)}
+                    className="h-10 border-primary/15"
+                  />
+                </div>
+              </div>
+
+              {addressError && (
+                <p className="text-center text-xs font-medium text-amber-800">
+                  {addressError}
+                </p>
+              )}
+
               <Button
                 type="button"
-                className="h-11 w-full rounded-xl bg-primary text-base font-semibold shadow-lg shadow-primary/25 transition hover:shadow-primary/35"
-                onClick={handleVerify}
-                disabled={checking}
+                className="h-11 w-full rounded-xl bg-primary text-base font-semibold shadow-lg shadow-primary/25"
+                onClick={goToForfait}
+                disabled={!canLeaveIntent}
               >
-                {checking ? (
-                  <>
-                    <Loader2 className="mr-2 size-4 animate-spin" />
-                    Vérification…
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="mr-2 size-4 opacity-90" />
-                    Vérifier la disponibilité
-                  </>
-                )}
+                Continuer vers les forfaits
+                <ChevronRight className="ml-2 size-4" />
               </Button>
             </motion.div>
           )}
 
-          {step === "waste" && (
+          {step === "forfait" && family && (
             <motion.div
-              key="step-waste"
-              initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 28 }}
+              key="forfait"
+              initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 24 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -24 }}
+              exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
-              className="space-y-5"
-            >
-              <div className="rounded-xl border border-brand-green/20 bg-brand-green-soft/15 px-3 py-2 text-center">
-                <p className="text-xs font-semibold uppercase tracking-wide text-brand-green-dark">
-                  Zone desservie
-                </p>
-                <p className="truncate text-sm text-brand-navy">
-                  {geocode?.label ?? address.trim()}
-                  {distanceKm !== null ? (
-                    <span className="text-muted-foreground">
-                      {" "}
-                      · {distanceKm} km · base Élancourt
-                    </span>
-                  ) : null}
-                </p>
-              </div>
-
-              <div>
-                <CardDescription className="text-center text-base font-medium text-foreground">
-                  Quel déchet doit partir en benne&nbsp;?
-                </CardDescription>
-              </div>
-
-              <motion.div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {wasteTypes.map((w, i) => {
-                  const selected = selectedWaste === w.id
-                  return (
-                    <motion.button
-                      key={w.id}
-                      type="button"
-                      layout
-                      initial={{ opacity: 0, y: 14 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ ...t, delay: prefersReducedMotion ? 0 : i * 0.05 }}
-                      onClick={() => setSelectedWaste(w.id)}
-                      className={cn(
-                        "flex flex-col items-start rounded-2xl border p-4 text-left shadow-sm outline-none ring-offset-2 transition hover:border-brand-navy/45 focus-visible:ring-2 focus-visible:ring-brand-navy",
-                        selected
-                          ? "border-brand-navy bg-gradient-to-br from-accent to-white shadow-[0_12px_40px_-20px_color-mix(in_srgb,var(--brand-navy)_45%,transparent)] ring-2 ring-brand-navy"
-                          : "border-border/80 bg-card/90 hover:bg-white"
-                      )}
-                    >
-                      <span
-                        className={cn(
-                          "mb-3 flex size-11 items-center justify-center rounded-xl",
-                          selected
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-primary/10 text-primary"
-                        )}
-                      >
-                        <w.Icon className="size-6" aria-hidden />
-                      </span>
-                      <span className="font-semibold text-brand-navy">
-                        {w.title}
-                      </span>
-                      <span className="mt-1 text-xs leading-snug text-muted-foreground">
-                        {w.description}
-                      </span>
-                      <span className="mt-3 text-xs font-semibold text-brand-green-dark">
-                        À partir de {w.prixIndicatif}&nbsp;€ TTC*
-                      </span>
-                    </motion.button>
-                  )
-                })}
-              </motion.div>
-
-              <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
-                <Button
-                  variant="outline"
-                  type="button"
-                  className="h-10 rounded-xl border-primary/15"
-                  onClick={() => {
-                    setChipDemoHint(false)
-                    setSelectedWaste(null)
-                    setStep("address")
-                  }}
-                >
-                  <ArrowLeft className="mr-2 size-4" />
-                  Adresse
-                </Button>
-                <Button
-                  type="button"
-                  className="h-10 flex-1 rounded-xl sm:max-w-[200px]"
-                  disabled={!selectedWaste}
-                  onClick={goSummary}
-                >
-                  Continuer
-                </Button>
-              </div>
-            </motion.div>
-          )}
-
-          {step === "summary" && waste && geocode && (
-            <motion.div
-              key="step-summary"
-              initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 28 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -24 }}
-              transition={t}
-              className="space-y-5"
+              className="space-y-4"
             >
               <div className="text-center">
-                <CardDescription className="text-base font-medium text-foreground">
-                  Récapitulatif — estimation immédiate
+                <CardDescription className="text-base font-medium text-brand-navy">
+                  Choisissez votre forfait
                 </CardDescription>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Tarification directe et transparente — valeur indicative avant
-                  validation terrain par nos équipes.
+                  Prix H.T. — détail des déchets acceptés par forfait.
                 </p>
               </div>
 
-              <motion.ul
-                className="divide-y divide-border rounded-2xl border border-primary/10 bg-white/95"
-                initial={{ opacity: 0.85 }}
-                animate={{ opacity: 1 }}
-              >
-                <li className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-                  <span className="text-muted-foreground">Chantier</span>
-                  <span className="font-medium text-brand-navy">
-                    {geocode.label}
-                  </span>
-                </li>
-                <li className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-                  <span className="text-muted-foreground">
-                    Distance / base Élancourt
-                  </span>
-                  <span className="font-medium text-brand-navy">
-                    {distanceKm !== null ? `${distanceKm} km` : "—"}
-                  </span>
-                </li>
-                <li className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-                  <span className="text-muted-foreground">Flux</span>
-                  <span className="font-medium text-brand-navy">{waste.title}</span>
-                </li>
-                <li className="flex flex-col gap-1 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-                  <span className="font-semibold text-brand-navy">
-                    Estimation à partir de
-                  </span>
-                  <motion.span
-                    className="text-2xl font-bold tabular-nums text-brand-green-dark"
-                    initial={{ scale: prefersReducedMotion ? 1 : 0.96 }}
-                    animate={{ scale: 1 }}
-                    transition={t}
-                  >
-                    {waste.prixIndicatif}&nbsp;€ TTC
-                  </motion.span>
-                </li>
-              </motion.ul>
-
-              <p className="text-center text-[0.7rem] leading-relaxed text-muted-foreground">
-                * Montant indicatif location / rotation standard. Nous prenons en
-                charge la planification, la conformité et le suivi enlèvement.
-              </p>
+              <div className="grid max-h-[min(60vh,420px)] gap-3 overflow-y-auto pr-1 sm:max-h-[min(70vh,520px)]">
+                {filteredPrestations.map((p, i) => (
+                  <PrestationCard
+                    key={p.id}
+                    prestation={p}
+                    selected={selectedPrestationId === p.id}
+                    onSelect={() => setSelectedPrestationId(p.id)}
+                    delay={prefersReducedMotion ? 0 : i * 0.04}
+                    t={t}
+                  />
+                ))}
+              </div>
 
               <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
                 <Button
                   variant="outline"
                   type="button"
-                  className="h-10 rounded-xl border-primary/15"
-                  onClick={() => setStep("waste")}
+                  className="h-10 rounded-xl"
+                  onClick={() => setStep("intent")}
                 >
                   <ArrowLeft className="mr-2 size-4" />
                   Retour
                 </Button>
                 <Button
                   type="button"
-                  className="h-11 flex-1 rounded-xl text-base font-semibold shadow-lg shadow-primary/20"
-                  onClick={() => setSubmitStubMessage(true)}
+                  className="h-10 flex-1 rounded-xl sm:max-w-[220px]"
+                  disabled={!selectedPrestationId}
+                  onClick={goToPayment}
                 >
-                  Valider et être rappelé
+                  Valider le forfait
+                  <ChevronRight className="ml-2 size-4" />
+                </Button>
+              </div>
+            </motion.div>
+          )}
+
+          {step === "payment" && prestation && geocode && (
+            <motion.div
+              key="payment"
+              initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
+              transition={t}
+              className="space-y-5"
+            >
+              <div className="text-center">
+                <CardDescription className="text-base font-medium text-brand-navy">
+                  Récapitulatif & paiement
+                </CardDescription>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Montants H.T. — la TVA applicable sera confirmée sur la facture.
+                </p>
+              </div>
+
+              <ul className="divide-y divide-border rounded-2xl border border-primary/10 bg-white/95">
+                <li className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:justify-between">
+                  <span className="text-muted-foreground">Lieu</span>
+                  <span className="font-medium text-brand-navy">
+                    {geocode.label}
+                  </span>
+                </li>
+                <li className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:justify-between">
+                  <span className="text-muted-foreground">Livraison souhaitée</span>
+                  <span className="font-medium text-brand-navy">
+                    {new Date(deliveryDate + "T12:00:00").toLocaleDateString(
+                      "fr-FR"
+                    )}
+                  </span>
+                </li>
+                {pickupDate && (
+                  <li className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:justify-between">
+                    <span className="text-muted-foreground">Enlèvement souhaité</span>
+                    <span className="font-medium text-brand-navy">
+                      {new Date(pickupDate + "T12:00:00").toLocaleDateString(
+                        "fr-FR"
+                      )}
+                    </span>
+                  </li>
+                )}
+                <li className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:justify-between">
+                  <span className="text-muted-foreground">Forfait</span>
+                  <span className="text-right font-medium text-brand-navy">
+                    {prestation.label}
+                  </span>
+                </li>
+                <li className="flex flex-col gap-1 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="font-semibold text-brand-navy">Total H.T.</span>
+                  <span className="text-2xl font-bold tabular-nums text-primary">
+                    {fmtHt(prestation.priceHt)}
+                  </span>
+                </li>
+              </ul>
+
+              <p className="text-center text-[0.7rem] text-muted-foreground">
+                Dépassement tonnage : {fmtHt(prestation.surchargePerTonHt)} H.T. / t
+                au-delà de {prestation.tonnageMax} t (facturation complémentaire).
+              </p>
+
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
+                <Button
+                  variant="outline"
+                  type="button"
+                  className="h-10 rounded-xl"
+                  onClick={() => setStep("forfait")}
+                >
+                  <ArrowLeft className="mr-2 size-4" />
+                  Retour
+                </Button>
+                <Button
+                  type="button"
+                  className="h-11 flex-1 rounded-xl text-base font-semibold shadow-lg"
+                  onClick={() => setPaymentStub(true)}
+                >
+                  Payer en ligne
                 </Button>
               </div>
 
-              {submitStubMessage && (
+              {paymentStub && (
                 <motion.p
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-xl border border-brand-green/30 bg-brand-green-soft/25 px-3 py-2 text-center text-xs font-medium text-brand-green-dark"
+                  className="rounded-xl border border-brand-navy/20 bg-muted/50 px-3 py-3 text-center text-xs text-muted-foreground"
                 >
-                  Démo : la finalisation sera branchée sur Supabase — votre
-                  demande est prête à être enregistrée.
+                  Paiement en ligne : branchement Stripe / prestataire à venir.
+                  Votre demande peut être finalisée par téléphone au{" "}
+                  <a href={SITE_PHONE_HREF} className="font-semibold text-primary">
+                    {SITE_PHONE_DISPLAY}
+                  </a>
+                  .
                 </motion.p>
               )}
             </motion.div>
@@ -584,10 +615,116 @@ export function OrderWidget() {
         </AnimatePresence>
       </CardContent>
 
-      <CardFooter className="relative border-t border-primary/5 bg-muted/30 py-3 text-center text-[0.65rem] text-muted-foreground">
-        Intervention prioritaire sur les Yvelines (78) — traçabilité documentaire
-        incluse.
+      <CardFooter className="relative flex flex-col gap-2 border-t border-primary/5 bg-muted/30 py-4 text-center text-[0.65rem] text-muted-foreground">
+        <span>
+          Une question ?{" "}
+          <a
+            href={SITE_PHONE_HREF}
+            className="font-semibold text-primary hover:underline"
+          >
+            {SITE_PHONE_DISPLAY}
+          </a>
+        </span>
+        <span className="opacity-90">
+          Intervention sur les Yvelines (78) — traçabilité et conformité.
+        </span>
       </CardFooter>
     </Card>
+  )
+}
+
+function PrestationCard({
+  prestation,
+  selected,
+  onSelect,
+  delay,
+  t,
+}: {
+  prestation: Prestation
+  selected: boolean
+  onSelect: () => void
+  delay: number
+  t: { duration: number; ease?: readonly [number, number, number, number] }
+}) {
+  return (
+    <motion.div
+      layout
+      role="button"
+      tabIndex={0}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ ...t, delay }}
+      onClick={() => onSelect()}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          onSelect()
+        }
+      }}
+      className={cn(
+        "flex w-full cursor-pointer flex-col rounded-2xl border p-4 text-left shadow-sm outline-none ring-offset-2 transition focus-visible:ring-2 focus-visible:ring-brand-navy",
+        selected
+          ? "border-brand-navy bg-gradient-to-br from-accent to-white ring-2 ring-brand-navy"
+          : "border-border/80 bg-card/90 hover:border-brand-navy/35"
+      )}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {systemLabel(prestation.system)} · {prestation.volumeM3} m³
+          </span>
+          <p className="mt-1 font-semibold leading-snug text-brand-navy">
+            {prestation.label}
+          </p>
+        </div>
+        <span className="shrink-0 text-lg font-bold tabular-nums text-primary">
+          {fmtHt(prestation.priceHt)}
+        </span>
+      </div>
+      <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">
+        Jusqu’à {prestation.tonnageMax} t inclus — dépassement{" "}
+        {fmtHt(prestation.surchargePerTonHt)}/t.
+      </p>
+      <div className="mt-3 flex items-center justify-between gap-2">
+        <Dialog>
+          <DialogTrigger
+            render={
+              <Button
+                type="button"
+                variant="ghost"
+                size="xs"
+                className="h-7 text-xs text-brand-navy"
+                onClick={(e: React.MouseEvent) => e.stopPropagation()}
+              />
+            }
+          >
+            <Info className="mr-1 size-3.5" />
+            Déchets acceptés / exclus
+          </DialogTrigger>
+          <DialogContent className="max-h-[min(80vh,480px)] overflow-y-auto sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-brand-navy">
+                {prestation.label}
+              </DialogTitle>
+              <div className="space-y-3 pt-2 text-left text-sm">
+                <div>
+                  <p className="font-medium text-primary">Acceptés</p>
+                  <p className="text-muted-foreground">
+                    {prestation.acceptedSummary}
+                  </p>
+                </div>
+                <div>
+                  <p className="font-medium text-rose-800">Exclus</p>
+                  <p className="text-muted-foreground">
+                    {prestation.excludedSummary}
+                  </p>
+                </div>
+              </div>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+        <Package className="size-4 text-primary/80" aria-hidden />
+      </div>
+    </motion.div>
   )
 }

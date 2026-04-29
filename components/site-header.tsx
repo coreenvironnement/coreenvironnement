@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
-import { Menu } from "lucide-react"
+import { Menu, Phone } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,6 +14,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 const nav = [
@@ -64,7 +65,7 @@ export function SiteHeader() {
           className="relative flex h-9 max-w-[min(52vw,200px)] shrink-0 items-center sm:h-10 sm:max-w-[220px]"
         >
           <Image
-            src="/logo-core-environnement.png"
+            src="/logocoreenvironnement.png"
             alt="Core Environnement"
             width={260}
             height={72}
@@ -79,12 +80,13 @@ export function SiteHeader() {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          <Link
-            href="/pro"
-            className="hidden rounded-full border border-brand-navy/25 bg-white/80 px-4 py-2 text-sm font-semibold text-brand-navy shadow-sm transition hover:border-brand-navy/50 hover:bg-brand-navy hover:text-white md:inline-flex"
+          <a
+            href={SITE_PHONE_HREF}
+            className="hidden items-center gap-2 rounded-full border border-transparent bg-[#38a234] px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-[#2d8a2a] md:inline-flex"
           >
-            Espace Pro
-          </Link>
+            <Phone className="size-4 shrink-0" aria-hidden />
+            {SITE_PHONE_DISPLAY}
+          </a>
 
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger
@@ -111,10 +113,18 @@ export function SiteHeader() {
               </SheetHeader>
               <div className="flex flex-col gap-4 p-4">
                 <NavLinks onItemClick={() => setMobileOpen(false)} />
+                <a
+                  href={SITE_PHONE_HREF}
+                  onClick={() => setMobileOpen(false)}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#38a234] py-3 text-sm font-semibold text-white shadow-md"
+                >
+                  <Phone className="size-4 shrink-0" aria-hidden />
+                  {SITE_PHONE_DISPLAY}
+                </a>
                 <Link
                   href="/pro"
                   onClick={() => setMobileOpen(false)}
-                  className="inline-flex items-center justify-center rounded-xl bg-primary py-3 text-sm font-semibold text-primary-foreground shadow-md"
+                  className="text-center text-sm font-medium text-brand-navy/80 underline-offset-4 hover:underline"
                 >
                   Espace Pro
                 </Link>
