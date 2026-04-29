@@ -24,7 +24,7 @@ function SegmentBadge({ segment }: { segment: ClientSegment }) {
 
 function cardArticleClass(extra?: string) {
   return cn(
-    "flex w-[min(100vw-3rem,380px)] shrink-0 snap-center flex-col rounded-2xl border border-white/70 bg-card/95 p-5 shadow-[0_14px_50px_-28px_rgba(27,65,143,0.35)] backdrop-blur-sm sm:w-[calc(50%-0.75rem)] sm:max-w-none lg:w-[calc(33.333%-0.75rem)]",
+    "flex w-[min(100vw-3rem,380px)] shrink-0 snap-center flex-col rounded-2xl border border-white/40 bg-card/90 p-5 shadow-[0_14px_50px_-28px_rgba(27,65,143,0.35)] backdrop-blur-sm sm:w-[calc(50%-0.75rem)] sm:max-w-none lg:w-[calc(33.333%-0.75rem)]",
     extra
   )
 }
@@ -81,7 +81,7 @@ export function TestimonialsSection() {
   return (
     <section
       id="temoignages"
-      className="border-t border-border/40 bg-muted/35 py-14 sm:py-20"
+      className="border-t border-border/40 bg-[color-mix(in_srgb,var(--secondary)_42%,transparent)] py-14 sm:py-20"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto mb-10 max-w-2xl text-center">

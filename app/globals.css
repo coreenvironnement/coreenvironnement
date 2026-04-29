@@ -68,7 +68,7 @@
   --brand-green-soft: color-mix(in srgb, #38a234 16%, white);
   --brand-lime: #38a234;
 
-  --background: #f5f7f6;
+  --background: #e9f1ec;
   --foreground: #14231a;
   --card: #ffffff;
   --card-foreground: #14231a;
@@ -76,7 +76,7 @@
   --popover-foreground: #14231a;
   --primary: #38a234;
   --primary-foreground: #ffffff;
-  --secondary: color-mix(in srgb, #38a234 9%, #f5f7f6);
+  --secondary: color-mix(in srgb, #38a234 10%, #e9f1ec);
   --secondary-foreground: #1b418f;
   --muted: #e8eeea;
   --muted-foreground: #3d5346;

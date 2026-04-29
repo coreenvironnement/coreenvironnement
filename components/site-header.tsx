@@ -57,7 +57,7 @@ export function SiteHeader() {
   return (
     <header className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4 sm:px-6 lg:top-6">
       <div
-        className="pointer-events-auto flex h-14 w-full max-w-5xl items-center justify-between gap-3 rounded-2xl border border-white/50 bg-background/70 px-3 shadow-[0_8px_32px_-8px_color-mix(in_srgb,var(--brand-navy)_35%,transparent)] backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-background/55 sm:h-16 sm:px-5"
+        className="pointer-events-auto flex h-14 w-full max-w-5xl items-center justify-between gap-3 rounded-2xl border border-brand-navy/[0.14] bg-[color-mix(in_srgb,var(--background)_88%,transparent)] px-3 shadow-[0_6px_28px_-10px_color-mix(in_srgb,var(--brand-navy)_45%,transparent)] backdrop-blur-md backdrop-saturate-100 supports-[backdrop-filter]:bg-[color-mix(in_srgb,var(--muted)_92%,transparent)] sm:h-16 sm:px-5"
         role="banner"
       >
         <Link
@@ -94,7 +94,7 @@ export function SiteHeader() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="shrink-0 rounded-xl border-brand-navy/25 bg-white/80 text-brand-navy shadow-sm md:hidden"
+                  className="shrink-0 rounded-xl border border-brand-navy/20 bg-[color-mix(in_srgb,var(--muted)_85%,transparent)] text-brand-navy shadow-sm md:hidden"
                   aria-label="Ouvrir le menu"
                 />
               }

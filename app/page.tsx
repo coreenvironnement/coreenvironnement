@@ -25,16 +25,7 @@ export default function HomePage() {
   return (
     <div className="relative min-h-[calc(100vh-5rem)]">
       {/* Section 1 : promesse courte + widget remonté */}
-      <section className="relative border-b border-border/30 bg-background">
-        <div
-          className="pointer-events-none absolute inset-0 opacity-90"
-          style={{
-            background:
-              "radial-gradient(ellipse 90% 70% at 50% -15%, color-mix(in srgb, #38a234 14%, transparent), transparent 50%), radial-gradient(ellipse 60% 50% at 100% 0%, color-mix(in srgb, #1b418f 8%, transparent), transparent 45%)",
-          }}
-          aria-hidden
-        />
-
+      <section className="relative border-b border-brand-navy/10 bg-transparent">
         <div className="relative mx-auto max-w-6xl px-4 pb-14 pt-4 sm:px-6 lg:pb-16 lg:pt-6 lg:px-8">
           <div className="mx-auto mb-8 max-w-2xl text-center lg:mb-10">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-navy">
@@ -65,7 +56,7 @@ export default function HomePage() {
       </section>
 
       {/* Section 2 : réassurance — cartes scroll horizontal mobile */}
-      <section className="border-b border-border/30 bg-white py-12 sm:py-16">
+      <section className="border-b border-brand-navy/10 bg-secondary/50 py-12 sm:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <h2 className="mb-8 text-center text-xl font-bold text-brand-navy sm:text-2xl">
             Pourquoi nous faire confiance

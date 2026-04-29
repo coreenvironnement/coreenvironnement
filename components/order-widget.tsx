@@ -82,6 +82,59 @@ function todayISODate() {
   return d.toISOString().slice(0, 10)
 }
 
+function StepCircle({
+  stepIndex,
+  currentStepIdx,
+}: {
+  stepIndex: number
+  currentStepIdx: number
+}) {
+  const done = currentStepIdx > stepIndex
+  const active = currentStepIdx === stepIndex
+  const prefersReducedMotion = useReducedMotion()
+  const fade = prefersReducedMotion
+    ? { duration: 0 }
+    : { duration: 0.18, ease: [0.22, 1, 0.36, 1] as const }
+
+  return (
+    <div
+      className={cn(
+        "relative flex h-9 min-h-9 w-9 min-w-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-xs font-semibold tabular-nums transition-colors sm:h-10 sm:min-h-10 sm:w-10 sm:min-w-10 sm:text-sm",
+        done && "border-2 border-primary bg-primary text-primary-foreground shadow-sm",
+        active && !done && "border-2 border-primary bg-primary text-primary-foreground shadow-md",
+        !active && !done &&
+          "border-2 border-primary/40 bg-primary/[0.1] text-primary"
+      )}
+    >
+      <AnimatePresence initial={false} mode="wait">
+        {done ? (
+          <motion.span
+            key="done"
+            initial={{ opacity: prefersReducedMotion ? 1 : 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={fade}
+            className="flex items-center justify-center"
+          >
+            <CheckCircle2 className="size-[1.125rem] sm:size-5" aria-hidden />
+          </motion.span>
+        ) : (
+          <motion.span
+            key="num"
+            initial={{ opacity: prefersReducedMotion ? 1 : 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={fade}
+            className="flex items-center justify-center"
+          >
+            {stepIndex + 1}
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
 export function OrderWidget() {
   const prefersReducedMotion = useReducedMotion()
   const t = prefersReducedMotion
@@ -227,50 +280,29 @@ export function OrderWidget() {
         </div>
 
         <div className="mb-2 flex items-center justify-center gap-1 sm:gap-2">
-          {steps.map((s, i) => {
-            const active = currentStepIdx === i
-            const done = currentStepIdx > i
-            return (
-              <div key={s.id} className="flex items-center">
-                <motion.div
+          {steps.map((s, i) => (
+            <div key={s.id} className="flex items-center">
+              <StepCircle stepIndex={i} currentStepIdx={currentStepIdx} />
+              {i < steps.length - 1 && (
+                <div
                   className={cn(
-                    "flex h-8 min-w-[2rem] items-center justify-center rounded-full px-2 text-xs font-semibold transition-colors sm:h-9 sm:min-w-[2.5rem] sm:px-2.5 sm:text-[0.75rem]",
-                    done && "bg-primary text-primary-foreground shadow-sm",
-                    active && !done && "bg-primary text-primary-foreground shadow-md",
-                    !active && !done && "bg-muted text-muted-foreground"
+                    "mx-1 h-0.5 w-3 rounded-full sm:w-6",
+                    currentStepIdx > i ? "bg-primary" : "bg-primary/40"
                   )}
-                  layout
-                  transition={t}
-                >
-                  {done ? (
-                    <CheckCircle2 className="size-4 sm:size-[1.125rem]" />
-                  ) : (
-                    i + 1
-                  )}
-                </motion.div>
-                {i < steps.length - 1 && (
-                  <div
-                    className={cn(
-                      "mx-1 h-0.5 w-3 rounded-full bg-border sm:w-6",
-                      currentStepIdx > i && "bg-primary"
-                    )}
-                  />
-                )}
-              </div>
-            )
-          })}
+                />
+              )}
+            </div>
+          ))}
         </div>
         <div className="mb-6 flex max-w-md justify-center gap-2 sm:gap-6">
           {steps.map((s, i) => {
             const active = currentStepIdx === i
-            const done = currentStepIdx > i
             return (
               <span
                 key={`${s.id}-label`}
                 className={cn(
-                  "max-w-[28%] flex-1 truncate text-center text-[0.65rem] font-semibold leading-tight uppercase tracking-wide sm:text-xs",
-                  (active || done) && "text-primary",
-                  !active && !done && "text-muted-foreground"
+                  "max-w-[28%] flex-1 truncate text-center text-[0.65rem] font-medium leading-tight text-primary uppercase tracking-wide opacity-95 sm:text-xs",
+                  active && "font-semibold opacity-100"
                 )}
               >
                 {s.label}
