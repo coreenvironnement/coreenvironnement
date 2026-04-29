@@ -8,11 +8,9 @@ import {
   CheckCircle2,
   ChevronRight,
   Info,
-  Loader2,
   MapPin,
   MapPinOff,
   Package,
-  Sparkles,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -30,6 +28,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   ELIANCOURT_CENTER,
   DEFAULT_INTERVENTION_RADIUS_KM,
@@ -59,12 +64,6 @@ const FAMILIES: BenneFamily[] = [
   "gravats_melanges",
   "gravats_propres",
 ]
-
-const demoSuggestions = [
-  { label: "Élancourt", value: "78280 Élancourt", hint: "Dans la zone" },
-  { label: "Trappes", value: "Trappes centre", hint: "Dans la zone" },
-  { label: "Paris", value: "Paris 75015", hint: "Hors zone démo" },
-] as const
 
 type Audience = "particulier" | "professionnel"
 type StepId = "intent" | "forfait" | "payment"
@@ -97,8 +96,6 @@ export function OrderWidget() {
   const [zoneOk, setZoneOk] = useState(false)
   const [outOfZone, setOutOfZone] = useState(false)
   const [addressError, setAddressError] = useState<string | null>(null)
-  const [checking, setChecking] = useState(false)
-  const [chipDemoHint, setChipDemoHint] = useState(false)
   const [family, setFamily] = useState<BenneFamily | null>(null)
   const [deliveryDate, setDeliveryDate] = useState("")
   const [pickupDate, setPickupDate] = useState("")
@@ -128,8 +125,10 @@ export function OrderWidget() {
     setDistanceKm(null)
   }
 
-  const runZoneCheck = (raw: string) => {
-    const hit = mockGeocodeAddress(raw)
+  const syncZoneCheck = (raw: string): boolean => {
+    const trimmed = raw.trim()
+    if (!trimmed.length) return false
+    const hit = mockGeocodeAddress(trimmed)
     const dist = haversineDistanceKm(hit, ELIANCOURT_CENTER)
     const ok = isWithinRadiusKm(hit)
     setGeocode(hit)
@@ -139,52 +138,43 @@ export function OrderWidget() {
     return ok
   }
 
-  const handleVerifyAddress = () => {
+  const handleAddressBlur = () => {
+    const raw = address.trim()
+    setAddressError(null)
+    if (!raw.length) {
+      resetZone()
+      return
+    }
+    syncZoneCheck(raw)
+  }
+
+  const canLeaveIntent = zoneOk && family !== null && !outOfZone
+
+  const goToForfait = () => {
     const raw = address.trim()
     setAddressError(null)
     if (!raw.length) {
       setAddressError("Indiquez l’adresse de livraison de la benne.")
-      resetZone()
       return
     }
-    setChecking(true)
-    setChipDemoHint(false)
-    window.setTimeout(() => {
-      runZoneCheck(raw)
-      setChecking(false)
-    }, prefersReducedMotion ? 0 : 480)
-  }
-
-  const applyDemoSuggestion = (value: string) => {
-    setAddress(value)
-    setAddressError(null)
-    setChipDemoHint(true)
-    setChecking(true)
-    window.setTimeout(() => {
-      runZoneCheck(value)
-      setChecking(false)
-    }, prefersReducedMotion ? 0 : 450)
-  }
-
-  const canLeaveIntent =
-    zoneOk &&
-    family !== null &&
-    deliveryDate.length > 0 &&
-    !outOfZone
-
-  const goToForfait = () => {
-    if (!canLeaveIntent) {
-      if (!zoneOk) setAddressError("Vérifiez d’abord que l’adresse est dans la zone.")
-      else if (!family) setAddressError("Choisissez un type de déchet.")
-      else if (!deliveryDate) setAddressError("Indiquez une date de livraison souhaitée.")
+    if (!family) {
+      setAddressError("Choisissez un type de déchet dans la liste.")
       return
     }
-    setAddressError(null)
+    const ok = syncZoneCheck(raw)
+    if (!ok) {
+      return
+    }
     setStep("forfait")
   }
 
   const goToPayment = () => {
     if (!selectedPrestationId) return
+    if (!deliveryDate.length) {
+      setAddressError("Indiquez une date de livraison souhaitée.")
+      return
+    }
+    setAddressError(null)
     setStep("payment")
   }
 
@@ -196,7 +186,7 @@ export function OrderWidget() {
 
       <CardContent className="relative space-y-6 pt-8">
         <div className="space-y-2">
-          <p className="text-center text-xs font-medium uppercase tracking-wide text-brand-navy">
+          <p className="text-center text-xs font-medium uppercase tracking-wide text-primary">
             Vous êtes&nbsp;?
           </p>
           <div
@@ -210,8 +200,8 @@ export function OrderWidget() {
               className={cn(
                 "flex-1 rounded-xl py-2.5 text-xs font-semibold transition sm:text-sm",
                 audience === "particulier"
-                  ? "bg-card text-brand-navy shadow-sm ring-1 ring-primary/25"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-primary/12 text-primary shadow-sm ring-2 ring-primary/35"
+                  : "text-muted-foreground hover:bg-white/50 hover:text-foreground"
               )}
             >
               Particulier
@@ -222,21 +212,21 @@ export function OrderWidget() {
               className={cn(
                 "flex-1 rounded-xl py-2.5 text-xs font-semibold transition sm:text-sm",
                 audience === "professionnel"
-                  ? "bg-card text-brand-navy shadow-sm ring-1 ring-primary/25"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-primary/12 text-primary shadow-sm ring-2 ring-primary/35"
+                  : "text-muted-foreground hover:bg-white/50 hover:text-foreground"
               )}
             >
               Professionnel
             </button>
           </div>
-          <p className="text-center text-[0.72rem] leading-relaxed text-muted-foreground sm:text-xs">
+          <p className="text-primary/90 text-center text-[0.72rem] leading-relaxed sm:text-xs">
             {audience === "professionnel"
-              ? "Chantiers et pros du BTP — livraisons et rotations adaptées."
-              : "Maison, jardin ou petit chantier — même parcours simple."}
+              ? "Chantiers et pros du BTP, livraisons et rotations adaptées."
+              : "Maison, jardin ou petit chantier, même parcours simple."}
           </p>
         </div>
 
-        <div className="mb-6 flex items-center justify-center gap-1 sm:gap-2">
+        <div className="mb-2 flex items-center justify-center gap-1 sm:gap-2">
           {steps.map((s, i) => {
             const active = currentStepIdx === i
             const done = currentStepIdx > i
@@ -246,7 +236,7 @@ export function OrderWidget() {
                   className={cn(
                     "flex h-8 min-w-[2rem] items-center justify-center rounded-full px-2 text-xs font-semibold transition-colors sm:h-9 sm:min-w-[2.5rem] sm:px-2.5 sm:text-[0.75rem]",
                     done && "bg-primary text-primary-foreground shadow-sm",
-                    active && !done && "bg-brand-navy text-white shadow-md",
+                    active && !done && "bg-primary text-primary-foreground shadow-md",
                     !active && !done && "bg-muted text-muted-foreground"
                   )}
                   layout
@@ -270,6 +260,24 @@ export function OrderWidget() {
             )
           })}
         </div>
+        <div className="mb-6 flex max-w-md justify-center gap-2 sm:gap-6">
+          {steps.map((s, i) => {
+            const active = currentStepIdx === i
+            const done = currentStepIdx > i
+            return (
+              <span
+                key={`${s.id}-label`}
+                className={cn(
+                  "max-w-[28%] flex-1 truncate text-center text-[0.65rem] font-semibold leading-tight uppercase tracking-wide sm:text-xs",
+                  (active || done) && "text-primary",
+                  !active && !done && "text-muted-foreground"
+                )}
+              >
+                {s.label}
+              </span>
+            )
+          })}
+        </div>
 
         <AnimatePresence mode="wait">
           {step === "intent" && (
@@ -281,71 +289,56 @@ export function OrderWidget() {
               transition={t}
               className="space-y-5"
             >
-              <div className="text-center">
-                <CardDescription className="text-base font-medium text-brand-navy">
-                  Adresse & type de flux
-                </CardDescription>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Livraison dans un rayon de {DEFAULT_INTERVENTION_RADIUS_KM}&nbsp;km
-                  autour d’Élancourt — forfaits visibles à l’étape suivante.
+              <div className="space-y-1 text-center">
+                <p className="text-lg font-semibold text-primary sm:text-xl">
+                  Où livrer la benne&nbsp;?
+                </p>
+                <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                  Saisissez votre adresse complète, puis quittez le champ ou appuyez sur
+                  Entrée. La zone se contrôle automatiquement. Livraison possible dans un
+                  rayon de {DEFAULT_INTERVENTION_RADIUS_KM}&nbsp;km autour d’Élancourt.
+                  Les forfaits s’affichent à l’étape suivante.
                 </p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
+                <label
+                  htmlFor="order-address"
+                  className="block text-left text-sm font-semibold text-primary"
+                >
+                  Adresse de livraison
+                </label>
                 <div className="relative">
-                  <MapPin className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-brand-navy" />
+                  <MapPin
+                    className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-primary"
+                    aria-hidden
+                  />
                   <Input
+                    id="order-address"
                     value={address}
                     onChange={(e) => {
                       setAddress(e.target.value)
                       setOutOfZone(false)
                       setZoneOk(false)
                       setAddressError(null)
-                      setChipDemoHint(false)
                     }}
-                    onKeyDown={(e) =>
-                      e.key === "Enter" &&
-                      (e.preventDefault(), handleVerifyAddress())
-                    }
-                    placeholder="Adresse complète ou ville (ex. 78280 Élancourt)"
-                    className="h-11 border-primary/15 bg-white/90 pl-10 pr-4 text-base shadow-inner focus-visible:ring-brand-navy/40"
+                    onBlur={handleAddressBlur}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault()
+                        ;(e.target as HTMLInputElement).blur()
+                      }
+                    }}
+                    placeholder="Numéro, rue, code postal et ville"
+                    className="h-14 border-2 border-primary/20 bg-white pl-12 pr-4 text-base shadow-sm focus-visible:border-primary/50 focus-visible:ring-brand-navy/30"
                     autoComplete="street-address"
                   />
                 </div>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {demoSuggestions.map((d) => (
-                    <button
-                      key={d.value}
-                      type="button"
-                      onClick={() => applyDemoSuggestion(d.value)}
-                      className="rounded-full border border-primary/10 bg-accent/70 px-3 py-1.5 text-xs font-medium text-primary transition hover:border-brand-navy/35"
-                    >
-                      <span>{d.label}</span>
-                      <span className="ml-1.5 text-muted-foreground">
-                        · {d.hint}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-10 w-full rounded-xl border-brand-navy/20"
-                  onClick={handleVerifyAddress}
-                  disabled={checking}
-                >
-                  {checking ? (
-                    <Loader2 className="mr-2 size-4 animate-spin" />
-                  ) : (
-                    <Sparkles className="mr-2 size-4" />
-                  )}
-                  Vérifier l’adresse
-                </Button>
               </div>
 
               {zoneOk && geocode && (
                 <p className="rounded-xl border border-primary/25 bg-primary/8 px-3 py-2 text-center text-xs text-brand-green-dark">
-                  Adresse dans la zone — {geocode.label} ({distanceKm} km)
+                  Adresse reconnue dans la zone ({geocode.label}, {distanceKm} km).
                 </p>
               )}
 
@@ -371,76 +364,55 @@ export function OrderWidget() {
                           </a>{" "}
                           pour étudier un cas particulier.
                         </p>
-                        {chipDemoHint && (
-                          <p className="mt-2 text-xs text-rose-800/80">
-                            Suggestion démo — modifiez l’adresse pour tester.
-                          </p>
-                        )}
                       </div>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <div className="space-y-3">
-                <p className="text-center text-xs font-semibold uppercase tracking-wide text-brand-navy">
+              <div className="space-y-2">
+                <label
+                  htmlFor="order-waste-family"
+                  className="block text-left text-sm font-semibold text-primary"
+                >
                   Type de déchet
-                </p>
-                <div className="grid gap-2 sm:grid-cols-1">
-                  {FAMILIES.map((fid) => {
-                    const meta = FAMILY_LABELS[fid]
-                    const selected = family === fid
-                    return (
-                      <button
-                        key={fid}
-                        type="button"
-                        onClick={() => setFamily(fid)}
-                        className={cn(
-                          "rounded-2xl border p-3 text-left transition",
-                          selected
-                            ? "border-primary bg-primary/10 ring-2 ring-primary/30"
-                            : "border-border/80 hover:border-brand-navy/25"
-                        )}
-                      >
-                        <span className="font-semibold text-brand-navy">
-                          {meta.title}
-                        </span>
-                        <span className="mt-1 block text-xs text-muted-foreground">
-                          {meta.description}
-                        </span>
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-brand-navy">
-                    <Calendar className="size-3.5" />
-                    Date de livraison souhaitée *
-                  </label>
-                  <Input
-                    type="date"
-                    min={todayISODate()}
-                    value={deliveryDate}
-                    onChange={(e) => setDeliveryDate(e.target.value)}
-                    className="h-10 border-primary/15"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                    <Calendar className="size-3.5" />
-                    Enlèvement souhaité (optionnel)
-                  </label>
-                  <Input
-                    type="date"
-                    min={deliveryDate || todayISODate()}
-                    value={pickupDate}
-                    onChange={(e) => setPickupDate(e.target.value)}
-                    className="h-10 border-primary/15"
-                  />
-                </div>
+                </label>
+                <Select
+                  value={family ?? undefined}
+                  onValueChange={(v) => {
+                    setFamily(v as BenneFamily)
+                    setAddressError(null)
+                  }}
+                >
+                  <SelectTrigger
+                    id="order-waste-family"
+                    className="h-auto min-h-12 w-full max-w-none justify-between rounded-xl border-2 border-primary/20 bg-white px-4 py-3 text-left text-[0.9375rem] shadow-sm focus-visible:border-primary/40 data-[size=default]:h-auto dark:bg-white/95 [&_[data-slot=select-value]]:min-h-[2.75rem] [&_[data-slot=select-value]]:items-center"
+                    size="default"
+                  >
+                    <SelectValue placeholder="Choisissez le type de déchet dans la liste" />
+                  </SelectTrigger>
+                  <SelectContent
+                    side="bottom"
+                    align="start"
+                    className="rounded-xl border-primary/15"
+                  >
+                    {FAMILIES.map((fid) => {
+                      const meta = FAMILY_LABELS[fid]
+                      return (
+                        <SelectItem key={fid} value={fid} className="cursor-pointer py-3">
+                          <span className="flex flex-col gap-0.5 text-left">
+                            <span className="font-medium text-foreground">
+                              {meta.title}
+                            </span>
+                            <span className="text-xs font-normal text-muted-foreground">
+                              {meta.description}
+                            </span>
+                          </span>
+                        </SelectItem>
+                      )
+                    })}
+                  </SelectContent>
+                </Select>
               </div>
 
               {addressError && (
@@ -471,13 +443,54 @@ export function OrderWidget() {
               className="space-y-4"
             >
               <div className="text-center">
-                <CardDescription className="text-base font-medium text-brand-navy">
+                <CardDescription className="text-base font-semibold text-primary">
                   Choisissez votre forfait
                 </CardDescription>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Prix H.T. — détail des déchets acceptés par forfait.
+                  Prix H.T. Détail des déchets acceptés par forfait.
                 </p>
               </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-semibold text-primary">
+                    <Calendar className="size-3.5" aria-hidden />
+                    Livraison souhaitée&nbsp;*
+                  </label>
+                  <Input
+                    type="date"
+                    min={todayISODate()}
+                    value={deliveryDate}
+                    onChange={(e) => {
+                      setDeliveryDate(e.target.value)
+                      setAddressError(null)
+                    }}
+                    className="h-11 border-2 border-primary/15 bg-white"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                    <Calendar className="size-3.5" aria-hidden />
+                    Enlèvement souhaité (optionnel)
+                  </label>
+                  <Input
+                    type="date"
+                    min={deliveryDate || todayISODate()}
+                    value={pickupDate}
+                    onChange={(e) => {
+                      setPickupDate(e.target.value)
+                      setAddressError(null)
+                    }}
+                    className="h-11 border border-border/80 bg-white"
+                  />
+                </div>
+              </div>
+
+              {addressError && (
+                <p className="text-center text-xs font-medium text-amber-800">
+                  {addressError}
+                </p>
+              )}
 
               <div className="grid max-h-[min(60vh,420px)] gap-3 overflow-y-auto pr-1 sm:max-h-[min(70vh,520px)]">
                 {filteredPrestations.map((p, i) => (
@@ -497,7 +510,10 @@ export function OrderWidget() {
                   variant="outline"
                   type="button"
                   className="h-10 rounded-xl sm:flex-1"
-                  onClick={() => setStep("intent")}
+                  onClick={() => {
+                    setAddressError(null)
+                    setStep("intent")
+                  }}
                 >
                   <ArrowLeft className="mr-2 size-4" />
                   Retour
@@ -506,7 +522,7 @@ export function OrderWidget() {
                   variant="outline"
                   type="button"
                   className="h-10 rounded-xl sm:flex-1"
-                  disabled={!selectedPrestationId}
+                  disabled={!selectedPrestationId || !deliveryDate}
                   onClick={goToPayment}
                 >
                   Valider le forfait
@@ -527,10 +543,10 @@ export function OrderWidget() {
             >
               <div className="text-center">
                 <CardDescription className="text-base font-medium text-brand-navy">
-                  Récapitulatif & paiement
+                  Récapitulatif et paiement
                 </CardDescription>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Montants H.T. — la TVA applicable sera confirmée sur la facture.
+                  Montants H.T. La TVA applicable sera confirmée sur la facture.
                 </p>
               </div>
 
@@ -583,7 +599,10 @@ export function OrderWidget() {
                   variant="outline"
                   type="button"
                   className="h-10 rounded-xl"
-                  onClick={() => setStep("forfait")}
+                  onClick={() => {
+                    setAddressError(null)
+                    setStep("forfait")
+                  }}
                 >
                   <ArrowLeft className="mr-2 size-4" />
                   Retour
@@ -627,7 +646,7 @@ export function OrderWidget() {
           </a>
         </span>
         <span className="opacity-90">
-          Intervention sur les Yvelines (78) — traçabilité et conformité.
+          Intervention sur les Yvelines (78), traçabilité et conformité.
         </span>
       </CardFooter>
     </Card>
@@ -683,7 +702,7 @@ function PrestationCard({
         </span>
       </div>
       <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">
-        Jusqu’à {prestation.tonnageMax} t inclus — dépassement{" "}
+        Jusqu’à {prestation.tonnageMax} t inclus, dépassement{" "}
         {fmtHt(prestation.surchargePerTonHt)}/t.
       </p>
       <div className="mt-3 flex items-center justify-between gap-2">

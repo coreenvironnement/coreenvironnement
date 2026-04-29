@@ -29,7 +29,7 @@ export const FAMILY_LABELS: Record<
   melange_dnd: {
     title: "Mélange déchets non dangereux",
     description:
-      "Gravats, plâtre, bois A/B, carton, papier, ferraille, plastique — jamais de DND.",
+      "Gravats, plâtre, bois A/B, carton, papier, ferraille, plastique. Jamais de DND.",
   },
   gravats_melanges: {
     title: "Gravats mélangés",
@@ -38,7 +38,7 @@ export const FAMILY_LABELS: Record<
   gravats_propres: {
     title: "Gravats propres",
     description:
-      "Gravats, tuiles, terre non polluée, briques, béton, parpaings — hors plâtre.",
+      "Gravats, tuiles, terre non polluée, briques, béton, parpaings. Hors plâtre.",
   },
 }
 
@@ -47,7 +47,7 @@ export const PRESTATIONS: Prestation[] = [
   {
     id: "dnd-ch-8",
     family: "melange_dnd",
-    label: "Benne à chaîne 8 m³ — mélange DND",
+    label: "Benne à chaîne 8 m³, mélange DND",
     volumeM3: 8,
     system: "chaine",
     priceHt: 440,
@@ -60,7 +60,7 @@ export const PRESTATIONS: Prestation[] = [
   {
     id: "dnd-ch-10",
     family: "melange_dnd",
-    label: "Benne à chaîne 10 m³ — mélange DND",
+    label: "Benne à chaîne 10 m³, mélange DND",
     volumeM3: 10,
     system: "chaine",
     priceHt: 530,
@@ -73,7 +73,7 @@ export const PRESTATIONS: Prestation[] = [
   {
     id: "dnd-ch-15",
     family: "melange_dnd",
-    label: "Benne à chaîne 15 m³ — mélange DND",
+    label: "Benne à chaîne 15 m³, mélange DND",
     volumeM3: 15,
     system: "chaine",
     priceHt: 580,
@@ -86,7 +86,7 @@ export const PRESTATIONS: Prestation[] = [
   {
     id: "dnd-am-20",
     family: "melange_dnd",
-    label: "Benne ampliroll 20 m³ — mélange DND",
+    label: "Benne ampliroll 20 m³, mélange DND",
     volumeM3: 20,
     system: "ampliroll",
     priceHt: 730,
@@ -99,7 +99,7 @@ export const PRESTATIONS: Prestation[] = [
   {
     id: "dnd-am-30",
     family: "melange_dnd",
-    label: "Benne ampliroll 30 m³ — mélange DND",
+    label: "Benne ampliroll 30 m³, mélange DND",
     volumeM3: 30,
     system: "ampliroll",
     priceHt: 1050,
@@ -112,7 +112,7 @@ export const PRESTATIONS: Prestation[] = [
   {
     id: "gm-ch-8",
     family: "gravats_melanges",
-    label: "Benne à chaîne 8 m³ — gravats mélangés",
+    label: "Benne à chaîne 8 m³, gravats mélangés",
     volumeM3: 8,
     system: "chaine",
     priceHt: 440,
@@ -125,7 +125,7 @@ export const PRESTATIONS: Prestation[] = [
   {
     id: "gm-ch-10",
     family: "gravats_melanges",
-    label: "Benne à chaîne 10 m³ — gravats mélangés",
+    label: "Benne à chaîne 10 m³, gravats mélangés",
     volumeM3: 10,
     system: "chaine",
     priceHt: 530,
@@ -138,7 +138,7 @@ export const PRESTATIONS: Prestation[] = [
   {
     id: "gm-ch-15",
     family: "gravats_melanges",
-    label: "Benne à chaîne 15 m³ — gravats mélangés",
+    label: "Benne à chaîne 15 m³, gravats mélangés",
     volumeM3: 15,
     system: "chaine",
     priceHt: 580,
@@ -151,7 +151,7 @@ export const PRESTATIONS: Prestation[] = [
   {
     id: "gp-ch-8",
     family: "gravats_propres",
-    label: "Benne à chaîne 8 m³ — gravats propres",
+    label: "Benne à chaîne 8 m³, gravats propres",
     volumeM3: 8,
     system: "chaine",
     priceHt: 330,
@@ -164,7 +164,7 @@ export const PRESTATIONS: Prestation[] = [
   {
     id: "gp-ch-10",
     family: "gravats_propres",
-    label: "Benne à chaîne 10 m³ — gravats propres",
+    label: "Benne à chaîne 10 m³, gravats propres",
     volumeM3: 10,
     system: "chaine",
     priceHt: 360,

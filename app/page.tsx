@@ -7,12 +7,12 @@ const reassurance = [
   {
     icon: Truck,
     title: "Réactivité 78",
-    text: "Intervention rapide — créneaux serrés, priorité chantier.",
+    text: "Intervention rapide, créneaux serrés, priorité chantier.",
   },
   {
     icon: ShieldCheck,
     title: "Tarifs clairs",
-    text: "Devis lisible après validation terrain — pas de mauvaise surprise.",
+    text: "Devis lisible après validation terrain, sans mauvaise surprise.",
   },
   {
     icon: CheckCircle2,
@@ -38,8 +38,10 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-6xl px-4 pb-14 pt-4 sm:px-6 lg:pb-16 lg:pt-6 lg:px-8">
           <div className="mx-auto mb-8 max-w-2xl text-center lg:mb-10">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-navy">
-              Commandez une benne en 2 min — nous intervenons en moins de 24 h — Yvelines
-              (78)
+              <span className="block sm:inline">
+                Commandez une benne en 2 min. Intervention en moins de 24 h.
+              </span>{" "}
+              <span className="block sm:inline">Yvelines (78).</span>
             </p>
             <h1 className="mt-3 text-balance text-3xl font-bold tracking-tight text-primary sm:text-4xl lg:text-[2.65rem] lg:leading-[1.12]">
               Benne livrée ou rotation terrain en moins de 24 h.
@@ -48,7 +50,7 @@ export default function HomePage() {
               <strong className="font-semibold text-foreground">
                 Core Environnement
               </strong>
-              , c’est une équipe locale qui planifie, livre et enlève — sans surprise, avec
+              , c’est une équipe locale qui planifie, livre et enlève, sans surprise, avec
               des forfaits clairs sur le&nbsp;78.
             </p>
           </div>
@@ -85,7 +87,7 @@ export default function HomePage() {
             ))}
           </div>
           <p className="mx-auto mt-10 max-w-2xl text-center text-sm text-muted-foreground">
-            Vous commandez directement auprès de Core Environnement — une équipe qui
+            Vous commandez directement auprès de Core Environnement, une équipe qui
             centralise planification, enlèvement et suivi de bout en bout.
           </p>
         </div>

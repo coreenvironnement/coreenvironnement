@@ -6,6 +6,8 @@ export type Testimonial = {
   author: string
   role: string
   segment: ClientSegment
+  /** Logo sous `/public/` pour les références entreprise (optionnel). */
+  logoSrc?: string
 }
 
 export const testimonials: Testimonial[] = [
@@ -16,6 +18,7 @@ export const testimonials: Testimonial[] = [
     author: "Michael R.",
     role: "Chef de chantier gros œuvre, Léon Grosse",
     segment: "pro",
+    logoSrc: "/groupe_leon_grosse_logo.jpg",
   },
   {
     id: "aadil-m",
@@ -32,6 +35,7 @@ export const testimonials: Testimonial[] = [
     author: "Mohamed E.",
     role: "Conducteur de travaux, NGE",
     segment: "pro",
+    logoSrc: "/logo-nge.svg",
   },
   {
     id: "lea-m",
@@ -40,6 +44,7 @@ export const testimonials: Testimonial[] = [
     author: "Léa M.",
     role: "Conductrice de travaux, GCC",
     segment: "pro",
+    logoSrc: "/gcc_groupe.png",
   },
   {
     id: "lamine-t",
@@ -58,3 +63,14 @@ export const testimonials: Testimonial[] = [
     segment: "particulier",
   },
 ]
+
+/** Léon Grosse, NGE, GCC avec logos sous /public/ */
+export const testimonialsEntreprisesAvecLogo: Testimonial[] = [
+  testimonials.find((t) => t.id === "michael-r")!,
+  testimonials.find((t) => t.id === "mohamed-e")!,
+  testimonials.find((t) => t.id === "lea-m")!,
+]
+
+export const testimonialsParticuliers: Testimonial[] = testimonials.filter(
+  (t) => t.segment === "particulier"
+)
