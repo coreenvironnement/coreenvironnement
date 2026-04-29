@@ -2,15 +2,19 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import type { LucideIcon } from "lucide-react"
 import {
   ArrowLeft,
+  BrickWall,
   Calendar,
   CheckCircle2,
   ChevronRight,
+  Hammer,
   Info,
   MapPin,
   MapPinOff,
   Package,
+  Recycle,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -37,7 +41,6 @@ import {
 } from "@/components/ui/select"
 import {
   ELIANCOURT_CENTER,
-  DEFAULT_INTERVENTION_RADIUS_KM,
   haversineDistanceKm,
   isWithinRadiusKm,
 } from "@/lib/geo/haversine"
@@ -64,6 +67,12 @@ const FAMILIES: BenneFamily[] = [
   "gravats_melanges",
   "gravats_propres",
 ]
+
+const FAMILY_ICONS: Record<BenneFamily, LucideIcon> = {
+  melange_dnd: Recycle,
+  gravats_melanges: Hammer,
+  gravats_propres: BrickWall,
+}
 
 type Audience = "particulier" | "professionnel"
 type StepId = "intent" | "forfait" | "payment"
@@ -274,7 +283,7 @@ export function OrderWidget() {
           </div>
           <p className="text-primary/90 text-center text-[0.72rem] leading-relaxed sm:text-xs">
             {audience === "professionnel"
-              ? "Chantiers et pros du BTP, livraisons et rotations adaptées."
+              ? "Chantiers et pros du BTP, livraisons et enlèvements adaptés au planning."
               : "Maison, jardin ou petit chantier, même parcours simple."}
           </p>
         </div>
@@ -321,15 +330,9 @@ export function OrderWidget() {
               transition={t}
               className="space-y-5"
             >
-              <div className="space-y-1 text-center">
+              <div className="text-center">
                 <p className="text-lg font-semibold text-primary sm:text-xl">
                   Où livrer la benne&nbsp;?
-                </p>
-                <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm">
-                  Saisissez votre adresse complète, puis quittez le champ ou appuyez sur
-                  Entrée. La zone se contrôle automatiquement. Livraison possible dans un
-                  rayon de {DEFAULT_INTERVENTION_RADIUS_KM}&nbsp;km autour d’Élancourt.
-                  Les forfaits s’affichent à l’étape suivante.
                 </p>
               </div>
 
@@ -418,7 +421,7 @@ export function OrderWidget() {
                 >
                   <SelectTrigger
                     id="order-waste-family"
-                    className="h-auto min-h-12 w-full max-w-none justify-between rounded-xl border-2 border-primary/20 bg-white px-4 py-3 text-left text-[0.9375rem] shadow-sm focus-visible:border-primary/40 data-[size=default]:h-auto dark:bg-white/95 [&_[data-slot=select-value]]:min-h-[2.75rem] [&_[data-slot=select-value]]:items-center"
+                    className="h-auto min-h-12 w-full max-w-none justify-between rounded-xl border-2 border-primary/20 bg-white px-4 py-3 text-left text-[0.9375rem] shadow-sm focus-visible:border-primary/40 data-[size=default]:h-auto dark:bg-white/95 [&_[data-slot=select-value]]:min-h-[2.75rem] [&_[data-slot=select-value]]:items-start [&_[data-slot=select-value]]:gap-3"
                     size="default"
                   >
                     <SelectValue placeholder="Choisissez le type de déchet dans la liste" />
@@ -430,14 +433,23 @@ export function OrderWidget() {
                   >
                     {FAMILIES.map((fid) => {
                       const meta = FAMILY_LABELS[fid]
+                      const Icon = FAMILY_ICONS[fid]
                       return (
                         <SelectItem key={fid} value={fid} className="cursor-pointer py-3">
-                          <span className="flex flex-col gap-0.5 text-left">
-                            <span className="font-medium text-foreground">
-                              {meta.title}
+                          <span className="flex w-full items-start gap-3 text-left">
+                            <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                              <Icon
+                                className="size-[1.15rem] text-primary"
+                                aria-hidden
+                              />
                             </span>
-                            <span className="text-xs font-normal text-muted-foreground">
-                              {meta.description}
+                            <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                              <span className="font-medium leading-snug text-foreground">
+                                {meta.title}
+                              </span>
+                              <span className="text-xs font-normal leading-snug text-muted-foreground">
+                                {meta.description}
+                              </span>
                             </span>
                           </span>
                         </SelectItem>

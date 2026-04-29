@@ -1,4 +1,4 @@
-import { CheckCircle2, ShieldCheck, Truck } from "lucide-react"
+import { Activity, ShieldCheck, Truck } from "lucide-react"
 
 import { OrderWidget } from "@/components/order-widget"
 import { TestimonialsSection } from "@/components/testimonials-section"
@@ -6,18 +6,18 @@ import { TestimonialsSection } from "@/components/testimonials-section"
 const reassurance = [
   {
     icon: Truck,
-    title: "Réactivité 78",
-    text: "Intervention rapide, créneaux serrés, priorité chantier.",
+    title: "Intervention sous 24 h",
+    text: "Une fois votre commande passée, nous intervenons sous 24 h sur votre chantier dans la zone desservie : réactivité concrète, pas une promesse floue.",
   },
   {
     icon: ShieldCheck,
     title: "Tarifs clairs",
-    text: "Devis lisible après validation terrain, sans mauvaise surprise.",
+    text: "Tous nos forfaits sont affichés : vous voyez les prix avant de payer. Sinon, vous pouvez aussi recevoir un devis précis en moins de cinq minutes.",
   },
   {
-    icon: CheckCircle2,
-    title: "Traçabilité",
-    text: "Conformité et documents fournis avec chaque rotation.",
+    icon: Activity,
+    title: "Suivi de commande",
+    text: "Suivi de commande accessible pour suivre l’état de votre demande en direct, jusqu’à la levée ou l’échange sur place.",
   },
 ] as const
 
@@ -32,10 +32,12 @@ export default function HomePage() {
               <span className="block sm:inline">
                 Commandez une benne en 2 min. Intervention en moins de 24 h.
               </span>{" "}
-              <span className="block sm:inline">Yvelines (78).</span>
+              <span className="block sm:inline">
+                20&nbsp;km autour d’Élancourt · Yvelines (78).
+              </span>
             </p>
             <h1 className="mt-3 text-balance text-3xl font-bold tracking-tight text-primary sm:text-4xl lg:text-[2.65rem] lg:leading-[1.12]">
-              Benne livrée ou rotation terrain en moins de 24 h.
+              Benne livrée ou enlèvement en moins de 24 h sur votre chantier.
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base">
               <strong className="font-semibold text-foreground">
@@ -59,7 +61,7 @@ export default function HomePage() {
       <section className="border-b border-brand-navy/10 bg-secondary/50 py-12 sm:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <h2 className="mb-8 text-center text-xl font-bold text-brand-navy sm:text-2xl">
-            Pourquoi nous faire confiance
+            Réactivité, prix affichés et suivi de commande
           </h2>
           <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-sm px-4 pb-2 sm:-mx-0 sm:grid sm:grid-cols-3 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0">
             {reassurance.map((item) => (
@@ -78,8 +80,8 @@ export default function HomePage() {
             ))}
           </div>
           <p className="mx-auto mt-10 max-w-2xl text-center text-sm text-muted-foreground">
-            Vous commandez directement auprès de Core Environnement, une équipe qui
-            centralise planification, enlèvement et suivi de bout en bout.
+            Vous passez votre commande auprès de Core Environnement : planification du
+            passage, enlèvements et suivi de bout en bout.
           </p>
         </div>
       </section>
