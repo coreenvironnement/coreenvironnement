@@ -21,6 +21,7 @@ const nav = [
   { href: "/", label: "Accueil" },
   { href: "/#commande", label: "Commander" },
   { href: "/#temoignages", label: "Avis clients" },
+  { href: "/dashboard", label: "Espace client" },
 ] as const
 
 function NavLinks({
