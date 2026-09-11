@@ -39,6 +39,13 @@ BEGIN
       true
     )
     RETURNING id INTO v_chantier_id;
+  ELSE
+    UPDATE public.chantiers
+    SET
+      prestataire_id = COALESCE(prestataire_id, v_paprec_id),
+      updated_at = now()
+    WHERE id = v_chantier_id
+      AND prestataire_id IS NULL;
   END IF;
 
   SELECT id INTO v_dib_id FROM public.dechets_types WHERE code = 'dib' LIMIT 1;

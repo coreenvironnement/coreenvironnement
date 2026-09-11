@@ -602,13 +602,13 @@ export default async function AdminChantierDetailPage({
                       <tr key={row.id} className="border-b border-border/40 align-top">
                         <td className="py-3 pr-3 font-mono text-xs">{row.numero}</td>
                         <td className="py-3 pr-3">
-                          {(row.types_intervention as { label: string } | null)?.label}
+                          {(row.types_intervention as unknown as { label: string } | null)?.label}
                         </td>
                         <td className="py-3 pr-3">
-                          {(row.types_contenants as { label: string } | null)?.label}
+                          {(row.types_contenants as unknown as { label: string } | null)?.label}
                         </td>
                         <td className="py-3 pr-3">
-                          {(row.dechets_types as { nom: string } | null)?.nom}
+                          {(row.dechets_types as unknown as { nom: string } | null)?.nom}
                         </td>
                         <td className="py-3 pr-3">
                           <form action={updateStatutBound} className="space-y-2">

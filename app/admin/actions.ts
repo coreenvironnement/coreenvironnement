@@ -24,7 +24,7 @@ function revalidateAdmin(chantierId?: string) {
   revalidatePath("/dashboard/historique")
 }
 
-export async function createChantier(formData: FormData) {
+export async function createChantier(formData: FormData): Promise<void> {
   const { supabase } = await assertAdmin()
 
   const nom = String(formData.get("nom") ?? "").trim()
@@ -32,7 +32,7 @@ export async function createChantier(formData: FormData) {
   const code_affaire = String(formData.get("code_affaire") ?? "").trim()
 
   if (!nom) {
-    return { error: "Le nom du chantier est obligatoire." }
+    redirect(`/admin/chantiers?error=${encodeURIComponent("Le nom du chantier est obligatoire.")}`)
   }
 
   const { data, error } = await supabase
@@ -46,14 +46,14 @@ export async function createChantier(formData: FormData) {
     .single()
 
   if (error) {
-    return { error: error.message }
+    redirect(`/admin/chantiers?error=${encodeURIComponent(error.message)}`)
   }
 
   revalidateAdmin(data.id)
   redirect(`/admin/chantiers/${data.id}`)
 }
 
-export async function updateChantier(chantierId: string, formData: FormData) {
+export async function updateChantier(chantierId: string, formData: FormData): Promise<void> {
   const { supabase } = await assertAdmin()
 
   const nom = String(formData.get("nom") ?? "").trim()
@@ -64,7 +64,7 @@ export async function updateChantier(chantierId: string, formData: FormData) {
   const prestataire_id = prestataireRaw || null
 
   if (!nom) {
-    return { error: "Le nom du chantier est obligatoire." }
+    return
   }
 
   const { error } = await supabase
@@ -80,11 +80,10 @@ export async function updateChantier(chantierId: string, formData: FormData) {
     .eq("id", chantierId)
 
   if (error) {
-    return { error: error.message }
+    return
   }
 
   revalidateAdmin(chantierId)
-  return { success: true }
 }
 
 export async function addChantierMember(chantierId: string, formData: FormData) {
@@ -245,7 +244,7 @@ export async function removeChantierMemberForm(
   redirect(`/admin/chantiers/${chantierId}?member=removed`)
 }
 
-export async function createIntervention(chantierId: string, formData: FormData) {
+export async function createIntervention(chantierId: string, formData: FormData): Promise<void> {
   const { supabase, user } = await assertAdmin()
 
   const type_intervention_id = String(formData.get("type_intervention_id") ?? "")
@@ -258,7 +257,7 @@ export async function createIntervention(chantierId: string, formData: FormData)
   const commentaire = String(formData.get("commentaire") ?? "").trim()
 
   if (!type_intervention_id || !contenant_id || !dechet_type_id || !date_demande) {
-    return { error: "Type, contenant, déchet et date de demande sont obligatoires." }
+    return
   }
 
   const { error } = await supabase.from("interventions").insert({
@@ -275,18 +274,17 @@ export async function createIntervention(chantierId: string, formData: FormData)
   })
 
   if (error) {
-    return { error: error.message }
+    return
   }
 
   revalidateAdmin(chantierId)
-  return { success: true }
 }
 
 export async function updateInterventionStatut(
   interventionId: string,
   chantierId: string,
   formData: FormData
-) {
+): Promise<void> {
   const { supabase } = await assertAdmin()
 
   const statut = String(formData.get("statut") ?? "")
@@ -304,21 +302,20 @@ export async function updateInterventionStatut(
     .eq("id", interventionId)
 
   if (error) {
-    return { error: error.message }
+    return
   }
 
   revalidateAdmin(chantierId)
-  return { success: true }
 }
 
-export async function upsertStatsDechet(chantierId: string, formData: FormData) {
+export async function upsertStatsDechet(chantierId: string, formData: FormData): Promise<void> {
   const { supabase, user } = await assertAdmin()
 
   const dechet_type_id = String(formData.get("dechet_type_id") ?? "")
   const tonnage_t = Number(formData.get("tonnage_t") ?? 0)
 
   if (!dechet_type_id || tonnage_t < 0) {
-    return { error: "Typologie et tonnage valides requis." }
+    return
   }
 
   const { error } = await supabase.from("chantier_stats_dechets").upsert(
@@ -335,11 +332,10 @@ export async function upsertStatsDechet(chantierId: string, formData: FormData) 
   )
 
   if (error) {
-    return { error: error.message }
+    return
   }
 
   revalidateAdmin(chantierId)
-  return { success: true }
 }
 
 export async function upsertStatsValorisation(chantierId: string, formData: FormData) {

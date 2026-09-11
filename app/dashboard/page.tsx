@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation"
 
 import { DashboardShell } from "@/components/dashboard/dashboard-shell"
 import { DashboardSubNav } from "@/components/dashboard/intervention-history"
+import { PrestataireAlert } from "@/components/dashboard/prestataire-alert"
 import { WasteCharts } from "@/components/dashboard/waste-charts"
 import {
   getUserChantiers,
@@ -79,6 +80,11 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               </p>
             ) : null}
           </div>
+          <PrestataireAlert
+            chantierId={selectedId}
+            prestataireNom={dashboardData.chantier.prestataireNom}
+            isAdmin={profile?.role === "admin"}
+          />
           <WasteCharts
             tonnages={dashboardData.tonnages}
             valorisation={dashboardData.valorisation}

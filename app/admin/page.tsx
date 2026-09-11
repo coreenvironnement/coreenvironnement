@@ -3,6 +3,7 @@ import { HardHat, Plus, Users, Wrench } from "lucide-react"
 
 import { requireAdmin } from "@/lib/auth/require-admin"
 import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import {
   Card,
   CardContent,

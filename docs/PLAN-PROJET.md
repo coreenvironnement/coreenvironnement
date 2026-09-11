@@ -22,7 +22,7 @@
 | **Mois 3** | Site vitrine et tests               | Accueil CDC, services flip, FAQ, sécurité avant ouverture publique |
 
 
-**Nous sommes en : Mois 1** (dashboard client : sélecteur, graphiques, historique et téléchargement PDF opérationnels).
+**Nous sommes en : Mois 2** (Mois 1 livré côté code · démarrage export historique + compte pro).
 
 ---
 
@@ -66,7 +66,7 @@ Chaque **prestataire** (Paprec, Veolia, Bennes services, 4g environnement…) a 
 - [x] Graphiques : tonnage / % par typologie de déchets
 - [x] Camemberts : % valorisation / % élimination
 - [x] Historique des prestations (tableau 12 colonnes)
-- [ ] Export Excel / PDF de l'historique *(Mois 2)*
+- [x] Export Excel / PDF de l'historique *(Mois 2 — livré)*
 - [x] Upload admin des documents (BI, pesée, BSD) → téléchargement client
 - [ ] Abonnement pro 35 € HT / mois *(Mois 2)*
 
@@ -247,8 +247,8 @@ Chaque **prestataire** (Paprec, Veolia, Bennes services, 4g environnement…) a 
 
 #### Historique & reporting
 
-- [ ] Export **Excel** de l'historique des prestations
-- [ ] Export **PDF** de l'historique
+- [x] Export **Excel** de l'historique des prestations
+- [x] Export **PDF** de l'historique
 - [ ] Récapitulatif mensuel volumes / valorisation (compte pro)
 
 ---

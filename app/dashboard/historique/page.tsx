@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation"
 
 import { DashboardShell } from "@/components/dashboard/dashboard-shell"
+import { HistoriqueExportButtons } from "@/components/dashboard/historique-export-buttons"
 import {
   DashboardSubNav,
   InterventionHistoryTable,
@@ -91,13 +92,19 @@ export default async function DashboardHistoriquePage({ searchParams }: PageProp
       ) : (
         <div className="space-y-6">
           <DashboardSubNav chantierId={selectedId} active="historique" />
-          <div>
-            <h2 className="text-xl font-semibold text-brand-navy">
-              Historique des prestations
-            </h2>
-            {chantierNom ? (
-              <p className="mt-1 text-sm text-muted-foreground">{chantierNom}</p>
-            ) : null}
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-semibold text-brand-navy">
+                Historique des prestations
+              </h2>
+              {chantierNom ? (
+                <p className="mt-1 text-sm text-muted-foreground">{chantierNom}</p>
+              ) : null}
+            </div>
+            <HistoriqueExportButtons
+              chantierId={selectedId}
+              disabled={!rows?.length}
+            />
           </div>
           <InterventionHistoryTable rows={rows ?? []} />
         </div>

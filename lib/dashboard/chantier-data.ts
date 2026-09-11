@@ -59,16 +59,22 @@ export async function getUserChantiers(
     .select("chantier_id, chantiers(id, nom, adresse, is_active)")
     .eq("profile_id", userId)
 
-  return (
+  const raw =
     membreships
       ?.map((m) => m.chantiers)
       .flat()
       .filter(
-        (c): c is ChantierSummary & { is_active?: boolean } =>
-          Boolean(c && typeof c === "object" && "id" in c && c.is_active !== false)
-      )
-      .map(({ id, nom, adresse }) => ({ id, nom, adresse })) ?? []
-  )
+        (c) =>
+          c &&
+          typeof c === "object" &&
+          "id" in c &&
+          (c as { is_active?: boolean }).is_active !== false
+      ) ?? []
+
+  return raw.map((c) => {
+    const chantier = c as { id: string; nom: string; adresse: string | null }
+    return { id: chantier.id, nom: chantier.nom, adresse: chantier.adresse }
+  })
 }
 
 export async function userHasChantierAccess(
@@ -107,7 +113,7 @@ export async function loadChantierDashboard(
 
   if (!chantier) return null
 
-  const prestataire = chantier.prestataires as { id: string; nom: string } | null
+  const prestataire = chantier.prestataires as unknown as { id: string; nom: string } | null
 
   const [{ data: statsDechets }, { data: dechetsTypes }] = await Promise.all([
     supabase
@@ -202,9 +208,11 @@ export async function loadChantierInterventions(
       id: row.id,
       numero: row.numero,
       dateDemande: row.date_demande,
-      typeLabel: (row.types_intervention as { label: string } | null)?.label ?? "—",
-      contenantLabel: (row.types_contenants as { label: string } | null)?.label ?? "—",
-      dechetNom: (row.dechets_types as { nom: string } | null)?.nom ?? "—",
+      typeLabel:
+        (row.types_intervention as unknown as { label: string } | null)?.label ?? "—",
+      contenantLabel:
+        (row.types_contenants as unknown as { label: string } | null)?.label ?? "—",
+      dechetNom: (row.dechets_types as unknown as { nom: string } | null)?.nom ?? "—",
       dateSouhaitee: row.date_souhaitee,
       statut: row.statut,
       statutLabel: statutLabels[row.statut] ?? row.statut,
