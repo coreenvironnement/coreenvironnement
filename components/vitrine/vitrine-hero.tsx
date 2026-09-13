@@ -42,8 +42,14 @@ export function VitrineHero() {
         </div>
       </div>
 
+      <div aria-hidden="true" className="hero-overlay" />
+
       <div className="container-x relative z-10 pb-16 pt-24 sm:pb-28 sm:pt-[6.25rem] lg:pb-32 lg:pt-32">
         <div className="relative max-w-[760px] lg:max-w-[640px] xl:max-w-[680px] lg:-translate-y-2">
+          <div
+            aria-hidden
+            className="hero-readability-glow pointer-events-none absolute -inset-x-3 -inset-y-5 rounded-[1.25rem] md:-inset-x-10 md:-inset-y-12 md:rounded-[2rem]"
+          />
           <div className="animate-fade-up" style={{ animationDelay: "60ms" }}>
             <span className="vitrine-label inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.08] py-1 pl-2.5 pr-3 text-[11px] tracking-[0.12em] text-white/90 backdrop-blur-md sm:text-xs">
               Gestion des déchets · Île-de-France

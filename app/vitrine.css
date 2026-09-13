@@ -294,6 +294,30 @@
       0 10px 28px -8px rgb(24 53 116 / 0.09);
   }
 
+  /* Hero — overlays plein écran pour la lisibilité du texte */
+  .vitrine-root .hero-overlay {
+    @apply pointer-events-none absolute inset-0;
+    background: linear-gradient(
+      90deg,
+      rgb(24 53 116 / 0.84) 0%,
+      rgb(24 53 116 / 0.72) 28%,
+      rgb(24 53 116 / 0.44) 46%,
+      rgb(24 53 116 / 0.16) 58%,
+      transparent 70%
+    );
+  }
+
+  /* Hero — voile localisé sur la zone de lecture, discret */
+  .vitrine-root .hero-readability-glow {
+    background: radial-gradient(
+      ellipse 108% 94% at 22% 50%,
+      rgb(24 53 116 / 0.3) 0%,
+      rgb(24 53 116 / 0.12) 42%,
+      rgb(24 53 116 / 0.03) 58%,
+      transparent 74%
+    );
+  }
+
   /* Hero — cadre proche du viewport pour un cadrage plus large sans réduire le banner */
   .vitrine-root .hero-bg-frame {
     position: absolute;
