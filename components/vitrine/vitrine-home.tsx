@@ -17,7 +17,10 @@ import { VitrineFaq } from "./vitrine-faq"
 import { VitrineFinalCta } from "./vitrine-final-cta"
 import { VitrineFooter } from "./vitrine-footer"
 import { VitrineHeader } from "./vitrine-header"
+import type { SeoVariant } from "@/lib/seo/landing-variants"
+
 import { VitrineHero } from "./vitrine-hero"
+import { VitrineLocalSeo } from "./vitrine-local-seo"
 
 function OrderBanner({ orderParam }: { orderParam?: string }) {
   const { openOrder } = useVitrineOrder()
@@ -52,7 +55,13 @@ function OrderBanner({ orderParam }: { orderParam?: string }) {
   return null
 }
 
-function VitrineHomeInner({ orderParam }: { orderParam?: string }) {
+function VitrineHomeInner({
+  orderParam,
+  seoVariant,
+}: {
+  orderParam?: string
+  seoVariant: SeoVariant
+}) {
   return (
     <div className="vitrine-root min-h-screen">
       <a
@@ -66,7 +75,7 @@ function VitrineHomeInner({ orderParam }: { orderParam?: string }) {
       <OrderBanner orderParam={orderParam} />
 
       <main id="contenu">
-        <VitrineHero />
+        <VitrineHero seoVariant={seoVariant} />
         <VitrineServices />
         <VitrineEngagements />
         <VitrineHowItWorks />
@@ -74,6 +83,7 @@ function VitrineHomeInner({ orderParam }: { orderParam?: string }) {
         <VitrineCompteProTeaser />
         <TestimonialsSection vitrine />
         <VitrineFaq />
+        <VitrineLocalSeo seoVariant={seoVariant} />
         <VitrineFinalCta />
       </main>
 
@@ -83,10 +93,16 @@ function VitrineHomeInner({ orderParam }: { orderParam?: string }) {
   )
 }
 
-export function VitrineHome({ orderParam }: { orderParam?: string }) {
+export function VitrineHome({
+  orderParam,
+  seoVariant,
+}: {
+  orderParam?: string
+  seoVariant: SeoVariant
+}) {
   return (
     <VitrineOrderProvider>
-      <VitrineHomeInner orderParam={orderParam} />
+      <VitrineHomeInner orderParam={orderParam} seoVariant={seoVariant} />
     </VitrineOrderProvider>
   )
 }

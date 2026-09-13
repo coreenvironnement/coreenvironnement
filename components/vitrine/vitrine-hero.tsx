@@ -3,12 +3,17 @@
 import Image from "next/image"
 
 import { hero } from "@/lib/cdc/contenu-vitrine"
+import type { SeoVariant } from "@/lib/seo/landing-variants"
 
 import { BenneIcon } from "./benne-icon"
 import { VitrineHeroReassurance } from "./vitrine-hero-reassurance"
 import { useVitrineOrder } from "./order-context"
 
-export function VitrineHero() {
+type VitrineHeroProps = {
+  seoVariant: SeoVariant
+}
+
+export function VitrineHero({ seoVariant }: VitrineHeroProps) {
   const { openOrder } = useVitrineOrder()
 
   return (
@@ -53,7 +58,7 @@ export function VitrineHero() {
           />
           <div className="animate-fade-up" style={{ animationDelay: "60ms" }}>
             <span className="vitrine-label inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.08] py-1 pl-2.5 pr-3 text-[11px] tracking-[0.12em] text-white/90 backdrop-blur-md sm:text-xs">
-              Gestion des déchets · Île-de-France
+              {seoVariant.chipLabel ?? "Gestion des déchets · Île-de-France"}
             </span>
           </div>
 
@@ -61,15 +66,15 @@ export function VitrineHero() {
             className="animate-fade-up mt-5 text-[clamp(1.82rem,5.35vw,2.17rem)] leading-[1.1] text-white [text-shadow:0_1px_28px_rgba(24,53,116,0.28),0_2px_56px_rgba(24,53,116,0.14)] sm:mt-6 sm:text-[clamp(2.15rem,4.4vw,3.45rem)] sm:leading-[1.08]"
             style={{ animationDelay: "140ms" }}
           >
-            <span className="block">{hero.titre1Ligne1}</span>
-            <span className="mt-1 block">{hero.titre1Ligne2}</span>
+            <span className="block">{seoVariant.h1Line1}</span>
+            <span className="mt-1 block">{seoVariant.h1Line2}</span>
           </h1>
 
           <p
             className="animate-fade-up mt-6 max-w-[520px] text-[17px] leading-[1.84] text-white/95 [text-shadow:0_1px_22px_rgba(24,53,116,0.22)] sm:mt-6 sm:max-w-[540px] sm:text-[18px] sm:leading-[1.72]"
             style={{ animationDelay: "220ms" }}
           >
-            {hero.titre2}
+            {seoVariant.intro ?? hero.titre2}
           </p>
 
           <div
