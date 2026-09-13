@@ -647,31 +647,25 @@
   }
 }
 
-@keyframes hero-reassurance-carousel {
-  0%,
-  22% {
-    transform: translateX(0);
-  }
-  25%,
-  47% {
-    transform: translateX(-25%);
-  }
-  50%,
-  72% {
-    transform: translateX(-50%);
-  }
-  75%,
-  97% {
-    transform: translateX(-75%);
-  }
-  100% {
-    transform: translateX(0);
-  }
+.vitrine-root .hero-reassurance-carousel {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  scrollbar-width: none;
 }
 
-.vitrine-root .hero-reassurance-carousel__track {
-  animation: hero-reassurance-carousel 16s cubic-bezier(0.45, 0.05, 0.25, 1) infinite;
-  will-change: transform;
+.vitrine-root .hero-reassurance-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.vitrine-root .hero-reassurance-carousel__slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -683,8 +677,7 @@
     transition-duration: 0.01ms !important;
   }
 
-  .vitrine-root .hero-reassurance-carousel__track {
-    animation: none !important;
-    transform: none !important;
+  .vitrine-root .hero-reassurance-carousel {
+    scroll-behavior: auto;
   }
 }
