@@ -67,3 +67,14 @@ export function getAppOrigin(fallbackOrigin?: string | null): string {
     "http://localhost:3000"
   ).replace(/\/$/, "")
 }
+
+/** CB, Apple Pay et Google Pay via Stripe Checkout (selon éligibilité navigateur / compte). */
+export function stripeCheckoutPaymentOptions(): Pick<
+  Stripe.Checkout.SessionCreateParams,
+  "automatic_payment_methods" | "locale"
+> {
+  return {
+    automatic_payment_methods: { enabled: true },
+    locale: "fr",
+  }
+}

@@ -136,6 +136,149 @@
     @apply font-semibold text-brand-sky transition hover:text-brand-navy;
   }
 
+  /* ── Footer premium ── */
+  .vitrine-root .vitrine-footer {
+    @apply relative overflow-hidden bg-[#030B26] text-white;
+  }
+
+  .vitrine-root .vitrine-footer__pattern {
+    @apply pointer-events-none absolute;
+  }
+
+  .vitrine-root .vitrine-footer__pattern--leaf {
+    right: -6%;
+    bottom: -18%;
+    width: min(52vw, 28rem);
+    height: min(68vw, 34rem);
+    border-radius: 68% 32% 58% 42% / 48% 52% 48% 52%;
+    background:
+      radial-gradient(ellipse at 42% 58%, rgb(53 162 56 / 0.14) 0%, transparent 62%),
+      radial-gradient(ellipse at 58% 42%, rgb(38 157 210 / 0.12) 0%, transparent 68%);
+    transform: rotate(-18deg);
+  }
+
+  .vitrine-root .vitrine-footer__pattern--curve-left {
+    top: 8%;
+    left: -14%;
+    width: 34%;
+    height: 88%;
+    border-radius: 50%;
+    background: radial-gradient(
+      ellipse at center,
+      rgb(255 255 255 / 0.035) 0%,
+      transparent 68%
+    );
+  }
+
+  .vitrine-root .vitrine-footer__pattern--curve-right {
+    top: 12%;
+    right: -10%;
+    width: 28%;
+    height: 76%;
+    border-radius: 50%;
+    background: radial-gradient(
+      ellipse at center,
+      rgb(255 255 255 / 0.028) 0%,
+      transparent 70%
+    );
+  }
+
+  .vitrine-root .vitrine-footer__main {
+    @apply grid gap-10 py-12 sm:py-14 lg:grid-cols-[minmax(0,1.12fr)_minmax(0,2fr)] lg:gap-12 lg:py-16 xl:grid-cols-[minmax(0,1.18fr)_minmax(0,2.85fr)] xl:gap-14;
+  }
+
+  .vitrine-root .vitrine-footer__brand {
+    @apply mx-auto flex max-w-[24rem] flex-col items-center text-center lg:mx-0 lg:items-start lg:border-r lg:border-white/10 lg:pr-10 lg:text-left xl:pr-12;
+  }
+
+  .vitrine-root .vitrine-footer__brand img {
+    @apply object-center lg:object-left;
+  }
+
+  .vitrine-root .vitrine-footer__tagline {
+    @apply mt-4 text-sm leading-relaxed text-white/78 sm:text-[15px] sm:leading-[1.65];
+  }
+
+  .vitrine-root .vitrine-footer__phone {
+    @apply mt-5 inline-flex h-10 items-center gap-2.5 rounded-full border border-brand-green/55 px-4 text-sm font-semibold text-brand-green shadow-[inset_0_1px_0_rgb(255_255_255/0.04)] transition duration-200 hover:border-brand-green hover:bg-brand-green/[0.08] hover:text-white;
+  }
+
+  .vitrine-root .vitrine-footer__values {
+    @apply mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2.5 lg:justify-start;
+  }
+
+  .vitrine-root .vitrine-footer__value {
+    @apply inline-flex items-center gap-1.5 text-xs font-medium text-white/72 sm:text-[13px];
+  }
+
+  .vitrine-root .vitrine-footer__columns {
+    @apply grid gap-9 text-center sm:grid-cols-2 sm:gap-10 lg:text-left xl:grid-cols-4 xl:gap-8;
+  }
+
+  .vitrine-root .vitrine-footer__column-title {
+    @apply font-[family-name:var(--font-body)] text-[11px] font-medium uppercase tracking-[0.18em] text-brand-sky/90;
+  }
+
+  .vitrine-root .vitrine-footer__links {
+    @apply mt-4 space-y-2.5 text-sm text-white/75;
+  }
+
+  .vitrine-root .vitrine-footer__links a {
+    @apply inline-flex items-center gap-1 transition duration-200 hover:text-white;
+  }
+
+  .vitrine-root .vitrine-footer__link-accent {
+    @apply font-semibold text-brand-sky hover:text-white;
+  }
+
+  .vitrine-root .vitrine-footer__cta-card {
+    @apply flex h-full min-h-[11.5rem] flex-col items-center text-center rounded-[var(--radius-card)] border border-white/10 bg-white/[0.04] p-5 shadow-[inset_0_1px_0_rgb(255_255_255/0.06),0_12px_32px_-16px_rgb(0_0_0/0.35)] backdrop-blur-md sm:p-6 lg:items-start lg:text-left;
+  }
+
+  .vitrine-root .vitrine-footer__cta-icon {
+    @apply inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-green/[0.12] text-brand-green;
+  }
+
+  .vitrine-root .vitrine-footer__cta-text {
+    @apply mt-4 font-[family-name:var(--font-display)] text-[15px] font-semibold leading-snug tracking-[-0.015em] text-white sm:text-base;
+  }
+
+  .vitrine-root .vitrine-footer__bottom {
+    @apply flex flex-col items-center gap-5 border-t border-white/10 py-7 text-center lg:flex-row lg:items-center lg:justify-between lg:py-8 lg:text-left;
+  }
+
+  .vitrine-root .vitrine-footer__legal {
+    @apply flex flex-col items-center gap-1.5 lg:items-start;
+  }
+
+  .vitrine-root .vitrine-footer__copyright {
+    @apply text-xs text-white/45 sm:text-[12.5px];
+  }
+
+  .vitrine-root .vitrine-footer__credit {
+    @apply text-xs text-white/45 sm:text-[12.5px];
+  }
+
+  .vitrine-root .vitrine-footer__credit-link {
+    @apply font-medium text-brand-green transition duration-200 hover:text-white/75;
+  }
+
+  .vitrine-root .vitrine-footer__social {
+    @apply flex flex-wrap items-center justify-center gap-3 sm:gap-4 lg:justify-start;
+  }
+
+  .vitrine-root .vitrine-footer__social-label {
+    @apply text-sm text-white/72;
+  }
+
+  .vitrine-root .vitrine-footer__social-list {
+    @apply flex items-center gap-2;
+  }
+
+  .vitrine-root .vitrine-footer__social-link {
+    @apply inline-flex h-9 w-9 items-center justify-center rounded-[0.55rem] border border-white/10 bg-white/[0.06] text-white/75 transition duration-200 hover:border-white/25 hover:bg-white/[0.12] hover:text-white;
+  }
+
   /* Cartes services — flip 3D */
   .vitrine-root .service-flip-card {
     @apply relative min-h-[20rem] cursor-default outline-none sm:min-h-[18.5rem];
@@ -180,15 +323,24 @@
     }
 
     .vitrine-root #services .service-flip-face {
-      padding-bottom: 2rem;
+      padding-bottom: 0;
     }
 
     .vitrine-root .service-flip-front-footer {
-      @apply pb-1 pt-4;
+      @apply pb-6 pt-4;
     }
 
     .vitrine-root .service-flip-action--mobile-emphasis {
       @apply min-h-12 min-w-[10.75rem] px-5 text-sm;
+    }
+
+    /* Featured : accroche plus longue — hauteur min. supérieure pour garder pb-6 visible */
+    .vitrine-root #services .service-flip-card--featured {
+      min-height: 23rem;
+    }
+
+    .vitrine-root #services .service-flip-card--featured .service-flip-front {
+      overflow: hidden;
     }
   }
 
@@ -285,6 +437,21 @@
 
   .vitrine-root .how-panel-enter {
     animation: how-panel-in 280ms ease both;
+  }
+
+  .vitrine-root .how-step-card {
+    @apply transition duration-300 ease-out;
+  }
+
+  .vitrine-root .how-step-card:hover {
+    @apply border-brand-green/20;
+    box-shadow:
+      0 2px 6px rgb(24 53 116 / 0.04),
+      0 8px 20px -6px rgb(53 162 56 / 0.1);
+  }
+
+  .vitrine-root .how-after-panel {
+    background: linear-gradient(165deg, #f0faf2 0%, #e8f5ec 48%, #eef8f0 100%);
   }
 
   .vitrine-root .how-login-link {

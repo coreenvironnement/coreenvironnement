@@ -2,7 +2,9 @@ import Image from "next/image"
 
 import { cn } from "@/lib/utils"
 
-const LOGO_DEFAULT = "/logocoreenvironnement.png"
+const LOGO_ALT = "CORE ENVIRONNEMENT"
+
+const LOGO_DEFAULT = "/images/stickyheaderlogo.png"
 
 const HEADER_LOGO_TRANSPARENT = {
   src: "/images/core-environnement-logo-header-transparent.png",
@@ -47,12 +49,12 @@ export function VitrineLogo({
       >
         <Image
           src={HEADER_LOGO_STICKY.src}
-          alt=""
+          alt={transparent ? "" : LOGO_ALT}
           width={HEADER_LOGO_STICKY.width}
           height={HEADER_LOGO_STICKY.height}
           sizes="148px"
           priority={priority}
-          aria-hidden
+          aria-hidden={transparent}
           className={cn(
             "absolute inset-0 h-full w-full origin-left object-contain object-left transition-opacity duration-500 ease-out",
             transparent ? "opacity-0" : "opacity-100"
@@ -60,41 +62,45 @@ export function VitrineLogo({
         />
         <Image
           src={HEADER_LOGO_TRANSPARENT.src}
-          alt=""
+          alt={transparent ? LOGO_ALT : ""}
           width={HEADER_LOGO_TRANSPARENT.width}
           height={HEADER_LOGO_TRANSPARENT.height}
           sizes="148px"
           priority={priority}
-          aria-hidden
+          aria-hidden={!transparent}
           style={{ scale: `${HEADER_LOGO_TRANSPARENT_SCALE}` }}
           className={cn(
             "absolute inset-0 h-full w-full origin-left object-contain object-left transition-opacity duration-500 ease-out",
             transparent ? "opacity-100" : "opacity-0"
           )}
         />
-        <span className="sr-only">CORE ENVIRONNEMENT</span>
       </span>
     )
   }
+
+  const footerLogo = HEADER_LOGO_TRANSPARENT
 
   return (
     <span
       className={cn(
         "relative inline-flex shrink-0 items-center",
         variant === "footer"
-          ? "h-10 w-[min(62vw,188px)] sm:h-11 sm:w-[200px]"
+          ? "mx-auto h-10 w-[min(62vw,188px)] sm:h-11 sm:w-[200px] lg:mx-0"
           : "h-9 max-w-[min(52vw,200px)] sm:h-10 sm:max-w-[220px]",
         className
       )}
     >
       <Image
-        src={LOGO_DEFAULT}
-        alt="CORE ENVIRONNEMENT"
-        width={260}
-        height={72}
-        sizes="220px"
+        src={variant === "footer" ? footerLogo.src : LOGO_DEFAULT}
+        alt={LOGO_ALT}
+        width={variant === "footer" ? footerLogo.width : HEADER_LOGO_STICKY.width}
+        height={variant === "footer" ? footerLogo.height : HEADER_LOGO_STICKY.height}
+        sizes={variant === "footer" ? "200px" : "220px"}
         priority={priority}
-        className="h-full w-full object-contain object-left"
+        className={cn(
+          "h-full w-full object-contain",
+          variant === "footer" ? "object-center lg:object-left" : "object-left"
+        )}
       />
     </span>
   )

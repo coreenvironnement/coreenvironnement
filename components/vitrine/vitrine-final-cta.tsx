@@ -1,18 +1,10 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Recycle03Icon,
-  Tick02Icon,
-  TruckIcon,
-} from "@hugeicons/core-free-icons"
 
 import { finalCta } from "@/lib/cdc/contenu-vitrine"
-import { cn } from "@/lib/utils"
 
 import { BenneIcon } from "./benne-icon"
-import { VITRINE_ICON_STROKE } from "./icons"
 import { useVitrineOrder } from "./order-context"
 
 function usePrefersReducedMotion() {
@@ -81,14 +73,6 @@ export function VitrineFinalCta() {
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.16),transparent)]"
       />
 
-      <HugeiconsIcon
-        icon={TruckIcon}
-        size={400}
-        strokeWidth={0.65}
-        aria-hidden
-        className="pointer-events-none absolute -right-16 bottom-[-3.5rem] text-white opacity-[0.07] sm:-right-14 sm:bottom-[-4rem] lg:-right-10 lg:bottom-[-4.5rem] lg:opacity-[0.075]"
-      />
-
       <div className="container-x relative">
         <div
           ref={ref}
@@ -127,78 +111,6 @@ export function VitrineFinalCta() {
             <a href="#contact" className="btn btn-ghost-light w-full sm:w-auto">
               {content.ctaSecondary}
             </a>
-          </div>
-
-          <ul className="mt-9 flex flex-wrap items-center justify-center gap-x-5 gap-y-2.5">
-            {content.reassurance.map((item) => (
-              <li key={item} className="flex items-center gap-2">
-                <HugeiconsIcon
-                  icon={Tick02Icon}
-                  size={14}
-                  strokeWidth={VITRINE_ICON_STROKE}
-                  className="shrink-0 text-brand-green"
-                />
-                <span className="font-[family-name:var(--font-body)] text-[13px] font-medium text-white/75">
-                  {item}
-                </span>
-              </li>
-            ))}
-          </ul>
-
-          <p className="mt-3 font-[family-name:var(--font-body)] text-[11.5px] text-white/55">
-            {content.footnote}
-          </p>
-
-          <div
-            aria-hidden
-            className="mt-10 w-full max-w-[34rem] border-t border-white/10 pt-8"
-          >
-            <ol className="flex items-center justify-between">
-              {content.journey.map((step, i) => (
-                <li
-                  key={step}
-                  className="relative flex flex-1 flex-col items-center"
-                  style={{
-                    opacity: shown ? 1 : 0,
-                    transform: shown ? "translateY(0)" : "translateY(6px)",
-                    transition: reduced
-                      ? "none"
-                      : `opacity 600ms cubic-bezier(0.22,1,0.36,1) ${i * 90}ms, transform 600ms cubic-bezier(0.22,1,0.36,1) ${i * 90}ms`,
-                  }}
-                >
-                  {i > 0 && (
-                    <span
-                      className={cn(
-                        "absolute right-1/2 top-[7px] hidden h-px w-full sm:block",
-                        i === content.journey.length - 1
-                          ? "bg-gradient-to-r from-brand-green/50 to-brand-green/90"
-                          : "bg-white/16"
-                      )}
-                    />
-                  )}
-                  <span
-                    className={cn(
-                      "relative z-10 h-3.5 w-3.5 rounded-full border-[1.5px]",
-                      i === content.journey.length - 1
-                        ? "border-brand-green bg-brand-green"
-                        : "border-white/28 bg-brand-navy"
-                    )}
-                  />
-                  <span className="mt-2.5 font-[family-name:var(--font-display)] text-[11.5px] font-medium tracking-[0.02em] text-white/60 sm:text-[12.5px]">
-                    {step}
-                  </span>
-                </li>
-              ))}
-            </ol>
-            <p className="mt-5 flex items-center justify-center gap-1.5 font-[family-name:var(--font-body)] text-[11px] text-white/50">
-              <HugeiconsIcon
-                icon={Recycle03Icon}
-                size={13}
-                strokeWidth={VITRINE_ICON_STROKE}
-                className="text-white/40"
-              />
-              {content.journeyTagline}
-            </p>
           </div>
         </div>
       </div>

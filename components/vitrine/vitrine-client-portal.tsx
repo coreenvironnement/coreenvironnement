@@ -12,7 +12,6 @@ import {
   ChartColumnIcon,
   CheckmarkCircle02Icon,
   ChevronDownIcon,
-  ContainerIcon,
   Download04Icon,
   File02Icon,
   FileValidationIcon,
@@ -27,6 +26,7 @@ import { espaceClientVitrine } from "@/lib/cdc/contenu-vitrine"
 import { cn } from "@/lib/utils"
 
 import { VITRINE_ICON_STROKE } from "./icons"
+import { VitrineLogo } from "./logo"
 
 const BENEFIT_ICONS = [TruckIcon, File02Icon, ChartColumnIcon] as const
 
@@ -205,12 +205,11 @@ function DashboardMock({ reduced }: { reduced: boolean }) {
     >
       <div className="flex items-center justify-between gap-3 border-b border-brand-border bg-brand-bg px-4 py-2.5 sm:px-5">
         <div className="flex min-w-0 items-center gap-2.5">
-          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] bg-brand-navy text-white">
-            <HugeiconsIcon icon={ContainerIcon} size={15} strokeWidth={VITRINE_ICON_STROKE} />
-          </span>
-          <span className="font-[family-name:var(--font-display)] text-[13px] font-bold tracking-[-0.02em] text-brand-text">
-            CORE
-          </span>
+          <VitrineLogo
+            variant="header"
+            transparent={false}
+            className="h-7 w-[108px] shrink-0 sm:h-8 sm:w-[116px]"
+          />
           <span aria-hidden className="h-3.5 w-px bg-brand-border" />
           <span className="truncate font-[family-name:var(--font-body)] text-[11.5px] font-medium text-brand-muted">
             Espace client

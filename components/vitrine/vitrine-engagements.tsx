@@ -155,30 +155,22 @@ function EngagementStep({
       }
     >
       <article className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 sm:gap-x-5">
-        <div className="flex flex-col items-center">
-          <span
-            className={cn(
-              "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border bg-white transition-[border-color,box-shadow,color] duration-300 sm:h-[3.25rem] sm:w-[3.25rem]",
-              isActive
-                ? "border-[#35A238]/35 text-brand-navy shadow-[0_3px_14px_-4px_rgba(53,162,56,0.22)]"
-                : "border-[#d5ddd9] text-brand-navy/75 shadow-[0_2px_10px_-4px_rgba(24,53,116,0.1)]",
-              isDigital && !isActive && "border-brand-sky/25 text-brand-sky/80"
-            )}
-          >
-            <HugeiconsIcon
-              icon={step.icon}
-              size={21}
-              strokeWidth={VITRINE_ICON_STROKE}
-              aria-hidden
-            />
-          </span>
-          {!isLast ? (
-            <span
-              aria-hidden
-              className="engagements-step-rail mt-3 mb-1 w-[1.5px] flex-1 min-h-[2.5rem] bg-[#cfd9d3] lg:hidden"
-            />
-          ) : null}
-        </div>
+        <span
+          className={cn(
+            "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border bg-white transition-[border-color,box-shadow,color] duration-300 sm:h-[3.25rem] sm:w-[3.25rem]",
+            isActive
+              ? "border-[#35A238]/35 text-brand-navy shadow-[0_3px_14px_-4px_rgba(53,162,56,0.22)]"
+              : "border-[#d5ddd9] text-brand-navy/75 shadow-[0_2px_10px_-4px_rgba(24,53,116,0.1)]",
+            isDigital && !isActive && "border-brand-sky/25 text-brand-sky/80"
+          )}
+        >
+          <HugeiconsIcon
+            icon={step.icon}
+            size={21}
+            strokeWidth={VITRINE_ICON_STROKE}
+            aria-hidden
+          />
+        </span>
 
         <div
           className={cn(
@@ -225,13 +217,6 @@ function EngagementStep({
           </p>
         </div>
       </article>
-
-      {!isLast ? (
-        <div
-          aria-hidden
-          className="engagements-step-divider ml-[calc(3rem+1rem)] border-b border-brand-border/90 sm:ml-[calc(3.25rem+1.25rem)]"
-        />
-      ) : null}
     </li>
   )
 }
@@ -242,34 +227,7 @@ export function VitrineEngagements() {
   const listRef = useRef<HTMLOListElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const [enterIndex, setEnterIndex] = useState<number | null>(null)
-  const [railFill, setRailFill] = useState(0)
   const hasMountedRef = useRef(false)
-
-  useEffect(() => {
-    if (!isDesktop || reduced) {
-      setRailFill(1)
-      return
-    }
-
-    const list = listRef.current
-    if (!list) return
-
-    const updateProgress = () => {
-      const rect = list.getBoundingClientRect()
-      const focal = window.innerHeight * 0.42
-      const traveled = focal - rect.top
-      const progress = Math.min(1, Math.max(0, traveled / Math.max(rect.height, 1)))
-      setRailFill(progress)
-    }
-
-    updateProgress()
-    window.addEventListener("scroll", updateProgress, { passive: true })
-    window.addEventListener("resize", updateProgress)
-    return () => {
-      window.removeEventListener("scroll", updateProgress)
-      window.removeEventListener("resize", updateProgress)
-    }
-  }, [isDesktop, reduced])
 
   useEffect(() => {
     if (!isDesktop || reduced) return
@@ -312,7 +270,7 @@ export function VitrineEngagements() {
     <section id="engagements" className="bg-[#FAFBFA] py-16 sm:py-20 lg:py-[5.5rem]">
       <div className="container-x">
         <div className="lg:grid lg:grid-cols-[minmax(0,2.5fr)_minmax(0,4fr)] lg:items-start lg:gap-12 xl:gap-16">
-          <header className="lg:sticky lg:top-28 lg:self-start">
+          <header className="flex flex-col items-center text-center lg:sticky lg:top-28 lg:self-start lg:items-start lg:text-left">
             <p className="section-eyebrow">Nos engagements</p>
             <h2 className="section-title mt-3 max-w-[18rem]">
               Réactivité, transparence et conformité
@@ -326,17 +284,7 @@ export function VitrineEngagements() {
             </p>
           </header>
 
-          <ol ref={listRef} className="engagements-steps relative mt-12 lg:mt-0">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute bottom-16 left-[23px] top-6 hidden w-[1.5px] overflow-hidden rounded-full bg-[#cfd9d3] lg:block sm:left-[25px]"
-            >
-              <div
-                className="w-full bg-[#35A238] transition-[height] duration-150 ease-out"
-                style={{ height: `${railFill * 100}%` }}
-              />
-            </div>
-
+          <ol ref={listRef} className="engagements-steps mt-12 lg:mt-0">
             {engagements.map((item, index) => {
               const isLast = index === engagements.length - 1
               const scrollEnhanced = isDesktop && !reduced

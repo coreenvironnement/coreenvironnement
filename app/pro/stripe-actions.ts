@@ -10,6 +10,7 @@ import {
   getProMonthlyPriceId,
   getStripe,
   isStripeConfigured,
+  stripeCheckoutPaymentOptions,
 } from "@/lib/stripe/server"
 
 export async function startProSubscription(): Promise<{ error: string } | never> {
@@ -71,6 +72,7 @@ export async function startProSubscription(): Promise<{ error: string } | never>
 
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
+    ...stripeCheckoutPaymentOptions(),
     customer: customerId,
     line_items: [
       {

@@ -11,9 +11,16 @@ import {
   departementLabel,
   extractDepartementFromAddress,
   isAddressInIdf,
+  isDepartementInIdf,
+  isPostcodeInIdf,
 } from "@/lib/geo/idf"
 import { prestationById } from "@/lib/prestations"
-import { getAppOrigin, getStripe, isStripePaymentConfigured } from "@/lib/stripe/server"
+import {
+  getAppOrigin,
+  getStripe,
+  isStripePaymentConfigured,
+  stripeCheckoutPaymentOptions,
+} from "@/lib/stripe/server"
 import { createServiceClient } from "@/lib/supabase/service"
 
 export type OrderCheckoutInput = {
@@ -22,6 +29,8 @@ export type OrderCheckoutInput = {
   lat: number
   lng: number
   addressLabel: string
+  postcode?: string
+  departementCode?: string
   prestationId: string
   deliveryDate: string
   pickupDate?: string
@@ -48,7 +57,15 @@ export async function startOrderCheckout(
     return { error: "Indiquez l'adresse de livraison." }
   }
 
-  if (!isAddressInIdf(address)) {
+  const postcode = input.postcode?.trim() ?? ""
+  const departementFromInput = input.departementCode?.trim() ?? ""
+
+  const idfFromPostcode = postcode.length > 0 && isPostcodeInIdf(postcode)
+  const idfFromDept =
+    departementFromInput.length > 0 && isDepartementInIdf(departementFromInput)
+  const idfFromAddress = isAddressInIdf(address)
+
+  if (!idfFromPostcode && !idfFromDept && !idfFromAddress) {
     return {
       error:
         "Adresse hors Île-de-France. Nous intervenons sur les 8 départements IDF (75, 77, 78, 91, 92, 93, 94, 95).",
@@ -69,8 +86,11 @@ export async function startOrderCheckout(
     return { error: "Indiquez une adresse e-mail valide pour la confirmation." }
   }
 
-  const deptCode = extractDepartementFromAddress(address)
-  if (!deptCode) {
+  const deptCode =
+    (idfFromDept ? departementFromInput : null) ??
+    (idfFromPostcode ? postcode.slice(0, 2) : null) ??
+    extractDepartementFromAddress(address)
+  if (!deptCode || !isDepartementInIdf(deptCode)) {
     return { error: "Code postal IDF introuvable dans l'adresse." }
   }
 
@@ -121,6 +141,7 @@ export async function startOrderCheckout(
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
+    ...stripeCheckoutPaymentOptions(),
     customer_email: email,
     line_items: [
       {

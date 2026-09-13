@@ -66,10 +66,10 @@ export function SiteHeader() {
           className="relative flex h-9 max-w-[min(52vw,200px)] shrink-0 items-center sm:h-10 sm:max-w-[220px]"
         >
           <Image
-            src="/logocoreenvironnement.png"
+            src="/images/stickyheaderlogo.png"
             alt="Core Environnement"
-            width={260}
-            height={72}
+            width={2172}
+            height={724}
             sizes="220px"
             className="h-full w-full object-contain object-left"
             priority

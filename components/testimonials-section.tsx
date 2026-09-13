@@ -1,9 +1,7 @@
 import Image from "next/image"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { QuoteUpIcon } from "@hugeicons/core-free-icons"
-import { Quote } from "lucide-react"
+import { Star } from "lucide-react"
 
-import { VITRINE_ICON_STROKE } from "@/components/vitrine/icons"
+import { ParticulierTestimonialIcon } from "@/components/vitrine/particulier-testimonial-icon"
 import {
   testimonialsEntreprisesAvecLogo,
   testimonialsParticuliers,
@@ -35,12 +33,30 @@ function SegmentBadge({
   )
 }
 
+function StarRating() {
+  return (
+    <div
+      className="mb-3 flex items-center gap-0.5"
+      role="img"
+      aria-label="5 sur 5 étoiles"
+    >
+      {Array.from({ length: 5 }, (_, i) => (
+        <Star
+          key={i}
+          className="size-4 shrink-0 fill-amber-400 text-amber-400"
+          aria-hidden
+        />
+      ))}
+    </div>
+  )
+}
+
 function cardArticleClass(vitrine?: boolean, extra?: string) {
   return cn(
-    "flex w-[min(100vw-3rem,380px)] shrink-0 snap-center flex-col rounded-2xl p-5 sm:w-[calc(50%-0.75rem)] sm:max-w-none lg:w-[calc(33.333%-0.75rem)]",
+    "flex flex-col rounded-2xl p-4 sm:p-5",
     vitrine
-      ? "border border-brand-border bg-brand-bg shadow-[var(--shadow-vitrine-soft)]"
-      : "border border-white/40 bg-card/90 shadow-[0_14px_50px_-28px_rgba(27,65,143,0.35)] backdrop-blur-sm",
+      ? "w-[calc(100vw-2rem)] shrink-0 snap-center border border-brand-border bg-brand-bg shadow-[var(--shadow-vitrine-soft)] sm:w-full sm:min-w-0"
+      : "w-[min(100vw-3rem,380px)] shrink-0 snap-center sm:w-[calc(50%-0.75rem)] sm:max-w-none lg:w-[calc(33.333%-0.75rem)] border border-white/40 bg-card/90 shadow-[0_14px_50px_-28px_rgba(27,65,143,0.35)] backdrop-blur-sm",
     extra
   )
 }
@@ -84,21 +100,19 @@ function TestimonialCard({
           <SegmentBadge segment={t.segment} vitrine={vitrine} />
         </div>
       ) : (
-        <div className="mb-3 flex items-start justify-between gap-2">
-          {vitrine ? (
-            <HugeiconsIcon
-              icon={QuoteUpIcon}
-              size={28}
-              strokeWidth={VITRINE_ICON_STROKE}
-              className="shrink-0 text-brand-navy/70"
-              aria-hidden
-            />
-          ) : (
-            <Quote className="size-8 shrink-0 text-primary/85" aria-hidden />
+        <div
+          className={cn(
+            "mb-4 flex min-h-[3rem] items-center justify-between gap-3 border-b pb-3",
+            vitrine ? "border-brand-border" : "border-border/40"
           )}
+        >
+          <ParticulierTestimonialIcon
+            className={vitrine ? "text-brand-navy/70" : "text-primary/85"}
+          />
           <SegmentBadge segment={t.segment} vitrine={vitrine} />
         </div>
       )}
+      <StarRating />
       <blockquote
         className={cn(
           "flex-1 text-sm leading-relaxed sm:text-[0.95rem]",
@@ -129,6 +143,12 @@ function TestimonialCard({
   )
 }
 
+const vitrineTestimonials: Testimonial[] = [
+  ...(testimonialsEntreprisesAvecLogo[0] ? [testimonialsEntreprisesAvecLogo[0]] : []),
+  ...(testimonialsParticuliers[0] ? [testimonialsParticuliers[0]] : []),
+  ...testimonialsEntreprisesAvecLogo.slice(1),
+]
+
 export function TestimonialsSection({ vitrine = false }: { vitrine?: boolean }) {
   return (
     <section
@@ -154,33 +174,38 @@ export function TestimonialsSection({ vitrine = false }: { vitrine?: boolean }) 
           </p>
         </div>
 
-        <div className="mb-11">
-          <h3 className={cn("mb-5 text-center text-sm uppercase tracking-wide text-brand-navy", vitrine ? "vitrine-label" : "font-semibold")}>
-            Entreprises
-          </h3>
-          <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 pl-4 pr-6 sm:-mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0 sm:pl-0 sm:pr-0">
-            {testimonialsEntreprisesAvecLogo.map((t, i) => (
-              <TestimonialCard key={t.id} t={t} i={i} withLogo vitrine={vitrine} />
+        {vitrine ? (
+          <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 pl-4 pr-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:pb-0 sm:pl-0 sm:pr-0 lg:grid-cols-3">
+            {vitrineTestimonials.map((t, i) => (
+              <TestimonialCard
+                key={t.id}
+                t={t}
+                i={i}
+                withLogo={Boolean(t.logoSrc)}
+                vitrine
+              />
             ))}
           </div>
-        </div>
-
-        {testimonialsParticuliers.length > 0 && (
-          <div>
-            <h3
-              className={cn(
-                "mb-5 text-center text-sm uppercase tracking-wide",
-                vitrine ? "vitrine-label text-brand-green" : "font-semibold text-primary"
-              )}
-            >
-              Particuliers
-            </h3>
-            <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 pl-4 pr-6 sm:-mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0 sm:pl-0 sm:pr-0">
-              {testimonialsParticuliers.map((t, i) => (
-                <TestimonialCard key={t.id} t={t} i={i} withLogo={false} vitrine={vitrine} />
-              ))}
+        ) : (
+          <>
+            <div className="mb-11">
+              <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 pl-4 pr-6 sm:-mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0 sm:pl-0 sm:pr-0">
+                {testimonialsEntreprisesAvecLogo.map((t, i) => (
+                  <TestimonialCard key={t.id} t={t} i={i} withLogo vitrine={vitrine} />
+                ))}
+              </div>
             </div>
-          </div>
+
+            {testimonialsParticuliers.length > 0 && (
+              <div>
+                <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 pl-4 pr-6 sm:-mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0 sm:pl-0 sm:pr-0">
+                  {testimonialsParticuliers.map((t, i) => (
+                    <TestimonialCard key={t.id} t={t} i={i} withLogo={false} vitrine={vitrine} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>

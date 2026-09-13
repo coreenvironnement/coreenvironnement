@@ -13,11 +13,15 @@ import {
   ChevronRight,
   Hammer,
   Info,
-  MapPin,
   MapPinOff,
   Package,
   Recycle,
 } from "lucide-react"
+
+import {
+  AddressAutocomplete,
+  type AddressGeocodeHit,
+} from "@/components/order/address-autocomplete"
 
 import { VITRINE_ICON_STROKE } from "@/components/vitrine/icons"
 import { Button } from "@/components/ui/button"
@@ -42,12 +46,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { startOrderCheckout } from "@/app/order/actions"
-import {
-  departementLabel,
-  extractDepartementFromAddress,
-  isAddressInIdf,
-} from "@/lib/geo/idf"
-import { mockGeocodeAddress, type MockGeocodeHit } from "@/lib/geo/mock-geocode"
+import { departementLabel } from "@/lib/geo/idf"
 import {
   type BenneFamily,
   type Prestation,
@@ -144,9 +143,9 @@ export function OrderWidget({ variant = "default", onStepIndexChange }: OrderWid
   const [step, setStep] = useState<StepId>("intent")
   const [audience, setAudience] = useState<Audience>("particulier")
   const [address, setAddress] = useState("")
-  const [geocode, setGeocode] = useState<MockGeocodeHit | null>(null)
-  const [zoneOk, setZoneOk] = useState(false)
-  const [outOfZone, setOutOfZone] = useState(false)
+  const [selectedAddress, setSelectedAddress] = useState<AddressGeocodeHit | null>(
+    null
+  )
   const [addressError, setAddressError] = useState<string | null>(null)
   const [family, setFamily] = useState<BenneFamily | null>(null)
   const [deliveryDate, setDeliveryDate] = useState("")
@@ -158,8 +157,6 @@ export function OrderWidget({ variant = "default", onStepIndexChange }: OrderWid
   const [contactName, setContactName] = useState("")
   const [payError, setPayError] = useState<string | null>(null)
   const [isPaying, startPayTransition] = useTransition()
-  const [departementCode, setDepartementCode] = useState<string | null>(null)
-
   const prestation = useMemo(
     () => (selectedPrestationId ? prestationById(selectedPrestationId) : null),
     [selectedPrestationId]
@@ -176,50 +173,33 @@ export function OrderWidget({ variant = "default", onStepIndexChange }: OrderWid
     }
   }, [step])
 
-  const resetZone = () => {
-    setZoneOk(false)
-    setOutOfZone(false)
-    setGeocode(null)
+  const clearAddressSelection = () => {
+    setSelectedAddress(null)
   }
 
-  const syncZoneCheck = (raw: string): boolean => {
-    const trimmed = raw.trim()
-    if (!trimmed.length) return false
-    const hit = mockGeocodeAddress(trimmed)
-    const dept = extractDepartementFromAddress(trimmed)
-    const ok = isAddressInIdf(trimmed)
-    setGeocode(hit)
-    setDepartementCode(dept)
-    setOutOfZone(!ok)
-    setZoneOk(ok)
-    return ok
-  }
-
-  const handleAddressBlur = () => {
-    const raw = address.trim()
+  const handleAddressSelect = (hit: AddressGeocodeHit) => {
+    setAddress(hit.label)
+    setSelectedAddress(hit)
     setAddressError(null)
-    if (!raw.length) {
-      resetZone()
-      return
-    }
-    syncZoneCheck(raw)
   }
 
-  const canLeaveIntent = zoneOk && family !== null && !outOfZone
+  const zoneOk = selectedAddress !== null
+  const canLeaveIntent = zoneOk && family !== null
 
   const goToForfait = () => {
-    const raw = address.trim()
     setAddressError(null)
-    if (!raw.length) {
+    if (!address.trim().length) {
       setAddressError("Indiquez l’adresse de livraison de la benne.")
+      return
+    }
+    if (!selectedAddress) {
+      setAddressError(
+        "Sélectionnez une adresse dans la liste (Île-de-France uniquement)."
+      )
       return
     }
     if (!family) {
       setAddressError("Choisissez un type de déchet dans la liste.")
-      return
-    }
-    const ok = syncZoneCheck(raw)
-    if (!ok) {
       return
     }
     setStep("forfait")
@@ -244,10 +224,10 @@ export function OrderWidget({ variant = "default", onStepIndexChange }: OrderWid
   return (
     <Card
       className={cn(
-        "relative mx-auto w-full overflow-hidden",
+        "relative mx-auto w-full",
         embedded
-          ? "max-w-none border-0 bg-transparent shadow-none ring-0"
-          : "max-w-xl border-white/70 bg-card/95 shadow-[0_22px_70px_-32px_color-mix(in_srgb,var(--brand-navy)_38%,transparent)] ring-1 ring-primary/15 backdrop-blur-sm"
+          ? "max-w-none overflow-visible border-0 bg-transparent shadow-none ring-0"
+          : "overflow-hidden max-w-xl border-white/70 bg-card/95 shadow-[0_22px_70px_-32px_color-mix(in_srgb,var(--brand-navy)_38%,transparent)] ring-1 ring-primary/15 backdrop-blur-sm"
       )}
     >
       {!embedded ? (
@@ -307,71 +287,53 @@ export function OrderWidget({ variant = "default", onStepIndexChange }: OrderWid
                 <label htmlFor="order-address" className={ORDER_FIELD_LABEL}>
                   Adresse de livraison
                 </label>
-                <div className="relative">
-                  <MapPin
-                    className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-brand-navy/40"
-                    aria-hidden
-                  />
-                  <Input
-                    id="order-address"
-                    value={address}
-                    onChange={(e) => {
-                      setAddress(e.target.value)
-                      setOutOfZone(false)
-                      setZoneOk(false)
-                      setAddressError(null)
-                    }}
-                    onBlur={handleAddressBlur}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault()
-                        ;(e.target as HTMLInputElement).blur()
-                      }
-                    }}
-                    placeholder="Numéro, rue, code postal et ville"
-                    className="h-14 border-2 border-primary/20 bg-white pl-12 pr-4 text-base shadow-sm focus-visible:border-primary/50 focus-visible:ring-brand-navy/30"
-                    autoComplete="street-address"
-                  />
-                </div>
+                <AddressAutocomplete
+                  id="order-address"
+                  value={address}
+                  selected={selectedAddress}
+                  onValueChange={(next) => {
+                    setAddress(next)
+                    setAddressError(null)
+                  }}
+                  onSelect={handleAddressSelect}
+                  onClearSelection={clearAddressSelection}
+                  aria-invalid={addressError !== null && !selectedAddress}
+                />
+                <p className="text-[0.65rem] text-muted-foreground">
+                  Saisissez votre adresse et choisissez une suggestion (Île-de-France
+                  uniquement).
+                </p>
               </div>
 
-              {zoneOk && geocode && departementCode && (
+              {selectedAddress && (
                 <p className="rounded-xl border border-primary/25 bg-primary/8 px-3 py-2 text-center text-xs text-brand-green-dark">
-                  Adresse en Île-de-France ({departementLabel(departementCode) ?? departementCode}
-                  {geocode.label ? ` · ${geocode.label}` : ""}).
+                  Adresse en Île-de-France (
+                  {departementLabel(selectedAddress.departementCode) ??
+                    selectedAddress.departementCode}
+                  · {selectedAddress.postcode} {selectedAddress.city}).
                 </p>
               )}
 
               <AnimatePresence>
-                {outOfZone && geocode && (
+                {address.trim().length >= 3 && !selectedAddress && !addressError && (
                   <motion.div
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
-                    className="rounded-2xl border border-rose-200/80 bg-gradient-to-br from-rose-50/95 to-white p-4 text-left text-sm text-rose-950"
+                    className="rounded-2xl border border-amber-200/80 bg-gradient-to-br from-amber-50/95 to-white p-3 text-left text-xs text-amber-950"
                   >
-                    <div className="flex gap-3">
-                      <MapPinOff className="size-5 shrink-0 text-rose-700" />
-                      <div>
-                        <p className="font-semibold">Hors zone d’intervention</p>
-                        <p className="mt-1 text-rose-900/90">
-                          Nous intervenons en Île-de-France (75, 77, 78, 91, 92, 93, 94, 95).
-                          Indiquez un code postal IDF ou appelez le{" "}
-                          <a
-                            href={SITE_PHONE_HREF}
-                            className="font-semibold underline decoration-rose-400"
-                          >
-                            {SITE_PHONE_DISPLAY}
-                          </a>{" "}
-                          pour étudier un cas particulier.
-                        </p>
-                      </div>
+                    <div className="flex gap-2">
+                      <MapPinOff className="size-4 shrink-0 text-amber-700" aria-hidden />
+                      <p>
+                        Choisissez une adresse dans la liste pour confirmer la zone
+                        d’intervention (75, 77, 78, 91, 92, 93, 94, 95).
+                      </p>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <div className="space-y-1.5">
+              <div className="relative z-30 space-y-1.5">
                 <label htmlFor="order-waste-family" className={ORDER_FIELD_LABEL}>
                   Type de déchet
                 </label>
@@ -392,7 +354,7 @@ export function OrderWidget({ variant = "default", onStepIndexChange }: OrderWid
                   >
                     <SelectTrigger
                       id="order-waste-family"
-                      className="h-auto min-h-12 w-full max-w-none justify-between rounded-xl border-2 border-primary/20 bg-white py-3 pl-12 pr-4 text-left text-[0.9375rem] shadow-sm focus-visible:border-primary/40 data-[size=default]:h-auto dark:bg-white/95 [&_[data-slot=select-value]]:min-h-[2.75rem] [&_[data-slot=select-value]]:items-start [&_[data-slot=select-value]]:gap-3"
+                      className="h-14 w-full max-w-none items-center justify-between rounded-xl border-2 border-primary/20 bg-white py-0 pl-12 pr-4 text-base shadow-sm focus-visible:border-primary/50 focus-visible:ring-brand-navy/30 data-[size=default]:h-14 dark:bg-white/95"
                       size="default"
                     >
                       <SelectValue placeholder="Choisissez le type de déchet dans la liste" />
@@ -400,13 +362,19 @@ export function OrderWidget({ variant = "default", onStepIndexChange }: OrderWid
                   <SelectContent
                     side="bottom"
                     align="start"
-                    className="rounded-xl border-primary/15"
+                    sideOffset={6}
+                    className="z-[100] rounded-xl border-primary/15"
                   >
                     {FAMILIES.map((fid) => {
                       const meta = FAMILY_LABELS[fid]
                       const Icon = FAMILY_ICONS[fid]
                       return (
-                        <SelectItem key={fid} value={fid} className="cursor-pointer py-3">
+                        <SelectItem
+                          key={fid}
+                          value={fid}
+                          label={meta.title}
+                          className="cursor-pointer py-3"
+                        >
                           <span className="flex w-full items-start gap-3 text-left">
                             <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                               <Icon
@@ -546,7 +514,7 @@ export function OrderWidget({ variant = "default", onStepIndexChange }: OrderWid
             </motion.div>
           )}
 
-          {step === "payment" && prestation && geocode && (
+          {step === "payment" && prestation && selectedAddress && (
             <motion.div
               key="payment"
               initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 24 }}
@@ -566,7 +534,7 @@ export function OrderWidget({ variant = "default", onStepIndexChange }: OrderWid
                 <li className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:justify-between">
                   <span className="text-muted-foreground">Lieu</span>
                   <span className="font-medium text-brand-navy">
-                    {geocode.label}
+                    {selectedAddress.label}
                   </span>
                 </li>
                 <li className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:justify-between">
@@ -651,7 +619,8 @@ export function OrderWidget({ variant = "default", onStepIndexChange }: OrderWid
                     />
                   </div>
                   <p className="text-[0.7rem] text-muted-foreground">
-                    Paiement sécurisé Stripe · montant TTC estimé (TVA 20&nbsp;%) :{" "}
+                    Paiement sécurisé Stripe (CB, Apple Pay, Google Pay selon votre
+                    appareil) · montant TTC estimé (TVA 20&nbsp;%) :{" "}
                     <strong className="text-foreground">
                       {fmtHt(Math.round(prestation.priceHt * 1.2 * 100) / 100)}
                     </strong>
@@ -687,10 +656,12 @@ export function OrderWidget({ variant = "default", onStepIndexChange }: OrderWid
                       startPayTransition(async () => {
                         const result = await startOrderCheckout({
                           audience,
-                          address: address.trim(),
-                          lat: geocode.lat,
-                          lng: geocode.lng,
-                          addressLabel: geocode.label,
+                          address: selectedAddress.label,
+                          lat: selectedAddress.lat,
+                          lng: selectedAddress.lng,
+                          addressLabel: selectedAddress.label,
+                          postcode: selectedAddress.postcode,
+                          departementCode: selectedAddress.departementCode,
                           prestationId: prestation.id,
                           deliveryDate,
                           pickupDate: pickupDate || undefined,

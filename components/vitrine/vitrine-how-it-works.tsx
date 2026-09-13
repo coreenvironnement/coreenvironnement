@@ -8,10 +8,12 @@ import {
   Calendar03Icon,
   ContainerIcon,
   CreditCardValidationIcon,
+  Leaf01Icon,
   Login01Icon,
   Location01Icon,
   PackageDimensions01Icon,
   Recycle03Icon,
+  Tick02Icon,
   Timer02Icon,
   UserAdd01Icon,
 } from "@hugeicons/core-free-icons"
@@ -144,175 +146,109 @@ function ProfileToggle({
   )
 }
 
-function StepIconBadge({ icon }: { icon: StepIcon }) {
+function StepCard({ num, label, text, icon }: Step) {
   return (
-    <span className="how-step-icon inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#d8e0ec] bg-white text-brand-navy shadow-[0_2px_12px_-4px_rgba(24,53,116,0.16)] sm:h-[3.25rem] sm:w-[3.25rem]">
-      <HugeiconsIcon icon={icon} size={20} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />
-    </span>
-  )
-}
-
-function StepCopy({ num, label, text, centered = false }: Step & { centered?: boolean }) {
-  return (
-    <div className={centered ? "text-center" : "min-w-0"}>
+    <article className="how-step-card rounded-[0.875rem] border border-brand-border/90 bg-white p-4 sm:p-5">
       <p className="vitrine-label text-brand-green">{num}</p>
-      <h4 className="mt-1.5 font-[family-name:var(--font-display)] text-sm font-semibold tracking-[0.08em] text-brand-navy sm:text-[13px]">
+      <span className="how-step-icon-circle mt-3 inline-flex h-11 w-11 items-center justify-center rounded-full bg-brand-green/[0.08] text-brand-green">
+        <HugeiconsIcon icon={icon} size={20} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />
+      </span>
+      <h4 className="mt-3 font-[family-name:var(--font-display)] text-[13px] font-semibold uppercase tracking-[0.06em] text-brand-navy sm:text-sm">
         {label}
       </h4>
-      <p
-        className={`mt-2 text-sm leading-relaxed text-brand-muted sm:text-[15px] sm:leading-[1.72] ${
-          centered ? "mx-auto max-w-[14rem] text-[13.5px] leading-[1.65]" : ""
-        }`}
-      >
+      <p className="mt-2 text-[13.5px] leading-relaxed text-brand-muted sm:text-sm sm:leading-[1.68]">
         {text}
       </p>
-    </div>
+    </article>
   )
 }
 
-function StepsTimeline({ steps }: { steps: Step[] }) {
+function StepsGrid({ steps, className = "" }: { steps: Step[]; className?: string }) {
   return (
-    <ol className="how-steps-vertical lg:hidden">
-      {steps.map((step, index) => {
-        const isLast = index === steps.length - 1
-        return (
-          <li key={step.num} className="relative">
-            <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4">
-              <div className="flex flex-col items-center">
-                <StepIconBadge icon={step.icon} />
-                {!isLast ? (
-                  <span
-                    aria-hidden
-                    className="how-step-rail mt-3 mb-1 w-[1.5px] flex-1 min-h-[2rem] bg-[#c8d4e4]"
-                  />
-                ) : null}
-              </div>
-              <div className={isLast ? "pb-0" : "pb-8"}>
-                <StepCopy {...step} />
-              </div>
-            </div>
-          </li>
-        )
-      })}
+    <ol className={`how-steps-grid grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 sm:gap-4 ${className}`}>
+      {steps.map((step) => (
+        <li key={step.num}>
+          <StepCard {...step} />
+        </li>
+      ))}
     </ol>
   )
 }
 
-function StepsHorizontal({ steps }: { steps: Step[] }) {
-  const gridCols =
-    steps.length === 2 ? "grid-cols-2" : steps.length === 3 ? "grid-cols-3" : "grid-cols-4"
-  const lineInset =
-    steps.length === 2
-      ? "left-[25%] right-[25%]"
-      : steps.length === 3
-        ? "left-[16.67%] right-[16.67%]"
-        : "left-[12.5%] right-[12.5%]"
-
+function AfterPanel({ description }: { description: string }) {
   return (
-    <div className="how-stepper-horizontal relative hidden lg:block">
-      <div
-        aria-hidden
-        className={`how-stepper-line pointer-events-none absolute ${lineInset} top-[1.625rem] h-[2px] rounded-full bg-[#c8d4e4]/90`}
-      />
-      <ol className={`grid ${gridCols} gap-5`}>
-        {steps.map((step) => (
-          <li key={step.num} className="relative px-1">
-            <div className="mx-auto flex w-full max-w-[11rem] flex-col items-center text-center">
-              <StepIconBadge icon={step.icon} />
-              <div className="mt-4">
-                <StepCopy {...step} centered />
-              </div>
-            </div>
+    <aside className="how-after-panel flex h-full flex-col border-t border-brand-green/10 p-6 sm:p-8 lg:border-t-0 lg:border-l lg:p-8 xl:p-10">
+      <div className="flex items-center gap-2.5">
+        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-green/[0.12] text-brand-green">
+          <HugeiconsIcon icon={Leaf01Icon} size={18} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />
+        </span>
+        <p className="font-[family-name:var(--font-display)] text-lg font-semibold tracking-[-0.02em] text-brand-navy">
+          Et après ?
+        </p>
+      </div>
+      <p className="mt-4 text-sm leading-relaxed text-brand-muted sm:text-[15px] sm:leading-[1.72]">
+        {description}
+      </p>
+      <ul
+        aria-label="Suite du parcours après commande"
+        className="how-after-tags mt-6 grid grid-cols-1 gap-2.5 min-[480px]:grid-cols-2 sm:gap-3"
+      >
+        {AFTER_FLOW.map((step, index) => (
+          <li
+            key={step}
+            className={index === AFTER_FLOW.length - 1 ? "min-[480px]:col-span-2" : undefined}
+          >
+            <span className="how-after-tag flex items-center gap-2 rounded-[0.625rem] border border-brand-green/15 bg-white/80 px-3 py-2.5 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase leading-snug tracking-[0.05em] text-brand-navy sm:text-[11.5px]">
+              <HugeiconsIcon
+                icon={Tick02Icon}
+                size={14}
+                strokeWidth={VITRINE_ICON_STROKE}
+                className="shrink-0 text-brand-green"
+                aria-hidden
+              />
+              {step}
+            </span>
           </li>
         ))}
-      </ol>
-    </div>
+      </ul>
+    </aside>
   )
 }
 
 function ParticulierPanel() {
   return (
-    <div className="how-panel">
-      <h3 className="text-lg text-brand-navy sm:text-xl">
-        {commentCaFonctionne.particulier.accroche}
-      </h3>
-
-      <div className="how-stepper mt-8 lg:mt-11">
-        <StepsHorizontal steps={PARTICULIER_STEPS} />
-        <StepsTimeline steps={PARTICULIER_STEPS} />
-      </div>
-
-      <div className="how-after-block mt-10 rounded-[var(--radius-card)] border border-[#E3E9E6] bg-white p-5 shadow-[0_1px_2px_rgb(24_53_116/0.025),0_6px_18px_-6px_rgb(24_53_116/0.055)] sm:mt-12 sm:p-6">
-        <p className="font-[family-name:var(--font-display)] text-base font-semibold tracking-[-0.01em] text-brand-navy">
-          Et après ?
-        </p>
-        <p className="mt-3 text-sm leading-relaxed text-brand-muted sm:text-[15px] sm:leading-[1.72]">
-          {commentCaFonctionne.particulier.suite}
-        </p>
-        <ol
-          aria-label="Suite du parcours après commande"
-          className="how-after-flow mt-5 flex flex-col gap-1.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2"
-        >
-          {AFTER_FLOW.map((step, index) => (
-            <li key={step} className="flex flex-col items-stretch gap-1.5 sm:flex-row sm:items-center">
-              <span className="rounded-[10px] border border-brand-border bg-brand-bg-alt px-3 py-2 font-[family-name:var(--font-display)] text-[12px] font-semibold uppercase leading-snug tracking-[0.06em] text-brand-navy sm:rounded-full sm:px-2.5 sm:py-1 sm:text-[11px] sm:tracking-[0.08em]">
-                {step}
-              </span>
-              {index < AFTER_FLOW.length - 1 ? (
-                <HugeiconsIcon
-                  icon={ArrowRight01Icon}
-                  size={15}
-                  strokeWidth={VITRINE_ICON_STROKE}
-                  className="mx-auto shrink-0 rotate-90 text-brand-green sm:mx-0 sm:rotate-0"
-                  aria-hidden
-                />
-              ) : null}
-            </li>
-          ))}
-        </ol>
+    <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-border bg-white shadow-[0_2px_4px_rgb(24_53_116/0.03),0_12px_32px_-8px_rgb(24_53_116/0.1)]">
+      <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
+        <div className="how-panel-main p-6 sm:p-8 lg:p-9 xl:p-10">
+          <h3 className="text-lg leading-snug text-brand-navy sm:text-xl">
+            {commentCaFonctionne.particulier.accroche}
+          </h3>
+          <StepsGrid steps={PARTICULIER_STEPS} className="mt-6 sm:mt-8" />
+        </div>
+        <AfterPanel description={commentCaFonctionne.particulier.suite} />
       </div>
     </div>
   )
 }
 
-function ProfessionnelPanel() {
+function ProSidePanel() {
   return (
-    <div className="how-panel">
-      <h3 className="text-lg text-brand-navy sm:text-xl">
-        {commentCaFonctionne.professionnel.accroche}
-      </h3>
-      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-brand-muted sm:text-[15px]">
-        {commentCaFonctionne.professionnel.etapesIntro}
-      </p>
-
-      <p className="vitrine-label mt-8 text-brand-sky">OUVERTURE DU COMPTE</p>
-      <div className="how-stepper mt-4">
-        <StepsTimeline steps={PRO_ACCOUNT_STEPS} />
-        <StepsHorizontal steps={PRO_ACCOUNT_STEPS} />
-      </div>
-
-      <div className="my-8 flex flex-col items-center gap-2 sm:my-10">
-        <span className="rounded-full border border-brand-green/25 bg-brand-green/[0.06] px-3 py-1 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-green-dark">
-          COMPTE VALIDÉ
+    <aside className="how-after-panel flex h-full flex-col border-t border-brand-green/10 p-6 sm:p-8 lg:border-t-0 lg:border-l lg:p-8 xl:p-10">
+      <div className="flex items-center gap-2.5">
+        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-green/[0.12] text-brand-green">
+          <HugeiconsIcon icon={UserAdd01Icon} size={18} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />
         </span>
-        <HugeiconsIcon
-          icon={ArrowRight01Icon}
-          size={16}
-          strokeWidth={VITRINE_ICON_STROKE}
-          className="rotate-90 text-brand-border"
-          aria-hidden
-        />
-        <p className="vitrine-label text-brand-navy/70">PASSER UNE COMMANDE</p>
+        <p className="font-[family-name:var(--font-display)] text-lg font-semibold tracking-[-0.02em] text-brand-navy">
+          Compte PRO
+        </p>
       </div>
-
-      <div className="how-stepper">
-        <StepsTimeline steps={PRO_ORDER_STEPS} />
-        <StepsHorizontal steps={PRO_ORDER_STEPS} />
-      </div>
-
-      <div className="mt-10 flex flex-col items-start gap-3 border-t border-brand-border/90 pt-8 sm:flex-row sm:items-center sm:justify-between">
+      <p className="mt-4 text-sm leading-relaxed text-brand-muted sm:text-[15px] sm:leading-[1.72]">
+        Paiement différé à 30 jours, facturation centralisée et interlocuteur dédié pour l&apos;ensemble
+        de vos chantiers en Île-de-France.
+      </p>
+      <div className="mt-auto border-t border-brand-green/10 pt-6">
         <p className="text-sm text-brand-muted">Déjà client ?</p>
-        <Link href="/login" className="how-login-link group inline-flex items-center gap-2">
+        <Link href="/login" className="how-login-link group mt-2 inline-flex items-center gap-2">
           Identifiez-vous ici
           <HugeiconsIcon
             icon={Login01Icon}
@@ -329,6 +265,43 @@ function ProfessionnelPanel() {
             aria-hidden
           />
         </Link>
+      </div>
+    </aside>
+  )
+}
+
+function ProfessionnelPanel() {
+  return (
+    <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-border bg-white shadow-[0_2px_4px_rgb(24_53_116/0.03),0_12px_32px_-8px_rgb(24_53_116/0.1)]">
+      <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
+        <div className="how-panel-main p-6 sm:p-8 lg:p-9 xl:p-10">
+          <h3 className="text-lg leading-snug text-brand-navy sm:text-xl">
+            {commentCaFonctionne.professionnel.accroche}
+          </h3>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-brand-muted sm:text-[15px]">
+            {commentCaFonctionne.professionnel.etapesIntro}
+          </p>
+
+          <p className="vitrine-label mt-8 text-brand-sky">OUVERTURE DU COMPTE</p>
+          <StepsGrid steps={PRO_ACCOUNT_STEPS} className="mt-4" />
+
+          <div className="my-7 flex flex-col items-center gap-2 sm:my-8">
+            <span className="rounded-full border border-brand-green/25 bg-brand-green/[0.06] px-3 py-1 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-green-dark">
+              COMPTE VALIDÉ
+            </span>
+            <HugeiconsIcon
+              icon={ArrowRight01Icon}
+              size={16}
+              strokeWidth={VITRINE_ICON_STROKE}
+              className="rotate-90 text-brand-border sm:rotate-0"
+              aria-hidden
+            />
+            <p className="vitrine-label text-brand-navy/70">PASSER UNE COMMANDE</p>
+          </div>
+
+          <StepsGrid steps={PRO_ORDER_STEPS} />
+        </div>
+        <ProSidePanel />
       </div>
     </div>
   )
@@ -358,7 +331,7 @@ export function VitrineHowItWorks() {
           id="how-panel"
           role="tabpanel"
           aria-labelledby={`tab-${profile}`}
-          className="how-panel-wrap mx-auto mt-10 max-w-5xl sm:mt-12"
+          className="how-panel-wrap mx-auto mt-10 max-w-5xl sm:mt-12 lg:max-w-6xl"
         >
           <div key={profile} className="how-panel-enter">
             {profile === "particulier" ? <ParticulierPanel /> : <ProfessionnelPanel />}
