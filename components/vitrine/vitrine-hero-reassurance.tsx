@@ -29,6 +29,8 @@ const REASSURANCE = [
   },
 ] as const
 
+const MOBILE_CAROUSEL_ITEMS = [...REASSURANCE, REASSURANCE[0]] as const
+
 type VitrineHeroReassuranceProps = {
   className?: string
 }
@@ -40,29 +42,54 @@ export function VitrineHeroReassurance({ className }: VitrineHeroReassuranceProp
       className={cn("animate-fade-up relative isolate w-full", className)}
       style={{ animationDelay: "380ms" }}
     >
-      {/* Mobile — bandeau vert compact, défilant si besoin */}
+      {/* Mobile — bandeau navy premium, carrousel horizontal */}
       <div
         role="list"
-        className="flex snap-x snap-mandatory overflow-x-auto bg-brand-green [-ms-overflow-style:none] [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden"
+        aria-roledescription="carousel"
+        className="hero-reassurance-carousel relative overflow-hidden bg-[linear-gradient(180deg,#132a59_0%,#0e1e42_48%,#0b1732_100%)] md:hidden"
       >
-        {REASSURANCE.map((item) => (
-          <div
-            key={item.label}
-            role="listitem"
-            className="flex min-w-[33.333%] flex-1 snap-center items-center justify-center gap-2 px-3 py-3.5"
-          >
-            <HugeiconsIcon
-              icon={item.icon}
-              size={18}
-              strokeWidth={VITRINE_ICON_STROKE}
-              className="shrink-0 text-white"
-              aria-hidden
-            />
-            <span className="whitespace-nowrap text-[12px] font-semibold leading-none text-white">
-              {item.label}
-            </span>
-          </div>
-        ))}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-6 bg-gradient-to-b from-transparent to-[#F3F7F5]/[0.06]"
+        />
+
+        <div className="hero-reassurance-carousel__track flex">
+          {MOBILE_CAROUSEL_ITEMS.map((item, index) => (
+            <div
+              key={`${item.label}-${index}`}
+              role="listitem"
+              aria-hidden={index === MOBILE_CAROUSEL_ITEMS.length - 1 ? true : undefined}
+              className="flex min-w-full shrink-0 items-center justify-center gap-3 px-5 py-3.5"
+            >
+              <span className="relative flex size-11 shrink-0 items-center justify-center rounded-lg border border-white/[0.1] bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-[2px]">
+                <span
+                  aria-hidden
+                  className="absolute -right-0.5 -top-0.5 size-1.5 rounded-full border-2 border-[#0b1732] bg-brand-green"
+                />
+                <HugeiconsIcon
+                  icon={item.icon}
+                  size={20}
+                  strokeWidth={VITRINE_ICON_STROKE}
+                  className="text-white"
+                  aria-hidden
+                />
+              </span>
+
+              <div className="min-w-0 text-left">
+                <p className="text-[14px] font-semibold leading-snug tracking-[-0.01em] text-white">
+                  {item.label}
+                </p>
+                <p className="mt-0.5 text-[12px] leading-relaxed text-[#94A3B8]">
+                  {item.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Desktop — extension premium intégrée au hero */}

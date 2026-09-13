@@ -179,8 +179,16 @@
         0 6px 18px -6px rgb(24 53 116 / 0.055);
     }
 
+    .vitrine-root #services .service-flip-face {
+      padding-bottom: 2rem;
+    }
+
+    .vitrine-root #services .service-flip-face.service-flip-face--stripe {
+      background-color: #f3f6fb;
+    }
+
     .vitrine-root .service-flip-front-footer {
-      @apply border-t border-[#E3E9E6] pt-6;
+      @apply pb-1 pt-4;
     }
 
     .vitrine-root .service-flip-action--mobile-emphasis {
@@ -297,6 +305,9 @@
   /* Hero — overlays plein écran pour la lisibilité du texte */
   .vitrine-root .hero-overlay {
     @apply pointer-events-none absolute inset-0;
+  }
+
+  .vitrine-root .hero-overlay--desktop {
     background: linear-gradient(
       90deg,
       rgb(24 53 116 / 0.84) 0%,
@@ -305,6 +316,26 @@
       rgb(24 53 116 / 0.16) 58%,
       transparent 70%
     );
+  }
+
+  /* Mobile : voile plus léger, couverture ~95 % de l’image */
+  .vitrine-root .hero-overlay--mobile {
+    background:
+      linear-gradient(
+        180deg,
+        rgb(24 53 116 / 0.08) 0%,
+        transparent 38%,
+        rgb(24 53 116 / 0.05) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgb(24 53 116 / 0.58) 0%,
+        rgb(24 53 116 / 0.48) 28%,
+        rgb(24 53 116 / 0.34) 52%,
+        rgb(24 53 116 / 0.20) 72%,
+        rgb(24 53 116 / 0.08) 88%,
+        transparent 95%
+      );
   }
 
   /* Hero — voile localisé sur la zone de lecture, discret */
@@ -316,6 +347,18 @@
       rgb(24 53 116 / 0.03) 58%,
       transparent 74%
     );
+  }
+
+  @media (max-width: 767px) {
+    .vitrine-root .hero-readability-glow {
+      background: radial-gradient(
+        ellipse 118% 102% at 50% 48%,
+        rgb(24 53 116 / 0.16) 0%,
+        rgb(24 53 116 / 0.07) 44%,
+        rgb(24 53 116 / 0.02) 62%,
+        transparent 82%
+      );
+    }
   }
 
   /* Hero — cadre proche du viewport pour un cadrage plus large sans réduire le banner */
@@ -435,6 +478,33 @@
   }
 }
 
+@keyframes hero-reassurance-carousel {
+  0%,
+  22% {
+    transform: translateX(0);
+  }
+  25%,
+  47% {
+    transform: translateX(-25%);
+  }
+  50%,
+  72% {
+    transform: translateX(-50%);
+  }
+  75%,
+  97% {
+    transform: translateX(-75%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.vitrine-root .hero-reassurance-carousel__track {
+  animation: hero-reassurance-carousel 16s cubic-bezier(0.45, 0.05, 0.25, 1) infinite;
+  will-change: transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .vitrine-root *,
   .vitrine-root ::before,
@@ -442,5 +512,10 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .vitrine-root .hero-reassurance-carousel__track {
+    animation: none !important;
+    transform: none !important;
   }
 }

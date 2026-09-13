@@ -138,13 +138,15 @@ export function ServiceFlipCard({
     return () => window.removeEventListener("keydown", onKeyDown)
   }, [flipped, hideDetails])
 
+  const mobileStripeClass = index % 2 === 1 ? "service-flip-face--stripe" : ""
+
   return (
     <article
       className={`service-flip-card group ${flipped ? "is-flipped" : ""} ${featured ? "service-flip-card--featured" : ""} ${reduced ? "service-flip-card--reduced" : ""}`}
     >
       <div className="service-flip-inner">
         <div
-          className="service-flip-face service-flip-front card-vitrine"
+          className={`service-flip-face service-flip-front card-vitrine ${mobileStripeClass}`}
           aria-hidden={flipped}
           {...(flipped ? { inert: true } : {})}
         >
@@ -182,7 +184,7 @@ export function ServiceFlipCard({
 
         <div
           id={detailsId}
-          className="service-flip-face service-flip-back card-vitrine border-brand-navy/10 bg-brand-bg-alt"
+          className={`service-flip-face service-flip-back card-vitrine border-brand-navy/10 bg-brand-bg-alt ${mobileStripeClass}`}
           aria-hidden={!flipped}
           {...(!flipped ? { inert: true } : {})}
         >

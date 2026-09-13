@@ -42,7 +42,8 @@ export function VitrineHero() {
         </div>
       </div>
 
-      <div aria-hidden="true" className="hero-overlay" />
+      <div aria-hidden="true" className="hero-overlay hero-overlay--mobile md:hidden" />
+      <div aria-hidden="true" className="hero-overlay hero-overlay--desktop hidden md:block" />
 
       <div className="container-x relative z-10 pb-16 pt-24 sm:pb-28 sm:pt-[6.25rem] lg:pb-32 lg:pt-32">
         <div className="relative max-w-[760px] lg:max-w-[640px] xl:max-w-[680px] lg:-translate-y-2">
