@@ -68,13 +68,12 @@ export function getAppOrigin(fallbackOrigin?: string | null): string {
   ).replace(/\/$/, "")
 }
 
-/** CB, Apple Pay et Google Pay via Stripe Checkout (selon éligibilité navigateur / compte). */
+/** Locale FR ; moyens de paiement (CB, Apple Pay, Google Pay) gérés via le Dashboard Stripe. */
 export function stripeCheckoutPaymentOptions(): Pick<
   Stripe.Checkout.SessionCreateParams,
-  "automatic_payment_methods" | "locale"
+  "locale"
 > {
   return {
-    automatic_payment_methods: { enabled: true },
     locale: "fr",
   }
 }
