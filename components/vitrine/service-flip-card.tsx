@@ -15,19 +15,28 @@ type Service = (typeof services)[number]
 type ServiceIcon = typeof ContainerIcon
 
 function ServiceCardIcon({ index }: { index: number }) {
+  const iconClass = "h-5 w-5 shrink-0 text-current"
+
   if (index === 1) {
-    return <RecyclingCenterIcon className="h-5 w-5 text-brand-navy" />
+    return <RecyclingCenterIcon className={iconClass} />
   }
 
   if (index === 2) {
-    return <HazardousWasteIcon className="h-5 w-5 text-brand-navy" />
+    return <HazardousWasteIcon className={iconClass} />
   }
 
   if (index === 3) {
-    return <CustomOperationsIcon className="h-5 w-5 text-brand-navy" />
+    return <CustomOperationsIcon className={iconClass} />
   }
 
-  return <HugeiconsIcon icon={ContainerIcon} size={20} strokeWidth={VITRINE_ICON_STROKE} />
+  return (
+    <HugeiconsIcon
+      icon={ContainerIcon}
+      size={20}
+      strokeWidth={VITRINE_ICON_STROKE}
+      className={iconClass}
+    />
+  )
 }
 
 function usePrefersReducedMotion() {
@@ -139,11 +148,11 @@ export function ServiceFlipCard({
           aria-hidden={flipped}
           {...(flipped ? { inert: true } : {})}
         >
-          <span className="vitrine-label shrink-0 text-brand-green/90 sm:text-brand-muted" aria-hidden>
+          <span className="vitrine-label shrink-0 text-brand-green" aria-hidden>
             {String(index + 1).padStart(2, "0")}
           </span>
           <span
-            className="mt-3.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-brand-bg-alt text-brand-navy transition duration-300 group-hover:-translate-y-0.5 sm:mt-4"
+            className="service-flip-icon-wrap mt-3.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-brand-bg-alt text-brand-navy transition-[color,transform] duration-300 sm:mt-4 sm:bg-[#F2F8F2]"
             aria-hidden
           >
             <ServiceCardIcon index={index} />

@@ -111,10 +111,12 @@ function StepCircle({
     <div
       className={cn(
         "relative flex h-9 min-h-9 w-9 min-w-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-xs font-semibold tabular-nums transition-colors sm:h-10 sm:min-h-10 sm:w-10 sm:min-w-10 sm:text-sm",
-        done && "border-2 border-primary bg-primary text-primary-foreground shadow-sm",
-        active && !done && "border-2 border-primary bg-primary text-primary-foreground shadow-md",
-        !active && !done &&
-          "border-2 border-primary/40 bg-primary/[0.1] text-primary"
+        (done || active) &&
+          "border-2 border-[#35A238] bg-[#35A238] text-white shadow-sm",
+        active && !done && "shadow-md",
+        !active &&
+          !done &&
+          "border border-brand-navy/18 bg-white text-brand-navy/40"
       )}
     >
       <AnimatePresence initial={false} mode="wait">
@@ -266,9 +268,9 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.07] via-transparent to-brand-navy/[0.05]" />
       ) : null}
 
-      <CardContent className={cn("relative space-y-6", embedded ? "px-1 pt-2 pb-2" : "pt-8")}>
+      <CardContent className={cn("relative space-y-5", embedded ? "px-1 pt-2 pb-2" : "pt-8")}>
         <div className="space-y-2">
-          <p className="text-center text-xs font-medium uppercase tracking-wide text-primary">
+          <p className="text-center text-xs font-medium uppercase tracking-wide text-brand-navy/55">
             Vous êtes&nbsp;?
           </p>
           <div
@@ -282,8 +284,8 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
               className={cn(
                 "flex-1 rounded-xl py-2.5 text-xs font-semibold transition sm:text-sm",
                 audience === "particulier"
-                  ? "bg-primary/12 text-primary shadow-sm ring-2 ring-primary/35"
-                  : "text-muted-foreground hover:bg-white/50 hover:text-foreground"
+                  ? "bg-[#35A238]/10 text-[#35A238] shadow-sm ring-1 ring-[#35A238]/35"
+                  : "text-brand-navy/45 hover:bg-white/60 hover:text-brand-navy/70"
               )}
             >
               Particulier
@@ -294,44 +296,44 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
               className={cn(
                 "flex-1 rounded-xl py-2.5 text-xs font-semibold transition sm:text-sm",
                 audience === "professionnel"
-                  ? "bg-primary/12 text-primary shadow-sm ring-2 ring-primary/35"
-                  : "text-muted-foreground hover:bg-white/50 hover:text-foreground"
+                  ? "bg-[#35A238]/10 text-[#35A238] shadow-sm ring-1 ring-[#35A238]/35"
+                  : "text-brand-navy/45 hover:bg-white/60 hover:text-brand-navy/70"
               )}
             >
               Professionnel
             </button>
           </div>
-          <p className="text-primary/90 text-center text-[0.72rem] leading-relaxed sm:text-xs">
+          <p className="text-center text-[0.72rem] leading-relaxed text-muted-foreground sm:text-xs">
             {audience === "professionnel"
               ? "Chantiers et pros du BTP, livraisons et enlèvements adaptés au planning."
               : "Maison, jardin ou petit chantier, même parcours simple."}
           </p>
         </div>
 
-        <div className="mb-2 flex items-center justify-center gap-1 sm:gap-2">
+        <div className="mb-1.5 flex items-center justify-center gap-1 sm:gap-1.5">
           {steps.map((s, i) => (
             <div key={s.id} className="flex items-center">
               <StepCircle stepIndex={i} currentStepIdx={currentStepIdx} />
               {i < steps.length - 1 && (
                 <div
                   className={cn(
-                    "mx-1 h-0.5 w-3 rounded-full sm:w-6",
-                    currentStepIdx > i ? "bg-primary" : "bg-primary/40"
+                    "mx-1 h-px w-3 sm:w-5",
+                    currentStepIdx > i ? "bg-[#35A238]" : "bg-brand-navy/12"
                   )}
                 />
               )}
             </div>
           ))}
         </div>
-        <div className="mb-6 flex max-w-md justify-center gap-2 sm:gap-6">
+        <div className="mb-4 flex max-w-md justify-center gap-2 sm:gap-6">
           {steps.map((s, i) => {
             const active = currentStepIdx === i
             return (
               <span
                 key={`${s.id}-label`}
                 className={cn(
-                  "max-w-[28%] flex-1 truncate text-center text-[0.65rem] font-medium leading-tight text-primary uppercase tracking-wide opacity-95 sm:text-xs",
-                  active && "font-semibold opacity-100"
+                  "max-w-[28%] flex-1 truncate text-center text-[0.65rem] font-medium uppercase leading-tight tracking-wide text-brand-navy/45 sm:text-xs",
+                  active && "font-semibold text-[#35A238]"
                 )}
               >
                 {s.label}
@@ -348,10 +350,10 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
-              className="space-y-5"
+              className="space-y-4"
             >
               <div className="text-center">
-                <p className="text-lg font-semibold text-primary sm:text-xl">
+                <p className="text-lg font-semibold text-brand-navy sm:text-xl">
                   Où livrer la benne&nbsp;?
                 </p>
               </div>
@@ -359,13 +361,13 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
               <div className="space-y-2">
                 <label
                   htmlFor="order-address"
-                  className="block text-left text-sm font-semibold text-primary"
+                  className="block text-left text-sm font-semibold text-brand-navy"
                 >
                   Adresse de livraison
                 </label>
                 <div className="relative">
                   <MapPin
-                    className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-primary"
+                    className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-brand-navy/40"
                     aria-hidden
                   />
                   <Input
@@ -430,7 +432,7 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
               <div className="space-y-2">
                 <label
                   htmlFor="order-waste-family"
-                  className="block text-left text-sm font-semibold text-primary"
+                  className="block text-left text-sm font-semibold text-brand-navy"
                 >
                   Type de déchet
                 </label>
@@ -489,7 +491,7 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
 
               <Button
                 type="button"
-                className="h-11 w-full rounded-xl bg-primary text-base font-semibold shadow-lg shadow-primary/25"
+                className="h-11 w-full rounded-xl border-0 bg-[#35A238] text-base font-semibold text-white shadow-lg shadow-[#35A238]/20 hover:bg-[#19752B] disabled:cursor-not-allowed disabled:opacity-45 disabled:shadow-none"
                 onClick={goToForfait}
                 disabled={!canLeaveIntent}
               >
@@ -509,7 +511,7 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
               className="space-y-4"
             >
               <div className="text-center">
-                <CardDescription className="text-base font-semibold text-primary">
+                <CardDescription className="text-base font-semibold text-brand-navy">
                   Choisissez votre forfait
                 </CardDescription>
                 <p className="mt-1 text-xs text-muted-foreground">
@@ -519,8 +521,8 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
 
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="space-y-1.5">
-                  <label className="flex items-center gap-1.5 text-xs font-semibold text-primary">
-                    <Calendar className="size-3.5" aria-hidden />
+                  <label className="flex items-center gap-1.5 text-xs font-semibold text-brand-navy">
+                    <Calendar className="size-3.5 text-brand-navy/50" aria-hidden />
                     Livraison souhaitée&nbsp;*
                   </label>
                   <Input
