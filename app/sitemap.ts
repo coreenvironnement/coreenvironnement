@@ -40,7 +40,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${base}/location-benne/${slug}`,
       lastModified,
       changeFrequency: "monthly" as const,
-      priority: page?.type === "departement" ? 0.9 : 0.7,
+      priority:
+        page?.type === "departement" ? 0.9 : page?.type === "longtail" ? 0.65 : 0.7,
     }
   })
 

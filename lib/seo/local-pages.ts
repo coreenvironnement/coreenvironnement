@@ -1,6 +1,8 @@
 import type { SeoVariant } from "@/lib/seo/landing-variants"
 
-export type LocalPageType = "departement" | "ville"
+import { LONGTAIL_PAGES } from "@/lib/seo/longtail-pages"
+
+export type LocalPageType = "departement" | "ville" | "longtail"
 
 export type LocalPage = {
   slug: string
@@ -478,12 +480,14 @@ function dedupeCities(cities: string[]): string[] {
   })
 }
 
-const LOCAL_PAGES: LocalPage[] = DEPARTEMENTS.flatMap((def) => {
+const BASE_LOCAL_PAGES: LocalPage[] = DEPARTEMENTS.flatMap((def) => {
   const cities = dedupeCities(def.cities)
   const deptPage = buildDepartementPage({ ...def, cities })
   const cityPages = cities.map((city) => buildVillePage({ ...def, cities }, city))
   return [deptPage, ...cityPages]
 })
+
+const LOCAL_PAGES: LocalPage[] = [...BASE_LOCAL_PAGES, ...LONGTAIL_PAGES]
 
 const LOCAL_PAGE_BY_SLUG = new Map(LOCAL_PAGES.map((page) => [page.slug, page]))
 
@@ -525,7 +529,7 @@ export function localPageToSeoVariant(page: LocalPage): SeoVariant {
     canonicalPath: `/location-benne/${page.slug}`,
     relatedCityLinks,
     departementLink:
-      page.type === "ville"
+      page.type === "ville" || page.type === "longtail"
         ? { href: `/location-benne/${page.departementSlug}`, label: page.departementNom }
         : undefined,
   }
@@ -535,6 +539,7 @@ export function getLocalPageCount() {
   return {
     departements: DEPARTEMENTS.length,
     villes: LOCAL_PAGES.filter((p) => p.type === "ville").length,
+    longtail: LOCAL_PAGES.filter((p) => p.type === "longtail").length,
     total: LOCAL_PAGES.length,
   }
 }
