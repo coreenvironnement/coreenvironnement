@@ -2,13 +2,14 @@
 
 import { useEffect, useMemo, useState, useTransition } from "react"
 import Link from "next/link"
+import { Recycle01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import type { LucideIcon } from "lucide-react"
 import {
   ArrowLeft,
   BrickWall,
   Calendar,
-  CheckCircle2,
   ChevronRight,
   Hammer,
   Info,
@@ -18,11 +19,11 @@ import {
   Recycle,
 } from "lucide-react"
 
+import { VITRINE_ICON_STROKE } from "@/components/vitrine/icons"
 import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
 } from "@/components/ui/card"
 import {
@@ -55,14 +56,19 @@ import {
   prestationById,
   systemLabel,
 } from "@/lib/prestations"
+import { ORDER_TUNNEL_STEPS } from "@/lib/order/tunnel-steps"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
-const steps = [
-  { id: "intent" as const, label: "Votre demande" },
-  { id: "forfait" as const, label: "Forfait" },
-  { id: "payment" as const, label: "Paiement" },
-]
+export { ORDER_TUNNEL_STEPS } from "@/lib/order/tunnel-steps"
+
+const steps = ORDER_TUNNEL_STEPS
+
+const ORDER_SECTION_LABEL =
+  "text-left text-[14px] font-semibold leading-snug text-brand-navy"
+
+const ORDER_FIELD_LABEL =
+  "block text-left text-xs font-medium text-[#667085]"
 
 const FAMILIES: BenneFamily[] = [
   "melange_dnd",
@@ -93,66 +99,42 @@ function todayISODate() {
   return d.toISOString().slice(0, 10)
 }
 
-function StepCircle({
-  stepIndex,
-  currentStepIdx,
-}: {
-  stepIndex: number
-  currentStepIdx: number
-}) {
-  const done = currentStepIdx > stepIndex
-  const active = currentStepIdx === stepIndex
-  const prefersReducedMotion = useReducedMotion()
-  const fade = prefersReducedMotion
-    ? { duration: 0 }
-    : { duration: 0.18, ease: [0.22, 1, 0.36, 1] as const }
+function OrderStepProgress({ currentStepIdx }: { currentStepIdx: number }) {
+  const current = steps[currentStepIdx]
+  const progress = ((currentStepIdx + 1) / steps.length) * 100
 
   return (
-    <div
-      className={cn(
-        "relative flex h-9 min-h-9 w-9 min-w-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-xs font-semibold tabular-nums transition-colors sm:h-10 sm:min-h-10 sm:w-10 sm:min-w-10 sm:text-sm",
-        (done || active) &&
-          "border-2 border-[#35A238] bg-[#35A238] text-white shadow-sm",
-        active && !done && "shadow-md",
-        !active &&
-          !done &&
-          "border border-brand-navy/18 bg-white text-brand-navy/40"
-      )}
-    >
-      <AnimatePresence initial={false} mode="wait">
-        {done ? (
-          <motion.span
-            key="done"
-            initial={{ opacity: prefersReducedMotion ? 1 : 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={fade}
-            className="flex items-center justify-center"
-          >
-            <CheckCircle2 className="size-[1.125rem] sm:size-5" aria-hidden />
-          </motion.span>
-        ) : (
-          <motion.span
-            key="num"
-            initial={{ opacity: prefersReducedMotion ? 1 : 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={fade}
-            className="flex items-center justify-center"
-          >
-            {stepIndex + 1}
-          </motion.span>
-        )}
-      </AnimatePresence>
+    <div className="mx-auto mb-2.5 max-w-md text-center" aria-live="polite">
+      <p className="text-[0.625rem] font-medium leading-snug text-brand-navy/42">
+        <span>Étape {currentStepIdx + 1} sur {steps.length}</span>
+        <span aria-hidden className="mx-1.5 text-brand-navy/20">
+          ·
+        </span>
+        <span className="text-brand-navy/58">{current.label}</span>
+      </p>
+      <div
+        className="mx-auto mt-1 h-[2px] w-full max-w-[200px] overflow-hidden rounded-full bg-brand-navy/12 sm:max-w-[240px]"
+        role="progressbar"
+        aria-valuenow={currentStepIdx + 1}
+        aria-valuemin={1}
+        aria-valuemax={steps.length}
+        aria-label={`Étape ${currentStepIdx + 1} sur ${steps.length} : ${current.label}`}
+      >
+        <div
+          className="h-full rounded-full bg-[#35A238] transition-[width] duration-300 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
     </div>
   )
 }
 
 type OrderWidgetProps = {
   variant?: "default" | "embedded"
+  onStepIndexChange?: (index: number) => void
 }
 
-export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
+export function OrderWidget({ variant = "default", onStepIndexChange }: OrderWidgetProps) {
   const embedded = variant === "embedded"
   const prefersReducedMotion = useReducedMotion()
   const t = prefersReducedMotion
@@ -255,6 +237,10 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
 
   const currentStepIdx = steps.findIndex((s) => s.id === step)
 
+  useEffect(() => {
+    onStepIndexChange?.(currentStepIdx)
+  }, [currentStepIdx, onStepIndexChange])
+
   return (
     <Card
       className={cn(
@@ -268,13 +254,11 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.07] via-transparent to-brand-navy/[0.05]" />
       ) : null}
 
-      <CardContent className={cn("relative space-y-5", embedded ? "px-1 pt-2 pb-2" : "pt-8")}>
+      <CardContent className={cn("relative space-y-3", embedded ? "px-1 pb-2 pt-0" : "pt-8")}>
         <div className="space-y-2">
-          <p className="text-center text-xs font-medium uppercase tracking-wide text-brand-navy/55">
-            Vous êtes&nbsp;?
-          </p>
+          <p className={ORDER_SECTION_LABEL}>Vous êtes&nbsp;?</p>
           <div
-            className="flex rounded-2xl border border-brand-navy/12 bg-muted/50 p-1"
+            className="flex rounded-xl border border-brand-navy/10 bg-white p-1"
             role="group"
             aria-label="Type de client"
           >
@@ -282,10 +266,10 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
               type="button"
               onClick={() => setAudience("particulier")}
               className={cn(
-                "flex-1 rounded-xl py-2.5 text-xs font-semibold transition sm:text-sm",
+                "flex-1 rounded-lg py-2 text-xs font-semibold transition sm:text-sm",
                 audience === "particulier"
-                  ? "bg-[#35A238]/10 text-[#35A238] shadow-sm ring-1 ring-[#35A238]/35"
-                  : "text-brand-navy/45 hover:bg-white/60 hover:text-brand-navy/70"
+                  ? "bg-[#35A238]/10 text-[#35A238] ring-1 ring-[#35A238]/30"
+                  : "text-brand-navy/42 hover:text-brand-navy/65"
               )}
             >
               Particulier
@@ -294,53 +278,18 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
               type="button"
               onClick={() => setAudience("professionnel")}
               className={cn(
-                "flex-1 rounded-xl py-2.5 text-xs font-semibold transition sm:text-sm",
+                "flex-1 rounded-lg py-2 text-xs font-semibold transition sm:text-sm",
                 audience === "professionnel"
-                  ? "bg-[#35A238]/10 text-[#35A238] shadow-sm ring-1 ring-[#35A238]/35"
-                  : "text-brand-navy/45 hover:bg-white/60 hover:text-brand-navy/70"
+                  ? "bg-[#35A238]/10 text-[#35A238] ring-1 ring-[#35A238]/30"
+                  : "text-brand-navy/42 hover:text-brand-navy/65"
               )}
             >
               Professionnel
             </button>
           </div>
-          <p className="text-center text-[0.72rem] leading-relaxed text-muted-foreground sm:text-xs">
-            {audience === "professionnel"
-              ? "Chantiers et pros du BTP, livraisons et enlèvements adaptés au planning."
-              : "Maison, jardin ou petit chantier, même parcours simple."}
-          </p>
         </div>
 
-        <div className="mb-1.5 flex items-center justify-center gap-1 sm:gap-1.5">
-          {steps.map((s, i) => (
-            <div key={s.id} className="flex items-center">
-              <StepCircle stepIndex={i} currentStepIdx={currentStepIdx} />
-              {i < steps.length - 1 && (
-                <div
-                  className={cn(
-                    "mx-1 h-px w-3 sm:w-5",
-                    currentStepIdx > i ? "bg-[#35A238]" : "bg-brand-navy/12"
-                  )}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="mb-4 flex max-w-md justify-center gap-2 sm:gap-6">
-          {steps.map((s, i) => {
-            const active = currentStepIdx === i
-            return (
-              <span
-                key={`${s.id}-label`}
-                className={cn(
-                  "max-w-[28%] flex-1 truncate text-center text-[0.65rem] font-medium uppercase leading-tight tracking-wide text-brand-navy/45 sm:text-xs",
-                  active && "font-semibold text-[#35A238]"
-                )}
-              >
-                {s.label}
-              </span>
-            )
-          })}
-        </div>
+        {!embedded ? <OrderStepProgress currentStepIdx={currentStepIdx} /> : null}
 
         <AnimatePresence mode="wait">
           {step === "intent" && (
@@ -350,19 +299,12 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
-              className="space-y-4"
+              className="space-y-2.5"
             >
-              <div className="text-center">
-                <p className="text-lg font-semibold text-brand-navy sm:text-xl">
-                  Où livrer la benne&nbsp;?
-                </p>
-              </div>
+              <p className={ORDER_SECTION_LABEL}>Où livrer votre benne&nbsp;?</p>
 
-              <div className="space-y-2">
-                <label
-                  htmlFor="order-address"
-                  className="block text-left text-sm font-semibold text-brand-navy"
-                >
+              <div className="space-y-1.5">
+                <label htmlFor="order-address" className={ORDER_FIELD_LABEL}>
                   Adresse de livraison
                 </label>
                 <div className="relative">
@@ -429,27 +371,32 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
                 )}
               </AnimatePresence>
 
-              <div className="space-y-2">
-                <label
-                  htmlFor="order-waste-family"
-                  className="block text-left text-sm font-semibold text-brand-navy"
-                >
+              <div className="space-y-1.5">
+                <label htmlFor="order-waste-family" className={ORDER_FIELD_LABEL}>
                   Type de déchet
                 </label>
-                <Select
-                  value={family ?? undefined}
-                  onValueChange={(v) => {
-                    setFamily(v as BenneFamily)
-                    setAddressError(null)
-                  }}
-                >
-                  <SelectTrigger
-                    id="order-waste-family"
-                    className="h-auto min-h-12 w-full max-w-none justify-between rounded-xl border-2 border-primary/20 bg-white px-4 py-3 text-left text-[0.9375rem] shadow-sm focus-visible:border-primary/40 data-[size=default]:h-auto dark:bg-white/95 [&_[data-slot=select-value]]:min-h-[2.75rem] [&_[data-slot=select-value]]:items-start [&_[data-slot=select-value]]:gap-3"
-                    size="default"
+                <div className="relative">
+                  <HugeiconsIcon
+                    icon={Recycle01Icon}
+                    size={20}
+                    strokeWidth={VITRINE_ICON_STROKE}
+                    className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-brand-navy/40"
+                    aria-hidden
+                  />
+                  <Select
+                    value={family ?? undefined}
+                    onValueChange={(v) => {
+                      setFamily(v as BenneFamily)
+                      setAddressError(null)
+                    }}
                   >
-                    <SelectValue placeholder="Choisissez le type de déchet dans la liste" />
-                  </SelectTrigger>
+                    <SelectTrigger
+                      id="order-waste-family"
+                      className="h-auto min-h-12 w-full max-w-none justify-between rounded-xl border-2 border-primary/20 bg-white py-3 pl-12 pr-4 text-left text-[0.9375rem] shadow-sm focus-visible:border-primary/40 data-[size=default]:h-auto dark:bg-white/95 [&_[data-slot=select-value]]:min-h-[2.75rem] [&_[data-slot=select-value]]:items-start [&_[data-slot=select-value]]:gap-3"
+                      size="default"
+                    >
+                      <SelectValue placeholder="Choisissez le type de déchet dans la liste" />
+                    </SelectTrigger>
                   <SelectContent
                     side="bottom"
                     align="start"
@@ -480,7 +427,8 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
                       )
                     })}
                   </SelectContent>
-                </Select>
+                  </Select>
+                </div>
               </div>
 
               {addressError && (
@@ -491,7 +439,7 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
 
               <Button
                 type="button"
-                className="h-11 w-full rounded-xl border-0 bg-[#35A238] text-base font-semibold text-white shadow-lg shadow-[#35A238]/20 hover:bg-[#19752B] disabled:cursor-not-allowed disabled:opacity-45 disabled:shadow-none"
+                className="h-11 w-full rounded-xl border-0 bg-[#2F9632] text-base font-semibold text-white shadow-lg shadow-[#2F9632]/25 hover:bg-[#19752B] disabled:cursor-not-allowed disabled:bg-[#2F9632] disabled:opacity-60 disabled:shadow-md"
                 onClick={goToForfait}
                 disabled={!canLeaveIntent}
               >
@@ -510,10 +458,8 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
               transition={t}
               className="space-y-4"
             >
-              <div className="text-center">
-                <CardDescription className="text-base font-semibold text-brand-navy">
-                  Choisissez votre forfait
-                </CardDescription>
+              <div>
+                <p className={ORDER_SECTION_LABEL}>Choisissez votre forfait</p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Prix H.T. Détail des déchets acceptés par forfait.
                 </p>
@@ -609,10 +555,8 @@ export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
               transition={t}
               className="space-y-5"
             >
-              <div className="text-center">
-                <CardDescription className="text-base font-medium text-brand-navy">
-                  Récapitulatif et paiement
-                </CardDescription>
+              <div>
+                <p className={ORDER_SECTION_LABEL}>Récapitulatif et paiement</p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Montants H.T. La TVA applicable sera confirmée sur la facture.
                 </p>

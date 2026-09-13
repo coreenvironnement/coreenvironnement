@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Cancel01Icon, TruckIcon } from "@hugeicons/core-free-icons"
 
@@ -8,10 +8,12 @@ import { OrderWidget } from "@/components/order-widget"
 import { cn } from "@/lib/utils"
 
 import { VITRINE_ICON_STROKE } from "./icons"
+import { OrderModalStepper } from "./order-modal-stepper"
 import { useVitrineOrder } from "./order-context"
 
 export function VitrineOrderModal() {
   const { open, closeOrder } = useVitrineOrder()
+  const [stepIndex, setStepIndex] = useState(0)
 
   useEffect(() => {
     if (!open) return
@@ -23,6 +25,12 @@ export function VitrineOrderModal() {
       window.removeEventListener("keydown", onKey)
     }
   }, [open, closeOrder])
+
+  useEffect(() => {
+    if (!open) {
+      setStepIndex(0)
+    }
+  }, [open])
 
   return (
     <div
@@ -50,32 +58,36 @@ export function VitrineOrderModal() {
           )}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex items-start justify-between gap-4 border-b border-brand-border px-5 py-4 sm:px-6">
-            <div className="flex items-center gap-3.5">
-              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-bg-alt text-brand-green">
-                <HugeiconsIcon icon={TruckIcon} size={22} strokeWidth={VITRINE_ICON_STROKE} />
-              </span>
-              <div>
-                <h2 className="text-[17px] text-brand-navy">
-                  Commander une benne
-                </h2>
-                <p className="mt-0.5 text-[13px] leading-snug text-brand-muted">
-                  Paiement sécurisé · Intervention sous 24 h en Île-de-France
-                </p>
+          <div className="border-b border-brand-border px-5 pb-3.5 pt-4 sm:px-6">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-bg-alt text-brand-green">
+                  <HugeiconsIcon icon={TruckIcon} size={20} strokeWidth={VITRINE_ICON_STROKE} />
+                </span>
+                <div className="min-w-0">
+                  <h2 className="text-[17px] font-semibold text-brand-navy">
+                    Commander une benne
+                  </h2>
+                  <p className="mt-0.5 text-[12px] leading-snug text-brand-muted sm:text-[13px]">
+                    Paiement sécurisé · Intervention sous 24 h en Île-de-France
+                  </p>
+                </div>
               </div>
+              <button
+                type="button"
+                onClick={closeOrder}
+                aria-label="Fermer"
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-brand-muted transition-colors hover:bg-brand-bg-alt hover:text-brand-navy"
+              >
+                <HugeiconsIcon icon={Cancel01Icon} size={18} strokeWidth={VITRINE_ICON_STROKE} />
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={closeOrder}
-              aria-label="Fermer"
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-brand-muted transition-colors hover:bg-brand-bg-alt hover:text-brand-navy"
-            >
-              <HugeiconsIcon icon={Cancel01Icon} size={18} strokeWidth={VITRINE_ICON_STROKE} />
-            </button>
+
+            <OrderModalStepper stepIndex={stepIndex} />
           </div>
 
-          <div className="overflow-y-auto px-3 py-3 sm:px-4 sm:py-4">
-            <OrderWidget variant="embedded" />
+          <div className="overflow-y-auto px-3 pb-3 pt-3 sm:px-4 sm:pb-4 sm:pt-3">
+            <OrderWidget variant="embedded" onStepIndexChange={setStepIndex} />
           </div>
         </div>
       </div>

@@ -31,6 +31,10 @@ export const metadata: Metadata = {
   },
   description:
     "Location de bennes en Île-de-France. Commande en 3 minutes, intervention sous 24 h, suivi digital et traçabilité de vos déchets.",
+  icons: {
+    icon: "/images/faviconcore-environnement.png",
+    apple: "/images/faviconcore-environnement.png",
+  },
 };
 
 export default function RootLayout({
