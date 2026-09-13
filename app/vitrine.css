@@ -183,10 +183,6 @@
       padding-bottom: 2rem;
     }
 
-    .vitrine-root #services .service-flip-face.service-flip-face--stripe {
-      background-color: #f3f6fb;
-    }
-
     .vitrine-root .service-flip-front-footer {
       @apply pb-1 pt-4;
     }
@@ -271,6 +267,12 @@
     box-shadow:
       0 1px 2px rgb(24 53 116 / 0.025),
       0 6px 18px -6px rgb(24 53 116 / 0.055);
+  }
+
+  @media (max-width: 639px) {
+    .vitrine-root #services .service-flip-face.card-vitrine.service-flip-face--stripe {
+      background-color: #f3f6fb;
+    }
   }
 
   .vitrine-root #services .service-flip-card--featured .service-flip-front {
