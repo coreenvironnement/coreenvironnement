@@ -7,6 +7,13 @@ import {
 } from "@/lib/maintenance"
 import { updateSession } from "@/lib/supabase/middleware"
 
+/** Chemins critiques qui restent accessibles même en maintenance. */
+function isMaintenanceExemptPath(pathname: string) {
+  if (pathname.startsWith("/api/stripe")) return true
+  if (pathname.startsWith("/.well-known")) return true
+  return false
+}
+
 function shouldBypassMaintenance(request: NextRequest) {
   const secret = getMaintenanceBypassSecret()
   if (!secret) return false
@@ -47,7 +54,11 @@ function maintenanceResponse(request: NextRequest) {
 }
 
 export async function middleware(request: NextRequest) {
-  if (isMaintenanceEnabled() && !shouldBypassMaintenance(request)) {
+  if (
+    isMaintenanceEnabled() &&
+    !isMaintenanceExemptPath(request.nextUrl.pathname) &&
+    !shouldBypassMaintenance(request)
+  ) {
     return maintenanceResponse(request)
   }
 
