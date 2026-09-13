@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { HardHat, LayoutDashboard, LogOut } from "lucide-react"
+import { Briefcase, HardHat, LayoutDashboard, LogOut, Package } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils"
 const links = [
   { href: "/admin", label: "Vue d'ensemble", icon: LayoutDashboard },
   { href: "/admin/chantiers", label: "Chantiers", icon: HardHat },
+  { href: "/admin/commandes", label: "Commandes", icon: Package },
+  { href: "/admin/comptes-pro", label: "Comptes pro", icon: Briefcase },
 ] as const
 
 export function AdminNav() {

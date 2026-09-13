@@ -4,8 +4,8 @@
  */
 
 export const hero = {
-  titre1:
-    "Location de Benne en Île-de-France : Intervention 24h & Suivi Digital",
+  titre1Ligne1: "Location de Benne en Île-de-France :",
+  titre1Ligne2: "Intervention 24h & Suivi Digital",
   titre2:
     "CORE ENVIRONNEMENT : Partenaire de vos chantiers. Traçabilité et suivi digital de la première dépose jusqu'au recyclage de vos déchets sur toute l'Île-de-France.",
   cta: "Commander une benne",
@@ -13,9 +13,16 @@ export const hero = {
     "Camion transportant une benne avec Paris et la Tour Eiffel en arrière-plan",
 } as const
 
+export const servicesSection = {
+  intro:
+    "De la mise à disposition d'une benne au traitement de déchets spécifiques, CORE ENVIRONNEMENT simplifie la gestion de vos déchets avec un interlocuteur unique en Île-de-France.",
+} as const
+
 export const services = [
   {
     titre: "Location de benne déchets non dangereux",
+    accroche:
+      "Mise à disposition, enlèvement et suivi digital — un interlocuteur unique, de la première dépose au recyclage.",
     points: [
       "de 8 m³ à 30 m³",
       "DIB, Gravats, Bois, Végétaux, Plâtres etc.",
@@ -26,6 +33,8 @@ export const services = [
   },
   {
     titre: "Accès aux déchetteries professionnelles",
+    accroche:
+      "Un accès simple à un réseau de centres professionnels, sans rendez-vous, avec un tarif unique et un contact unique.",
     points: [
       "Tarif unique",
       "5 déchetteries (en cours de développement)",
@@ -36,6 +45,8 @@ export const services = [
   },
   {
     titre: "Traitement des déchets dangereux",
+    accroche:
+      "Collecte, conditionnement et traitement sécurisés, avec conformité administrative et traçabilité exigées.",
     points: [
       "Location contenants ADR",
       "Aérosols, Emballages souillés, Huiles noires etc.",
@@ -44,6 +55,8 @@ export const services = [
   },
   {
     titre: "Opérations sur mesure",
+    accroche:
+      "Des interventions calibrées à vos contraintes de site, d'équipe et de planning — au-delà de la simple benne.",
     points: [
       "Débarras de chantier, bureaux, locaux etc.",
       "Mise à disposition de manutentionnaire",
@@ -289,4 +302,39 @@ export const espaceClient = {
     "Camemberts : % valorisation et % élimination",
     "Bouton vers l'historique des prestations (export Excel/PDF — Mois 2)",
   ],
+} as const
+
+export const finalCta = {
+  eyebrow: "Votre chantier, notre priorité",
+  titre: "Besoin d'une benne",
+  titreSuite: "en Île-de-France ?",
+  description:
+    "Commandez votre benne en quelques minutes et laissez CORE ENVIRONNEMENT coordonner la suite, de la dépose jusqu'au traitement de vos déchets.",
+  ctaPrimary: "Commander une benne",
+  ctaSecondary: "Nous contacter",
+  reassurance: [
+    "Intervention sous 24h*",
+    "Suivi digital",
+    "Traçabilité",
+    "Toute l'Île-de-France",
+  ],
+  footnote: "*Selon disponibilités, hors week-ends et jours fériés.",
+  journey: ["Commande", "Livraison", "Collecte", "Valorisation"],
+  journeyTagline: "De la commande à la valorisation, un seul interlocuteur.",
+} as const
+
+export const espaceClientVitrine = {
+  eyebrow: "Espace client",
+  titre: "Pilotez vos déchets.",
+  titreSuite: "Pas vos relances.",
+  description:
+    "Suivez vos prestations, centralisez vos documents et consultez la traçabilité de vos déchets depuis un espace client disponible 24h/24.",
+  benefits: [
+    "Suivi des interventions",
+    "Documents centralisés",
+    "Reporting chantier",
+  ],
+  reassurance: "Accès réservé aux clients CORE ENVIRONNEMENT",
+  ctaPrimary: "Accéder à l'espace client",
+  ctaSecondary: "Se connecter",
 } as const

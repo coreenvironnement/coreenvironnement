@@ -1,0 +1,371 @@
+@import "tailwindcss";
+
+/*
+ * Palette vitrine — logo CORE ENVIRONNEMENT
+ * ~70 % neutre · ~20 % navy · accents vert / bleu digital
+ */
+
+@theme {
+  --color-brand-navy: #183574;
+  --color-brand-green: #35a238;
+  --color-brand-green-dark: #19752b;
+  --color-brand-sky: #269dd2;
+
+  --color-brand-text: #172033;
+  --color-brand-muted: #667085;
+
+  --color-brand-bg: #fafbfa;
+  --color-brand-bg-alt: #f3f7f5;
+  --color-brand-border: #e3e9e6;
+
+  /* Alias compat composants */
+  --color-paper: #fafbfa;
+  --color-surface: #f3f7f5;
+  --color-line: #e3e9e6;
+
+  --radius-btn: 0.625rem;
+  --radius-card: 1.125rem;
+
+  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-vitrine-soft: 0 1px 2px rgb(24 53 116 / 0.04), 0 8px 24px -8px rgb(24 53 116 / 0.08);
+  --shadow-vitrine-pop: 0 20px 48px -16px rgb(24 53 116 / 0.22);
+}
+
+@layer components {
+  .vitrine-root {
+    @apply bg-brand-bg font-[family-name:var(--font-body)] text-brand-text font-normal antialiased;
+  }
+
+  .vitrine-root h1 {
+    @apply font-[family-name:var(--font-display)] font-bold tracking-[-0.03em] text-balance;
+  }
+
+  .vitrine-root h2 {
+    @apply font-[family-name:var(--font-display)] font-bold tracking-[-0.02em];
+  }
+
+  .vitrine-root h3 {
+    @apply font-[family-name:var(--font-display)] font-semibold tracking-[-0.015em];
+  }
+
+  .vitrine-root p,
+  .vitrine-root li,
+  .vitrine-root blockquote {
+    @apply font-[family-name:var(--font-body)] font-normal;
+  }
+
+  .vitrine-root .container-x {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10;
+  }
+
+  .vitrine-root .section-eyebrow {
+    @apply inline-flex items-center gap-2.5 font-[family-name:var(--font-body)] text-xs font-medium uppercase tracking-[0.18em] text-[#35A238];
+  }
+
+  .vitrine-root .section-eyebrow::before {
+    content: "";
+    @apply h-1.5 w-1.5 shrink-0 rounded-full bg-[#35A238];
+  }
+
+  .vitrine-root .section-eyebrow--inverse {
+    @apply text-white/70;
+  }
+
+  .vitrine-root .section-eyebrow--inverse::before {
+    @apply bg-[#35A238];
+  }
+
+  .vitrine-root .section-title {
+    @apply text-2xl text-brand-navy sm:text-3xl;
+  }
+
+  .vitrine-root .vitrine-label {
+    @apply font-[family-name:var(--font-body)] text-xs font-medium uppercase tracking-[0.14em];
+  }
+
+  .vitrine-root .card-vitrine {
+    @apply rounded-[var(--radius-card)] border border-brand-border bg-brand-bg shadow-[var(--shadow-vitrine-soft)] transition duration-300;
+  }
+
+  .vitrine-root .btn,
+  .vitrine-root .btn-accent,
+  .vitrine-root .btn-primary,
+  .vitrine-root .btn-light,
+  .vitrine-root .btn-ghost-dark,
+  .vitrine-root .btn-ghost-light,
+  .vitrine-root .btn-ghost-sky {
+    @apply relative inline-flex h-11 select-none items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-btn)] px-[1.125rem] font-[family-name:var(--font-display)] text-sm font-semibold tracking-[-0.01em] transition-all duration-300 ease-out;
+    /* CTA : Geist 600 */
+  }
+
+  .vitrine-root .btn-sm {
+    @apply h-10 px-4 text-[13px];
+    border-radius: 0.5625rem;
+  }
+
+  /* CTA principal — vert action */
+  .vitrine-root .btn-accent {
+    @apply bg-brand-green text-white shadow-[var(--shadow-vitrine-soft)] hover:bg-brand-green-dark active:scale-[0.99];
+  }
+
+  /* Secondaire structure — navy */
+  .vitrine-root .btn-primary {
+    @apply bg-brand-navy text-white shadow-[var(--shadow-vitrine-soft)] hover:bg-[#122a5c] active:scale-[0.99];
+  }
+
+  .vitrine-root .btn-light {
+    @apply border border-white/30 bg-white/95 text-brand-navy shadow-[var(--shadow-vitrine-soft)] hover:bg-white;
+  }
+
+  .vitrine-root .btn-ghost-dark {
+    @apply border border-brand-border text-brand-text hover:border-brand-navy/20 hover:bg-brand-bg-alt;
+  }
+
+  .vitrine-root .btn-ghost-light {
+    @apply border border-white/35 bg-white/[0.08] font-semibold text-white backdrop-blur-md hover:border-white/55 hover:bg-white/[0.14];
+  }
+
+  /* Espace client / digital */
+  .vitrine-root .btn-ghost-sky {
+    @apply border border-brand-sky/25 text-brand-sky hover:border-brand-sky/40 hover:bg-brand-sky/[0.06];
+  }
+
+  .vitrine-root .link-digital {
+    @apply font-semibold text-brand-sky transition hover:text-brand-navy;
+  }
+
+  /* Cartes services — flip 3D */
+  .vitrine-root .service-flip-card {
+    @apply relative min-h-[20rem] cursor-default outline-none sm:min-h-[18.5rem];
+    perspective: 1100px;
+  }
+
+  .vitrine-root .service-flip-inner {
+    @apply relative h-full min-h-[inherit] w-full;
+    transform-style: preserve-3d;
+    transition: transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .vitrine-root .service-flip-face {
+    @apply absolute inset-0 flex h-full min-h-[inherit] flex-col p-5 sm:p-6;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .vitrine-root .service-flip-back {
+    transform: rotateY(180deg);
+  }
+
+  .vitrine-root .service-flip-card.is-flipped .service-flip-inner,
+  .vitrine-root .service-flip-card--reduced.is-flipped .service-flip-inner {
+    transform: rotateY(180deg);
+  }
+
+  .vitrine-root .service-flip-front-footer {
+    @apply mt-auto flex w-full shrink-0 justify-center pt-4;
+  }
+
+  .vitrine-root .service-flip-action {
+    @apply inline-flex min-h-11 min-w-[9.5rem] items-center justify-center gap-2 rounded-[var(--radius-btn)] border border-brand-navy/15 bg-transparent px-4 py-2 font-[family-name:var(--font-display)] text-[13px] font-semibold tracking-[-0.01em] text-brand-navy transition-all duration-300 ease-out;
+  }
+
+  @media (max-width: 639px) {
+    .vitrine-root #services .service-flip-front {
+      box-shadow:
+        inset 0 3px 0 0 rgb(53 162 56 / 0.32),
+        0 1px 2px rgb(24 53 116 / 0.025),
+        0 6px 18px -6px rgb(24 53 116 / 0.055);
+    }
+
+    .vitrine-root .service-flip-front-footer {
+      @apply border-t border-[#E3E9E6] pt-6;
+    }
+
+    .vitrine-root .service-flip-action--mobile-emphasis {
+      @apply min-h-12 min-w-[10.75rem] px-5 text-sm;
+    }
+  }
+
+  .vitrine-root .service-flip-action:hover {
+    @apply border-brand-navy/25 bg-brand-navy/[0.03];
+  }
+
+  .vitrine-root .service-flip-action:focus-visible {
+    @apply outline-none ring-2 ring-brand-green/45 ring-offset-2 ring-offset-white;
+  }
+
+  .vitrine-root .service-flip-action-icon {
+    @apply transition-transform duration-300 ease-out;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .vitrine-root #services .service-flip-card:not(.is-flipped):hover .service-flip-front {
+      @apply -translate-y-0.5 border-brand-navy/14;
+      box-shadow:
+        0 2px 4px rgb(24 53 116 / 0.035),
+        0 10px 28px -8px rgb(24 53 116 / 0.09);
+    }
+
+    .vitrine-root #services .service-flip-card:not(.is-flipped):hover .service-flip-action-icon {
+      transform: rotate(90deg);
+    }
+  }
+
+  .vitrine-root .service-flip-card--reduced .service-flip-inner {
+    transform: none !important;
+  }
+
+  .vitrine-root .service-flip-card--reduced .service-flip-back {
+    transform: none;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 420ms ease,
+      visibility 420ms ease;
+  }
+
+  .vitrine-root .service-flip-card--reduced .service-flip-front {
+    transform: none;
+    transition:
+      opacity 420ms ease,
+      visibility 420ms ease;
+  }
+
+  .vitrine-root .service-flip-card--reduced.is-flipped .service-flip-back {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .vitrine-root .service-flip-card--reduced.is-flipped .service-flip-front {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .vitrine-root #services .service-flip-face.card-vitrine {
+    @apply border-[#E3E9E6] bg-white;
+    box-shadow:
+      0 1px 2px rgb(24 53 116 / 0.025),
+      0 6px 18px -6px rgb(24 53 116 / 0.055);
+  }
+
+  .vitrine-root #services .service-flip-card--featured .service-flip-front {
+    @apply border-brand-green/22 bg-gradient-to-br from-white to-[#f5faf6];
+  }
+
+  .vitrine-root #services .service-flip-card:focus-visible {
+    @apply ring-offset-[#F3F7F5];
+  }
+
+  .vitrine-root .how-panel-enter {
+    animation: how-panel-in 280ms ease both;
+  }
+
+  .vitrine-root .how-login-link {
+    @apply font-[family-name:var(--font-display)] text-sm font-semibold text-brand-sky transition hover:text-brand-navy;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vitrine-root .how-panel-enter {
+      animation: none;
+    }
+  }
+
+  .vitrine-root #services .service-flip-card.is-flipped .service-flip-back {
+    @apply border-brand-navy/12;
+    box-shadow:
+      0 2px 4px rgb(24 53 116 / 0.035),
+      0 10px 28px -8px rgb(24 53 116 / 0.09);
+  }
+}
+
+@keyframes engagement-step-enter {
+  from {
+    opacity: 0.62;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes how-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer utilities {
+  .vitrine-root .animate-fade-up {
+    animation: vitrine-fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .vitrine-root .animate-fade-in {
+    animation: vitrine-fade-in 0.8s ease both;
+  }
+  .vitrine-root .animate-pop-in {
+    animation: vitrine-pop-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .vitrine-root .animate-zoom {
+    animation: vitrine-zoom 28s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes vitrine-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes vitrine-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes vitrine-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes vitrine-zoom {
+  from {
+    transform: scale(1.05);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vitrine-root *,
+  .vitrine-root ::before,
+  .vitrine-root ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

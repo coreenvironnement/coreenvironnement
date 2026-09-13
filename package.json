@@ -8,13 +8,18 @@
     "start": "next start",
     "lint": "eslint",
     "deploy": "vercel deploy --prod",
-    "deploy:preview": "vercel deploy"
+    "deploy:preview": "vercel deploy",
+    "stripe": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1",
+    "stripe:login": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1 login",
+    "stripe:listen": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1 listen --forward-to localhost:3000/api/stripe/webhook"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
+    "@hugeicons/core-free-icons": "^4.3.2",
+    "@hugeicons/react": "^1.1.10",
     "@supabase/ssr": "^0.12.1",
     "@supabase/supabase-js": "^2.110.4",
     "class-variance-authority": "^0.7.1",
@@ -27,7 +32,9 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "recharts": "^3.10.1",
+    "resend": "^6.27.0",
     "shadcn": "^4.6.0",
+    "stripe": "^22.6.2",
     "tailwind-merge": "^3.5.0",
     "tw-animate-css": "^1.4.0",
     "xlsx": "^0.18.5"

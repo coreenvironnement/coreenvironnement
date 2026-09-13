@@ -5,9 +5,17 @@ import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
 import { requireAdmin } from "@/lib/auth/require-admin"
+import {
+  canCreateInterventionFromCommande,
+  chantierNomFromCommande,
+  contenantCodeForCommande,
+  interventionCommentFromCommande,
+} from "@/lib/commande/intervention-from-commande"
+import { notifyCompteProReviewed } from "@/lib/email/notifications"
 import { createServiceClient } from "@/lib/supabase/service"
 
 const BUCKET = "intervention-documents"
+const PRO_BUCKET = "compte-pro-documents"
 
 async function assertAdmin() {
   const { supabase, user } = await requireAdmin()
@@ -22,6 +30,24 @@ function revalidateAdmin(chantierId?: string) {
   }
   revalidatePath("/dashboard")
   revalidatePath("/dashboard/historique")
+  revalidatePath("/admin/comptes-pro")
+  revalidatePath("/pro")
+}
+
+function revalidateComptePro(compteId: string) {
+  revalidatePath("/admin/comptes-pro")
+  revalidatePath(`/admin/comptes-pro/${compteId}`)
+  revalidatePath("/pro")
+}
+
+function revalidateCommande(commandeId: string, chantierId?: string) {
+  revalidatePath("/admin")
+  revalidatePath("/admin/commandes")
+  revalidatePath(`/admin/commandes/${commandeId}`)
+  if (chantierId) {
+    revalidatePath("/admin/chantiers")
+    revalidatePath(`/admin/chantiers/${chantierId}`)
+  }
 }
 
 export async function createChantier(formData: FormData): Promise<void> {
@@ -431,4 +457,213 @@ export async function uploadInterventionDocument(formData: FormData) {
 
   revalidateAdmin(chantierId)
   return { success: true }
+}
+
+export async function reviewComptePro(compteId: string, formData: FormData): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+
+  const decision = String(formData.get("decision") ?? "")
+  const payment_mode = String(formData.get("payment_mode") ?? "")
+  const review_notes = String(formData.get("review_notes") ?? "").trim()
+
+  if (decision !== "approve" && decision !== "reject") {
+    return
+  }
+
+  if (decision === "approve" && payment_mode !== "cb_required" && payment_mode !== "invoice") {
+    return
+  }
+
+  const { data: compteBefore } = await supabase
+    .from("comptes_pro")
+    .select("status, contact_email, contact_nom, raison_sociale")
+    .eq("id", compteId)
+    .single()
+
+  const { error } = await supabase
+    .from("comptes_pro")
+    .update({
+      status: decision === "approve" ? "approved" : "rejected",
+      payment_mode: decision === "approve" ? payment_mode : null,
+      review_notes: review_notes || null,
+      reviewed_by: user.id,
+      reviewed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", compteId)
+
+  if (error) {
+    return
+  }
+
+  if (
+    compteBefore?.status === "pending" &&
+    compteBefore.contact_email &&
+    compteBefore.contact_nom &&
+    compteBefore.raison_sociale
+  ) {
+    await notifyCompteProReviewed({
+      contactEmail: compteBefore.contact_email,
+      contactNom: compteBefore.contact_nom,
+      raisonSociale: compteBefore.raison_sociale,
+      approved: decision === "approve",
+      paymentMode: decision === "approve" ? payment_mode : null,
+      reviewNotes: review_notes || null,
+    })
+  }
+
+  revalidateComptePro(compteId)
+}
+
+export async function getCompteProDocumentUrl(compteId: string, kind: "kbis" | "rib") {
+  const { supabase } = await assertAdmin()
+
+  const { data: compte, error } = await supabase
+    .from("comptes_pro")
+    .select("kbis_storage_path, rib_storage_path")
+    .eq("id", compteId)
+    .single()
+
+  if (error || !compte) {
+    return { error: "Dossier introuvable." }
+  }
+
+  const storagePath = kind === "kbis" ? compte.kbis_storage_path : compte.rib_storage_path
+  if (!storagePath) {
+    return { error: "Document absent." }
+  }
+
+  const service = createServiceClient()
+  const { data: signed, error: signError } = await service.storage
+    .from(PRO_BUCKET)
+    .createSignedUrl(storagePath, 120)
+
+  if (signError || !signed?.signedUrl) {
+    return { error: signError?.message ?? "Impossible de générer le lien." }
+  }
+
+  const fileName = storagePath.split("/").pop() ?? `${kind}.pdf`
+  return { url: signed.signedUrl, fileName }
+}
+
+const STATUTS_COMMANDE_VALIDES = [
+  "brouillon",
+  "confirmee",
+  "en_cours",
+  "livree",
+  "annulee",
+] as const
+
+export async function updateCommandeStatut(commandeId: string, formData: FormData): Promise<void> {
+  const { supabase } = await assertAdmin()
+
+  const statut = String(formData.get("statut") ?? "").trim()
+  if (!STATUTS_COMMANDE_VALIDES.includes(statut as (typeof STATUTS_COMMANDE_VALIDES)[number])) {
+    redirect(`/admin/commandes/${commandeId}`)
+  }
+
+  const { error } = await supabase.from("commandes").update({ statut }).eq("id", commandeId)
+
+  if (error) {
+    redirect(
+      `/admin/commandes/${commandeId}?error=${encodeURIComponent(error.message)}`
+    )
+  }
+
+  revalidateCommande(commandeId)
+  redirect(`/admin/commandes/${commandeId}`)
+}
+
+export async function createInterventionFromCommande(commandeId: string): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+
+  const { data: commande, error: commandeError } = await supabase
+    .from("commandes")
+    .select(
+      "id, adresse_complete, type_dechet_id, volume_m3, date_livraison, contact_nom, contact_email, prestation_label, payment_status, statut"
+    )
+    .eq("id", commandeId)
+    .single()
+
+  if (commandeError || !commande) {
+    redirect("/admin/commandes")
+  }
+
+  const { data: existing } = await supabase
+    .from("interventions")
+    .select("id")
+    .eq("commande_id", commandeId)
+    .maybeSingle()
+
+  const eligibility = canCreateInterventionFromCommande(commande, Boolean(existing))
+  if (!eligibility.ok) {
+    redirect(
+      `/admin/commandes/${commandeId}?error=${encodeURIComponent(eligibility.reason)}`
+    )
+  }
+
+  const [{ data: typeDepose }, { data: contenant }] = await Promise.all([
+    supabase.from("types_intervention").select("id").eq("code", "depose").maybeSingle(),
+    supabase
+      .from("types_contenants")
+      .select("id")
+      .eq("code", contenantCodeForCommande(commande.volume_m3))
+      .maybeSingle(),
+  ])
+
+  if (!typeDepose?.id || !contenant?.id) {
+    redirect(
+      `/admin/commandes/${commandeId}?error=${encodeURIComponent("Référentiel intervention incomplet (type dépose ou contenant).")}`
+    )
+  }
+
+  const { data: chantier, error: chantierError } = await supabase
+    .from("chantiers")
+    .insert({
+      nom: chantierNomFromCommande(commande),
+      adresse: commande.adresse_complete,
+      is_active: true,
+    })
+    .select("id")
+    .single()
+
+  if (chantierError || !chantier) {
+    redirect(
+      `/admin/commandes/${commandeId}?error=${encodeURIComponent(chantierError?.message ?? "Impossible de créer le chantier.")}`
+    )
+  }
+
+  const today = new Date().toISOString().slice(0, 10)
+
+  const { data: intervention, error: interventionError } = await supabase
+    .from("interventions")
+    .insert({
+      chantier_id: chantier.id,
+      commande_id: commandeId,
+      type_intervention_id: typeDepose.id,
+      contenant_id: contenant.id,
+      dechet_type_id: commande.type_dechet_id,
+      statut: "programme",
+      date_demande: today,
+      date_souhaitee: commande.date_livraison,
+      commentaire: interventionCommentFromCommande(commande),
+      created_by: user.id,
+    })
+    .select("id, numero")
+    .single()
+
+  if (interventionError || !intervention) {
+    redirect(
+      `/admin/commandes/${commandeId}?error=${encodeURIComponent(interventionError?.message ?? "Impossible de créer l'intervention.")}`
+    )
+  }
+
+  if (commande.statut === "confirmee") {
+    await supabase.from("commandes").update({ statut: "en_cours" }).eq("id", commandeId)
+  }
+
+  revalidateCommande(commandeId, chantier.id)
+  redirect(
+    `/admin/commandes/${commandeId}?intervention=${encodeURIComponent(intervention.numero)}`
+  )
 }

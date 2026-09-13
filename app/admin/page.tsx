@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { HardHat, Plus, Users, Wrench } from "lucide-react"
+import { Briefcase, HardHat, Package, Plus, Users, Wrench } from "lucide-react"
 
 import { requireAdmin } from "@/lib/auth/require-admin"
 import { buttonVariants } from "@/components/ui/button"
@@ -19,10 +19,21 @@ export default async function AdminHomePage() {
     { count: chantiersCount },
     { count: membresCount },
     { count: interventionsCount },
+    { count: comptesProPending },
+    { count: commandesATraiter },
   ] = await Promise.all([
     supabase.from("chantiers").select("*", { count: "exact", head: true }),
     supabase.from("chantier_membres").select("*", { count: "exact", head: true }),
     supabase.from("interventions").select("*", { count: "exact", head: true }),
+    supabase
+      .from("comptes_pro")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "pending"),
+    supabase
+      .from("commandes")
+      .select("*", { count: "exact", head: true })
+      .eq("statut", "confirmee")
+      .eq("payment_status", "paid"),
   ])
 
   const { data: recentChantiers } = await supabase
@@ -46,7 +57,7 @@ export default async function AdminHomePage() {
         </Link>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-brand-navy">
@@ -78,6 +89,40 @@ export default async function AdminHomePage() {
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold text-brand-navy">{interventionsCount ?? 0}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-brand-navy">
+              <Package className="size-4" aria-hidden />
+              Commandes à traiter
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-brand-navy">{commandesATraiter ?? 0}</p>
+            <Link
+              href="/admin/commandes"
+              className="mt-2 inline-block text-sm text-primary hover:underline"
+            >
+              Voir les commandes →
+            </Link>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-brand-navy">
+              <Briefcase className="size-4" aria-hidden />
+              Comptes pro en attente
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-brand-navy">{comptesProPending ?? 0}</p>
+            <Link
+              href="/admin/comptes-pro"
+              className="mt-2 inline-block text-sm text-primary hover:underline"
+            >
+              Voir les dossiers →
+            </Link>
           </CardContent>
         </Card>
       </div>

@@ -1,7 +1,7 @@
 # Plan projet — Core Environnement
 
 > Document de suivi : cahier des charges client, avancement réel et reste à faire.  
-> Dernière mise à jour : 22 juillet 2026  
+> Dernière mise à jour : 12 septembre 2026  
 > Source de vérité fonctionnelle : **cahier des charges client** (Île-de-France, espace client, vitrine).
 
 ---
@@ -22,7 +22,40 @@
 | **Mois 3** | Site vitrine et tests               | Accueil CDC, services flip, FAQ, sécurité avant ouverture publique |
 
 
-**Nous sommes en : Mois 2** (Mois 1 livré côté code · démarrage export historique + compte pro).
+**Nous sommes en : Mois 3** (Mois 1 ✅ · Mois 2 **~95 % code livré** — finitions reportées, voir § « À revenir »).
+
+---
+
+## ⏸ À revenir après la vitrine (Mois 2 — reporté volontairement)
+
+> **Décision (12/09/2026) :** priorité à la **vitrine CDC (Mois 3)**. Les points ci-dessous restent valides ; le code est en place pour la plupart — il s’agit surtout de **config, tests et fonctionnalités secondaires**.
+
+### Configuration & tests (priorité au retour)
+
+| # | Étape | Statut code | Action à faire |
+|---|--------|-------------|----------------|
+| 1 | **E-mails Resend** | ✅ branché (`lib/email/`) | Créer compte [resend.com](https://resend.com) → `RESEND_API_KEY` dans `.env.local` + Vercel prod → redémarrer `npm run dev` |
+| 2 | **Expéditeur e-mail prod** | ⏸ | Vérifier domaine sur Resend → `EMAIL_FROM=noreply@votre-domaine.fr` (en dev : `onboarding@resend.dev` suffit) |
+| 3 | **Test e-mail commande** | ⏸ | Paiement test sur `/` → vérifier réception confirmation |
+| 4 | **Test e-mail compte pro** | ⏸ | Admin → valider/refuser un dossier `pending` → vérifier réception |
+| 5 | **Migration SQL `011`** | ✅ fichier prêt | Exécuter `011_commande_intervention.sql` sur Supabase si pas encore fait (lien commande → intervention) |
+| 6 | **Test Stripe abo pro** | ⏸ | `/pro` → checkout 35 € → webhook → `subscription_active = true` en base |
+| 7 | **Test tunnel commande complet** | ⏸ | `/` → CB test → `/admin/commandes` → « Créer l'intervention » |
+
+### Fonctionnalités Mois 2 non implémentées (secondaire)
+
+| # | Fonctionnalité | Fichiers / notes |
+|---|----------------|------------------|
+| 8 | **Récap mensuel** volumes / valorisation (compte pro) | Dashboard ou export dédié — CDC compte pro § reporting |
+| 9 | **Rappel expert déchets** après commande | Notification / CRM — texte CDC dans `commentCaFonctionne.particulier.suite` |
+| 10 | **Commande pro sur facture** depuis l'espace client | Pros validés (`payment_mode = invoice`) — aujourd'hui redirect vers `/pro` |
+| 11 | **Persistance coords** (lat/lng) sur `commandes` | Widget envoie lat/lng ; non enregistrés en base |
+| 12 | **Géocodage réel** (Google Places / API) | Remplacer validation CP mock sur adresse |
+
+### Décisions client toujours en attente (cf. § plus bas)
+
+- Espace **particulier** (suivi + factures sans abo)
+- Confirmation flux **invitation compte** par lien admin
 
 ---
 
@@ -79,14 +112,14 @@ Chaque **prestataire** (Paprec, Veolia, Bennes services, 4g environnement…) a 
 - [x] 7 contenants : Benne 8/10/15/20/30 m³, Caisse palette 600 L, Fût 200 L
 - [x] 16 types de déchets (9 non dangereux + 7 dangereux)
 - [x] 5 statuts : En cours de programmation, Programmé, Annulée, Réalisée, Passage à vide
-- [ ] Validation manuelle compte pro : CB obligatoire **ou** paiement sur facture *(Mois 2)*
+- [x] Validation manuelle compte pro : CB obligatoire **ou** paiement sur facture *(Mois 2)*
 
 
 
 ### Zone géographique (CDC)
 
 - [x] Île-de-France entière : 75, 77, 78, 91, 92, 93, 94, 95
-- [ ] Validation d'adresse à la commande alignée IDF *(Mois 2, avec tunnel commande)*
+- [x] Validation d'adresse à la commande alignée IDF *(Mois 2 — tunnel commande benne)*
 
 ---
 
@@ -112,6 +145,8 @@ Chaque **prestataire** (Paprec, Veolia, Bennes services, 4g environnement…) a 
 | `001_initial_schema.sql`      | PostGIS, zones, catalogue déchets, commandes widget, RLS de base                         |
 | `002_dashboard_mois1.sql`     | Profils, chantiers, membres N-N, interventions, documents, stats graphiques, comptes pro |
 | `003_zones_ile_de_france.sql` | 8 départements IDF, zone « Île-de-France », désactivation zone prototype Élancourt       |
+| `010_commandes_tunnel.sql`    | Colonnes tunnel commande benne (audience, prestation, paiement Stripe, contact)          |
+| `011_commande_intervention.sql` | Lien `interventions.commande_id` → commande widget                                     |
 
 
 **Tables principales Mois 1 :** `profiles`, `chantiers`, `chantier_membres`, `interventions`, `intervention_documents`, `chantier_stats_dechets`, `chantier_stats_valorisation`, `comptes_pro`, référentiels (`types_intervention`, `types_contenants`, `dechets_types`, `statuts_intervention`, `departements_idf`).
@@ -218,29 +253,31 @@ Chaque **prestataire** (Paprec, Veolia, Bennes services, 4g environnement…) a 
 
 #### Formulaire compte pro
 
-- [ ] Page « Créer mon compte pro » (champs CDC § entreprise, interlocuteur, uploads)
-- [ ] Upload KBIS + RIB → Supabase Storage
-- [ ] Workflow **validation manuelle** admin : approuver / refuser
-- [ ] Choix admin par dossier : **CB obligatoire** ou **paiement sur facture**
-- [ ] E-mail confirmation ouverture de compte
+- [x] Page « Créer mon compte pro » (`/pro` — champs CDC § entreprise, interlocuteur, uploads)
+- [x] Upload KBIS + RIB → Supabase Storage (`compte-pro-documents`)
+- [x] Workflow **validation manuelle** admin : approuver / refuser (`/admin/comptes-pro`)
+- [x] Choix admin par dossier : **CB obligatoire** ou **paiement sur facture**
+- [x] E-mail confirmation ouverture de compte *(code Resend ✅ — **config `RESEND_API_KEY` reportée** → § À revenir)*
 
 
 
 #### Abonnement & paiements
 
-- [ ] Stripe — abonnement **35 € HT / mois** (espace client pro)
-- [ ] Paiement CB particulier à la commande benne
-- [ ] Paiement différé 30 j pour pros validés
-- [ ] Webhooks Stripe (confirmation, échec, renouvellement)
+- [x] Stripe — abonnement **35 € HT / mois** (Checkout + portail client, `/pro`)
+- [x] Paiement CB particulier à la commande benne *(Checkout Stripe + webhook + e-mail confirmation)*
+- [x] Paiement différé 30 j pour pros validés *(mode `invoice` défini à la validation admin)*
+- [x] Webhooks Stripe compte pro + commandes benne (`/api/stripe/webhook`)
 
 
 
 #### Tunnel commande benne
 
-- [ ] Brancher le widget (ou nouveau tunnel) à Supabase
-- [ ] Persistance commandes + création intervention liée
-- [ ] Validation adresse **Île-de-France** (8 départements)
-- [ ] E-mail confirmation commande
+- [x] Brancher le widget à Supabase (`app/order/actions.ts`, migration `010`)
+- [x] Persistance commandes particulier (statut `brouillon` → `confirmee` via webhook)
+- [x] Vue admin `/admin/commandes` — liste + fiche + changement de statut
+- [x] Création intervention liée à la commande (admin → fiche commande → « Créer l'intervention »)
+- [x] Validation adresse **Île-de-France** (8 départements, `lib/geo/idf.ts`)
+- [x] E-mail confirmation commande *(code webhook → Resend ✅ — **config + test reportés** → § À revenir)*
 - [ ] Rappel expert déchets (notification / CRM)
 
 
@@ -257,18 +294,29 @@ Chaque **prestataire** (Paprec, Veolia, Bennes services, 4g environnement…) a 
 
 ### Mois 3 — Vitrine CDC & mise en production
 
+> **En cours (12/09/2026)** — vitrine LM Arena migrée dans Next.js (`components/vitrine/`) · hero + sections CDC · commande en **modale** (vrai `OrderWidget` + Stripe).
 
+#### Ordre de livraison suggéré (vitrine)
+
+1. Hero CDC + bouton « Commander une benne » → scroll `#commande`
+2. Nos services (4 cartes flip)
+3. Nos engagements (4 blocs)
+4. Comment ça fonctionne (toggle particulier / pro)
+5. Section compte pro + lien `/pro`
+6. FAQ (accordéon 6 catégories)
+7. Footer (mentions, contact — textes client)
+8. Metadata SEO + assets hero
 
 #### Page d'accueil (contenu `lib/cdc/contenu-vitrine.ts`)
 
-- [ ] Hero — image camion + Tour Eiffel + titres CDC
-- [ ] Bouton **« Commander une benne »** → ouverture formulaire (dialog ou scroll)
-- [ ] Section **Nos services** — 4 cartes flip CSS/Framer Motion
-- [ ] Section **Nos engagements** — 4 blocs
-- [ ] Section **Comment ça fonctionne** — toggle particulier / pro
-- [ ] Section **Compte pro** — formulaire + texte réassurance
+- [x] Hero — image camion + Paris + titres CDC (`components/vitrine/vitrine-hero.tsx`)
+- [x] Bouton **« Commander une benne »** → modale avec `OrderWidget` (Stripe)
+- [x] Section **Nos services** — 4 cartes (CDC ; flip LM Arena à affiner)
+- [x] Section **Nos engagements** — 4 blocs CDC
+- [x] Section **Comment ça fonctionne** — particulier / pro (texte CDC)
+- [x] Section **Compte pro** — teaser + lien `/pro`
 - [ ] Section **FAQ** — accordéon 6 catégories / 19 questions
-- [ ] Footer (mentions légales, contact, CGV — à définir avec le client)
+- [x] Footer vitrine (structure ; mentions légales client à compléter)
 
 
 
@@ -331,7 +379,7 @@ coreenvironnement/
 │       └── logout/route.ts      # ✅ Déconnexion
 ├── components/
 │   ├── login-form.tsx           # ✅
-│   ├── order-widget.tsx         # Prototype commande (Mois 2 : brancher)
+│   ├── order-widget.tsx         # Tunnel commande benne (3 étapes, Stripe particulier)
 │   └── site-header.tsx          # ✅ + lien Espace client
 ├── lib/
 │   ├── cdc/
@@ -418,7 +466,8 @@ Ces tâches **ne dépendent pas** de la réponse client et font avancer le Mois 
 | Validation pro       | Manuelle — admin choisit CB ou facture                            |
 | Espace particulier   | Suivi statuts + factures (proposition interne — confirmation client en attente) |
 | Création comptes     | Admin envoie un lien d'invitation (proposition interne — confirmation en attente) |
-| Contenu vitrine      | Prêt en `lib/cdc/contenu-vitrine.ts`, UI au Mois 3                |
+| Contenu vitrine      | Prêt en `lib/cdc/contenu-vitrine.ts` — **UI Mois 3 en cours** (12/09/2026) |
+| Mois 2 reporté       | E-mails Resend, tests Stripe, récap mensuel → § « À revenir après la vitrine » |
 | Graphiques dashboard | Tonnages saisis admin · **taux valorisation calculé** (prestataire × typologie × année) — voir `lib/valorisation/calculate.ts` |
 | Infra Supabase       | Migrations 001–003 ✅ · PostGIS ✅ · Bucket `intervention-documents` ✅ · Admin ✅ · Login ✅ |
 

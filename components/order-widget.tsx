@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useTransition } from "react"
+import Link from "next/link"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import type { LucideIcon } from "lucide-react"
 import {
@@ -39,11 +40,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { startOrderCheckout } from "@/app/order/actions"
 import {
-  ELIANCOURT_CENTER,
-  haversineDistanceKm,
-  isWithinRadiusKm,
-} from "@/lib/geo/haversine"
+  departementLabel,
+  extractDepartementFromAddress,
+  isAddressInIdf,
+} from "@/lib/geo/idf"
 import { mockGeocodeAddress, type MockGeocodeHit } from "@/lib/geo/mock-geocode"
 import {
   type BenneFamily,
@@ -144,7 +146,12 @@ function StepCircle({
   )
 }
 
-export function OrderWidget() {
+type OrderWidgetProps = {
+  variant?: "default" | "embedded"
+}
+
+export function OrderWidget({ variant = "default" }: OrderWidgetProps) {
+  const embedded = variant === "embedded"
   const prefersReducedMotion = useReducedMotion()
   const t = prefersReducedMotion
     ? { duration: 0.01 }
@@ -154,7 +161,6 @@ export function OrderWidget() {
   const [audience, setAudience] = useState<Audience>("particulier")
   const [address, setAddress] = useState("")
   const [geocode, setGeocode] = useState<MockGeocodeHit | null>(null)
-  const [distanceKm, setDistanceKm] = useState<number | null>(null)
   const [zoneOk, setZoneOk] = useState(false)
   const [outOfZone, setOutOfZone] = useState(false)
   const [addressError, setAddressError] = useState<string | null>(null)
@@ -164,7 +170,11 @@ export function OrderWidget() {
   const [selectedPrestationId, setSelectedPrestationId] = useState<
     string | null
   >(null)
-  const [paymentStub, setPaymentStub] = useState(false)
+  const [contactEmail, setContactEmail] = useState("")
+  const [contactName, setContactName] = useState("")
+  const [payError, setPayError] = useState<string | null>(null)
+  const [isPaying, startPayTransition] = useTransition()
+  const [departementCode, setDepartementCode] = useState<string | null>(null)
 
   const prestation = useMemo(
     () => (selectedPrestationId ? prestationById(selectedPrestationId) : null),
@@ -177,24 +187,25 @@ export function OrderWidget() {
   )
 
   useEffect(() => {
-    if (step !== "payment") setPaymentStub(false)
+    if (step !== "payment") {
+      setPayError(null)
+    }
   }, [step])
 
   const resetZone = () => {
     setZoneOk(false)
     setOutOfZone(false)
     setGeocode(null)
-    setDistanceKm(null)
   }
 
   const syncZoneCheck = (raw: string): boolean => {
     const trimmed = raw.trim()
     if (!trimmed.length) return false
     const hit = mockGeocodeAddress(trimmed)
-    const dist = haversineDistanceKm(hit, ELIANCOURT_CENTER)
-    const ok = isWithinRadiusKm(hit)
+    const dept = extractDepartementFromAddress(trimmed)
+    const ok = isAddressInIdf(trimmed)
     setGeocode(hit)
-    setDistanceKm(Math.round(dist * 10) / 10)
+    setDepartementCode(dept)
     setOutOfZone(!ok)
     setZoneOk(ok)
     return ok
@@ -243,10 +254,19 @@ export function OrderWidget() {
   const currentStepIdx = steps.findIndex((s) => s.id === step)
 
   return (
-    <Card className="relative mx-auto w-full max-w-xl overflow-hidden border-white/70 bg-card/95 shadow-[0_22px_70px_-32px_color-mix(in_srgb,var(--brand-navy)_38%,transparent)] ring-1 ring-primary/15 backdrop-blur-sm">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.07] via-transparent to-brand-navy/[0.05]" />
+    <Card
+      className={cn(
+        "relative mx-auto w-full overflow-hidden",
+        embedded
+          ? "max-w-none border-0 bg-transparent shadow-none ring-0"
+          : "max-w-xl border-white/70 bg-card/95 shadow-[0_22px_70px_-32px_color-mix(in_srgb,var(--brand-navy)_38%,transparent)] ring-1 ring-primary/15 backdrop-blur-sm"
+      )}
+    >
+      {!embedded ? (
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.07] via-transparent to-brand-navy/[0.05]" />
+      ) : null}
 
-      <CardContent className="relative space-y-6 pt-8">
+      <CardContent className={cn("relative space-y-6", embedded ? "px-1 pt-2 pb-2" : "pt-8")}>
         <div className="space-y-2">
           <p className="text-center text-xs font-medium uppercase tracking-wide text-primary">
             Vous êtes&nbsp;?
@@ -371,14 +391,15 @@ export function OrderWidget() {
                 </div>
               </div>
 
-              {zoneOk && geocode && (
+              {zoneOk && geocode && departementCode && (
                 <p className="rounded-xl border border-primary/25 bg-primary/8 px-3 py-2 text-center text-xs text-brand-green-dark">
-                  Adresse reconnue dans la zone ({geocode.label}, {distanceKm} km).
+                  Adresse en Île-de-France ({departementLabel(departementCode) ?? departementCode}
+                  {geocode.label ? ` · ${geocode.label}` : ""}).
                 </p>
               )}
 
               <AnimatePresence>
-                {outOfZone && geocode && distanceKm !== null && (
+                {outOfZone && geocode && (
                   <motion.div
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -390,7 +411,8 @@ export function OrderWidget() {
                       <div>
                         <p className="font-semibold">Hors zone d’intervention</p>
                         <p className="mt-1 text-rose-900/90">
-                          Environ {distanceKm} km de notre base. Appelez le{" "}
+                          Nous intervenons en Île-de-France (75, 77, 78, 91, 92, 93, 94, 95).
+                          Indiquez un code postal IDF ou appelez le{" "}
                           <a
                             href={SITE_PHONE_HREF}
                             className="font-semibold underline decoration-rose-400"
@@ -638,6 +660,63 @@ export function OrderWidget() {
                 au-delà de {prestation.tonnageMax} t (facturation complémentaire).
               </p>
 
+              {audience === "professionnel" ? (
+                <div className="rounded-xl border border-brand-navy/15 bg-muted/40 px-4 py-4 text-sm text-muted-foreground">
+                  <p className="font-medium text-brand-navy">Commande professionnelle</p>
+                  <p className="mt-2">
+                    Les pros validés commandent sur facture depuis leur espace client.{" "}
+                    <Link href="/pro" className="font-semibold text-primary underline-offset-2 hover:underline">
+                      Créer ou accéder à mon compte pro
+                    </Link>
+                    .
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3 rounded-xl border border-brand-navy/10 bg-white/90 p-4">
+                  <p className="text-sm font-semibold text-brand-navy">Vos coordonnées</p>
+                  <div className="space-y-1.5">
+                    <label htmlFor="order-contact-email" className="text-xs font-medium text-muted-foreground">
+                      E-mail (confirmation de commande)&nbsp;*
+                    </label>
+                    <Input
+                      id="order-contact-email"
+                      type="email"
+                      autoComplete="email"
+                      value={contactEmail}
+                      onChange={(e) => {
+                        setContactEmail(e.target.value)
+                        setPayError(null)
+                      }}
+                      placeholder="vous@exemple.fr"
+                      className="h-11 border-2 border-primary/15 bg-white"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label htmlFor="order-contact-name" className="text-xs font-medium text-muted-foreground">
+                      Nom et prénom (optionnel)
+                    </label>
+                    <Input
+                      id="order-contact-name"
+                      autoComplete="name"
+                      value={contactName}
+                      onChange={(e) => setContactName(e.target.value)}
+                      placeholder="Jean Dupont"
+                      className="h-11 border border-border/80 bg-white"
+                    />
+                  </div>
+                  <p className="text-[0.7rem] text-muted-foreground">
+                    Paiement sécurisé Stripe · montant TTC estimé (TVA 20&nbsp;%) :{" "}
+                    <strong className="text-foreground">
+                      {fmtHt(Math.round(prestation.priceHt * 1.2 * 100) / 100)}
+                    </strong>
+                  </p>
+                </div>
+              )}
+
+              {payError ? (
+                <p className="text-center text-xs font-medium text-amber-800">{payError}</p>
+              ) : null}
+
               <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
                 <Button
                   variant="outline"
@@ -645,41 +724,56 @@ export function OrderWidget() {
                   className="h-10 rounded-xl"
                   onClick={() => {
                     setAddressError(null)
+                    setPayError(null)
                     setStep("forfait")
                   }}
                 >
                   <ArrowLeft className="mr-2 size-4" />
                   Retour
                 </Button>
-                <Button
-                  type="button"
-                  className="h-11 flex-1 rounded-xl text-base font-semibold shadow-lg"
-                  onClick={() => setPaymentStub(true)}
-                >
-                  Payer en ligne
-                </Button>
+                {audience === "particulier" ? (
+                  <Button
+                    type="button"
+                    className="h-11 flex-1 rounded-xl text-base font-semibold shadow-lg"
+                    disabled={isPaying}
+                    onClick={() => {
+                      setPayError(null)
+                      startPayTransition(async () => {
+                        const result = await startOrderCheckout({
+                          audience,
+                          address: address.trim(),
+                          lat: geocode.lat,
+                          lng: geocode.lng,
+                          addressLabel: geocode.label,
+                          prestationId: prestation.id,
+                          deliveryDate,
+                          pickupDate: pickupDate || undefined,
+                          contactEmail: contactEmail.trim(),
+                          contactName: contactName.trim() || undefined,
+                        })
+                        if (result?.error) {
+                          setPayError(result.error)
+                        }
+                      })
+                    }}
+                  >
+                    {isPaying ? "Redirection Stripe…" : "Payer en ligne"}
+                  </Button>
+                ) : null}
               </div>
-
-              {paymentStub && (
-                <motion.p
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="rounded-xl border border-brand-navy/20 bg-muted/50 px-3 py-3 text-center text-xs text-muted-foreground"
-                >
-                  Paiement en ligne : branchement Stripe / prestataire à venir.
-                  Votre demande peut être finalisée par téléphone au{" "}
-                  <a href={SITE_PHONE_HREF} className="font-semibold text-primary">
-                    {SITE_PHONE_DISPLAY}
-                  </a>
-                  .
-                </motion.p>
-              )}
             </motion.div>
           )}
         </AnimatePresence>
       </CardContent>
 
-      <CardFooter className="relative flex flex-col gap-2 border-t border-primary/5 bg-muted/30 py-4 text-center text-[0.65rem] text-muted-foreground">
+      <CardFooter
+        className={cn(
+          "relative flex flex-col gap-2 text-center text-[0.65rem] text-muted-foreground",
+          embedded
+            ? "border-0 bg-transparent px-1 py-3"
+            : "border-t border-primary/5 bg-muted/30 py-4"
+        )}
+      >
         <span>
           Une question ?{" "}
           <a
@@ -690,7 +784,7 @@ export function OrderWidget() {
           </a>
         </span>
         <span className="opacity-90">
-          Intervention sur les Yvelines (78), traçabilité et conformité.
+          Intervention en Île-de-France (8 départements), traçabilité et conformité.
         </span>
       </CardFooter>
     </Card>

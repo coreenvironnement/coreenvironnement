@@ -1,13 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Sans, Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
+import "./vitrine.css";
 
-import { SiteHeader } from "@/components/site-header";
+import { LayoutChrome } from "@/components/layout-chrome";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  weight: ["600", "700"],
+});
+
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 const geistMono = Geist_Mono({
@@ -17,11 +25,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Core Environnement · Bennes sous 24 h sur les Yvelines (78)",
-    template: "%s | Core Environnement",
+    default:
+      "CORE ENVIRONNEMENT · Location de benne Île-de-France — Intervention 24h",
+    template: "%s | CORE ENVIRONNEMENT",
   },
   description:
-    "Commandez une benne en quelques minutes. Livraison et intervention terrain en moins de 24 h (équipe locale à Élancourt, forfaits clairs sur le 78).",
+    "Location de bennes en Île-de-France. Commande en 3 minutes, intervention sous 24 h, suivi digital et traçabilité de vos déchets.",
 };
 
 export default function RootLayout({
@@ -30,23 +39,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={geistSans.variable}>
+    <html lang="fr" className={`${geistSans.variable} ${dmSans.variable}`}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} relative min-h-screen bg-background font-sans antialiased`}
+        className={`${geistSans.variable} ${dmSans.variable} ${geistMono.variable} relative min-h-screen bg-background font-sans antialiased`}
       >
-        <div
-          className="pointer-events-none fixed inset-0 -z-10"
-          aria-hidden
-          style={{
-            background: `
-              radial-gradient(ellipse 110% 90% at 50% -30%, color-mix(in srgb, #38a234 16%, transparent), transparent 58%),
-              radial-gradient(ellipse 55% 45% at 100% 0%, color-mix(in srgb, #1b418f 10%, transparent), transparent 50%),
-              var(--background)
-            `,
-          }}
-        />
-        <SiteHeader />
-        <main className="relative z-0 pt-28 sm:pt-32">{children}</main>
+        <LayoutChrome>{children}</LayoutChrome>
       </body>
     </html>
   );

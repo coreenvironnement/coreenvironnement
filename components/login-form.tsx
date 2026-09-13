@@ -94,8 +94,13 @@ export function LoginForm() {
           </Button>
         </form>
         <p className="mt-6 text-center text-sm text-muted-foreground">
+          Professionnel ?{" "}
+          <Link href="/pro" className="text-primary underline-offset-4 hover:underline">
+            Ouvrir un compte pro
+          </Link>
+          {" · "}
           <Link href="/" className="text-primary underline-offset-4 hover:underline">
-            Retour à l&apos;accueil
+            Accueil
           </Link>
         </p>
       </CardContent>

@@ -1,8 +1,56 @@
-import { type NextRequest } from "next/server"
+import { NextResponse, type NextRequest } from "next/server"
 
+import {
+  getMaintenanceBypassSecret,
+  isMaintenanceEnabled,
+  MAINTENANCE_COOKIE,
+} from "@/lib/maintenance"
 import { updateSession } from "@/lib/supabase/middleware"
 
+function shouldBypassMaintenance(request: NextRequest) {
+  const secret = getMaintenanceBypassSecret()
+  if (!secret) return false
+
+  if (request.cookies.get(MAINTENANCE_COOKIE)?.value === secret) {
+    return true
+  }
+
+  const preview = request.nextUrl.searchParams.get("preview")
+  return preview === secret
+}
+
+function maintenanceResponse(request: NextRequest) {
+  const secret = getMaintenanceBypassSecret()
+  const preview = request.nextUrl.searchParams.get("preview")
+
+  if (secret && preview === secret) {
+    const url = request.nextUrl.clone()
+    url.pathname = request.nextUrl.pathname === "/maintenance" ? "/" : request.nextUrl.pathname
+    url.searchParams.delete("preview")
+
+    const response = NextResponse.redirect(url)
+    response.cookies.set(MAINTENANCE_COOKIE, secret, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24 * 7,
+      path: "/",
+    })
+    return response
+  }
+
+  if (request.nextUrl.pathname.startsWith("/maintenance")) {
+    return NextResponse.next()
+  }
+
+  return NextResponse.rewrite(new URL("/maintenance", request.url))
+}
+
 export async function middleware(request: NextRequest) {
+  if (isMaintenanceEnabled() && !shouldBypassMaintenance(request)) {
+    return maintenanceResponse(request)
+  }
+
   return updateSession(request)
 }
 
