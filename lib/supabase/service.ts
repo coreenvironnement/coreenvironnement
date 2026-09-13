@@ -1,17 +1,38 @@
 import { createClient } from "@supabase/supabase-js"
 
-export function createServiceClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+const SUPABASE_SERVICE_ENV = [
+  "NEXT_PUBLIC_SUPABASE_URL",
+  "SUPABASE_SERVICE_ROLE_KEY",
+] as const
 
-  if (!url || !key) {
-    throw new Error("Variables Supabase service role manquantes.")
+/** Variables absentes côté serveur (Vercel prod, server actions, webhooks). */
+export function getMissingSupabaseServiceEnv(): string[] {
+  return SUPABASE_SERVICE_ENV.filter((name) => !process.env[name]?.trim())
+}
+
+export function getSupabaseServiceConfigError(): string | null {
+  const missing = getMissingSupabaseServiceEnv()
+  if (missing.length === 0) {
+    return null
   }
 
-  return createClient(url, key, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  })
+  return `Variables Supabase service role manquantes: ${missing.join(", ")}`
+}
+
+export function createServiceClient() {
+  const configError = getSupabaseServiceConfigError()
+  if (configError) {
+    throw new Error(configError)
+  }
+
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  )
 }

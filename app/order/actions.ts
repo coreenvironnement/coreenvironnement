@@ -20,7 +20,10 @@ import {
   isStripePaymentConfigured,
   stripeCheckoutPaymentOptions,
 } from "@/lib/stripe/server"
-import { createServiceClient } from "@/lib/supabase/service"
+import {
+  createServiceClient,
+  getSupabaseServiceConfigError,
+} from "@/lib/supabase/service"
 
 export type OrderCheckoutInput = {
   audience: "particulier" | "professionnel"
@@ -108,13 +111,16 @@ export async function startOrderCheckout(
     return { error: "Code postal IDF introuvable dans l'adresse." }
   }
 
-  let supabase
-  try {
-    supabase = createServiceClient()
-  } catch (error) {
-    console.error("Supabase service client:", error)
-    return { error: "Service temporairement indisponible. Réessayez plus tard." }
+  const supabaseConfigError = getSupabaseServiceConfigError()
+  if (supabaseConfigError) {
+    console.error("[startOrderCheckout]", supabaseConfigError)
+    return {
+      error:
+        "Commande indisponible : configuration serveur incomplète (Supabase). Contactez-nous par téléphone.",
+    }
   }
+
+  const supabase = createServiceClient()
 
   const dechetCode = dechetCodeForFamily(prestation.family)
   const { data: dechetType, error: dechetError } = await supabase
@@ -123,8 +129,20 @@ export async function startOrderCheckout(
     .eq("code", dechetCode)
     .maybeSingle()
 
-  if (dechetError || !dechetType) {
+  if (dechetError) {
+    console.error("[startOrderCheckout] dechets_types lookup:", dechetCode, dechetError)
     return { error: "Type de déchet indisponible. Réessayez plus tard." }
+  }
+
+  if (!dechetType) {
+    console.error(
+      "[startOrderCheckout] dechets_types missing row for code:",
+      dechetCode
+    )
+    return {
+      error:
+        "Type de déchet indisponible (catalogue non initialisé). Contactez-nous par téléphone.",
+    }
   }
 
   const { data: commande, error: insertError } = await supabase
