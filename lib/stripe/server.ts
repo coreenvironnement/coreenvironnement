@@ -61,11 +61,28 @@ export async function getProMonthlyPriceId(stripe: Stripe): Promise<string> {
 }
 
 export function getAppOrigin(fallbackOrigin?: string | null): string {
-  return (
-    fallbackOrigin ??
-    process.env.NEXT_PUBLIC_APP_URL ??
-    "http://localhost:3000"
-  ).replace(/\/$/, "")
+  const trimmed = fallbackOrigin?.trim()
+  if (trimmed) {
+    return trimmed.replace(/\/$/, "")
+  }
+
+  return (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, "")
+}
+
+/** Origin fiable pour les server actions (Origin header souvent absent sur mobile). */
+export function getRequestOrigin(headersList: Headers): string {
+  const origin = headersList.get("origin")?.trim()
+  if (origin) {
+    return getAppOrigin(origin)
+  }
+
+  const host = headersList.get("x-forwarded-host") ?? headersList.get("host")
+  const proto = headersList.get("x-forwarded-proto") ?? "https"
+  if (host) {
+    return getAppOrigin(`${proto}://${host}`)
+  }
+
+  return getAppOrigin(null)
 }
 
 /** Locale FR ; moyens de paiement (CB, Apple Pay, Google Pay) gérés via le Dashboard Stripe. */

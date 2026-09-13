@@ -654,22 +654,30 @@ export function OrderWidget({ variant = "default", onStepIndexChange }: OrderWid
                     onClick={() => {
                       setPayError(null)
                       startPayTransition(async () => {
-                        const result = await startOrderCheckout({
-                          audience,
-                          address: selectedAddress.label,
-                          lat: selectedAddress.lat,
-                          lng: selectedAddress.lng,
-                          addressLabel: selectedAddress.label,
-                          postcode: selectedAddress.postcode,
-                          departementCode: selectedAddress.departementCode,
-                          prestationId: prestation.id,
-                          deliveryDate,
-                          pickupDate: pickupDate || undefined,
-                          contactEmail: contactEmail.trim(),
-                          contactName: contactName.trim() || undefined,
-                        })
-                        if (result?.error) {
-                          setPayError(result.error)
+                        try {
+                          const result = await startOrderCheckout({
+                            audience,
+                            address: selectedAddress.label,
+                            lat: selectedAddress.lat,
+                            lng: selectedAddress.lng,
+                            addressLabel: selectedAddress.label,
+                            postcode: selectedAddress.postcode,
+                            departementCode: selectedAddress.departementCode,
+                            prestationId: prestation.id,
+                            deliveryDate,
+                            pickupDate: pickupDate || undefined,
+                            contactEmail: contactEmail.trim(),
+                            contactName: contactName.trim() || undefined,
+                          })
+                          if ("error" in result) {
+                            setPayError(result.error)
+                            return
+                          }
+                          window.location.assign(result.checkoutUrl)
+                        } catch {
+                          setPayError(
+                            "Une erreur est survenue lors du paiement. Réessayez ou contactez-nous."
+                          )
                         }
                       })
                     }}

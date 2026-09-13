@@ -1,7 +1,6 @@
 "use server"
 
 import { headers } from "next/headers"
-import { redirect } from "next/navigation"
 
 import {
   dechetCodeForFamily,
@@ -16,7 +15,7 @@ import {
 } from "@/lib/geo/idf"
 import { prestationById } from "@/lib/prestations"
 import {
-  getAppOrigin,
+  getRequestOrigin,
   getStripe,
   isStripePaymentConfigured,
   stripeCheckoutPaymentOptions,
@@ -38,9 +37,24 @@ export type OrderCheckoutInput = {
   contactName?: string
 }
 
+export type OrderCheckoutResult =
+  | { error: string }
+  | { checkoutUrl: string }
+
+function stripeCheckoutErrorMessage(error: unknown): string {
+  if (error && typeof error === "object" && "message" in error) {
+    const message = String((error as { message: unknown }).message)
+    if (message.includes("Invalid URL")) {
+      return "Configuration du paiement incorrecte. Contactez-nous par téléphone."
+    }
+  }
+
+  return "Impossible d'initialiser le paiement Stripe. Réessayez ou contactez-nous."
+}
+
 export async function startOrderCheckout(
   input: OrderCheckoutInput
-): Promise<{ error: string } | never> {
+): Promise<OrderCheckoutResult> {
   if (input.audience === "professionnel") {
     return {
       error:
@@ -94,7 +108,13 @@ export async function startOrderCheckout(
     return { error: "Code postal IDF introuvable dans l'adresse." }
   }
 
-  const supabase = createServiceClient()
+  let supabase
+  try {
+    supabase = createServiceClient()
+  } catch (error) {
+    console.error("Supabase service client:", error)
+    return { error: "Service temporairement indisponible. Réessayez plus tard." }
+  }
 
   const dechetCode = dechetCodeForFamily(prestation.family)
   const { data: dechetType, error: dechetError } = await supabase
@@ -133,47 +153,67 @@ export async function startOrderCheckout(
     return { error: "Impossible d'enregistrer la commande. Réessayez." }
   }
 
-  const stripe = getStripe()
+  let stripe
+  try {
+    stripe = getStripe()
+  } catch (error) {
+    console.error("Stripe client:", error)
+    return { error: "Paiement en ligne temporairement indisponible. Contactez-nous par téléphone." }
+  }
+
   const headersList = await headers()
-  const origin = getAppOrigin(headersList.get("origin"))
+  const origin = getRequestOrigin(headersList)
   const amountTtc = priceTtcFromHt(prestation.priceHt)
   const deptLabel = departementLabel(deptCode)
 
-  const session = await stripe.checkout.sessions.create({
-    mode: "payment",
-    ...stripeCheckoutPaymentOptions(),
-    customer_email: email,
-    line_items: [
-      {
-        quantity: 1,
-        price_data: {
-          currency: "eur",
-          unit_amount: amountTtc,
-          product_data: {
-            name: prestation.label,
-            description: `Livraison ${input.deliveryDate} · ${deptLabel ?? deptCode} · ${input.addressLabel}`,
+  let session
+  try {
+    session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      ...stripeCheckoutPaymentOptions(),
+      customer_email: email,
+      line_items: [
+        {
+          quantity: 1,
+          price_data: {
+            currency: "eur",
+            unit_amount: amountTtc,
+            product_data: {
+              name: prestation.label,
+              description: `Livraison ${input.deliveryDate} · ${deptLabel ?? deptCode} · ${input.addressLabel}`.slice(
+                0,
+                500
+              ),
+            },
           },
         },
+      ],
+      success_url: `${origin}/?order=success`,
+      cancel_url: `${origin}/?order=cancelled`,
+      metadata: {
+        commande_id: commande.id,
+        order_type: "benne_particulier",
       },
-    ],
-    success_url: `${origin}/?order=success`,
-    cancel_url: `${origin}/?order=cancelled`,
-    metadata: {
-      commande_id: commande.id,
-      order_type: "benne_particulier",
-    },
-  })
+    })
+  } catch (error) {
+    console.error("Stripe checkout session:", error)
+    return { error: stripeCheckoutErrorMessage(error) }
+  }
 
-  await supabase
+  const { error: updateError } = await supabase
     .from("commandes")
     .update({
       stripe_checkout_session_id: session.id,
     })
     .eq("id", commande.id)
 
+  if (updateError) {
+    console.error("Update commande stripe session:", updateError)
+  }
+
   if (!session.url) {
     return { error: "Impossible d'ouvrir la page de paiement Stripe." }
   }
 
-  redirect(session.url)
+  return { checkoutUrl: session.url }
 }
