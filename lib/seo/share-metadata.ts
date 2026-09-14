@@ -1,9 +1,10 @@
 import { getSiteUrl } from "@/lib/seo/site-url"
 
-export const SHARE_IMAGE_PATH = "/images/social.png"
-export const SHARE_IMAGE_WIDTH = 1774
-export const SHARE_IMAGE_HEIGHT = 887
-export const SHARE_IMAGE_TYPE = "image/png"
+/** Optimized for WhatsApp/Facebook (<300 KB, 1200×630). */
+export const SHARE_IMAGE_PATH = "/images/og-social.jpg"
+export const SHARE_IMAGE_WIDTH = 1200
+export const SHARE_IMAGE_HEIGHT = 630
+export const SHARE_IMAGE_TYPE = "image/jpeg"
 
 export const DEFAULT_SHARE_IMAGE_ALT =
   "Location de benne en Île-de-France — CORE ENVIRONNEMENT"
