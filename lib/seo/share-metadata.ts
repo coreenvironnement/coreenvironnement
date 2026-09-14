@@ -13,9 +13,11 @@ export function getShareImageUrl() {
 }
 
 export function getShareOpenGraphImages(alt = DEFAULT_SHARE_IMAGE_ALT) {
+  const url = getShareImageUrl()
   return [
     {
-      url: getShareImageUrl(),
+      url,
+      secureUrl: url,
       width: SHARE_IMAGE_WIDTH,
       height: SHARE_IMAGE_HEIGHT,
       alt,
