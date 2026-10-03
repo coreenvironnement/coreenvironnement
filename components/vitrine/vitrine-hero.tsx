@@ -4,6 +4,7 @@ import Image from "next/image"
 
 import { hero } from "@/lib/cdc/contenu-vitrine"
 import type { SeoVariant } from "@/lib/seo/landing-variants"
+import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 
 import { BenneIcon } from "./benne-icon"
 import { VitrineHeroReassurance } from "./vitrine-hero-reassurance"
@@ -67,7 +68,9 @@ export function VitrineHero({ seoVariant }: VitrineHeroProps) {
             style={{ animationDelay: "140ms" }}
           >
             <span className="block">{seoVariant.h1Line1}</span>
-            <span className="mt-1 block">{seoVariant.h1Line2}</span>
+            {seoVariant.h1Line2 ? (
+              <span className="mt-1 block">{seoVariant.h1Line2}</span>
+            ) : null}
           </h1>
 
           <p
@@ -86,10 +89,11 @@ export function VitrineHero({ seoVariant }: VitrineHeroProps) {
               <BenneIcon className="h-[18px] w-[18px] shrink-0" />
             </button>
             <a
-              href="#services"
+              href={SITE_PHONE_HREF}
+              aria-label={`Appeler Core Environnement au ${SITE_PHONE_DISPLAY}`}
               className="btn btn-ghost-light w-full border-white/45 text-white sm:w-auto hover:border-white/60"
             >
-              Découvrir nos services
+              Parler à un spécialiste
             </a>
           </div>
         </div>

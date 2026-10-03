@@ -15,18 +15,18 @@ import { VITRINE_ICON_STROKE } from "./icons"
 const REASSURANCE = [
   {
     icon: TwentyFourHoursClockIcon,
-    label: "Intervention 24h",
-    description: "Une réponse rapide sur vos chantiers",
+    label: "Intervention sous 24h",
+    description: "Vos bennes livrées et collectées au rythme de vos activités",
   },
   {
     icon: Timer01Icon,
-    label: "Commande en 3 min",
-    description: "Simple, rapide, 100 % en ligne",
+    label: "Suivi 100 % digital",
+    description: "Gérez vos flux en direct depuis votre smartphone",
   },
   {
     icon: MapPinIcon,
-    label: "Toute l'Île-de-France",
-    description: "À vos côtés partout dans la région",
+    label: "Toute l’Île-de-France",
+    description: "Un interlocuteur unique pour l’ensemble de vos sites",
   },
 ] as const
 

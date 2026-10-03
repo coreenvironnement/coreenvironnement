@@ -243,6 +243,10 @@
     @apply mt-4 font-[family-name:var(--font-display)] text-[15px] font-semibold leading-snug tracking-[-0.015em] text-white sm:text-base;
   }
 
+  .vitrine-root a.vitrine-footer__cta-text {
+    @apply transition-colors hover:text-brand-green;
+  }
+
   .vitrine-root .vitrine-footer__bottom {
     @apply flex flex-col items-center gap-5 border-t border-white/10 py-7 text-center lg:flex-row lg:items-center lg:justify-between lg:py-8 lg:text-left;
   }
@@ -680,4 +684,14 @@
   .vitrine-root .hero-reassurance-carousel {
     scroll-behavior: auto;
   }
+}
+
+/* Tunnel commande (modal) — Stripe Express Checkout & bouton payer */
+.vitrine-root .order-express-checkout iframe {
+  width: 100% !important;
+  min-height: 2.75rem;
+}
+
+.vitrine-root .order-embedded-pay-btn:disabled {
+  cursor: not-allowed;
 }

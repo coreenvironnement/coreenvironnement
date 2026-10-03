@@ -279,13 +279,22 @@ function CheckoutFields({
   const elements = useElements()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [expressReady, setExpressReady] = useState(false)
   const [showWallets, setShowWallets] = useState(false)
+  const [walletAvailability, setWalletAvailability] = useState({
+    applePay: false,
+    googlePay: false,
+  })
   const [cgvAccepted, setCgvAccepted] = useState(false)
   const amountLabel = fmtTtcFromCents(amountTtcCents)
 
   const handleReady = (event: StripeExpressCheckoutElementReadyEvent) => {
     const methods = event.availablePaymentMethods
-    setShowWallets(Boolean(methods?.applePay || methods?.googlePay))
+    const applePay = Boolean(methods?.applePay)
+    const googlePay = Boolean(methods?.googlePay)
+    setWalletAvailability({ applePay, googlePay })
+    setShowWallets(applePay || googlePay)
+    setExpressReady(true)
   }
 
   const confirm = async () => {
@@ -367,7 +376,17 @@ function CheckoutFields({
         </strong>
       </p>
 
-      <div className={cn(showWallets ? "space-y-3" : "h-0 overflow-hidden")}>
+      <div
+        className={cn(
+          "order-express-checkout w-full",
+          !expressReady && "min-h-11",
+          expressReady && !showWallets && "hidden",
+          expressReady && showWallets && "space-y-3"
+        )}
+        data-apple-pay={walletAvailability.applePay ? "available" : "unavailable"}
+        data-google-pay={walletAvailability.googlePay ? "available" : "unavailable"}
+        data-express-ready={expressReady ? "true" : "false"}
+      >
         <ExpressCheckoutElement
           options={{
             paymentMethods: {
@@ -451,7 +470,7 @@ function CheckoutFields({
         </Button>
         <Button
           type="button"
-          className="h-11 flex-1 rounded-xl text-base font-semibold shadow-lg"
+          className="order-embedded-pay-btn h-11 min-h-11 flex-1 rounded-xl border-0 bg-[#2F9632] px-4 text-base font-semibold text-white shadow-lg shadow-[#2F9632]/25 hover:bg-[#19752B] disabled:pointer-events-none disabled:bg-[#D0D5DD] disabled:text-white disabled:opacity-100 disabled:shadow-none"
           disabled={!stripe || !elements || busy || !cgvAccepted}
           onClick={() => void confirm()}
         >

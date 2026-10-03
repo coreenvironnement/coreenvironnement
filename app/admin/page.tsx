@@ -101,10 +101,10 @@ export default async function AdminHomePage() {
           <CardContent>
             <p className="text-3xl font-bold text-brand-navy">{commandesATraiter ?? 0}</p>
             <Link
-              href="/admin/commandes"
+              href="/admin/commandes?vue=a-traiter"
               className="mt-2 inline-block text-sm text-primary hover:underline"
             >
-              Voir les commandes →
+              Voir à traiter →
             </Link>
           </CardContent>
         </Card>

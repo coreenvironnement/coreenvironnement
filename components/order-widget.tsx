@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Recycle01Icon } from "@hugeicons/core-free-icons"
@@ -64,6 +64,11 @@ import {
   type OrderTunnelStepId,
 } from "@/lib/order/tunnel-steps"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
+import {
+  isValidDeliveryDate,
+  isValidPickupDate,
+  minDeliveryDateISO,
+} from "@/lib/order/delivery-dates"
 import { cn } from "@/lib/utils"
 
 export { ORDER_TUNNEL_STEPS } from "@/lib/order/tunnel-steps"
@@ -162,12 +167,6 @@ function fmtHt(n: number) {
   }).format(n)
 }
 
-function todayISODate() {
-  const d = new Date()
-  d.setHours(0, 0, 0, 0)
-  return d.toISOString().slice(0, 10)
-}
-
 function OrderStepProgress({ currentStepIdx }: { currentStepIdx: number }) {
   const current = steps[currentStepIdx]
   const progress = ((currentStepIdx + 1) / steps.length) * 100
@@ -203,6 +202,7 @@ type OrderWidgetProps = {
   open?: boolean
   onStepIndexChange?: (index: number) => void
   onClose?: () => void
+  scrollContainerRef?: React.RefObject<HTMLElement | null>
 }
 
 export function OrderWidget({
@@ -210,6 +210,7 @@ export function OrderWidget({
   open = true,
   onStepIndexChange,
   onClose,
+  scrollContainerRef,
 }: OrderWidgetProps) {
   const embedded = variant === "embedded"
   const prefersReducedMotion = useReducedMotion()
@@ -224,6 +225,8 @@ export function OrderWidget({
     null
   )
   const [addressError, setAddressError] = useState<string | null>(null)
+  const [deliveryDateError, setDeliveryDateError] = useState<string | null>(null)
+  const deliveryDateRef = useRef<HTMLInputElement>(null)
   const [family, setFamily] = useState<BenneFamily | null>(null)
   const [deliveryDate, setDeliveryDate] = useState("")
   const [pickupDate, setPickupDate] = useState("")
@@ -286,11 +289,52 @@ export function OrderWidget({
     setStep("infos")
   }
 
+  const scrollToDeliveryDateField = () => {
+    const field = deliveryDateRef.current
+    const container = scrollContainerRef?.current
+    if (field && container) {
+      const offset =
+        field.getBoundingClientRect().top -
+        container.getBoundingClientRect().top +
+        container.scrollTop
+      container.scrollTo({ top: Math.max(0, offset - 8), behavior: "smooth" })
+    } else {
+      field?.scrollIntoView({ block: "start", behavior: "smooth" })
+    }
+  }
+
   const goToPayment = () => {
     if (!deliveryDate.length) {
-      setAddressError("Indiquez une date de livraison souhaitée.")
+      setDeliveryDateError("Indiquez une date de livraison souhaitée.")
+      setAddressError(null)
+      requestAnimationFrame(() => {
+        scrollToDeliveryDateField()
+        deliveryDateRef.current?.focus({ preventScroll: true })
+      })
       return
     }
+    if (!isValidDeliveryDate(deliveryDate)) {
+      setDeliveryDateError(
+        "La date de livraison doit être au moins 24 h après votre commande (fuseau Europe/Paris)."
+      )
+      setAddressError(null)
+      requestAnimationFrame(() => {
+        scrollToDeliveryDateField()
+        deliveryDateRef.current?.focus({ preventScroll: true })
+      })
+      return
+    }
+    if (
+      pickupDate.length &&
+      !isValidPickupDate(deliveryDate, pickupDate)
+    ) {
+      setAddressError(
+        "La date d'enlèvement ne peut pas être antérieure à la date de livraison."
+      )
+      setDeliveryDateError(null)
+      return
+    }
+    setDeliveryDateError(null)
     if (!contactFirstName.trim()) {
       setAddressError("Indiquez votre prénom.")
       return
@@ -323,6 +367,31 @@ export function OrderWidget({
     if (!open) return
     onStepIndexChange?.(currentStepIdx)
   }, [currentStepIdx, onStepIndexChange, open])
+
+  useEffect(() => {
+    if (step !== "infos") return
+
+    scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
+
+    const minDate = minDeliveryDateISO()
+    setDeliveryDate((current) => (current.length && current < minDate ? "" : current))
+    setPickupDate((current) => {
+      if (!current.length) return current
+      const deliveryMin =
+        deliveryDate.length && deliveryDate >= minDate ? deliveryDate : minDate
+      return current < deliveryMin ? "" : current
+    })
+
+    const active = document.activeElement
+    if (
+      active instanceof HTMLElement &&
+      active.id === "order-contact-firstname"
+    ) {
+      active.blur()
+    }
+    // Entrée étape infos uniquement (pas à chaque changement de date).
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- deliveryDate/pickupDate lus à l’entrée
+  }, [step, scrollContainerRef])
 
   return (
     <Card
@@ -486,8 +555,9 @@ export function OrderWidget({
                           aria-hidden
                         />
                         <Select
-                          value={family ?? undefined}
+                          value={family ?? ""}
                           onValueChange={(v) => {
+                            if (!v) return
                             setFamily(v as BenneFamily)
                             setAddressError(null)
                           }}
@@ -667,16 +737,43 @@ export function OrderWidget({
                       Date de livraison&nbsp;*
                     </label>
                     <Input
+                      ref={deliveryDateRef}
                       id="order-delivery-date"
                       type="date"
-                      min={todayISODate()}
+                      min={minDeliveryDateISO()}
                       value={deliveryDate}
+                      aria-invalid={deliveryDateError !== null}
                       onChange={(e) => {
-                        setDeliveryDate(e.target.value)
+                        const next = e.target.value
+                        setDeliveryDate(next)
+                        setDeliveryDateError(null)
                         setAddressError(null)
+                        if (
+                          pickupDate.length &&
+                          next.length &&
+                          pickupDate < next
+                        ) {
+                          setPickupDate("")
+                        }
                       }}
-                      className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
+                      className={cn(
+                        "h-11 rounded-xl border-2 bg-white px-3",
+                        deliveryDateError
+                          ? "border-amber-600 ring-2 ring-amber-200/80"
+                          : "border-primary/15"
+                      )}
                     />
+                    <p className={ORDER_HELP_TEXT}>
+                      <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
+                      <span>
+                        Livraison possible à partir de 24 h après votre commande.
+                      </span>
+                    </p>
+                    {deliveryDateError ? (
+                      <p className="text-xs font-medium text-amber-800">
+                        {deliveryDateError}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="space-y-1.5">
                     <label
@@ -689,7 +786,11 @@ export function OrderWidget({
                     <Input
                       id="order-pickup-date"
                       type="date"
-                      min={deliveryDate || todayISODate()}
+                      min={
+                        deliveryDate.length && isValidDeliveryDate(deliveryDate)
+                          ? deliveryDate
+                          : minDeliveryDateISO()
+                      }
                       value={pickupDate}
                       onChange={(e) => {
                         setPickupDate(e.target.value)

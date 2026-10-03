@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 
 import { finalCta } from "@/lib/cdc/contenu-vitrine"
+import { SITE_PHONE_HREF } from "@/lib/site"
 
 import { BenneIcon } from "./benne-icon"
 import { useVitrineOrder } from "./order-context"
@@ -108,7 +109,7 @@ export function VitrineFinalCta() {
               {content.ctaPrimary}
               <BenneIcon className="h-[18px] w-[18px] shrink-0" />
             </button>
-            <a href="#contact" className="btn btn-ghost-light w-full sm:w-auto">
+            <a href={SITE_PHONE_HREF} className="btn btn-ghost-light w-full sm:w-auto">
               {content.ctaSecondary}
             </a>
           </div>

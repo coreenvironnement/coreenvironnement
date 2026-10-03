@@ -5,6 +5,7 @@ import { createServiceClient } from "@/lib/supabase/service"
 import {
   syncCommandeFromCheckoutSession,
   syncCommandeFromPaymentIntent,
+  syncCommandeFromRefund,
 } from "@/lib/stripe/sync-commande"
 import { syncCompteProFromCheckoutSession, syncCompteProFromSubscription } from "@/lib/stripe/sync-compte-pro"
 import { getStripe } from "@/lib/stripe/server"
@@ -54,6 +55,41 @@ export async function POST(request: Request) {
       case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription
         await syncCompteProFromSubscription(supabase, subscription)
+        break
+      }
+      case "charge.refunded": {
+        const charge = event.data.object as Stripe.Charge
+        const paymentIntentId =
+          typeof charge.payment_intent === "string"
+            ? charge.payment_intent
+            : charge.payment_intent?.id ?? null
+        await syncCommandeFromRefund(supabase, {
+          paymentIntentId,
+          refundId: charge.refunds?.data?.[0]?.id ?? null,
+          outcome: charge.refunded ? "succeeded" : "pending",
+          isFullRefund: charge.refunded,
+        })
+        break
+      }
+      case "refund.updated":
+      case "refund.failed": {
+        const refund = event.data.object as Stripe.Refund
+        const paymentIntentId =
+          typeof refund.payment_intent === "string"
+            ? refund.payment_intent
+            : refund.payment_intent?.id ?? null
+        const outcome =
+          event.type === "refund.failed" || refund.status === "failed"
+            ? "failed"
+            : refund.status === "succeeded"
+              ? "succeeded"
+              : "pending"
+        await syncCommandeFromRefund(supabase, {
+          paymentIntentId,
+          refundId: refund.id,
+          outcome,
+          isFullRefund: refund.status === "succeeded" ? undefined : false,
+        })
         break
       }
       default:

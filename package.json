@@ -11,7 +11,7 @@
     "deploy:preview": "vercel deploy",
     "stripe": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1",
     "stripe:login": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1 login",
-    "stripe:listen": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1 listen --forward-to localhost:3000/api/stripe/webhook"
+    "stripe:listen": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1 listen --forward-to localhost:3001/api/stripe/webhook"
   },
   "engines": {
     "node": ">=20"

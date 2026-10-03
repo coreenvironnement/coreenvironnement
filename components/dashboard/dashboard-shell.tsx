@@ -32,7 +32,7 @@ export function DashboardShell({
         </div>
         <div className="flex flex-wrap gap-2">
           <Link href="/pro">
-            <Button variant="secondary">Compte pro</Button>
+            <Button variant="secondary">Offre pro</Button>
           </Link>
           {isAdmin ? (
             <Link href="/admin">

@@ -11,6 +11,10 @@ import {
   getSupabaseServiceConfigError,
 } from "@/lib/supabase/service"
 import type { OrderCheckoutInput } from "@/lib/order/checkout-input"
+import {
+  isValidDeliveryDate,
+  isValidPickupDate,
+} from "@/lib/order/delivery-dates"
 
 export type PreparedParticulierOrder = {
   commandeId: string
@@ -60,6 +64,23 @@ export async function prepareParticulierOrder(
 
   if (!input.deliveryDate.length) {
     return { error: "Indiquez une date de livraison souhaitée." }
+  }
+
+  if (!isValidDeliveryDate(input.deliveryDate)) {
+    return {
+      error:
+        "La date de livraison doit être au moins 24 h après votre commande (fuseau Europe/Paris).",
+    }
+  }
+
+  if (
+    input.pickupDate?.length &&
+    !isValidPickupDate(input.deliveryDate, input.pickupDate)
+  ) {
+    return {
+      error:
+        "La date d'enlèvement ne peut pas être antérieure à la date de livraison.",
+    }
   }
 
   const email = input.contactEmail.trim()

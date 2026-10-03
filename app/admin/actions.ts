@@ -4,7 +4,10 @@ import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
+import type Stripe from "stripe"
+
 import { requireAdmin } from "@/lib/auth/require-admin"
+import { sendCommandeCancellationIfClaimed } from "@/lib/commande/cancellation-email"
 import {
   canCreateInterventionFromCommande,
   chantierNomFromCommande,
@@ -12,6 +15,8 @@ import {
   interventionCommentFromCommande,
 } from "@/lib/commande/intervention-from-commande"
 import { notifyCompteProReviewed } from "@/lib/email/notifications"
+import { getStripe, isStripePaymentConfigured } from "@/lib/stripe/server"
+import { syncCommandeFromRefund } from "@/lib/stripe/sync-commande"
 import { createServiceClient } from "@/lib/supabase/service"
 
 const BUCKET = "intervention-documents"
@@ -666,4 +671,198 @@ export async function createInterventionFromCommande(commandeId: string): Promis
   redirect(
     `/admin/commandes/${commandeId}?intervention=${encodeURIComponent(intervention.numero)}`
   )
+}
+
+function redirectCommandeError(commandeId: string, message: string): never {
+  redirect(`/admin/commandes/${commandeId}?error=${encodeURIComponent(message)}`)
+}
+
+function stripeObjectId(
+  value: string | { id: string } | null | undefined
+): string | null {
+  if (!value) return null
+  return typeof value === "string" ? value : value.id
+}
+
+function latestCharge(intent: Stripe.PaymentIntent): Stripe.Charge | null {
+  const charge = intent.latest_charge
+  if (!charge || typeof charge === "string") return null
+  return charge
+}
+
+async function resolvePaymentIntentForCommande(
+  stripe: Stripe,
+  commande: {
+    id: string
+    stripe_payment_intent_id: string | null
+    stripe_checkout_session_id: string | null
+  }
+): Promise<Stripe.PaymentIntent> {
+  let paymentIntentId = commande.stripe_payment_intent_id
+
+  if (!paymentIntentId && commande.stripe_checkout_session_id) {
+    const session = await stripe.checkout.sessions.retrieve(
+      commande.stripe_checkout_session_id
+    )
+    if (session.metadata?.commande_id && session.metadata.commande_id !== commande.id) {
+      throw new Error("Session Stripe non liée à cette commande.")
+    }
+    paymentIntentId = stripeObjectId(session.payment_intent)
+  }
+
+  if (!paymentIntentId) {
+    throw new Error("Aucun paiement Stripe associé à cette commande.")
+  }
+
+  const intent = await stripe.paymentIntents.retrieve(paymentIntentId, {
+    expand: ["latest_charge"],
+  })
+
+  const metaCommandeId = intent.metadata?.commande_id
+  if (metaCommandeId && metaCommandeId !== commande.id) {
+    throw new Error("PaymentIntent Stripe non lié à cette commande.")
+  }
+
+  return intent
+}
+
+export async function cancelCommande(commandeId: string): Promise<void> {
+  const { supabase } = await assertAdmin()
+
+  const { data: commande, error } = await supabase
+    .from("commandes")
+    .select("id, payment_status, statut")
+    .eq("id", commandeId)
+    .single()
+
+  if (error || !commande) {
+    redirect("/admin/commandes")
+  }
+
+  const paymentStatusBefore = commande.payment_status
+
+  const { error: updateError } = await supabase
+    .from("commandes")
+    .update({ statut: "annulee" })
+    .eq("id", commandeId)
+
+  if (updateError) {
+    redirectCommandeError(commandeId, updateError.message)
+  }
+
+  await sendCommandeCancellationIfClaimed(supabase, commandeId, paymentStatusBefore)
+
+  revalidateCommande(commandeId)
+  redirect(`/admin/commandes/${commandeId}?ok=cancelled`)
+}
+
+export async function cancelAndRefundCommande(commandeId: string): Promise<void> {
+  const { supabase } = await assertAdmin()
+
+  if (!isStripePaymentConfigured()) {
+    redirectCommandeError(commandeId, "Paiement Stripe non configuré.")
+  }
+
+  const { data: commande, error } = await supabase
+    .from("commandes")
+    .select(
+      "id, payment_status, stripe_payment_intent_id, stripe_checkout_session_id"
+    )
+    .eq("id", commandeId)
+    .single()
+
+  if (error || !commande) {
+    redirect("/admin/commandes")
+  }
+
+  if (commande.payment_status !== "paid") {
+    redirectCommandeError(
+      commandeId,
+      commande.payment_status === "refunded" ||
+        commande.payment_status === "refund_pending"
+        ? "Remboursement déjà en cours ou effectué."
+        : "Remboursement possible uniquement pour une commande payée."
+    )
+  }
+
+  let stripe: Stripe
+  try {
+    stripe = getStripe()
+  } catch {
+    redirectCommandeError(commandeId, "Paiement Stripe non configuré.")
+  }
+
+  let intent: Stripe.PaymentIntent
+  try {
+    intent = await resolvePaymentIntentForCommande(stripe, commande)
+  } catch (err) {
+    redirectCommandeError(
+      commandeId,
+      err instanceof Error ? err.message : "Impossible de retrouver le paiement Stripe."
+    )
+  }
+
+  if (!commande.stripe_payment_intent_id) {
+    await supabase
+      .from("commandes")
+      .update({ stripe_payment_intent_id: intent.id })
+      .eq("id", commande.id)
+  }
+
+  const charge = latestCharge(intent)
+  if (charge?.refunded) {
+    await syncCommandeFromRefund(supabase, {
+      paymentIntentId: intent.id,
+      refundId: charge.refunds?.data?.[0]?.id ?? null,
+      outcome: "succeeded",
+      isFullRefund: true,
+    })
+    revalidateCommande(commandeId)
+    redirect(`/admin/commandes/${commandeId}?ok=already_refunded`)
+  }
+
+  const amount = intent.amount_received || intent.amount
+  if (!amount || amount <= 0) {
+    redirectCommandeError(commandeId, "Montant Stripe introuvable pour le remboursement.")
+  }
+
+  const { data: claimed, error: claimError } = await supabase
+    .from("commandes")
+    .update({
+      payment_status: "refund_pending",
+      statut: "annulee",
+      stripe_payment_intent_id: intent.id,
+    })
+    .eq("id", commandeId)
+    .eq("payment_status", "paid")
+    .select("id, payment_status")
+    .maybeSingle()
+
+  if (claimError) {
+    redirectCommandeError(commandeId, claimError.message)
+  }
+  if (!claimed) {
+    redirectCommandeError(commandeId, "Remboursement déjà en cours ou commande non payée.")
+  }
+
+  try {
+    await stripe.refunds.create({
+      payment_intent: intent.id,
+      amount,
+    })
+  } catch (err) {
+    await supabase
+      .from("commandes")
+      .update({ payment_status: "refund_failed" })
+      .eq("id", commandeId)
+    redirectCommandeError(
+      commandeId,
+      err instanceof Error ? err.message : "Échec de la création du remboursement Stripe."
+    )
+  }
+
+  await sendCommandeCancellationIfClaimed(supabase, commandeId, "paid")
+
+  revalidateCommande(commandeId)
+  redirect(`/admin/commandes/${commandeId}?ok=refund_pending`)
 }

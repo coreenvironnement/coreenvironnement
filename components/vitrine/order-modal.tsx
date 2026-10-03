@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Cancel01Icon, TruckIcon } from "@hugeicons/core-free-icons"
 
@@ -14,6 +14,7 @@ import { useVitrineOrder } from "./order-context"
 export function VitrineOrderModal() {
   const { open, closeOrder } = useVitrineOrder()
   const [stepIndex, setStepIndex] = useState(0)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!open) return
@@ -82,12 +83,16 @@ export function VitrineOrderModal() {
             <OrderModalStepper stepIndex={stepIndex} />
           </div>
 
-          <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 pb-3 pt-0.5 sm:px-6 sm:pb-4 sm:pt-1">
+          <div
+            ref={scrollContainerRef}
+            className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 pb-3 pt-0.5 sm:px-6 sm:pb-4 sm:pt-1"
+          >
             <OrderWidget
               variant="embedded"
               open={open}
               onStepIndexChange={setStepIndex}
               onClose={closeOrder}
+              scrollContainerRef={scrollContainerRef}
             />
           </div>
         </div>

@@ -3,19 +3,27 @@ import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 
 import { createInterventionFromCommande, updateCommandeStatut } from "@/app/admin/actions"
+import { AdminCommandeOps } from "@/components/admin/admin-commande-ops"
 import { requireAdmin } from "@/lib/auth/require-admin"
 import { canCreateInterventionFromCommande } from "@/lib/commande/intervention-from-commande"
 import {
   audienceCommandeLabel,
+  commandeMailtoHref,
+  commandeTelHref,
+  isCommandeNouvelle,
+  paymentStatusBadgeClass,
   paymentStatusLabel,
   STATUTS_COMMANDE,
+  statutCommandeBadgeClass,
   statutCommandeLabel,
 } from "@/lib/commande/labels"
+import { formatOrderReference } from "@/lib/commande/reference"
 import { departementLabel } from "@/lib/geo/idf"
 import { formatDateFr } from "@/lib/format/date"
 import { formatEuro } from "@/lib/format/currency"
-import { priceTtcFromHt } from "@/lib/order/prestation-mapping"
-import { Button } from "@/components/ui/button"
+import { priceBreakdownFromHt } from "@/lib/order/prestation-mapping"
+import { cn } from "@/lib/utils"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -26,7 +34,7 @@ import {
 
 type PageProps = {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ error?: string; intervention?: string }>
+  searchParams: Promise<{ error?: string; intervention?: string; ok?: string }>
 }
 
 type DechetEmbed = { nom: string; code: string | null } | null
@@ -48,7 +56,7 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function AdminCommandeDetailPage({ params, searchParams }: PageProps) {
   const { id } = await params
-  const { error: errorParam, intervention: interventionCreated } = await searchParams
+  const { error: errorParam, intervention: interventionCreated, ok: okParam } = await searchParams
   const { supabase } = await requireAdmin()
 
   const { data: commande } = await supabase
@@ -77,8 +85,11 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
     commande,
     Boolean(linkedIntervention)
   )
-  const priceTtc =
-    commande.price_ht != null ? priceTtcFromHt(Number(commande.price_ht)) / 100 : null
+  const breakdown =
+    commande.price_ht != null ? priceBreakdownFromHt(Number(commande.price_ht)) : null
+  const reference = formatOrderReference(commande.id)
+  const paidStillCaptured =
+    commande.statut === "annulee" && commande.payment_status === "paid"
 
   return (
     <div className="space-y-8">
@@ -91,12 +102,36 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
           Retour aux commandes
         </Link>
         <h2 className="mt-2 text-xl font-bold text-brand-navy">
-          {commande.prestation_label ?? dechet?.nom ?? "Commande benne"}
+          {reference} · {commande.prestation_label ?? dechet?.nom ?? "Commande benne"}
         </h2>
-        <p className="text-sm text-muted-foreground">
-          {statutCommandeLabel(commande.statut)} · {paymentStatusLabel(commande.payment_status)}
-          {commande.audience ? ` · ${audienceCommandeLabel(commande.audience)}` : null}
-        </p>
+        <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+          {isCommandeNouvelle(commande.date_creation) ? (
+            <span className="rounded-full bg-sky-100 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-sky-900">
+              Nouvelle
+            </span>
+          ) : null}
+          <span
+            className={cn(
+              "rounded-full px-2 py-0.5 font-medium",
+              statutCommandeBadgeClass(commande.statut)
+            )}
+          >
+            Statut : {statutCommandeLabel(commande.statut)}
+          </span>
+          <span
+            className={cn(
+              "rounded-full px-2 py-0.5 font-medium",
+              paymentStatusBadgeClass(commande.payment_status)
+            )}
+          >
+            Paiement : {paymentStatusLabel(commande.payment_status)}
+          </span>
+          {commande.audience ? (
+            <span className="text-muted-foreground">
+              {audienceCommandeLabel(commande.audience)}
+            </span>
+          ) : null}
+        </div>
       </div>
 
       {errorParam ? (
@@ -110,6 +145,83 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
           succès.
         </p>
       ) : null}
+      {okParam === "cancelled" ? (
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+          Commande annulée.
+        </p>
+      ) : null}
+      {okParam === "refund_pending" ? (
+        <p className="rounded-lg border border-orange-200 bg-orange-50 px-4 py-3 text-sm text-orange-950">
+          Annulation enregistrée. Remboursement demandé — en attente de confirmation Stripe.
+        </p>
+      ) : null}
+      {okParam === "already_refunded" ? (
+        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-950">
+          Le paiement était déjà remboursé côté Stripe. La commande a été synchronisée.
+        </p>
+      ) : null}
+      {paidStillCaptured ? (
+        <p className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950">
+          Annulée — paiement toujours encaissé
+        </p>
+      ) : null}
+      {commande.payment_status === "refund_pending" ? (
+        <p className="rounded-lg border border-orange-200 bg-orange-50 px-4 py-3 text-sm text-orange-950">
+          Remboursement en cours. Le badge « Remboursée » n’apparaîtra qu’après confirmation
+          Stripe.
+        </p>
+      ) : null}
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Actions principales</CardTitle>
+          <CardDescription>
+            Traitement opérationnel de la commande. L’annulation seule ne rembourse pas.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+          {commande.contact_telephone ? (
+            <a
+              href={commandeTelHref(commande.contact_telephone)}
+              className={cn(buttonVariants({ size: "lg" }), "justify-center")}
+            >
+              Appeler le client
+            </a>
+          ) : (
+            <p className="w-full text-sm text-muted-foreground">Aucun téléphone client.</p>
+          )}
+          {commande.statut === "confirmee" ? (
+            canCreate.ok ? (
+              <form action={createInterventionBound}>
+                <Button type="submit" variant="outline" size="lg" className="w-full sm:w-auto">
+                  Passer en cours
+                </Button>
+              </form>
+            ) : (
+              <form action={updateBound}>
+                <input type="hidden" name="statut" value="en_cours" />
+                <Button type="submit" variant="outline" size="lg" className="w-full sm:w-auto">
+                  Passer en cours
+                </Button>
+              </form>
+            )
+          ) : null}
+          {commande.statut === "confirmee" || commande.statut === "en_cours" ? (
+            <form action={updateBound}>
+              <input type="hidden" name="statut" value="livree" />
+              <Button type="submit" variant="outline" size="lg" className="w-full sm:w-auto">
+                Marquer livrée
+              </Button>
+            </form>
+          ) : null}
+          <AdminCommandeOps
+            commandeId={id}
+            refundAmountLabel={formatEuro(breakdown?.ttc ?? null)}
+            statut={commande.statut}
+            paymentStatus={commande.payment_status ?? ""}
+          />
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
@@ -123,11 +235,29 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
             </p>
             <p>
               <span className="text-muted-foreground">E-mail :</span>{" "}
-              {commande.contact_email ?? "—"}
+              {commande.contact_email ? (
+                <a
+                  href={commandeMailtoHref(commande.contact_email)}
+                  className="text-primary hover:underline"
+                >
+                  {commande.contact_email}
+                </a>
+              ) : (
+                "—"
+              )}
             </p>
             <p>
               <span className="text-muted-foreground">Téléphone :</span>{" "}
-              {commande.contact_telephone ?? "—"}
+              {commande.contact_telephone ? (
+                <a
+                  href={commandeTelHref(commande.contact_telephone)}
+                  className="text-primary hover:underline"
+                >
+                  {commande.contact_telephone}
+                </a>
+              ) : (
+                "—"
+              )}
             </p>
             <p>
               <span className="text-muted-foreground">Adresse :</span>{" "}
@@ -160,15 +290,17 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
               </p>
             ) : null}
             <p>
-              <span className="text-muted-foreground">Montant HT :</span>{" "}
-              {formatEuro(commande.price_ht != null ? Number(commande.price_ht) : null)}
+              <span className="text-muted-foreground">HT :</span>{" "}
+              {formatEuro(breakdown?.ht ?? null)}
             </p>
-            {priceTtc != null ? (
-              <p>
-                <span className="text-muted-foreground">Montant TTC (20 %) :</span>{" "}
-                {formatEuro(priceTtc)}
-              </p>
-            ) : null}
+            <p>
+              <span className="text-muted-foreground">TVA :</span>{" "}
+              {formatEuro(breakdown?.tva ?? null)}
+            </p>
+            <p>
+              <span className="text-muted-foreground">TTC :</span>{" "}
+              {formatEuro(breakdown?.ttc ?? null)}
+            </p>
           </CardContent>
         </Card>
 
@@ -201,13 +333,20 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
               <span className="text-muted-foreground">Statut paiement :</span>{" "}
               {paymentStatusLabel(commande.payment_status)}
             </p>
+            <p className="break-all font-mono text-xs">
+              <span className="text-muted-foreground">stripe_payment_intent_id :</span>{" "}
+              {commande.stripe_payment_intent_id ?? "—"}
+            </p>
             {commande.stripe_checkout_session_id ? (
               <p className="break-all font-mono text-xs text-muted-foreground">
                 Session : {commande.stripe_checkout_session_id}
               </p>
-            ) : (
-              <p className="text-muted-foreground">Aucune session Stripe</p>
-            )}
+            ) : null}
+            {commande.stripe_refund_id ? (
+              <p className="break-all font-mono text-xs text-muted-foreground">
+                Refund : {commande.stripe_refund_id}
+              </p>
+            ) : null}
           </CardContent>
         </Card>
       </div>
