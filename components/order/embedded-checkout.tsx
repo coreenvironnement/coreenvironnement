@@ -50,6 +50,7 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
   const [loading, setLoading] = useState(true)
   const [success, setSuccess] = useState(false)
   const [serverConfirmed, setServerConfirmed] = useState(false)
+  const [finalizing, setFinalizing] = useState(false)
   const [orderNumero, setOrderNumero] = useState<string | null>(null)
   const [retryKey, setRetryKey] = useState(0)
 
@@ -111,6 +112,11 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
     const startedAt = Date.now()
     const pollMs = 1500
     const maxMs = 50_000
+    const finalizeAfterMs = 18_000
+
+    const finalizeTimer = setTimeout(() => {
+      if (!cancelled) setFinalizing(true)
+    }, finalizeAfterMs)
 
     const poll = async () => {
       const result = await getCommandePaymentStatus(commandeId)
@@ -131,6 +137,7 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
     return () => {
       cancelled = true
       if (timer) clearTimeout(timer)
+      if (finalizeTimer) clearTimeout(finalizeTimer)
     }
   }, [success, serverConfirmed, commandeId])
 
@@ -177,7 +184,10 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
             onClose={props.onClose ?? props.onBack}
           />
         ) : (
-          <OrderConfirmingState onClose={props.onClose ?? props.onBack} />
+          <OrderConfirmingState
+            phase={finalizing ? "finalizing" : "confirming"}
+            onClose={props.onClose ?? props.onBack}
+          />
         )
       ) : loading ? (
         <PaymentLoadingState />
@@ -270,6 +280,7 @@ function CheckoutFields({
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showWallets, setShowWallets] = useState(false)
+  const [cgvAccepted, setCgvAccepted] = useState(false)
   const amountLabel = fmtTtcFromCents(amountTtcCents)
 
   const handleReady = (event: StripeExpressCheckoutElementReadyEvent) => {
@@ -279,6 +290,10 @@ function CheckoutFields({
 
   const confirm = async () => {
     if (!stripe || !elements || busy) return
+    if (!cgvAccepted) {
+      setError("Veuillez accepter les Conditions Générales de Vente.")
+      return
+    }
     setBusy(true)
     setError(null)
 
@@ -396,6 +411,34 @@ function CheckoutFields({
         <p className="text-center text-xs font-medium text-amber-800">{error}</p>
       ) : null}
 
+      <label
+        htmlFor="order-cgv-accept"
+        className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-brand-border/80 bg-white px-3 py-2.5 text-left text-[13px] leading-snug text-brand-navy"
+      >
+        <input
+          id="order-cgv-accept"
+          type="checkbox"
+          checked={cgvAccepted}
+          onChange={(e) => {
+            setCgvAccepted(e.target.checked)
+            if (e.target.checked) setError(null)
+          }}
+          className="mt-0.5 size-4 shrink-0 accent-[#2F9632]"
+        />
+        <span>
+          J’ai lu et j’accepte les{" "}
+          <a
+            href="/cgv"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-primary underline underline-offset-2 hover:text-brand-navy"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Conditions Générales de Vente
+          </a>
+        </span>
+      </label>
+
       <div className="flex flex-col gap-2 pt-0.5 sm:flex-row sm:justify-between">
         <Button
           variant="outline"
@@ -409,7 +452,7 @@ function CheckoutFields({
         <Button
           type="button"
           className="h-11 flex-1 rounded-xl text-base font-semibold shadow-lg"
-          disabled={!stripe || !elements || busy}
+          disabled={!stripe || !elements || busy || !cgvAccepted}
           onClick={() => void confirm()}
         >
           {busy ? "Paiement en cours…" : `Payer ${amountLabel}`}
