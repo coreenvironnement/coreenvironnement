@@ -1,8 +1,24 @@
 import type { SeoVariant } from "@/lib/seo/landing-variants"
-import { buildLocalSeoVariant, type LocalPage, type LocalPageType } from "@/lib/seo/local-copy"
+
 import { LONGTAIL_PAGES } from "@/lib/seo/longtail-pages"
 
-export type { LocalPage, LocalPageType }
+export type LocalPageType = "departement" | "ville" | "longtail"
+
+export type LocalPage = {
+  slug: string
+  type: LocalPageType
+  nom: string
+  departementCode: string
+  departementNom: string
+  departementSlug: string
+  title: string
+  description: string
+  h1Line1: string
+  h1Line2: string
+  intro: string
+  chipLabel: string
+  villesPrincipales?: string[]
+}
 
 type DepartementDef = {
   code: string
@@ -22,27 +38,95 @@ function slugify(value: string) {
     .replace(/^-|-$/g, "")
 }
 
-function buildDepartementPage(def: DepartementDef): LocalPage {
+/** Formulation géographique correcte (évite « dans tout le Val-de-Marne », etc.). */
+function departmentCoveragePhrase(code: string, nom: string): string {
+  switch (code) {
+    case "75":
+      return "dans tout Paris"
+    case "77":
+      return "dans toute la Seine-et-Marne"
+    case "78":
+      return "dans les Yvelines"
+    case "91":
+      return "dans l'Essonne"
+    case "92":
+      return "dans les Hauts-de-Seine"
+    case "93":
+      return "dans la Seine-Saint-Denis"
+    case "94":
+      return "dans le Val-de-Marne"
+    case "95":
+      return "dans le Val-d'Oise"
+    default:
+      return `dans le ${nom}`
+  }
+}
+
+function buildDepartementTitle(nom: string, code: string): string {
+  if (code === "75") {
+    return `Location de benne à Paris (${code})`
+  }
+  return `Location de benne en ${nom} (${code})`
+}
+
+function buildDepartementH1(nom: string, code: string): { line1: string; line2: string } {
+  if (code === "75") {
+    return {
+      line1: `Location de benne à Paris (${code}) :`,
+      line2: "Intervention 24h & suivi digital",
+    }
+  }
   return {
-    slug: def.slug,
+    line1: `Location de benne en ${nom} (${code}) :`,
+    line2: "Intervention 24h & suivi digital",
+  }
+}
+
+function buildVilleTitle(cityName: string, code: string): string {
+  return `Location de benne à ${cityName} (${code})`
+}
+
+function buildDepartementPage(def: DepartementDef): LocalPage {
+  const { code, nom, slug, villesPrincipales } = def
+  const villesList = villesPrincipales.slice(0, 6).join(", ")
+  const coverage = departmentCoveragePhrase(code, nom)
+  const h1 = buildDepartementH1(nom, code)
+
+  return {
+    slug,
     type: "departement",
-    nom: def.nom,
-    departementCode: def.code,
-    departementNom: def.nom,
-    departementSlug: def.slug,
-    villesPrincipales: def.villesPrincipales,
+    nom,
+    departementCode: code,
+    departementNom: nom,
+    departementSlug: slug,
+    title: buildDepartementTitle(nom, code),
+    description: `Location de benne ${coverage} (${code}). Livraison sous 24 h à ${villesList} et communes voisines. Commande en ligne, gravats, DIB et suivi digital.`,
+    h1Line1: h1.line1,
+    h1Line2: h1.line2,
+    intro: `CORE ENVIRONNEMENT livre des bennes ${coverage} : ${villesList} et alentours. Gravats, DIB et déchets de chantier — commande en 3 minutes, traçabilité jusqu'au recyclage.`,
+    chipLabel: `Location benne · ${nom} (${code})`,
+    villesPrincipales,
   }
 }
 
 function buildVillePage(def: DepartementDef, cityName: string): LocalPage {
+  const citySlug = slugify(cityName)
+  const { code, nom: deptNom, slug: deptSlug } = def
+  const coverage = departmentCoveragePhrase(code, deptNom)
+
   return {
-    slug: slugify(cityName),
+    slug: citySlug,
     type: "ville",
     nom: cityName,
-    city: cityName,
-    departementCode: def.code,
-    departementNom: def.nom,
-    departementSlug: def.slug,
+    departementCode: code,
+    departementNom: deptNom,
+    departementSlug: deptSlug,
+    title: buildVilleTitle(cityName, code),
+    description: `Louez une benne à ${cityName} (${deptNom}, ${code}). Livraison rapide, gravats et déchets de chantier. Commande en ligne CORE ENVIRONNEMENT.`,
+    h1Line1: `Location de benne à ${cityName} (${code}) :`,
+    h1Line2: "Intervention 24h & suivi digital",
+    intro: `Besoin d'une benne à ${cityName} ? CORE ENVIRONNEMENT intervient ${coverage} : livraison sous 24 h, suivi digital et traçabilité de vos déchets de chantier.`,
+    chipLabel: `${cityName} · ${deptNom} (${code})`,
   }
 }
 
@@ -485,13 +569,21 @@ export function localPageToSeoVariant(page: LocalPage): SeoVariant {
         }))
       : undefined
 
-  return buildLocalSeoVariant(page, {
+  return {
+    intent: "default",
+    title: page.title,
+    description: page.description,
+    h1Line1: page.h1Line1,
+    h1Line2: page.h1Line2,
+    intro: page.intro,
+    chipLabel: page.chipLabel,
+    canonicalPath: `/location-benne/${page.slug}`,
     relatedCityLinks,
     departementLink:
       page.type === "ville" || page.type === "longtail"
         ? { href: `/location-benne/${page.departementSlug}`, label: page.departementNom }
         : undefined,
-  })
+  }
 }
 
 export function getLocalPageCount() {
