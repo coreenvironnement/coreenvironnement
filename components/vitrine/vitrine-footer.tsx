@@ -128,15 +128,6 @@ export function VitrineFooter() {
                 </li>
               </ul>
             </div>
-
-            <aside className="vitrine-footer__cta-card">
-              <span className="vitrine-footer__cta-icon">
-                <HugeiconsIcon icon={Leaf01Icon} size={20} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />
-              </span>
-              <a href={SITE_PHONE_HREF} className="vitrine-footer__cta-text">
-                Nous contacter
-              </a>
-            </aside>
           </div>
         </div>
 
