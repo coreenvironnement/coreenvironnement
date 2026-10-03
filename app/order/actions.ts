@@ -2,44 +2,19 @@
 
 import { headers } from "next/headers"
 
-import {
-  dechetCodeForFamily,
-  priceTtcFromHt,
-} from "@/lib/order/prestation-mapping"
-import {
-  departementLabel,
-  extractDepartementFromAddress,
-  isAddressInIdf,
-  isDepartementInIdf,
-  isPostcodeInIdf,
-} from "@/lib/geo/idf"
-import { prestationById } from "@/lib/prestations"
+import { priceTtcFromHt } from "@/lib/order/prestation-mapping"
+import { prepareParticulierOrder } from "@/lib/order/prepare-particulier-order"
+import { departementLabel } from "@/lib/geo/idf"
 import {
   getRequestOrigin,
   getStripe,
   isStripePaymentConfigured,
   stripeCheckoutPaymentOptions,
 } from "@/lib/stripe/server"
-import {
-  createServiceClient,
-  getSupabaseServiceConfigError,
-} from "@/lib/supabase/service"
+import { createServiceClient } from "@/lib/supabase/service"
+import type { OrderCheckoutInput } from "@/lib/order/checkout-input"
 
-export type OrderCheckoutInput = {
-  audience: "particulier" | "professionnel"
-  address: string
-  lat: number
-  lng: number
-  addressLabel: string
-  postcode?: string
-  departementCode?: string
-  prestationId: string
-  deliveryDate: string
-  pickupDate?: string
-  contactEmail: string
-  contactName?: string
-  contactPhone?: string
-}
+export type { OrderCheckoutInput }
 
 export type OrderCheckoutResult =
   | { error: string }
@@ -56,127 +31,21 @@ function stripeCheckoutErrorMessage(error: unknown): string {
   return "Impossible d'initialiser le paiement Stripe. Réessayez ou contactez-nous."
 }
 
+/** Fallback Checkout particulier — conservé, non exposé dans l’UI étape 5. */
 export async function startOrderCheckout(
   input: OrderCheckoutInput
 ): Promise<OrderCheckoutResult> {
-  if (input.audience === "professionnel") {
-    return {
-      error:
-        "Les professionnels validés commandent sur facture depuis leur espace client. Créez votre compte pro sur /pro.",
-    }
-  }
-
   if (!isStripePaymentConfigured()) {
     return { error: "Paiement en ligne temporairement indisponible. Contactez-nous par téléphone." }
   }
 
-  const address = input.address.trim()
-  if (!address.length) {
-    return { error: "Indiquez l'adresse de livraison." }
+  const prepared = await prepareParticulierOrder(input)
+  if ("error" in prepared) {
+    return prepared
   }
 
-  const postcode = input.postcode?.trim() ?? ""
-  const departementFromInput = input.departementCode?.trim() ?? ""
-
-  const idfFromPostcode = postcode.length > 0 && isPostcodeInIdf(postcode)
-  const idfFromDept =
-    departementFromInput.length > 0 && isDepartementInIdf(departementFromInput)
-  const idfFromAddress = isAddressInIdf(address)
-
-  if (!idfFromPostcode && !idfFromDept && !idfFromAddress) {
-    return {
-      error:
-        "Adresse hors Île-de-France. Nous intervenons sur les 8 départements IDF (75, 77, 78, 91, 92, 93, 94, 95).",
-    }
-  }
-
-  const prestation = prestationById(input.prestationId)
-  if (!prestation) {
-    return { error: "Forfait sélectionné introuvable." }
-  }
-
-  if (!input.deliveryDate.length) {
-    return { error: "Indiquez une date de livraison souhaitée." }
-  }
-
-  const email = input.contactEmail.trim()
-  if (!email.length || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return { error: "Indiquez une adresse e-mail valide pour la confirmation." }
-  }
-
-  const phone = input.contactPhone?.trim() ?? ""
-  const phoneDigits = phone.replace(/\D/g, "")
-  if (phoneDigits.length < 10) {
-    return { error: "Indiquez un numéro de téléphone valide." }
-  }
-
-  const deptCode =
-    (idfFromDept ? departementFromInput : null) ??
-    (idfFromPostcode ? postcode.slice(0, 2) : null) ??
-    extractDepartementFromAddress(address)
-  if (!deptCode || !isDepartementInIdf(deptCode)) {
-    return { error: "Code postal IDF introuvable dans l'adresse." }
-  }
-
-  const supabaseConfigError = getSupabaseServiceConfigError()
-  if (supabaseConfigError) {
-    console.error("[startOrderCheckout]", supabaseConfigError)
-    return {
-      error:
-        "Commande indisponible : configuration serveur incomplète (Supabase). Contactez-nous par téléphone.",
-    }
-  }
-
-  const supabase = createServiceClient()
-
-  const dechetCode = dechetCodeForFamily(prestation.family)
-  const { data: dechetType, error: dechetError } = await supabase
-    .from("dechets_types")
-    .select("id")
-    .eq("code", dechetCode)
-    .maybeSingle()
-
-  if (dechetError) {
-    console.error("[startOrderCheckout] dechets_types lookup:", dechetCode, dechetError)
-    return { error: "Type de déchet indisponible. Réessayez plus tard." }
-  }
-
-  if (!dechetType) {
-    console.error(
-      "[startOrderCheckout] dechets_types missing row for code:",
-      dechetCode
-    )
-    return {
-      error:
-        "Type de déchet indisponible (catalogue non initialisé). Contactez-nous par téléphone.",
-    }
-  }
-
-  const { data: commande, error: insertError } = await supabase
-    .from("commandes")
-    .insert({
-      adresse_complete: address,
-      type_dechet_id: dechetType.id,
-      statut: "brouillon",
-      payment_status: "pending",
-      audience: input.audience,
-      prestation_id: prestation.id,
-      prestation_label: prestation.label,
-      volume_m3: prestation.volumeM3,
-      price_ht: prestation.priceHt,
-      date_livraison: input.deliveryDate,
-      date_enlevement: input.pickupDate?.length ? input.pickupDate : null,
-      departement_code: deptCode,
-      contact_email: email,
-      contact_nom: input.contactName?.trim() || null,
-      contact_telephone: phone,
-    })
-    .select("id")
-    .single()
-
-  if (insertError || !commande) {
-    console.error("Insert commande:", insertError)
-    return { error: "Impossible d'enregistrer la commande. Réessayez." }
+  if (prepared.alreadyPaid) {
+    return { error: "Cette commande est déjà payée." }
   }
 
   let stripe
@@ -189,15 +58,15 @@ export async function startOrderCheckout(
 
   const headersList = await headers()
   const origin = getRequestOrigin(headersList)
-  const amountTtc = priceTtcFromHt(prestation.priceHt)
-  const deptLabel = departementLabel(deptCode)
+  const amountTtc = priceTtcFromHt(prepared.prestation.priceHt)
+  const deptLabel = departementLabel(prepared.deptCode)
 
   let session
   try {
     session = await stripe.checkout.sessions.create({
       mode: "payment",
       ...stripeCheckoutPaymentOptions(),
-      customer_email: email,
+      customer_email: prepared.email,
       line_items: [
         {
           quantity: 1,
@@ -205,8 +74,8 @@ export async function startOrderCheckout(
             currency: "eur",
             unit_amount: amountTtc,
             product_data: {
-              name: prestation.label,
-              description: `Livraison ${input.deliveryDate} · ${deptLabel ?? deptCode} · ${input.addressLabel}`.slice(
+              name: prepared.prestation.label,
+              description: `Livraison ${input.deliveryDate} · ${deptLabel ?? prepared.deptCode} · ${input.addressLabel}`.slice(
                 0,
                 500
               ),
@@ -217,7 +86,7 @@ export async function startOrderCheckout(
       success_url: `${origin}/?order=success`,
       cancel_url: `${origin}/?order=cancelled`,
       metadata: {
-        commande_id: commande.id,
+        commande_id: prepared.commandeId,
         order_type: "benne_particulier",
       },
     })
@@ -226,12 +95,13 @@ export async function startOrderCheckout(
     return { error: stripeCheckoutErrorMessage(error) }
   }
 
+  const supabase = createServiceClient()
   const { error: updateError } = await supabase
     .from("commandes")
     .update({
       stripe_checkout_session_id: session.id,
     })
-    .eq("id", commande.id)
+    .eq("id", prepared.commandeId)
 
   if (updateError) {
     console.error("Update commande stripe session:", updateError)

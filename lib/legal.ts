@@ -1,18 +1,24 @@
 /**
- * Contenus légaux — placeholders à compléter par le client (SIRET, adresse, hébergeur…).
+ * Mentions légales — informations d'identification de CORE ENVIRONNEMENT.
  */
+
+import { SITE_PHONE_DISPLAY } from "@/lib/site"
 
 export const LEGAL_COMPANY = {
   name: "CORE ENVIRONNEMENT",
-  /** À compléter par le client */
-  legalForm: "[Forme juridique à compléter]",
-  address: "[Adresse du siège social à compléter]",
-  siret: "[SIRET à compléter]",
-  rcs: "[RCS à compléter]",
-  tva: "[N° TVA intracommunautaire à compléter]",
-  director: "[Nom du directeur de publication à compléter]",
-  email: "[contact@coreenvironnement.fr à compléter]",
-  host: "[Nom et adresse de l'hébergeur à compléter]",
+  legalForm: "SASU (société par actions simplifiée unipersonnelle)",
+  address: "129 boulevard Robert Ballanger, 93420 Villepinte",
+  siren: "101 465 839",
+  siret: "101 465 839 00013",
+  rcs: "101 465 839 R.C.S. Bobigny",
+  rcsNote: "inscrite au greffe de Bobigny le 23/02/2026",
+  tva: "FR83101465839",
+  capital: "1 000,00 €",
+  naf: "82.99Z — Autres activités de soutien aux entreprises n.c.a.",
+  director: "le président de CORE ENVIRONNEMENT",
+  email: "contact@coreenvironnement.fr",
+  phone: SITE_PHONE_DISPLAY,
+  host: "Vercel Inc., 440 Terry Avenue North, Seattle, WA 98109, États-Unis (https://vercel.com)",
 } as const
 
 export const mentionsLegalesSections = [
@@ -21,10 +27,14 @@ export const mentionsLegalesSections = [
     paragraphs: [
       `Le site est édité par ${LEGAL_COMPANY.name}, ${LEGAL_COMPANY.legalForm}.`,
       `Siège social : ${LEGAL_COMPANY.address}.`,
-      `SIRET : ${LEGAL_COMPANY.siret} — RCS : ${LEGAL_COMPANY.rcs}.`,
+      `SIREN : ${LEGAL_COMPANY.siren}.`,
+      `SIRET : ${LEGAL_COMPANY.siret}.`,
+      `RCS : ${LEGAL_COMPANY.rcs} (${LEGAL_COMPANY.rcsNote}).`,
       `N° TVA intracommunautaire : ${LEGAL_COMPANY.tva}.`,
+      `Capital social : ${LEGAL_COMPANY.capital}.`,
+      `Code NAF / APE : ${LEGAL_COMPANY.naf}`,
       `Directeur de la publication : ${LEGAL_COMPANY.director}.`,
-      `Contact : ${LEGAL_COMPANY.email}.`,
+      `Contact : ${LEGAL_COMPANY.email} — ${LEGAL_COMPANY.phone}.`,
     ],
   },
   {
@@ -51,8 +61,9 @@ export const politiqueConfidentialiteSections = [
   {
     title: "Responsable du traitement",
     paragraphs: [
-      `${LEGAL_COMPANY.name}, ${LEGAL_COMPANY.address}.`,
-      `Contact données personnelles : ${LEGAL_COMPANY.email}.`,
+      `${LEGAL_COMPANY.name}, ${LEGAL_COMPANY.legalForm}, ${LEGAL_COMPANY.address}.`,
+      `SIRET : ${LEGAL_COMPANY.siret} — N° TVA : ${LEGAL_COMPANY.tva}.`,
+      `Contact données personnelles : ${LEGAL_COMPANY.email} — ${LEGAL_COMPANY.phone}.`,
     ],
   },
   {

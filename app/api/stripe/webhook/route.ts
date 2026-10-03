@@ -2,7 +2,10 @@ import { NextResponse } from "next/server"
 import type Stripe from "stripe"
 
 import { createServiceClient } from "@/lib/supabase/service"
-import { syncCommandeFromCheckoutSession } from "@/lib/stripe/sync-commande"
+import {
+  syncCommandeFromCheckoutSession,
+  syncCommandeFromPaymentIntent,
+} from "@/lib/stripe/sync-commande"
 import { syncCompteProFromCheckoutSession, syncCompteProFromSubscription } from "@/lib/stripe/sync-compte-pro"
 import { getStripe } from "@/lib/stripe/server"
 
@@ -40,6 +43,11 @@ export async function POST(request: Request) {
         } else if (session.mode === "payment" && session.metadata?.commande_id) {
           await syncCommandeFromCheckoutSession(supabase, session)
         }
+        break
+      }
+      case "payment_intent.succeeded": {
+        const intent = event.data.object as Stripe.PaymentIntent
+        await syncCommandeFromPaymentIntent(supabase, intent)
         break
       }
       case "customer.subscription.updated":

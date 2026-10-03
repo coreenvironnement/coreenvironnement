@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState, useTransition } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Recycle01Icon } from "@hugeicons/core-free-icons"
@@ -49,7 +49,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { startOrderCheckout } from "@/app/order/actions"
+import { EmbeddedCheckout } from "@/components/order/embedded-checkout"
 import {
   type BenneFamily,
   type Prestation,
@@ -202,12 +202,14 @@ type OrderWidgetProps = {
   variant?: "default" | "embedded"
   open?: boolean
   onStepIndexChange?: (index: number) => void
+  onClose?: () => void
 }
 
 export function OrderWidget({
   variant = "default",
   open = true,
   onStepIndexChange,
+  onClose,
 }: OrderWidgetProps) {
   const embedded = variant === "embedded"
   const prefersReducedMotion = useReducedMotion()
@@ -232,8 +234,7 @@ export function OrderWidget({
   const [contactLastName, setContactLastName] = useState("")
   const [contactPhone, setContactPhone] = useState("")
   const [contactEmail, setContactEmail] = useState("")
-  const [payError, setPayError] = useState<string | null>(null)
-  const [isPaying, startPayTransition] = useTransition()
+  const [draftCommandeId, setDraftCommandeId] = useState<string | null>(null)
   const prestation = useMemo(
     () => (selectedPrestationId ? prestationById(selectedPrestationId) : null),
     [selectedPrestationId]
@@ -243,12 +244,6 @@ export function OrderWidget({
     () => (family ? prestationsByFamily(family) : []),
     [family]
   )
-
-  useEffect(() => {
-    if (step !== "payment") {
-      setPayError(null)
-    }
-  }, [step])
 
   const clearAddressSelection = () => {
     setSelectedAddress(null)
@@ -345,6 +340,57 @@ export function OrderWidget({
       <CardContent className={cn("relative space-y-3", embedded ? "px-0 pb-0 pt-0" : "pt-8")}>
         {!embedded ? <OrderStepProgress currentStepIdx={currentStepIdx} /> : null}
 
+        {step === "payment" && prestation && selectedAddress ? (
+          <div className="space-y-4">
+              {audience === "professionnel" ? (
+                <div className="space-y-3">
+                  <p className={ORDER_SECTION_LABEL}>Paiement</p>
+                  <div className="rounded-xl border border-brand-navy/15 bg-muted/40 px-4 py-4 text-sm text-muted-foreground">
+                    <p className="font-medium text-brand-navy">Commande professionnelle</p>
+                    <p className="mt-2">
+                      Les pros validés commandent sur facture depuis leur espace client.{" "}
+                      <Link href="/pro" className="font-semibold text-primary underline-offset-2 hover:underline">
+                        Créer ou accéder à mon compte pro
+                      </Link>
+                      .
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    type="button"
+                    className="h-10 rounded-xl"
+                    onClick={() => setStep("recap")}
+                  >
+                    <ArrowLeft className="mr-2 size-4" />
+                    Retour
+                  </Button>
+                </div>
+              ) : (
+                <EmbeddedCheckout
+                  existingCommandeId={draftCommandeId ?? undefined}
+                  deliveryDate={deliveryDate}
+                  onCommandeId={setDraftCommandeId}
+                  onBack={() => setStep("recap")}
+                  onClose={onClose}
+                  input={{
+                    audience,
+                    address: selectedAddress.label,
+                    lat: selectedAddress.lat,
+                    lng: selectedAddress.lng,
+                    addressLabel: selectedAddress.label,
+                    postcode: selectedAddress.postcode,
+                    departementCode: selectedAddress.departementCode,
+                    prestationId: prestation.id,
+                    deliveryDate,
+                    pickupDate: pickupDate || undefined,
+                    contactEmail: contactEmail.trim(),
+                    contactName: contactName.trim() || undefined,
+                    contactPhone: contactPhone.trim() || undefined,
+                  }}
+                />
+              )}
+          </div>
+        ) : (
         <AnimatePresence mode="wait">
           {step === "intent" && (
             <motion.div
@@ -358,7 +404,7 @@ export function OrderWidget({
               <div
                 className={cn(
                   embedded
-                    ? "space-y-5 rounded-2xl bg-brand-bg-alt px-4 py-4 sm:space-y-6 sm:px-5 sm:py-5"
+                    ? "space-y-3.5 rounded-2xl bg-brand-bg-alt px-3 py-3 sm:space-y-4 sm:px-4 sm:py-4"
                     : "space-y-4"
                 )}
               >
@@ -386,7 +432,7 @@ export function OrderWidget({
                         onSelect={handleAddressSelect}
                         onClearSelection={clearAddressSelection}
                         aria-invalid={addressError !== null && !selectedAddress}
-                        inputClassName="rounded-xl"
+                        inputClassName="h-12 rounded-xl"
                       />
                       <p className={ORDER_HELP_TEXT}>
                         <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
@@ -448,7 +494,7 @@ export function OrderWidget({
                         >
                           <SelectTrigger
                             id="order-waste-family"
-                            className="h-14 w-full max-w-none items-center justify-between rounded-xl border-2 border-primary/20 bg-white py-0 pl-12 pr-4 text-base shadow-sm focus-visible:border-primary/50 focus-visible:ring-brand-navy/30 data-[size=default]:h-14 dark:bg-white/95"
+                            className="h-12 w-full max-w-none items-center justify-between rounded-xl border-2 border-primary/20 bg-white py-0 pl-12 pr-4 text-base shadow-sm focus-visible:border-primary/50 focus-visible:ring-brand-navy/30 data-[size=default]:h-12 dark:bg-white/95"
                             size="default"
                           >
                             <SelectValue placeholder="Choisissez le type de déchet dans la liste" />
@@ -519,7 +565,7 @@ export function OrderWidget({
 
                 <Button
                   type="button"
-                  className="mt-1 h-12 w-full rounded-xl border-0 bg-[#2F9632] px-4 text-base font-semibold text-white shadow-lg shadow-[#2F9632]/25 hover:bg-[#19752B] disabled:cursor-not-allowed disabled:bg-[#2F9632] disabled:opacity-60 disabled:shadow-md sm:h-11"
+                  className="mt-0.5 h-11 w-full rounded-xl border-0 bg-[#2F9632] px-4 text-base font-semibold text-white shadow-lg shadow-[#2F9632]/25 hover:bg-[#19752B] disabled:cursor-not-allowed disabled:bg-[#2F9632] disabled:opacity-60 disabled:shadow-md"
                   onClick={goToForfait}
                   disabled={!canLeaveIntent}
                 >
@@ -539,7 +585,7 @@ export function OrderWidget({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
-              className="space-y-4"
+              className="space-y-3.5"
             >
               <div>
                 <p className={ORDER_SECTION_LABEL}>Choisissez votre forfait</p>
@@ -556,7 +602,7 @@ export function OrderWidget({
 
               <div
                 className={cn(
-                  "grid gap-3",
+                  "grid gap-3 px-0.5 py-0.5",
                   embedded
                     ? ""
                     : "max-h-[min(60vh,420px)] overflow-y-auto pr-1 sm:max-h-[min(70vh,520px)]"
@@ -574,11 +620,11 @@ export function OrderWidget({
                 ))}
               </div>
 
-              <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+              <div className="flex flex-col gap-2 pt-0.5 sm:flex-row sm:gap-3">
                 <Button
                   variant="outline"
                   type="button"
-                  className="h-10 rounded-xl sm:flex-1"
+                  className="h-11 rounded-xl sm:flex-1"
                   onClick={() => {
                     setAddressError(null)
                     setStep("intent")
@@ -588,9 +634,8 @@ export function OrderWidget({
                   Retour
                 </Button>
                 <Button
-                  variant="outline"
                   type="button"
-                  className="h-10 rounded-xl sm:flex-1"
+                  className="h-11 w-full rounded-xl border-0 bg-[#2F9632] px-3 text-sm font-semibold text-white shadow-lg shadow-[#2F9632]/20 hover:bg-[#19752B] disabled:pointer-events-none disabled:bg-[#D0D5DD] disabled:text-white disabled:opacity-100 disabled:shadow-none sm:flex-1"
                   disabled={!selectedPrestationId}
                   onClick={goToInfos}
                 >
@@ -608,9 +653,9 @@ export function OrderWidget({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
-              className="space-y-5"
+              className="space-y-4"
             >
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 <p className={ORDER_SECTION_LABEL}>Quand souhaitez-vous la benne&nbsp;?</p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
@@ -630,7 +675,7 @@ export function OrderWidget({
                         setDeliveryDate(e.target.value)
                         setAddressError(null)
                       }}
-                      className="h-11 border-2 border-primary/15 bg-white"
+                      className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -650,13 +695,13 @@ export function OrderWidget({
                         setPickupDate(e.target.value)
                         setAddressError(null)
                       }}
-                      className="h-11 border border-border/80 bg-white"
+                      className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 <p className={ORDER_SECTION_LABEL}>Vos coordonnées</p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
@@ -671,7 +716,7 @@ export function OrderWidget({
                         setContactFirstName(e.target.value)
                         setAddressError(null)
                       }}
-                      className="h-11 border-2 border-primary/15 bg-white"
+                      className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -686,7 +731,7 @@ export function OrderWidget({
                         setContactLastName(e.target.value)
                         setAddressError(null)
                       }}
-                      className="h-11 border-2 border-primary/15 bg-white"
+                      className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
                     />
                   </div>
                 </div>
@@ -703,7 +748,7 @@ export function OrderWidget({
                       setContactPhone(e.target.value)
                       setAddressError(null)
                     }}
-                    className="h-11 border-2 border-primary/15 bg-white"
+                    className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -718,9 +763,8 @@ export function OrderWidget({
                     onChange={(e) => {
                       setContactEmail(e.target.value)
                       setAddressError(null)
-                      setPayError(null)
                     }}
-                    className="h-11 border-2 border-primary/15 bg-white"
+                    className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
                   />
                 </div>
               </div>
@@ -731,11 +775,11 @@ export function OrderWidget({
                 </p>
               )}
 
-              <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+              <div className="flex flex-col gap-2 pt-0.5 sm:flex-row sm:gap-3">
                 <Button
                   variant="outline"
                   type="button"
-                  className="h-10 rounded-xl sm:flex-1"
+                  className="h-11 rounded-xl sm:flex-1"
                   onClick={() => {
                     setAddressError(null)
                     setStep("forfait")
@@ -763,18 +807,18 @@ export function OrderWidget({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
-              className="space-y-4"
+              className="space-y-3"
             >
               <p className={ORDER_SECTION_LABEL}>Vérifiez votre commande</p>
 
               <section className="rounded-2xl border border-primary/10 bg-white/95 px-4 py-3">
-                <div className="mb-2 flex items-center justify-between gap-2">
-                  <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <div className="mb-1.5 flex items-center justify-between gap-2">
+                  <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                     Votre benne
                   </h3>
                   <button
                     type="button"
-                    className="text-[11px] font-medium text-primary hover:underline"
+                    className="text-[11px] font-medium text-primary/70 hover:text-primary hover:underline"
                     onClick={() => setStep("forfait")}
                   >
                     Modifier
@@ -787,13 +831,13 @@ export function OrderWidget({
               </section>
 
               <section className="rounded-2xl border border-primary/10 bg-white/95 px-4 py-3">
-                <div className="mb-2 flex items-center justify-between gap-2">
-                  <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <div className="mb-1.5 flex items-center justify-between gap-2">
+                  <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                     Livraison
                   </h3>
                   <button
                     type="button"
-                    className="text-[11px] font-medium text-primary hover:underline"
+                    className="text-[11px] font-medium text-primary/70 hover:text-primary hover:underline"
                     onClick={() => setStep("intent")}
                   >
                     Modifier
@@ -829,7 +873,7 @@ export function OrderWidget({
                 </ul>
                 <button
                   type="button"
-                  className="mt-2 text-[11px] font-medium text-primary hover:underline"
+                  className="mt-1.5 text-[11px] font-medium text-primary/70 hover:text-primary hover:underline"
                   onClick={() => setStep("infos")}
                 >
                   Modifier les dates
@@ -837,13 +881,13 @@ export function OrderWidget({
               </section>
 
               <section className="rounded-2xl border border-primary/10 bg-white/95 px-4 py-3">
-                <div className="mb-2 flex items-center justify-between gap-2">
-                  <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <div className="mb-1.5 flex items-center justify-between gap-2">
+                  <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                     Vos coordonnées
                   </h3>
                   <button
                     type="button"
-                    className="text-[11px] font-medium text-primary hover:underline"
+                    className="text-[11px] font-medium text-primary/70 hover:text-primary hover:underline"
                     onClick={() => setStep("infos")}
                   >
                     Modifier
@@ -857,7 +901,7 @@ export function OrderWidget({
               </section>
 
               <section className="rounded-2xl border border-primary/10 bg-white/95 px-4 py-3">
-                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <h3 className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                   Prix
                 </h3>
                 {(() => {
@@ -872,7 +916,7 @@ export function OrderWidget({
                         <span className="text-muted-foreground">TVA 20 %</span>
                         <span className="tabular-nums text-brand-navy">{fmtHt(breakdown.tva)}</span>
                       </li>
-                      <li className="flex justify-between gap-3 pt-1 font-semibold text-brand-navy">
+                      <li className="flex items-baseline justify-between gap-3 border-t border-primary/10 pt-2 text-base font-semibold text-brand-navy">
                         <span>Total TTC</span>
                         <span className="tabular-nums text-primary">{fmtHt(breakdown.ttc)}</span>
                       </li>
@@ -881,11 +925,11 @@ export function OrderWidget({
                 })()}
               </section>
 
-              <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+              <div className="flex flex-col gap-2 pt-0.5 sm:flex-row sm:gap-3">
                 <Button
                   variant="outline"
                   type="button"
-                  className="h-10 rounded-xl sm:flex-1"
+                  className="h-11 rounded-xl sm:flex-1"
                   onClick={() => setStep("infos")}
                 >
                   <ArrowLeft className="mr-2 size-4" />
@@ -902,129 +946,28 @@ export function OrderWidget({
               </div>
             </motion.div>
           )}
-
-          {step === "payment" && prestation && selectedAddress && (
-            <motion.div
-              key="payment"
-              initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 24 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
-              transition={t}
-              className="space-y-5"
-            >
-              <div>
-                <p className={ORDER_SECTION_LABEL}>Paiement</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Vous allez être redirigé vers Stripe pour régler en toute sécurité.
-                </p>
-              </div>
-
-              {audience === "professionnel" ? (
-                <div className="rounded-xl border border-brand-navy/15 bg-muted/40 px-4 py-4 text-sm text-muted-foreground">
-                  <p className="font-medium text-brand-navy">Commande professionnelle</p>
-                  <p className="mt-2">
-                    Les pros validés commandent sur facture depuis leur espace client.{" "}
-                    <Link href="/pro" className="font-semibold text-primary underline-offset-2 hover:underline">
-                      Créer ou accéder à mon compte pro
-                    </Link>
-                    .
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-2 rounded-xl border border-brand-navy/10 bg-white/90 p-4">
-                  <p className="text-sm font-semibold text-brand-navy">Paiement</p>
-                  <p className="text-[0.7rem] text-muted-foreground">
-                    Paiement sécurisé Stripe (CB, Apple Pay, Google Pay selon votre
-                    appareil) · montant TTC estimé (TVA 20&nbsp;%) :{" "}
-                    <strong className="text-foreground">
-                      {fmtHt(priceBreakdownFromHt(prestation.priceHt).ttc)}
-                    </strong>
-                  </p>
-                </div>
-              )}
-
-              {payError ? (
-                <p className="text-center text-xs font-medium text-amber-800">{payError}</p>
-              ) : null}
-
-              <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
-                <Button
-                  variant="outline"
-                  type="button"
-                  className="h-10 rounded-xl"
-                  onClick={() => {
-                    setAddressError(null)
-                    setPayError(null)
-                    setStep("recap")
-                  }}
-                >
-                  <ArrowLeft className="mr-2 size-4" />
-                  Retour
-                </Button>
-                {audience === "particulier" ? (
-                  <Button
-                    type="button"
-                    className="h-11 flex-1 rounded-xl text-base font-semibold shadow-lg"
-                    disabled={isPaying}
-                    onClick={() => {
-                      setPayError(null)
-                      startPayTransition(async () => {
-                        try {
-                          const result = await startOrderCheckout({
-                            audience,
-                            address: selectedAddress.label,
-                            lat: selectedAddress.lat,
-                            lng: selectedAddress.lng,
-                            addressLabel: selectedAddress.label,
-                            postcode: selectedAddress.postcode,
-                            departementCode: selectedAddress.departementCode,
-                            prestationId: prestation.id,
-                            deliveryDate,
-                            pickupDate: pickupDate || undefined,
-                            contactEmail: contactEmail.trim(),
-                            contactName: contactName.trim() || undefined,
-                            contactPhone: contactPhone.trim() || undefined,
-                          })
-                          if ("error" in result) {
-                            setPayError(result.error)
-                            return
-                          }
-                          window.location.assign(result.checkoutUrl)
-                        } catch {
-                          setPayError(
-                            "Une erreur est survenue lors du paiement. Réessayez ou contactez-nous."
-                          )
-                        }
-                      })
-                    }}
-                  >
-                    {isPaying ? "Redirection Stripe…" : "Payer en ligne"}
-                  </Button>
-                ) : null}
-              </div>
-            </motion.div>
-          )}
         </AnimatePresence>
+        )}
       </CardContent>
 
       <CardFooter
         className={cn(
           "relative flex flex-col text-center",
           embedded
-            ? "gap-1.5 border-0 bg-transparent px-2 pb-1 pt-3 sm:px-3 sm:pt-4"
+            ? "gap-1 border-0 bg-transparent px-1 pb-0 pt-2 sm:px-2 sm:pt-2.5"
             : "gap-2 border-t border-primary/5 bg-muted/30 py-4 text-[0.65rem] text-muted-foreground"
         )}
       >
         <span
           className={cn(
-            "inline-flex items-center justify-center gap-1.5",
-            embedded ? "text-[12px] text-brand-muted" : ""
+            "inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0 leading-tight",
+            embedded ? "text-[11px] text-brand-muted" : ""
           )}
         >
           {embedded ? (
             <Headphones className="size-3.5 shrink-0 text-brand-muted" aria-hidden />
           ) : null}
-          Une question ?{" "}
+          Besoin d’aide pour votre commande&nbsp;?{" "}
           <a
             href={SITE_PHONE_HREF}
             className="font-semibold text-primary hover:underline"
@@ -1067,21 +1010,21 @@ function PrestationCard({
         }
       }}
       className={cn(
-        "flex w-full cursor-pointer items-center gap-2.5 rounded-2xl border-2 p-3 text-left shadow-sm outline-none transition-colors sm:gap-3 sm:p-3.5",
+        "flex w-full cursor-pointer items-center gap-2.5 overflow-visible rounded-2xl border-2 p-3 text-left shadow-sm outline-none transition-colors sm:gap-3 sm:p-3.5",
         "focus-visible:border-brand-navy",
         selected
           ? "border-brand-navy bg-gradient-to-br from-accent to-white"
           : "border-border/80 bg-card/90 hover:border-brand-navy/35"
       )}
     >
-      <div className="flex h-[58px] w-[72px] shrink-0 items-center justify-center sm:h-[72px] sm:w-[92px]">
+      <div className="flex h-[58px] w-[72px] shrink-0 items-center justify-center overflow-hidden sm:h-[72px] sm:w-[92px]">
         {visualSrc ? (
           <Image
             src={visualSrc}
             alt={`Benne ${prestation.volumeM3} m³`}
             width={368}
             height={207}
-            className="h-full w-full object-contain"
+            className="h-full w-full object-contain object-center"
             sizes="92px"
           />
         ) : null}
@@ -1142,7 +1085,7 @@ function PrestationCard({
         </Dialog>
       </div>
 
-      <span className="shrink-0 self-start pt-0.5 text-[15px] font-bold tabular-nums text-primary sm:text-lg">
+      <span className="w-[4.75rem] shrink-0 self-center text-right text-[15px] font-bold tabular-nums text-primary sm:w-[5.5rem] sm:text-lg">
         {fmtHt(prestation.priceHt)}
       </span>
     </motion.div>

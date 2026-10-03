@@ -18,23 +18,23 @@ export function OrderModalStepper({ stepIndex }: OrderModalStepperProps) {
           const active = index === stepIndex
 
           return (
-            <div key={step.id} className="flex flex-col items-center px-0.5 sm:px-1">
-              <div className="relative flex h-7 w-full items-center justify-center sm:h-8">
+            <div key={step.id} className="flex min-w-0 flex-col items-center px-0.5 sm:px-1">
+              <div className="relative flex h-6 w-full items-center justify-center sm:h-8">
                 {index > 0 ? (
                   <span
-                    className="absolute right-1/2 top-1/2 h-px w-[calc(50%-0.8rem)] -translate-y-1/2 bg-[#E4E7EC] sm:w-[calc(50%-1rem)]"
+                    className="absolute right-1/2 top-1/2 h-px w-[calc(50%-11px)] -translate-y-1/2 bg-[#E4E7EC] sm:w-[calc(50%-16px)]"
                     aria-hidden
                   />
                 ) : null}
                 {index < lastIndex ? (
                   <span
-                    className="absolute left-1/2 top-1/2 h-px w-[calc(50%-0.8rem)] -translate-y-1/2 bg-[#E4E7EC] sm:w-[calc(50%-1rem)]"
+                    className="absolute left-1/2 top-1/2 h-px w-[calc(50%-11px)] -translate-y-1/2 bg-[#E4E7EC] sm:w-[calc(50%-16px)]"
                     aria-hidden
                   />
                 ) : null}
                 <span
                   className={cn(
-                    "relative z-10 flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold tabular-nums transition-colors duration-300 sm:h-8 sm:w-8 sm:text-[13px]",
+                    "relative z-10 flex h-[22px] w-[22px] items-center justify-center rounded-full text-[11px] font-semibold tabular-nums transition-colors duration-300 sm:h-8 sm:w-8 sm:text-[13px]",
                     active
                       ? "bg-[#35A238] text-white"
                       : "bg-[#E4E7EC] text-[#98A2B3]"
@@ -46,7 +46,7 @@ export function OrderModalStepper({ stepIndex }: OrderModalStepperProps) {
               </div>
               <p
                 className={cn(
-                  "mt-1 w-full truncate text-center text-[9px] leading-tight sm:mt-2 sm:text-[11px]",
+                  "mt-1 w-full max-w-full text-center text-[8px] leading-[1.15] sm:mt-1.5 sm:text-[11px] sm:leading-tight",
                   active
                     ? "font-semibold text-brand-navy"
                     : "font-medium text-[#98A2B3]"

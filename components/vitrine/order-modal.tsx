@@ -52,7 +52,7 @@ export function VitrineOrderModal() {
           )}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="shrink-0 border-b border-brand-border px-4 pb-4 pt-4 sm:px-6 sm:pb-5 sm:pt-5">
+          <div className="shrink-0 border-b border-brand-border px-4 pb-3 pt-3.5 sm:px-6 sm:pb-4 sm:pt-5">
             <div className="flex items-start justify-between gap-3">
               <div className="flex min-w-0 items-start gap-3 sm:gap-3.5">
                 <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-bg-alt text-brand-green sm:h-12 sm:w-12">
@@ -78,15 +78,16 @@ export function VitrineOrderModal() {
             </div>
           </div>
 
-          <div className="shrink-0 px-4 py-3.5 sm:px-6 sm:py-4">
+          <div className="shrink-0 px-4 py-2.5 sm:px-6 sm:py-3">
             <OrderModalStepper stepIndex={stepIndex} />
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-4 pt-1 sm:px-4 sm:pb-5 sm:pt-2">
+          <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 pb-3 pt-0.5 sm:px-6 sm:pb-4 sm:pt-1">
             <OrderWidget
               variant="embedded"
               open={open}
               onStepIndexChange={setStepIndex}
+              onClose={closeOrder}
             />
           </div>
         </div>

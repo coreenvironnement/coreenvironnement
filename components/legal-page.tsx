@@ -46,10 +46,6 @@ export function LegalPageShell({
       <div className="mt-10 rounded-2xl border border-border bg-card p-6 sm:p-8">
         <LegalContent sections={sections} />
       </div>
-      <p className="mt-8 text-xs text-muted-foreground">
-        Document provisoire — certaines informations sont à compléter par CORE ENVIRONNEMENT
-        (SIRET, adresse, hébergeur, contact).
-      </p>
     </div>
   )
 }
