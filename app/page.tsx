@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 
 import { VitrineJsonLd } from "@/components/seo/vitrine-json-ld"
 import { VitrineHome } from "@/components/vitrine/vitrine-home"
-import { getSeoVariant, parseSeoIntent } from "@/lib/seo/landing-variants"
+import { DEFAULT_VARIANT } from "@/lib/seo/landing-variants"
 import { withBrandTitle } from "@/lib/seo/page-title"
 import {
   getShareOpenGraphImages,
@@ -14,21 +14,19 @@ type PageProps = {
   searchParams: Promise<{ order?: string; intent?: string }>
 }
 
-export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
-  const { intent } = await searchParams
-  const variant = getSeoVariant(parseSeoIntent(intent))
+export async function generateMetadata(): Promise<Metadata> {
   const siteUrl = getSiteUrl()
-  const pageTitle = withBrandTitle(variant.title)
+  const pageTitle = withBrandTitle(DEFAULT_VARIANT.title)
 
   return {
     title: { absolute: pageTitle },
-    description: variant.description,
+    description: DEFAULT_VARIANT.description,
     alternates: {
       canonical: siteUrl,
     },
     openGraph: {
       title: pageTitle,
-      description: variant.description,
+      description: DEFAULT_VARIANT.description,
       url: siteUrl,
       siteName: "CORE ENVIRONNEMENT",
       locale: "fr_FR",
@@ -38,7 +36,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     twitter: {
       card: "summary_large_image",
       title: pageTitle,
-      description: variant.description,
+      description: DEFAULT_VARIANT.description,
       images: getShareTwitterImages(),
     },
     robots: {
@@ -49,13 +47,12 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 }
 
 export default async function HomePage({ searchParams }: PageProps) {
-  const { order: orderParam, intent } = await searchParams
-  const seoVariant = getSeoVariant(parseSeoIntent(intent))
+  const { order: orderParam } = await searchParams
 
   return (
     <>
       <VitrineJsonLd />
-      <VitrineHome orderParam={orderParam} seoVariant={seoVariant} />
+      <VitrineHome orderParam={orderParam} />
     </>
   )
 }

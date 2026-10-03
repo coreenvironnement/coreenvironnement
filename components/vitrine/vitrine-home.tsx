@@ -17,7 +17,9 @@ import { VitrineFaq } from "./vitrine-faq"
 import { VitrineFinalCta } from "./vitrine-final-cta"
 import { VitrineFooter } from "./vitrine-footer"
 import { VitrineHeader } from "./vitrine-header"
-import type { SeoVariant } from "@/lib/seo/landing-variants"
+import { getDefaultSeoVariant, type SeoVariant } from "@/lib/seo/landing-variants"
+import type { LocalPage } from "@/lib/seo/local-copy"
+import { localPageToSeoVariant } from "@/lib/seo/local-pages"
 
 import { VitrineHero } from "./vitrine-hero"
 import { VitrineLocalSeo } from "./vitrine-local-seo"
@@ -96,13 +98,19 @@ function VitrineHomeInner({
 export function VitrineHome({
   orderParam,
   seoVariant,
+  localSeoData,
 }: {
   orderParam?: string
-  seoVariant: SeoVariant
+  seoVariant?: SeoVariant
+  localSeoData?: LocalPage
 }) {
+  const variant = localSeoData
+    ? localPageToSeoVariant(localSeoData)
+    : (seoVariant ?? getDefaultSeoVariant())
+
   return (
     <VitrineOrderProvider>
-      <VitrineHomeInner orderParam={orderParam} seoVariant={seoVariant} />
+      <VitrineHomeInner orderParam={orderParam} seoVariant={variant} />
     </VitrineOrderProvider>
   )
 }

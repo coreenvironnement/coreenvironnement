@@ -1,4 +1,6 @@
 import { faq } from "@/lib/cdc/contenu-vitrine"
+import { DEFAULT_VARIANT } from "@/lib/seo/landing-variants"
+import { buildLocalDescription } from "@/lib/seo/local-copy"
 import type { LocalPage } from "@/lib/seo/local-pages"
 import { getSiteUrl } from "@/lib/seo/site-url"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
@@ -50,8 +52,9 @@ function buildLocalBusinessSchema(siteUrl: string, localPage?: LocalPage) {
     name: "CORE ENVIRONNEMENT",
     url: pageUrl,
     telephone: SITE_PHONE_HREF.replace("tel:", ""),
-    description: localPage?.description ??
-      "Location de bennes et gestion des déchets en Île-de-France. Commande en ligne, intervention sous 24 h et suivi digital.",
+    description: localPage
+      ? buildLocalDescription(localPage)
+      : DEFAULT_VARIANT.description,
     areaServed,
     serviceArea: {
       "@type": "GeoCircle",
