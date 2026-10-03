@@ -7,7 +7,10 @@ import { cn } from "@/lib/utils"
 
 export function LayoutChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const isStandalone = pathname === "/" || pathname === "/maintenance"
+  const isStandalone =
+    pathname === "/" ||
+    pathname === "/maintenance" ||
+    pathname.startsWith("/location-benne")
 
   if (isStandalone) {
     return <>{children}</>
