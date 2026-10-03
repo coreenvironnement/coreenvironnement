@@ -305,7 +305,7 @@ export function OrderWidget({
 
   const goToPayment = () => {
     if (!deliveryDate.length) {
-      setDeliveryDateError("Indiquez une date de livraison souhaitée.")
+      setDeliveryDateError("Veuillez sélectionner une date de livraison.")
       setAddressError(null)
       requestAnimationFrame(() => {
         scrollToDeliveryDateField()
