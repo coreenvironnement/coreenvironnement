@@ -2,11 +2,13 @@ import type { Metadata } from "next"
 
 import { LegalPageShell } from "@/components/legal-page"
 import { politiqueConfidentialiteSections } from "@/lib/legal"
+import { publicPageMetadata } from "@/lib/seo/public-page"
 
-export const metadata: Metadata = {
-  title: "Politique de confidentialité",
-  description: "Politique de confidentialité et protection des données — CORE ENVIRONNEMENT.",
-}
+export const metadata: Metadata = publicPageMetadata(
+  "Politique de confidentialité",
+  "Politique de confidentialité et protection des données — CORE ENVIRONNEMENT.",
+  "/politique-confidentialite",
+)
 
 export default function PolitiqueConfidentialitePage() {
   return (

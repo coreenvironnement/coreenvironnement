@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -15,8 +15,14 @@ import {
 import { Input } from "@/components/ui/input"
 import { createClient } from "@/lib/supabase/client"
 
+function safeNextPath(raw: string | null): string | null {
+  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return null
+  return raw
+}
+
 export function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -28,19 +34,33 @@ export function LoginForm() {
     setLoading(true)
 
     const supabase = createClient()
-    const { error: signInError } = await supabase.auth.signInWithPassword({
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email: email.trim(),
       password,
     })
 
-    setLoading(false)
-
-    if (signInError) {
+    if (signInError || !data.user) {
+      setLoading(false)
       setError("Identifiants incorrects ou compte non activé.")
       return
     }
 
-    router.push("/dashboard")
+    const next = safeNextPath(searchParams.get("next"))
+    if (next) {
+      setLoading(false)
+      router.push(next)
+      router.refresh()
+      return
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", data.user.id)
+      .maybeSingle()
+
+    setLoading(false)
+    router.push(profile?.role === "admin" ? "/admin/commandes" : "/dashboard")
     router.refresh()
   }
 
@@ -96,7 +116,7 @@ export function LoginForm() {
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Professionnel ?{" "}
           <Link href="/pro" className="text-primary underline-offset-4 hover:underline">
-            Ouvrir un compte pro
+            Demande d&apos;accès (bientôt disponible)
           </Link>
           {" · "}
           <Link href="/" className="text-primary underline-offset-4 hover:underline">

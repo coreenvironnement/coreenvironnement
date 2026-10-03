@@ -16,6 +16,7 @@ import { createClient } from "@/lib/supabase/server"
 
 export const metadata = {
   title: "Historique · Espace client",
+  robots: { index: false, follow: false },
 }
 
 type PageProps = {

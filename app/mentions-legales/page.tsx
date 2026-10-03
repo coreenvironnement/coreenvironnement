@@ -2,11 +2,13 @@ import type { Metadata } from "next"
 
 import { LegalPageShell } from "@/components/legal-page"
 import { mentionsLegalesSections } from "@/lib/legal"
+import { publicPageMetadata } from "@/lib/seo/public-page"
 
-export const metadata: Metadata = {
-  title: "Mentions légales",
-  description: "Mentions légales du site CORE ENVIRONNEMENT.",
-}
+export const metadata: Metadata = publicPageMetadata(
+  "Mentions légales",
+  "Mentions légales du site CORE ENVIRONNEMENT.",
+  "/mentions-legales",
+)
 
 export default function MentionsLegalesPage() {
   return (

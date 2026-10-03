@@ -127,7 +127,7 @@ export function SiteHeader() {
                   onClick={() => setMobileOpen(false)}
                   className="text-center text-sm font-medium text-brand-navy/80 underline-offset-4 hover:underline"
                 >
-                  Espace Pro
+                  Espace Pro (bientôt)
                 </Link>
               </div>
             </SheetContent>

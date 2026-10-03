@@ -14,7 +14,7 @@ const links = [
   { href: "/admin/comptes-pro", label: "Comptes pro", icon: Briefcase },
 ] as const
 
-export function AdminNav() {
+export function AdminNav({ commandesATraiter = 0 }: { commandesATraiter?: number }) {
   const currentPath = usePathname()
 
   return (
@@ -41,7 +41,12 @@ export function AdminNav() {
                 )}
               >
                 <Icon className="size-4 shrink-0" aria-hidden />
-                {label}
+                <span className="flex-1">{label}</span>
+                {href === "/admin/commandes" && commandesATraiter > 0 ? (
+                  <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold leading-none text-primary-foreground">
+                    {commandesATraiter}
+                  </span>
+                ) : null}
               </Link>
             )
           })}

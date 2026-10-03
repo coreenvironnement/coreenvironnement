@@ -37,8 +37,10 @@ const DEFAULT_VARIANT: SeoVariant = {
   title: "Location de benne Île-de-France — Intervention 24h",
   description:
     "Location de bennes en Île-de-France. Commande en 3 minutes, intervention sous 24 h, suivi digital et traçabilité de vos déchets.",
-  h1Line1: "Location de Benne en Île-de-France :",
-  h1Line2: "Intervention 24h & Suivi Digital",
+  h1Line1: "Location de bennes et gestion digitale des déchets en Île-de-France",
+  h1Line2: "",
+  intro:
+    "La solution clé en main pour le BTP, les artisans et les industriels. Commandez vos rotations de bennes, suivez vos flux de déchets et téléchargez vos bordereaux en quelques clics.",
 }
 
 const VARIANTS: Record<Exclude<SeoIntent, "default">, SeoVariant> = {

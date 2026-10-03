@@ -194,7 +194,7 @@ export function VitrineHeader() {
               Commander une benne
             </button>
             <Link href="/pro" className="btn btn-ghost-light w-full">
-              Compte professionnel
+              Espace pro — bientôt disponible
             </Link>
           </div>
         </div>

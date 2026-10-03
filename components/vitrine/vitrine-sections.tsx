@@ -41,7 +41,12 @@ export function VitrineCompteProTeaser() {
     <section id="compte-pro" className="border-b border-brand-border bg-brand-navy py-16 text-white sm:py-20">
       <div className="container-x grid gap-8 lg:grid-cols-2 lg:items-center">
         <div>
-          <p className="section-eyebrow section-eyebrow--inverse text-brand-sky">Compte professionnel</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="section-eyebrow section-eyebrow--inverse text-brand-sky">Compte professionnel</p>
+            <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white">
+              Bientôt disponible
+            </span>
+          </div>
           <h2 className="mt-3 text-2xl sm:text-3xl">{comptePro.titre}</h2>
           <p className="mt-4 text-sm leading-relaxed text-white/85 sm:text-base">
             {comptePro.description}
@@ -67,7 +72,7 @@ export function VitrineCompteProTeaser() {
             ))}
           </ul>
           <Link href="/pro" className="btn btn-accent mt-6 inline-flex">
-            Créer mon compte pro
+            Être recontacté
           </Link>
         </div>
       </div>

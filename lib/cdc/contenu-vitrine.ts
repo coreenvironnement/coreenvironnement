@@ -221,16 +221,16 @@ export const faq = [
     ],
   },
   {
-    categorie: "Paiement et Compte PRO",
+    categorie: "Paiement et offre PRO",
     emoji: "💳",
     questions: [
       {
         q: "Quelles sont les modalités de paiement ?",
-        r: "Particuliers : Paiement sécurisé par carte bancaire lors de la commande en ligne. Professionnels : Paiement à la commande ou règlement différé à 30 jours (après validation de votre compte pro par notre service financier).",
+        r: "Aujourd'hui, la commande en ligne se règle par carte bancaire de façon sécurisée. L'espace professionnel (facturation centralisée, règlement différé) n'est pas encore ouvert : les entreprises peuvent laisser leurs coordonnées sur /pro pour être recontactées au lancement, sans création de compte.",
       },
       {
-        q: "Comment ouvrir un compte professionnel ?",
-        r: "Remplissez le formulaire d'inscription pro et joignez votre KBIS et RIB. Votre compte est généralement validé sous 24h, vous donnant accès au paiement sur facture et à votre espace de gestion personnalisé.",
+        q: "Comment rejoindre l'offre professionnelle ?",
+        r: "L'espace PRO est en pré-lancement : aucun compte n'est créé pour le moment, et aucun KBIS n'est demandé. Déposez simplement les coordonnées de votre entreprise sur la page /pro ; nous vous prévenons dès l'ouverture.",
       },
     ],
   },

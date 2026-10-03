@@ -50,7 +50,7 @@ const SOCIAL_LINKS = [
 
 export function VitrineFooter() {
   return (
-    <footer id="contact" className="vitrine-footer scroll-mt-[72px]">
+    <footer className="vitrine-footer">
       <div aria-hidden className="vitrine-footer__pattern vitrine-footer__pattern--curve-left" />
       <div aria-hidden className="vitrine-footer__pattern vitrine-footer__pattern--curve-right" />
       <div aria-hidden className="vitrine-footer__pattern vitrine-footer__pattern--leaf" />
@@ -109,7 +109,7 @@ export function VitrineFooter() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/pro">Compte professionnel</Link>
+                  <Link href="/pro">Compte professionnel (bientôt)</Link>
                 </li>
               </ul>
             </div>
@@ -123,6 +123,9 @@ export function VitrineFooter() {
                 <li>
                   <Link href="/politique-confidentialite">Politique de confidentialité</Link>
                 </li>
+                <li>
+                  <Link href="/cgv">Conditions Générales de Vente</Link>
+                </li>
               </ul>
             </div>
 
@@ -130,13 +133,9 @@ export function VitrineFooter() {
               <span className="vitrine-footer__cta-icon">
                 <HugeiconsIcon icon={Leaf01Icon} size={20} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />
               </span>
-              <p className="vitrine-footer__cta-text">
-                Ensemble pour une île-de-France{" "}
-                <span className="underline decoration-brand-green decoration-2 underline-offset-[5px]">
-                  plus propre
-                </span>
-                .
-              </p>
+              <a href={SITE_PHONE_HREF} className="vitrine-footer__cta-text">
+                Nous contacter
+              </a>
             </aside>
           </div>
         </div>

@@ -62,14 +62,14 @@ const PARTICULIER_STEPS: Step[] = [
 const PRO_ACCOUNT_STEPS: Step[] = [
   {
     num: "01",
-    label: "DEMANDE DE CRÉATION DE COMPTE",
-    text: "Remplissez le formulaire dans votre espace client et joignez vos documents (KBIS de moins de 3 mois et RIB).",
+    label: "LAISSER VOS COORDONNÉES",
+    text: "L'espace professionnel est en pré-lancement. Déposez les coordonnées de votre entreprise sur /pro : aucun compte n'est créé, aucun KBIS n'est demandé.",
     icon: UserAdd01Icon,
   },
   {
     num: "02",
-    label: "VALIDATION SOUS 24H",
-    text: "Après vérification, votre compte sera activé. Vous recevrez un lien par e-mail pour configurer votre mot de passe et passer vos commandes sur facture.",
+    label: "ON VOUS RECONTACTE",
+    text: "Nous vous prévenons dès l'ouverture. La facturation centralisée et le règlement différé arriveront à ce moment-là, sans paiement ni abonnement aujourd'hui.",
     icon: Timer02Icon,
   },
 ]
