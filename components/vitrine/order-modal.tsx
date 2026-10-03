@@ -14,9 +14,6 @@ import { useVitrineOrder } from "./order-context"
 export function VitrineOrderModal() {
   const { open, closeOrder } = useVitrineOrder()
   const [stepIndex, setStepIndex] = useState(0)
-  const [audience, setAudience] = useState<"particulier" | "professionnel">(
-    "particulier"
-  )
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -89,9 +86,7 @@ export function VitrineOrderModal() {
                     Commander une benne
                   </h2>
                   <p className="mt-1.5 text-[12px] leading-snug text-brand-muted sm:text-[13px]">
-                    {audience === "professionnel"
-                      ? "Demande professionnelle · Intervention en Île-de-France"
-                      : "Paiement sécurisé · Intervention sous 24 h en Île-de-France"}
+                    Paiement sécurisé · Intervention sous 24 h en Île-de-France
                   </p>
                 </div>
               </div>
@@ -107,7 +102,7 @@ export function VitrineOrderModal() {
           </div>
 
           <div className="shrink-0 px-4 py-2.5 sm:px-6 sm:py-3">
-            <OrderModalStepper stepIndex={stepIndex} audience={audience} />
+            <OrderModalStepper stepIndex={stepIndex} />
           </div>
 
           <div
@@ -118,7 +113,6 @@ export function VitrineOrderModal() {
               variant="embedded"
               open={open}
               onStepIndexChange={setStepIndex}
-              onAudienceChange={setAudience}
               onClose={closeOrder}
               scrollContainerRef={scrollContainerRef}
             />
