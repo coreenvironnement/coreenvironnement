@@ -237,19 +237,20 @@ export const politiqueConfidentialiteSections = [
   {
     title: "Données collectées",
     paragraphs: [
-      "Dans le cadre de la location de bennes et de l'espace client, nous pouvons collecter : identité, coordonnées, informations de commande, documents professionnels (KBIS, RIB) pour les comptes pro, et données de connexion.",
+      "Via le formulaire de pré-lancement professionnel (/pro), nous collectons uniquement : nom de la société, nom, prénom, e-mail, téléphone, et éventuellement le numéro SIRET (facultatif).",
+      "Aucun KBIS n'est demandé, aucun RIB n'est demandé, aucun compte n'est créé et aucun abonnement n'est souscrit.",
     ],
   },
   {
     title: "Finalités et bases légales",
     paragraphs: [
-      "Les données sont traitées pour la gestion des commandes, la facturation, le suivi des prestations, la traçabilité des déchets et l'accès à l'espace client. Les bases légales incluent l'exécution du contrat, les obligations légales et, le cas échéant, votre consentement.",
+      "Ces données servent à traiter votre demande de contact professionnel et à vous recontacter à l'ouverture de l'espace professionnel. La base légale est votre démarche volontaire (demande de contact).",
     ],
   },
   {
     title: "Durée de conservation",
     paragraphs: [
-      "Les données sont conservées pendant la durée nécessaire à la relation commerciale et aux obligations légales applicables (comptabilité, traçabilité des déchets, etc.).",
+      "Les données de la demande sont conservées le temps nécessaire pour vous recontacter et, le cas échéant, pour répondre aux obligations légales applicables.",
     ],
   },
   {

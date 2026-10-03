@@ -14,7 +14,7 @@ export default function PolitiqueConfidentialitePage() {
   return (
     <LegalPageShell
       title="Politique de confidentialité"
-      intro="Cette page décrit comment CORE ENVIRONNEMENT traite vos données personnelles dans le cadre de ses services de location de bennes et de l'espace client."
+      intro="Cette page décrit comment CORE ENVIRONNEMENT traite vos données personnelles, notamment celles du formulaire de pré-lancement professionnel."
       sections={politiqueConfidentialiteSections}
     />
   )
