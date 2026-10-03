@@ -31,7 +31,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "Location de benne Île-de-France — Intervention 24h",
+    default: "Location de benne en Île-de-France",
     template: "%s | CORE ENVIRONNEMENT",
   },
   description:

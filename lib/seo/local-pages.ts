@@ -38,9 +38,59 @@ function slugify(value: string) {
     .replace(/^-|-$/g, "")
 }
 
+/** Formulation géographique correcte (évite « dans tout le Val-de-Marne », etc.). */
+function departmentCoveragePhrase(code: string, nom: string): string {
+  switch (code) {
+    case "75":
+      return "dans tout Paris"
+    case "77":
+      return "dans toute la Seine-et-Marne"
+    case "78":
+      return "dans les Yvelines"
+    case "91":
+      return "dans l'Essonne"
+    case "92":
+      return "dans les Hauts-de-Seine"
+    case "93":
+      return "dans la Seine-Saint-Denis"
+    case "94":
+      return "dans le Val-de-Marne"
+    case "95":
+      return "dans le Val-d'Oise"
+    default:
+      return `dans le ${nom}`
+  }
+}
+
+function buildDepartementTitle(nom: string, code: string): string {
+  if (code === "75") {
+    return `Location de benne à Paris (${code})`
+  }
+  return `Location de benne en ${nom} (${code})`
+}
+
+function buildDepartementH1(nom: string, code: string): { line1: string; line2: string } {
+  if (code === "75") {
+    return {
+      line1: `Location de benne à Paris (${code}) :`,
+      line2: "Intervention 24h & suivi digital",
+    }
+  }
+  return {
+    line1: `Location de benne en ${nom} (${code}) :`,
+    line2: "Intervention 24h & suivi digital",
+  }
+}
+
+function buildVilleTitle(cityName: string, code: string): string {
+  return `Location de benne à ${cityName} (${code})`
+}
+
 function buildDepartementPage(def: DepartementDef): LocalPage {
   const { code, nom, slug, villesPrincipales } = def
   const villesList = villesPrincipales.slice(0, 6).join(", ")
+  const coverage = departmentCoveragePhrase(code, nom)
+  const h1 = buildDepartementH1(nom, code)
 
   return {
     slug,
@@ -49,11 +99,11 @@ function buildDepartementPage(def: DepartementDef): LocalPage {
     departementCode: code,
     departementNom: nom,
     departementSlug: slug,
-    title: `Location benne ${nom} (${code}) — Livraison 24h`,
-    description: `Location de benne en ${nom} (${code}). Livraison sous 24 h à ${villesList} et communes voisines. Commande en ligne, gravats, DIB et suivi digital.`,
-    h1Line1: `Location de benne en ${nom} (${code}) :`,
-    h1Line2: "Intervention 24h & suivi digital",
-    intro: `CORE ENVIRONNEMENT livre des bennes dans tout le ${nom} (${code}) : ${villesList} et alentours. Gravats, DIB et déchets de chantier — commande en 3 minutes, traçabilité jusqu'au recyclage.`,
+    title: buildDepartementTitle(nom, code),
+    description: `Location de benne ${coverage} (${code}). Livraison sous 24 h à ${villesList} et communes voisines. Commande en ligne, gravats, DIB et suivi digital.`,
+    h1Line1: h1.line1,
+    h1Line2: h1.line2,
+    intro: `CORE ENVIRONNEMENT livre des bennes ${coverage} : ${villesList} et alentours. Gravats, DIB et déchets de chantier — commande en 3 minutes, traçabilité jusqu'au recyclage.`,
     chipLabel: `Location benne · ${nom} (${code})`,
     villesPrincipales,
   }
@@ -62,6 +112,7 @@ function buildDepartementPage(def: DepartementDef): LocalPage {
 function buildVillePage(def: DepartementDef, cityName: string): LocalPage {
   const citySlug = slugify(cityName)
   const { code, nom: deptNom, slug: deptSlug } = def
+  const coverage = departmentCoveragePhrase(code, deptNom)
 
   return {
     slug: citySlug,
@@ -70,11 +121,11 @@ function buildVillePage(def: DepartementDef, cityName: string): LocalPage {
     departementCode: code,
     departementNom: deptNom,
     departementSlug: deptSlug,
-    title: `Location benne ${cityName} (${code}) — Livraison 24h`,
+    title: buildVilleTitle(cityName, code),
     description: `Louez une benne à ${cityName} (${deptNom}, ${code}). Livraison rapide, gravats et déchets de chantier. Commande en ligne CORE ENVIRONNEMENT.`,
     h1Line1: `Location de benne à ${cityName} :`,
-    h1Line2: `Intervention en ${deptNom} (${code})`,
-    intro: `Besoin d'une benne à ${cityName} ? CORE ENVIRONNEMENT intervient dans le ${deptNom} (${code}) : livraison sous 24 h, suivi digital et traçabilité de vos déchets de chantier.`,
+    h1Line2: "Intervention 24h & suivi digital",
+    intro: `Besoin d'une benne à ${cityName} ? CORE ENVIRONNEMENT intervient ${coverage} : livraison sous 24 h, suivi digital et traçabilité de vos déchets de chantier.`,
     chipLabel: `${cityName} · ${deptNom} (${code})`,
   }
 }

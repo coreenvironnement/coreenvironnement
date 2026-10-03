@@ -34,10 +34,10 @@ export type SeoVariant = {
 
 const DEFAULT_VARIANT: SeoVariant = {
   intent: "default",
-  title: "Location de benne Île-de-France — Intervention 24h",
+  title: "Location de benne en Île-de-France",
   description:
     "Location de bennes en Île-de-France. Commande en 3 minutes, intervention sous 24 h, suivi digital et traçabilité de vos déchets.",
-  h1Line1: "Location de bennes et gestion digitale des déchets en Île-de-France",
+  h1Line1: "Location de benne en Île-de-France : intervention 24h & suivi digital",
   h1Line2: "",
   intro:
     "La solution clé en main pour le BTP, les artisans et les industriels. Commandez vos rotations de bennes, suivez vos flux de déchets et téléchargez vos bordereaux en quelques clics.",
@@ -46,7 +46,7 @@ const DEFAULT_VARIANT: SeoVariant = {
 const VARIANTS: Record<Exclude<SeoIntent, "default">, SeoVariant> = {
   paris: {
     intent: "paris",
-    title: "Location benne Paris (75) — Livraison sous 24h",
+    title: "Location de benne à Paris (75)",
     description:
       "Location de benne à Paris et petite couronne. Livraison rapide, commande en ligne, traçabilité et recyclage de vos déchets de chantier.",
     h1Line1: "Location de benne à Paris :",
@@ -78,7 +78,7 @@ const VARIANTS: Record<Exclude<SeoIntent, "default">, SeoVariant> = {
   },
   "75": {
     intent: "75",
-    title: "Location benne Paris (75)",
+    title: "Location de benne à Paris (75)",
     description:
       "Location de benne dans Paris (75). Livraison sous 24 h, commande en ligne et suivi digital CORE ENVIRONNEMENT.",
     h1Line1: "Location de benne à Paris (75) :",
@@ -86,7 +86,7 @@ const VARIANTS: Record<Exclude<SeoIntent, "default">, SeoVariant> = {
   },
   "77": {
     intent: "77",
-    title: "Location benne Seine-et-Marne (77)",
+    title: "Location de benne en Seine-et-Marne (77)",
     description:
       "Louez une benne en Seine-et-Marne (77). Livraison IDF, gravats, DIB et déchets de chantier avec suivi digital.",
     h1Line1: "Location de benne en Seine-et-Marne (77) :",
@@ -94,7 +94,7 @@ const VARIANTS: Record<Exclude<SeoIntent, "default">, SeoVariant> = {
   },
   "78": {
     intent: "78",
-    title: "Location benne Yvelines (78)",
+    title: "Location de benne en Yvelines (78)",
     description:
       "Location de benne dans les Yvelines (78). Commande en ligne, intervention rapide et traçabilité des déchets.",
     h1Line1: "Location de benne dans les Yvelines (78) :",
@@ -102,7 +102,7 @@ const VARIANTS: Record<Exclude<SeoIntent, "default">, SeoVariant> = {
   },
   "91": {
     intent: "91",
-    title: "Location benne Essonne (91)",
+    title: "Location de benne en Essonne (91)",
     description:
       "Benne à louer en Essonne (91). Gravats, DIB et déchets non dangereux — livraison Île-de-France.",
     h1Line1: "Location de benne en Essonne (91) :",
@@ -110,7 +110,7 @@ const VARIANTS: Record<Exclude<SeoIntent, "default">, SeoVariant> = {
   },
   "92": {
     intent: "92",
-    title: "Location benne Hauts-de-Seine (92)",
+    title: "Location de benne en Hauts-de-Seine (92)",
     description:
       "Location de benne dans les Hauts-de-Seine (92). Intervention sous 24 h et recyclage garanti en Île-de-France.",
     h1Line1: "Location de benne Hauts-de-Seine (92) :",
@@ -118,7 +118,7 @@ const VARIANTS: Record<Exclude<SeoIntent, "default">, SeoVariant> = {
   },
   "93": {
     intent: "93",
-    title: "Location benne Seine-Saint-Denis (93)",
+    title: "Location de benne en Seine-Saint-Denis (93)",
     description:
       "Louez une benne en Seine-Saint-Denis (93). Livraison rapide, traçabilité et filières de recyclage agréées.",
     h1Line1: "Location de benne Seine-Saint-Denis (93) :",
@@ -126,7 +126,7 @@ const VARIANTS: Record<Exclude<SeoIntent, "default">, SeoVariant> = {
   },
   "94": {
     intent: "94",
-    title: "Location benne Val-de-Marne (94)",
+    title: "Location de benne en Val-de-Marne (94)",
     description:
       "Location de benne dans le Val-de-Marne (94). Gravats et déchets de chantier — commande en ligne.",
     h1Line1: "Location de benne Val-de-Marne (94) :",
@@ -134,7 +134,7 @@ const VARIANTS: Record<Exclude<SeoIntent, "default">, SeoVariant> = {
   },
   "95": {
     intent: "95",
-    title: "Location benne Val-d'Oise (95)",
+    title: "Location de benne en Val-d'Oise (95)",
     description:
       "Benne à louer dans le Val-d'Oise (95). CORE ENVIRONNEMENT : livraison IDF et suivi digital.",
     h1Line1: "Location de benne Val-d'Oise (95) :",

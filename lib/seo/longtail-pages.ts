@@ -329,7 +329,7 @@ const SERVICE_TEMPLATES: ServiceTemplate[] = [
       description: `Location benne livraison 24 h en ${dept.nom}. Intervention rapide sur tout le ${dept.code}. CORE ENVIRONNEMENT.`,
       h1Line1: `Benne livraison 24 h en ${dept.nom} :`,
       h1Line2: "Intervention express",
-      intro: `CORE ENVIRONNEMENT livre vos bennes sous 24 h dans tout le ${dept.nom} (${dept.code}). Commande en ligne, créneau de pose adapté à votre chantier.`,
+      intro: `CORE ENVIRONNEMENT livre vos bennes sous 24 h sur l'ensemble du ${dept.nom} (${dept.code}). Commande en ligne, créneau de pose adapté à votre chantier.`,
       chipLabel: `Livraison 24 h · ${dept.nom}`,
     }),
   },
