@@ -1,6 +1,8 @@
 export const ORDER_TUNNEL_STEPS = [
   { id: "intent" as const, label: "Votre demande" },
   { id: "forfait" as const, label: "Forfait" },
+  { id: "infos" as const, label: "Informations" },
+  { id: "recap" as const, label: "Récapitulatif" },
   { id: "payment" as const, label: "Paiement" },
 ] as const
 

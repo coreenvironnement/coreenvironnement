@@ -24,7 +24,18 @@ export function contenantCodeForVolume(volumeM3: number): string {
   return map[volumeM3] ?? "benne_15m3"
 }
 
-/** Montant TTC estimé (TVA 20 %) pour Stripe Checkout particulier. */
+/** Montant TTC en centimes (TVA 20 %). Formule unique : round(HT × 1,20 × 100). */
 export function priceTtcFromHt(priceHt: number): number {
   return Math.round(priceHt * 1.2 * 100)
+}
+
+/** Détail HT / TVA / TTC en euros, dérivé de `priceTtcFromHt` (même résultat). */
+export function priceBreakdownFromHt(priceHt: number) {
+  const ttcCents = priceTtcFromHt(priceHt)
+  const htCents = Math.round(priceHt * 100)
+  return {
+    ht: htCents / 100,
+    tva: (ttcCents - htCents) / 100,
+    ttc: ttcCents / 100,
+  }
 }

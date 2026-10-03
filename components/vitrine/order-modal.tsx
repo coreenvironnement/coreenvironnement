@@ -26,12 +26,6 @@ export function VitrineOrderModal() {
     }
   }, [open, closeOrder])
 
-  useEffect(() => {
-    if (!open) {
-      setStepIndex(0)
-    }
-  }, [open])
-
   return (
     <div
       className={cn("fixed inset-0 z-[70]", open ? "" : "pointer-events-none")}
@@ -51,24 +45,24 @@ export function VitrineOrderModal() {
           aria-modal="true"
           aria-label="Commander une benne"
           className={cn(
-            "relative flex max-h-[92svh] w-full flex-col overflow-hidden rounded-t-2xl border border-brand-border bg-brand-bg shadow-[var(--shadow-vitrine-pop)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] sm:max-w-[520px] sm:rounded-2xl",
+            "relative flex max-h-[92svh] w-full flex-col overflow-hidden rounded-t-2xl border border-brand-border bg-brand-bg shadow-[var(--shadow-vitrine-pop)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] sm:max-w-[540px] sm:rounded-2xl",
             open
               ? "translate-y-0 opacity-100 sm:scale-100"
               : "translate-y-8 opacity-0 sm:translate-y-4 sm:scale-[0.97]"
           )}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="border-b border-brand-border px-5 pb-3.5 pt-4 sm:px-6">
+          <div className="shrink-0 border-b border-brand-border px-4 pb-4 pt-4 sm:px-6 sm:pb-5 sm:pt-5">
             <div className="flex items-start justify-between gap-3">
-              <div className="flex min-w-0 items-center gap-3">
-                <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-bg-alt text-brand-green">
-                  <HugeiconsIcon icon={TruckIcon} size={20} strokeWidth={VITRINE_ICON_STROKE} />
+              <div className="flex min-w-0 items-start gap-3 sm:gap-3.5">
+                <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-bg-alt text-brand-green sm:h-12 sm:w-12">
+                  <HugeiconsIcon icon={TruckIcon} size={22} strokeWidth={VITRINE_ICON_STROKE} />
                 </span>
-                <div className="min-w-0">
-                  <h2 className="text-[17px] font-semibold text-brand-navy">
+                <div className="min-w-0 pt-0.5">
+                  <h2 className="text-[18px] font-bold leading-tight text-brand-navy sm:text-[20px]">
                     Commander une benne
                   </h2>
-                  <p className="mt-0.5 text-[12px] leading-snug text-brand-muted sm:text-[13px]">
+                  <p className="mt-1.5 text-[12px] leading-snug text-brand-muted sm:text-[13px]">
                     Paiement sécurisé · Intervention sous 24 h en Île-de-France
                   </p>
                 </div>
@@ -82,12 +76,18 @@ export function VitrineOrderModal() {
                 <HugeiconsIcon icon={Cancel01Icon} size={18} strokeWidth={VITRINE_ICON_STROKE} />
               </button>
             </div>
+          </div>
 
+          <div className="shrink-0 px-4 py-3.5 sm:px-6 sm:py-4">
             <OrderModalStepper stepIndex={stepIndex} />
           </div>
 
-          <div className="overflow-y-auto px-3 pb-3 pt-3 sm:px-4 sm:pb-4 sm:pt-3">
-            <OrderWidget variant="embedded" onStepIndexChange={setStepIndex} />
+          <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-4 pt-1 sm:px-4 sm:pb-5 sm:pt-2">
+            <OrderWidget
+              variant="embedded"
+              open={open}
+              onStepIndexChange={setStepIndex}
+            />
           </div>
         </div>
       </div>

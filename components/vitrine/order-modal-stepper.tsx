@@ -7,38 +7,54 @@ type OrderModalStepperProps = {
 }
 
 export function OrderModalStepper({ stepIndex }: OrderModalStepperProps) {
+  const lastIndex = ORDER_TUNNEL_STEPS.length - 1
+
   return (
     <div
-      className="mt-3"
       aria-label={`Étape ${stepIndex + 1} sur ${ORDER_TUNNEL_STEPS.length} : ${ORDER_TUNNEL_STEPS[stepIndex]?.label}`}
     >
-      <div className="flex gap-1">
-        {ORDER_TUNNEL_STEPS.map((step, index) => (
-          <div
-            key={`segment-${step.id}`}
-            className={cn(
-              "h-0.5 flex-1 rounded-full transition-colors duration-300",
-              index === stepIndex ? "bg-[#35A238]" : "bg-[#E4E7EC]"
-            )}
-            aria-hidden
-          />
-        ))}
-      </div>
-
-      <div className="mt-1.5 grid grid-cols-3 gap-1">
+      <div className="grid grid-cols-5">
         {ORDER_TUNNEL_STEPS.map((step, index) => {
           const active = index === stepIndex
 
           return (
-            <p
-              key={step.id}
-              className={cn(
-                "truncate text-center text-[10px] font-medium leading-tight text-[#98A2B3]",
-                active && "font-semibold text-[#475467]"
-              )}
-            >
-              {index + 1}&nbsp;·&nbsp;{step.label}
-            </p>
+            <div key={step.id} className="flex flex-col items-center px-0.5 sm:px-1">
+              <div className="relative flex h-7 w-full items-center justify-center sm:h-8">
+                {index > 0 ? (
+                  <span
+                    className="absolute right-1/2 top-1/2 h-px w-[calc(50%-0.8rem)] -translate-y-1/2 bg-[#E4E7EC] sm:w-[calc(50%-1rem)]"
+                    aria-hidden
+                  />
+                ) : null}
+                {index < lastIndex ? (
+                  <span
+                    className="absolute left-1/2 top-1/2 h-px w-[calc(50%-0.8rem)] -translate-y-1/2 bg-[#E4E7EC] sm:w-[calc(50%-1rem)]"
+                    aria-hidden
+                  />
+                ) : null}
+                <span
+                  className={cn(
+                    "relative z-10 flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold tabular-nums transition-colors duration-300 sm:h-8 sm:w-8 sm:text-[13px]",
+                    active
+                      ? "bg-[#35A238] text-white"
+                      : "bg-[#E4E7EC] text-[#98A2B3]"
+                  )}
+                  aria-hidden
+                >
+                  {index + 1}
+                </span>
+              </div>
+              <p
+                className={cn(
+                  "mt-1 w-full truncate text-center text-[9px] leading-tight sm:mt-2 sm:text-[11px]",
+                  active
+                    ? "font-semibold text-brand-navy"
+                    : "font-medium text-[#98A2B3]"
+                )}
+              >
+                {step.label}
+              </p>
+            </div>
           )
         })}
       </div>
