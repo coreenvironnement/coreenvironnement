@@ -24,6 +24,9 @@ import {
   buildProWaitlistEmail,
   type ProWaitlistData,
 } from "@/lib/email/templates/pro-waitlist"
+import { buildDemandeProAdminEmail } from "@/lib/email/templates/demande-pro-admin"
+import { buildDemandeProClientEmail } from "@/lib/email/templates/demande-pro-client"
+import type { PreparedProfessionalBenneRequest } from "@/lib/order/pro-request"
 
 export async function notifyCommandeConfirmed(data: CommandeConfirmationData) {
   const template = buildCommandeConfirmationEmail(data)
@@ -69,6 +72,22 @@ export async function notifyProWaitlist(data: ProWaitlistData) {
   const template = buildProWaitlistEmail(data)
   return sendEmail({
     to: getOrderNotificationEmail(),
+    ...template,
+  })
+}
+
+export async function notifyDemandeProAdmin(data: PreparedProfessionalBenneRequest) {
+  const template = buildDemandeProAdminEmail(data)
+  return sendEmail({
+    to: getOrderNotificationEmail(),
+    ...template,
+  })
+}
+
+export async function notifyDemandeProClient(data: PreparedProfessionalBenneRequest) {
+  const template = buildDemandeProClientEmail(data)
+  return sendEmail({
+    to: data.contactEmail,
     ...template,
   })
 }

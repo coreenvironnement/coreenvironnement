@@ -1,8 +1,7 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState, useTransition } from "react"
 import Image from "next/image"
-import Link from "next/link"
 import { Recycle01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
@@ -16,6 +15,7 @@ import {
   Hammer,
   Headphones,
   Info,
+  Loader2,
   MapPin,
   MapPinOff,
   Recycle,
@@ -50,6 +50,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { EmbeddedCheckout } from "@/components/order/embedded-checkout"
+import { submitProfessionalBenneRequest } from "@/app/order/actions"
 import {
   type BenneFamily,
   type Prestation,
@@ -61,6 +62,7 @@ import {
 import { priceBreakdownFromHt } from "@/lib/order/prestation-mapping"
 import {
   ORDER_TUNNEL_STEPS,
+  getOrderTunnelSteps,
   type OrderTunnelStepId,
 } from "@/lib/order/tunnel-steps"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
@@ -72,8 +74,6 @@ import {
 import { cn } from "@/lib/utils"
 
 export { ORDER_TUNNEL_STEPS } from "@/lib/order/tunnel-steps"
-
-const steps = ORDER_TUNNEL_STEPS
 
 const ORDER_SECTION_LABEL =
   "text-left text-[14px] font-semibold leading-snug text-brand-navy"
@@ -167,7 +167,13 @@ function fmtHt(n: number) {
   }).format(n)
 }
 
-function OrderStepProgress({ currentStepIdx }: { currentStepIdx: number }) {
+function OrderStepProgress({
+  currentStepIdx,
+  steps,
+}: {
+  currentStepIdx: number
+  steps: ReadonlyArray<{ id: OrderTunnelStepId; label: string }>
+}) {
   const current = steps[currentStepIdx]
   const progress = ((currentStepIdx + 1) / steps.length) * 100
 
@@ -201,6 +207,7 @@ type OrderWidgetProps = {
   variant?: "default" | "embedded"
   open?: boolean
   onStepIndexChange?: (index: number) => void
+  onAudienceChange?: (audience: Audience) => void
   onClose?: () => void
   scrollContainerRef?: React.RefObject<HTMLElement | null>
 }
@@ -209,6 +216,7 @@ export function OrderWidget({
   variant = "default",
   open = true,
   onStepIndexChange,
+  onAudienceChange,
   onClose,
   scrollContainerRef,
 }: OrderWidgetProps) {
@@ -235,9 +243,16 @@ export function OrderWidget({
   >(null)
   const [contactFirstName, setContactFirstName] = useState("")
   const [contactLastName, setContactLastName] = useState("")
+  const [companyName, setCompanyName] = useState("")
+  const [proContactName, setProContactName] = useState("")
+  const [siret, setSiret] = useState("")
   const [contactPhone, setContactPhone] = useState("")
   const [contactEmail, setContactEmail] = useState("")
   const [draftCommandeId, setDraftCommandeId] = useState<string | null>(null)
+  const [proRequestSent, setProRequestSent] = useState(false)
+  const [proClientEmailSent, setProClientEmailSent] = useState(false)
+  const [proReference, setProReference] = useState<string | null>(null)
+  const [isSubmittingPro, startProSubmit] = useTransition()
   const prestation = useMemo(
     () => (selectedPrestationId ? prestationById(selectedPrestationId) : null),
     [selectedPrestationId]
@@ -335,13 +350,29 @@ export function OrderWidget({
       return
     }
     setDeliveryDateError(null)
-    if (!contactFirstName.trim()) {
-      setAddressError("Indiquez votre prénom.")
-      return
-    }
-    if (!contactLastName.trim()) {
-      setAddressError("Indiquez votre nom.")
-      return
+    if (audience === "professionnel") {
+      if (!companyName.trim()) {
+        setAddressError("Indiquez le nom de l’entreprise.")
+        return
+      }
+      if (!proContactName.trim()) {
+        setAddressError("Indiquez le nom et le prénom du contact.")
+        return
+      }
+      const siretDigits = siret.replace(/\s/g, "")
+      if (siretDigits.length > 0 && !/^\d{14}$/.test(siretDigits)) {
+        setAddressError("Le SIRET doit contenir 14 chiffres, ou rester vide.")
+        return
+      }
+    } else {
+      if (!contactFirstName.trim()) {
+        setAddressError("Indiquez votre prénom.")
+        return
+      }
+      if (!contactLastName.trim()) {
+        setAddressError("Indiquez votre nom.")
+        return
+      }
     }
     const phoneDigits = contactPhone.replace(/\D/g, "")
     if (phoneDigits.length < 10) {
@@ -357,16 +388,55 @@ export function OrderWidget({
     setStep("recap")
   }
 
-  const contactName = [contactFirstName.trim(), contactLastName.trim()]
-    .filter(Boolean)
-    .join(" ")
+  const sendProRequest = () => {
+    if (!prestation || !selectedAddress || !family) {
+      setAddressError("Votre demande est incomplète. Revenez aux étapes précédentes.")
+      return
+    }
+    setAddressError(null)
+    startProSubmit(async () => {
+      const result = await submitProfessionalBenneRequest({
+        audience: "professionnel",
+        companyName: companyName.trim(),
+        contactName: proContactName.trim(),
+        contactPhone: contactPhone.trim(),
+        contactEmail: contactEmail.trim(),
+        siret: siret.trim() || undefined,
+        address: selectedAddress.label,
+        addressLabel: selectedAddress.label,
+        postcode: selectedAddress.postcode,
+        departementCode: selectedAddress.departementCode,
+        prestationId: prestation.id,
+        wasteFamily: family,
+        deliveryDate,
+        pickupDate: pickupDate || undefined,
+      })
+      if ("error" in result) {
+        setAddressError(result.error)
+        return
+      }
+      setProReference(result.reference)
+      setProClientEmailSent(result.clientEmailSent)
+      setProRequestSent(true)
+    })
+  }
 
+  const contactName =
+    audience === "professionnel"
+      ? proContactName.trim()
+      : [contactFirstName.trim(), contactLastName.trim()].filter(Boolean).join(" ")
+
+  const steps = getOrderTunnelSteps(audience)
   const currentStepIdx = steps.findIndex((s) => s.id === step)
 
   useEffect(() => {
     if (!open) return
     onStepIndexChange?.(currentStepIdx)
   }, [currentStepIdx, onStepIndexChange, open])
+
+  useEffect(() => {
+    onAudienceChange?.(audience)
+  }, [audience, onAudienceChange])
 
   useEffect(() => {
     if (step !== "infos") return
@@ -385,7 +455,7 @@ export function OrderWidget({
     const active = document.activeElement
     if (
       active instanceof HTMLElement &&
-      active.id === "order-contact-firstname"
+      (active.id === "order-contact-firstname" || active.id === "order-company-name")
     ) {
       active.blur()
     }
@@ -407,33 +477,90 @@ export function OrderWidget({
       ) : null}
 
       <CardContent className={cn("relative space-y-3", embedded ? "px-0 pb-0 pt-0" : "pt-8")}>
-        {!embedded ? <OrderStepProgress currentStepIdx={currentStepIdx} /> : null}
+        {!embedded ? (
+          <OrderStepProgress currentStepIdx={currentStepIdx} steps={steps} />
+        ) : null}
 
         {step === "payment" && prestation && selectedAddress ? (
           <div className="space-y-4">
               {audience === "professionnel" ? (
-                <div className="space-y-3">
-                  <p className={ORDER_SECTION_LABEL}>Paiement</p>
-                  <div className="rounded-xl border border-brand-navy/15 bg-muted/40 px-4 py-4 text-sm text-muted-foreground">
-                    <p className="font-medium text-brand-navy">Commande professionnelle</p>
-                    <p className="mt-2">
-                      Les pros validés commandent sur facture depuis leur espace client.{" "}
-                      <Link href="/pro" className="font-semibold text-primary underline-offset-2 hover:underline">
-                        Créer ou accéder à mon compte pro
-                      </Link>
-                      .
+                proRequestSent ? (
+                  <div className="space-y-4 rounded-2xl border border-primary/15 bg-white px-4 py-5 text-center">
+                    <h3 className="text-[18px] font-semibold leading-tight text-brand-navy sm:text-[20px]">
+                      Demande envoyée
+                    </h3>
+                    <p className="text-[13px] leading-relaxed text-brand-navy/80 sm:text-sm">
+                      Votre demande a bien été transmise à CORE Environnement. Un expert
+                      vous recontactera prochainement pour la confirmer.
+                    </p>
+                    {proClientEmailSent ? (
+                      <p className="text-[13px] text-brand-navy/70">
+                        Un e-mail récapitulatif vient de vous être envoyé.
+                      </p>
+                    ) : null}
+                    {proReference ? (
+                      <p className="font-mono text-sm font-semibold tracking-wide text-brand-navy">
+                        {proReference}
+                      </p>
+                    ) : null}
+                    {onClose ? (
+                      <Button
+                        type="button"
+                        className="h-11 w-full rounded-xl text-base font-semibold shadow-lg"
+                        onClick={onClose}
+                      >
+                        Fermer
+                      </Button>
+                    ) : null}
+                  </div>
+                ) : (
+                <div className="space-y-4">
+                  <div className="rounded-2xl border border-primary/15 bg-gradient-to-br from-white via-white to-brand-bg-alt px-4 py-4">
+                    <p className="text-[15px] font-semibold text-brand-navy">
+                      Votre espace professionnel arrive bientôt
+                    </p>
+                    <p className="mt-2 text-[13px] leading-relaxed text-brand-navy/80">
+                      Le suivi digital de vos demandes, rotations de bennes et documents
+                      liés à vos déchets sera prochainement disponible depuis votre
+                      espace CORE Environnement.
+                    </p>
+                    <p className="mt-3 text-[13px] leading-relaxed text-brand-navy/75">
+                      Pour le moment, envoyez simplement votre demande. Un membre de
+                      notre équipe vous recontactera pour la confirmer.
                     </p>
                   </div>
+                  {addressError ? (
+                    <p className="text-center text-xs font-medium text-amber-800">
+                      {addressError}
+                    </p>
+                  ) : null}
+                  <Button
+                    type="button"
+                    className="h-11 w-full rounded-xl text-base font-semibold shadow-lg"
+                    disabled={isSubmittingPro}
+                    onClick={sendProRequest}
+                  >
+                    {isSubmittingPro ? (
+                      <>
+                        <Loader2 className="mr-2 size-4 animate-spin" />
+                        Envoi en cours…
+                      </>
+                    ) : (
+                      "Envoyer ma demande de benne"
+                    )}
+                  </Button>
                   <Button
                     variant="outline"
                     type="button"
-                    className="h-10 rounded-xl"
+                    className="h-10 w-full rounded-xl"
+                    disabled={isSubmittingPro}
                     onClick={() => setStep("recap")}
                   >
                     <ArrowLeft className="mr-2 size-4" />
                     Retour
                   </Button>
                 </div>
+                )
               ) : (
                 <EmbeddedCheckout
                   existingCommandeId={draftCommandeId ?? undefined}
@@ -803,7 +930,43 @@ export function OrderWidget({
               </div>
 
               <div className="space-y-2.5">
-                <p className={ORDER_SECTION_LABEL}>Vos coordonnées</p>
+                <p className={ORDER_SECTION_LABEL}>
+                  {audience === "professionnel" ? "Votre entreprise" : "Vos coordonnées"}
+                </p>
+                {audience === "professionnel" ? (
+                  <>
+                    <div className="space-y-1.5">
+                      <label htmlFor="order-company-name" className="text-xs font-semibold text-brand-navy">
+                        Nom de l’entreprise&nbsp;*
+                      </label>
+                      <Input
+                        id="order-company-name"
+                        autoComplete="organization"
+                        value={companyName}
+                        onChange={(e) => {
+                          setCompanyName(e.target.value)
+                          setAddressError(null)
+                        }}
+                        className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label htmlFor="order-pro-contact" className="text-xs font-semibold text-brand-navy">
+                        Nom et prénom du contact&nbsp;*
+                      </label>
+                      <Input
+                        id="order-pro-contact"
+                        autoComplete="name"
+                        value={proContactName}
+                        onChange={(e) => {
+                          setProContactName(e.target.value)
+                          setAddressError(null)
+                        }}
+                        className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
+                      />
+                    </div>
+                  </>
+                ) : (
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <label htmlFor="order-contact-firstname" className="text-xs font-semibold text-brand-navy">
@@ -836,6 +999,7 @@ export function OrderWidget({
                     />
                   </div>
                 </div>
+                )}
                 <div className="space-y-1.5">
                   <label htmlFor="order-contact-phone" className="text-xs font-semibold text-brand-navy">
                     Téléphone&nbsp;*
@@ -854,7 +1018,7 @@ export function OrderWidget({
                 </div>
                 <div className="space-y-1.5">
                   <label htmlFor="order-contact-email" className="text-xs font-semibold text-brand-navy">
-                    Email&nbsp;*
+                    {audience === "professionnel" ? "Adresse e-mail" : "Email"}&nbsp;*
                   </label>
                   <Input
                     id="order-contact-email"
@@ -868,6 +1032,24 @@ export function OrderWidget({
                     className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
                   />
                 </div>
+                {audience === "professionnel" ? (
+                  <div className="space-y-1.5">
+                    <label htmlFor="order-siret" className="text-xs font-medium text-muted-foreground">
+                      SIRET (optionnel)
+                    </label>
+                    <Input
+                      id="order-siret"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      value={siret}
+                      onChange={(e) => {
+                        setSiret(e.target.value)
+                        setAddressError(null)
+                      }}
+                      className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
+                    />
+                  </div>
+                ) : null}
               </div>
 
               {addressError && (
@@ -910,12 +1092,49 @@ export function OrderWidget({
               transition={t}
               className="space-y-3"
             >
-              <p className={ORDER_SECTION_LABEL}>Vérifiez votre commande</p>
+              <p className={ORDER_SECTION_LABEL}>
+                {audience === "professionnel" ? "Vérifiez votre demande" : "Vérifiez votre commande"}
+              </p>
+
+              {audience === "professionnel" ? (
+                <section className="rounded-2xl border border-primary/10 bg-white/95 px-4 py-3">
+                  <div className="mb-1.5 flex items-center justify-between gap-2">
+                    <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                      Entreprise
+                    </h3>
+                    <button
+                      type="button"
+                      className="text-[11px] font-medium text-primary/70 hover:text-primary hover:underline"
+                      onClick={() => setStep("infos")}
+                    >
+                      Modifier
+                    </button>
+                  </div>
+                  <ul className="space-y-1.5 text-sm">
+                    <li>
+                      <span className="text-muted-foreground">Société · </span>
+                      <span className="font-medium text-brand-navy">{companyName.trim()}</span>
+                    </li>
+                    <li>
+                      <span className="text-muted-foreground">Contact · </span>
+                      <span className="font-medium text-brand-navy">{proContactName.trim()}</span>
+                    </li>
+                    <li className="text-brand-navy">{contactPhone}</li>
+                    <li className="text-brand-navy">{contactEmail.trim()}</li>
+                    {siret.replace(/\s/g, "") ? (
+                      <li>
+                        <span className="text-muted-foreground">SIRET · </span>
+                        <span className="font-medium text-brand-navy">{siret.trim()}</span>
+                      </li>
+                    ) : null}
+                  </ul>
+                </section>
+              ) : null}
 
               <section className="rounded-2xl border border-primary/10 bg-white/95 px-4 py-3">
                 <div className="mb-1.5 flex items-center justify-between gap-2">
                   <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    Votre benne
+                    {audience === "professionnel" ? "Demande" : "Votre benne"}
                   </h3>
                   <button
                     type="button"
@@ -981,6 +1200,7 @@ export function OrderWidget({
                 </button>
               </section>
 
+              {audience === "particulier" ? (
               <section className="rounded-2xl border border-primary/10 bg-white/95 px-4 py-3">
                 <div className="mb-1.5 flex items-center justify-between gap-2">
                   <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
@@ -1000,7 +1220,9 @@ export function OrderWidget({
                   <li className="text-brand-navy">{contactEmail.trim()}</li>
                 </ul>
               </section>
+              ) : null}
 
+              {audience === "particulier" ? (
               <section className="rounded-2xl border border-primary/10 bg-white/95 px-4 py-3">
                 <h3 className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                   Prix
@@ -1025,6 +1247,7 @@ export function OrderWidget({
                   )
                 })()}
               </section>
+              ) : null}
 
               <div className="flex flex-col gap-2 pt-0.5 sm:flex-row sm:gap-3">
                 <Button
@@ -1041,7 +1264,7 @@ export function OrderWidget({
                   className="h-11 rounded-xl text-base font-semibold shadow-lg sm:flex-1"
                   onClick={() => setStep("payment")}
                 >
-                  Passer au paiement
+                  {audience === "professionnel" ? "Continuer" : "Passer au paiement"}
                   <ChevronRight className="ml-2 size-4" />
                 </Button>
               </div>

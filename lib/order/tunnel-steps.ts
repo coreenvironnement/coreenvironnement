@@ -7,3 +7,12 @@ export const ORDER_TUNNEL_STEPS = [
 ] as const
 
 export type OrderTunnelStepId = (typeof ORDER_TUNNEL_STEPS)[number]["id"]
+
+export function getOrderTunnelSteps(
+  audience: "particulier" | "professionnel"
+): ReadonlyArray<{ id: OrderTunnelStepId; label: string }> {
+  if (audience !== "professionnel") return ORDER_TUNNEL_STEPS
+  return ORDER_TUNNEL_STEPS.map((step) =>
+    step.id === "payment" ? { ...step, label: "Envoi" } : step
+  )
+}

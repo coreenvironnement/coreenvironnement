@@ -1,20 +1,25 @@
 import { cn } from "@/lib/utils"
 
-import { ORDER_TUNNEL_STEPS } from "@/lib/order/tunnel-steps"
+import { getOrderTunnelSteps } from "@/lib/order/tunnel-steps"
 
 type OrderModalStepperProps = {
   stepIndex: number
+  audience?: "particulier" | "professionnel"
 }
 
-export function OrderModalStepper({ stepIndex }: OrderModalStepperProps) {
-  const lastIndex = ORDER_TUNNEL_STEPS.length - 1
+export function OrderModalStepper({
+  stepIndex,
+  audience = "particulier",
+}: OrderModalStepperProps) {
+  const steps = getOrderTunnelSteps(audience)
+  const lastIndex = steps.length - 1
 
   return (
     <div
-      aria-label={`Étape ${stepIndex + 1} sur ${ORDER_TUNNEL_STEPS.length} : ${ORDER_TUNNEL_STEPS[stepIndex]?.label}`}
+      aria-label={`Étape ${stepIndex + 1} sur ${steps.length} : ${steps[stepIndex]?.label}`}
     >
       <div className="grid grid-cols-5">
-        {ORDER_TUNNEL_STEPS.map((step, index) => {
+        {steps.map((step, index) => {
           const active = index === stepIndex
 
           return (

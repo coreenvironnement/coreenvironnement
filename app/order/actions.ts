@@ -13,6 +13,14 @@ import {
 } from "@/lib/stripe/server"
 import { createServiceClient } from "@/lib/supabase/service"
 import type { OrderCheckoutInput } from "@/lib/order/checkout-input"
+import {
+  notifyDemandeProAdmin,
+  notifyDemandeProClient,
+} from "@/lib/email/notifications"
+import {
+  prepareProfessionalBenneRequest,
+  type ProfessionalBenneRequestInput,
+} from "@/lib/order/pro-request"
 
 export type { OrderCheckoutInput }
 
@@ -112,4 +120,33 @@ export async function startOrderCheckout(
   }
 
   return { checkoutUrl: session.url }
+}
+
+export async function submitProfessionalBenneRequest(
+  input: ProfessionalBenneRequestInput
+): Promise<
+  | { error: string }
+  | { success: true; reference: string; clientEmailSent: boolean }
+> {
+  const prepared = await prepareProfessionalBenneRequest(input)
+  if ("error" in prepared) {
+    return prepared
+  }
+
+  const admin = await notifyDemandeProAdmin(prepared)
+  if (!admin.sent) {
+    return {
+      error:
+        admin.error === "Email non configuré."
+          ? "L'envoi d'e-mail n'est pas configuré sur cet environnement."
+          : "Impossible d'envoyer la demande pour le moment. Réessayez ou appelez-nous.",
+    }
+  }
+
+  const client = await notifyDemandeProClient(prepared)
+  return {
+    success: true,
+    reference: prepared.reference,
+    clientEmailSent: client.sent,
+  }
 }
