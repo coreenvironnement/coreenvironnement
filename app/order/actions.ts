@@ -38,6 +38,7 @@ export type OrderCheckoutInput = {
   pickupDate?: string
   contactEmail: string
   contactName?: string
+  contactPhone?: string
 }
 
 export type OrderCheckoutResult =
@@ -103,6 +104,12 @@ export async function startOrderCheckout(
     return { error: "Indiquez une adresse e-mail valide pour la confirmation." }
   }
 
+  const phone = input.contactPhone?.trim() ?? ""
+  const phoneDigits = phone.replace(/\D/g, "")
+  if (phoneDigits.length < 10) {
+    return { error: "Indiquez un numéro de téléphone valide." }
+  }
+
   const deptCode =
     (idfFromDept ? departementFromInput : null) ??
     (idfFromPostcode ? postcode.slice(0, 2) : null) ??
@@ -162,6 +169,7 @@ export async function startOrderCheckout(
       departement_code: deptCode,
       contact_email: email,
       contact_nom: input.contactName?.trim() || null,
+      contact_telephone: phone,
     })
     .select("id")
     .single()

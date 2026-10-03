@@ -126,6 +126,10 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
               {commande.contact_email ?? "—"}
             </p>
             <p>
+              <span className="text-muted-foreground">Téléphone :</span>{" "}
+              {commande.contact_telephone ?? "—"}
+            </p>
+            <p>
               <span className="text-muted-foreground">Adresse :</span>{" "}
               {commande.adresse_complete}
             </p>

@@ -983,6 +983,7 @@ export function OrderWidget({
                             pickupDate: pickupDate || undefined,
                             contactEmail: contactEmail.trim(),
                             contactName: contactName.trim() || undefined,
+                            contactPhone: contactPhone.trim() || undefined,
                           })
                           if ("error" in result) {
                             setPayError(result.error)
