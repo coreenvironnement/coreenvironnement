@@ -4,21 +4,15 @@ import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { createClient } from "@/lib/supabase/client"
 
 function safeNextPath(raw: string | null): string | null {
   if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return null
   return raw
 }
+
+const fieldClass =
+  "h-12 w-full rounded-[10px] border border-brand-border bg-white px-3.5 text-[15px] text-brand-text shadow-[var(--shadow-vitrine-soft)] outline-none transition-colors placeholder:text-brand-muted/70 focus-visible:border-brand-green focus-visible:ring-3 focus-visible:ring-brand-green/20"
 
 export function LoginForm() {
   const router = useRouter()
@@ -65,65 +59,60 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-md border-brand-navy/15 shadow-lg">
-      <CardHeader className="text-center">
-        <CardTitle className="text-brand-navy">Espace client</CardTitle>
-        <CardDescription>
-          Connectez-vous avec votre adresse e-mail et votre mot de passe.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium text-brand-navy">
-              E-mail
-            </label>
-            <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="vous@entreprise.fr"
-            />
-          </div>
-          <div className="space-y-2">
-            <label
-              htmlFor="password"
-              className="text-sm font-medium text-brand-navy"
-            >
-              Mot de passe
-            </label>
-            <Input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          {error ? (
-            <p className="text-sm text-destructive" role="alert">
-              {error}
-            </p>
-          ) : null}
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Connexion…" : "Se connecter"}
-          </Button>
-        </form>
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          Professionnel ?{" "}
-          <Link href="/pro" className="text-primary underline-offset-4 hover:underline">
-            Demande d&apos;accès (bientôt disponible)
-          </Link>
-          {" · "}
-          <Link href="/" className="text-primary underline-offset-4 hover:underline">
-            Accueil
-          </Link>
-        </p>
-      </CardContent>
-    </Card>
+    <div className="card-vitrine p-6 sm:p-8">
+      <h2 className="text-lg text-brand-navy">Connexion</h2>
+      <p className="mt-1.5 text-sm leading-relaxed text-brand-muted">
+        Accès réservé aux comptes déjà activés.
+      </p>
+      <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+        <div className="space-y-2">
+          <label htmlFor="email" className="text-sm font-medium text-brand-navy">
+            E-mail
+          </label>
+          <input
+            id="email"
+            type="email"
+            autoComplete="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="vous@entreprise.fr"
+            className={fieldClass}
+          />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="password" className="text-sm font-medium text-brand-navy">
+            Mot de passe
+          </label>
+          <input
+            id="password"
+            type="password"
+            autoComplete="current-password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={fieldClass}
+          />
+        </div>
+        {error ? (
+          <p className="text-sm text-red-600" role="alert">
+            {error}
+          </p>
+        ) : null}
+        <button type="submit" className="btn btn-accent w-full" disabled={loading}>
+          {loading ? "Connexion…" : "Se connecter"}
+        </button>
+      </form>
+      <p className="mt-6 text-center text-sm text-brand-muted">
+        Professionnel ?{" "}
+        <Link href="/pro" className="link-digital">
+          Demande d&apos;accès (bientôt disponible)
+        </Link>
+        {" · "}
+        <Link href="/" className="link-digital">
+          Accueil
+        </Link>
+      </p>
+    </div>
   )
 }

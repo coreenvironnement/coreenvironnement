@@ -9,6 +9,8 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isStandalone =
     pathname === "/" ||
+    pathname === "/login" ||
+    pathname === "/pro" ||
     pathname === "/maintenance" ||
     pathname.startsWith("/location-benne")
 

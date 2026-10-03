@@ -17,11 +17,11 @@ import { VITRINE_ICON_STROKE } from "./icons"
 import { VitrineLogo } from "./logo"
 
 const NAV_LINKS = [
-  { href: "#services", label: "Nos services" },
-  { href: "#engagements", label: "Nos engagements" },
-  { href: "#espace-client", label: "Espace client" },
-  { href: "#fonctionnement", label: "Comment ça fonctionne" },
-  { href: "#faq", label: "FAQ" },
+  { href: "/#services", label: "Nos services" },
+  { href: "/#engagements", label: "Nos engagements" },
+  { href: "/#espace-client", label: "Espace client" },
+  { href: "/#fonctionnement", label: "Comment ça fonctionne" },
+  { href: "/#faq", label: "FAQ" },
 ] as const
 
 const TRUST_INDICATORS = [
@@ -42,7 +42,7 @@ const SOCIAL_LINKS = [
     icon: YoutubeIcon,
   },
   {
-    href: "#engagements",
+    href: "/#engagements",
     label: "Nos engagements environnementaux",
     icon: Leaf01Icon,
   },

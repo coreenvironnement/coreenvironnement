@@ -18,11 +18,11 @@ import { VitrineLogo } from "./logo"
 import { useVitrineOrder } from "./order-context"
 
 const NAV_LINKS = [
-  { label: "Accueil", href: "#accueil" },
-  { label: "Services", href: "#services" },
-  { label: "Engagements", href: "#engagements" },
-  { label: "Fonctionnement", href: "#fonctionnement" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Accueil", href: "/#accueil" },
+  { label: "Services", href: "/#services" },
+  { label: "Engagements", href: "/#engagements" },
+  { label: "Fonctionnement", href: "/#fonctionnement" },
+  { label: "FAQ", href: "/#faq" },
 ] as const
 
 export function VitrineHeader() {
