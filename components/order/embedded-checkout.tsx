@@ -376,10 +376,39 @@ function CheckoutFields({
         </strong>
       </p>
 
+      <label
+        htmlFor="order-cgv-accept"
+        className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-brand-border/80 bg-white px-3 py-2.5 text-left text-[13px] leading-snug text-brand-navy"
+      >
+        <input
+          id="order-cgv-accept"
+          type="checkbox"
+          checked={cgvAccepted}
+          onChange={(e) => {
+            setCgvAccepted(e.target.checked)
+            if (e.target.checked) setError(null)
+          }}
+          className="mt-0.5 size-4 shrink-0 accent-[#2F9632]"
+        />
+        <span>
+          J’ai lu et j’accepte les{" "}
+          <a
+            href="/cgv"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-primary underline underline-offset-2 hover:text-brand-navy"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Conditions Générales de Vente
+          </a>
+        </span>
+      </label>
+
       <div
         className={cn(
           "order-express-checkout w-full",
-          !expressReady && "min-h-11",
+          cgvAccepted && !expressReady && "min-h-11",
+          !cgvAccepted && "hidden",
           expressReady && !showWallets && "hidden",
           expressReady && showWallets && "space-y-3"
         )}
@@ -387,20 +416,22 @@ function CheckoutFields({
         data-google-pay={walletAvailability.googlePay ? "available" : "unavailable"}
         data-express-ready={expressReady ? "true" : "false"}
       >
-        <ExpressCheckoutElement
-          options={{
-            paymentMethods: {
-              applePay: "auto",
-              googlePay: "auto",
-              link: "never",
-              paypal: "never",
-              amazonPay: "never",
-              klarna: "never",
-            },
-          }}
-          onReady={handleReady}
-          onConfirm={() => void confirm()}
-        />
+        {cgvAccepted ? (
+          <ExpressCheckoutElement
+            options={{
+              paymentMethods: {
+                applePay: "auto",
+                googlePay: "auto",
+                link: "never",
+                paypal: "never",
+                amazonPay: "never",
+                klarna: "never",
+              },
+            }}
+            onReady={handleReady}
+            onConfirm={() => void confirm()}
+          />
+        ) : null}
         {showWallets ? (
           <p className="text-center text-[11px] text-muted-foreground">ou payer par carte</p>
         ) : null}
@@ -429,34 +460,6 @@ function CheckoutFields({
       {error ? (
         <p className="text-center text-xs font-medium text-amber-800">{error}</p>
       ) : null}
-
-      <label
-        htmlFor="order-cgv-accept"
-        className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-brand-border/80 bg-white px-3 py-2.5 text-left text-[13px] leading-snug text-brand-navy"
-      >
-        <input
-          id="order-cgv-accept"
-          type="checkbox"
-          checked={cgvAccepted}
-          onChange={(e) => {
-            setCgvAccepted(e.target.checked)
-            if (e.target.checked) setError(null)
-          }}
-          className="mt-0.5 size-4 shrink-0 accent-[#2F9632]"
-        />
-        <span>
-          J’ai lu et j’accepte les{" "}
-          <a
-            href="/cgv"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold text-primary underline underline-offset-2 hover:text-brand-navy"
-            onClick={(e) => e.stopPropagation()}
-          >
-            Conditions Générales de Vente
-          </a>
-        </span>
-      </label>
 
       <div className="flex flex-col gap-2 pt-0.5 sm:flex-row sm:justify-between">
         <Button
