@@ -25,10 +25,11 @@ const NAV_LINKS = [
   { label: "FAQ", href: "/#faq" },
 ] as const
 
-export function VitrineHeader() {
+export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) {
   const { openOrder } = useVitrineOrder()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const solid = forceSolid || scrolled
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16)
@@ -57,14 +58,14 @@ export function VitrineHeader() {
       <header
         className={cn(
           "fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,border-color] duration-500 ease-out",
-          scrolled
+          solid
             ? "border-b border-brand-border bg-brand-bg/90 shadow-[var(--shadow-vitrine-soft)] backdrop-blur-xl"
             : "border-b border-transparent bg-transparent"
         )}
       >
         <div className="container-x flex h-[72px] items-center justify-between gap-5 lg:h-[84px]">
           <Link href="/#accueil" aria-label="CORE ENVIRONNEMENT — Accueil" className="shrink-0">
-            <VitrineLogo priority variant="header" transparent={!scrolled} />
+            <VitrineLogo priority variant="header" transparent={!solid} />
           </Link>
 
           <nav aria-label="Navigation principale" className="hidden items-center gap-7 xl:gap-8 lg:flex">
@@ -74,7 +75,7 @@ export function VitrineHeader() {
                 href={link.href}
                 className={cn(
                   "group relative text-[15px] font-medium transition-colors duration-300 font-[family-name:var(--font-body)]",
-                  scrolled
+                  solid
                     ? "text-brand-muted hover:text-brand-navy"
                     : "text-white/90 hover:text-white"
                 )}
@@ -83,7 +84,7 @@ export function VitrineHeader() {
                 <span
                   className={cn(
                     "absolute -bottom-[7px] left-0 h-px w-full origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100",
-                    scrolled ? "bg-brand-navy" : "bg-white"
+                    solid ? "bg-brand-navy" : "bg-white"
                   )}
                 />
               </a>
@@ -95,7 +96,7 @@ export function VitrineHeader() {
               href="/dashboard"
               className={cn(
                 "btn btn-sm",
-                scrolled ? "btn-ghost-sky" : "btn-ghost-light"
+                solid ? "btn-ghost-sky" : "btn-ghost-light"
               )}
             >
               <HugeiconsIcon icon={UserIcon} size={16} strokeWidth={VITRINE_ICON_STROKE} />
@@ -128,7 +129,7 @@ export function VitrineHeader() {
               aria-expanded={menuOpen}
               className={cn(
                 "inline-flex h-10 w-10 items-center justify-center rounded-[10px] border transition-colors duration-500",
-                scrolled
+                solid
                   ? "border-brand-border bg-brand-bg text-brand-navy hover:bg-brand-bg-alt"
                   : "border-white/20 bg-white/[0.06] text-white backdrop-blur-md hover:bg-white/[0.12]"
               )}

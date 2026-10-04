@@ -3,10 +3,14 @@
 import { usePathname } from "next/navigation"
 
 import { SiteHeader } from "@/components/site-header"
+import { VitrineHeader } from "@/components/vitrine/vitrine-header"
+import { VitrineOrderProvider } from "@/components/vitrine/order-context"
+import { VitrineOrderModal } from "@/components/vitrine/order-modal"
 import { cn } from "@/lib/utils"
 
 export function LayoutChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const isDashboard = pathname.startsWith("/dashboard")
   const isStandalone =
     pathname === "/" ||
     pathname === "/login" ||
@@ -16,6 +20,18 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
 
   if (isStandalone) {
     return <>{children}</>
+  }
+
+  if (isDashboard) {
+    return (
+      <VitrineOrderProvider>
+        <div className="vitrine-root min-h-screen bg-brand-bg-alt">
+          <VitrineHeader forceSolid />
+          <main className="pt-[72px] lg:pt-[84px]">{children}</main>
+          <VitrineOrderModal />
+        </div>
+      </VitrineOrderProvider>
+    )
   }
 
   return (
