@@ -2,13 +2,17 @@ import type { Metadata } from "next"
 
 import { VitrineJsonLd } from "@/components/seo/vitrine-json-ld"
 import { VitrineHome } from "@/components/vitrine/vitrine-home"
-import { DEFAULT_VARIANT } from "@/lib/seo/landing-variants"
-import { withBrandTitle } from "@/lib/seo/page-title"
 import {
   getShareOpenGraphImages,
   getShareTwitterImages,
 } from "@/lib/seo/share-metadata"
 import { getSiteUrl } from "@/lib/seo/site-url"
+
+/** Métadonnées document homepage uniquement (H1 / contenu visuel inchangés). */
+const HOME_PAGE_DOCUMENT_TITLE =
+  "Location de benne en Île-de-France | Prix clair & commande simple"
+const HOME_PAGE_META_DESCRIPTION =
+  "Louez votre benne simplement en Île-de-France. Choisissez votre besoin, votre volume et votre date, puis consultez le total TTC avant paiement. Suivi par e-mail et téléphone."
 
 type PageProps = {
   searchParams: Promise<{ order?: string; intent?: string }>
@@ -16,17 +20,16 @@ type PageProps = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteUrl = getSiteUrl()
-  const pageTitle = withBrandTitle(DEFAULT_VARIANT.title)
 
   return {
-    title: { absolute: pageTitle },
-    description: DEFAULT_VARIANT.description,
+    title: { absolute: HOME_PAGE_DOCUMENT_TITLE },
+    description: HOME_PAGE_META_DESCRIPTION,
     alternates: {
       canonical: siteUrl,
     },
     openGraph: {
-      title: pageTitle,
-      description: DEFAULT_VARIANT.description,
+      title: HOME_PAGE_DOCUMENT_TITLE,
+      description: HOME_PAGE_META_DESCRIPTION,
       url: siteUrl,
       siteName: "CORE ENVIRONNEMENT",
       locale: "fr_FR",
@@ -35,8 +38,8 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: pageTitle,
-      description: DEFAULT_VARIANT.description,
+      title: HOME_PAGE_DOCUMENT_TITLE,
+      description: HOME_PAGE_META_DESCRIPTION,
       images: getShareTwitterImages(),
     },
     robots: {
