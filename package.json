@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "prebuild": "npm test && npm run test:city-guide",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "test": "npx --yes tsx scripts/test-local-seo.ts",
+    "test:city-guide": "npx --yes tsx scripts/test-city-guide.ts",
     "deploy": "vercel deploy --prod",
     "deploy:preview": "vercel deploy",
     "stripe": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1",

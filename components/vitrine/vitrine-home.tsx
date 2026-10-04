@@ -22,6 +22,7 @@ import type { LocalPage } from "@/lib/seo/local-copy"
 import { localPageToSeoVariant } from "@/lib/seo/local-pages"
 
 import { VitrineHero } from "./vitrine-hero"
+import { VitrineCityGuide } from "./vitrine-city-guide"
 import { VitrineLocalSeo } from "./vitrine-local-seo"
 
 function OrderBanner({ orderParam }: { orderParam?: string }) {
@@ -60,9 +61,11 @@ function OrderBanner({ orderParam }: { orderParam?: string }) {
 function VitrineHomeInner({
   orderParam,
   seoVariant,
+  localSeoData,
 }: {
   orderParam?: string
   seoVariant: SeoVariant
+  localSeoData?: LocalPage
 }) {
   return (
     <div className="vitrine-root min-h-screen">
@@ -85,6 +88,7 @@ function VitrineHomeInner({
         <VitrineCompteProTeaser />
         <TestimonialsSection vitrine />
         <VitrineFaq />
+        {localSeoData?.type === "ville" ? <VitrineCityGuide page={localSeoData} /> : null}
         <VitrineLocalSeo seoVariant={seoVariant} />
         <VitrineFinalCta />
       </main>
@@ -110,7 +114,11 @@ export function VitrineHome({
 
   return (
     <VitrineOrderProvider>
-      <VitrineHomeInner orderParam={orderParam} seoVariant={variant} />
+      <VitrineHomeInner
+        orderParam={orderParam}
+        seoVariant={variant}
+        localSeoData={localSeoData}
+      />
     </VitrineOrderProvider>
   )
 }
