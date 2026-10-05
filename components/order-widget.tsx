@@ -925,6 +925,15 @@ export function OrderWidget({
                       }}
                       className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
                     />
+                    {pickupDate ? (
+                      <button
+                        type="button"
+                        onClick={() => setPickupDate("")}
+                        className="ml-auto block rounded-md px-1 py-0.5 text-[11px] font-medium text-brand-muted underline-offset-2 transition-colors hover:text-brand-navy hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                      >
+                        Supprimer la date
+                      </button>
+                    ) : null}
                   </div>
                 </div>
               </div>
