@@ -96,7 +96,7 @@ function buildWebSiteSchema(siteUrl: string) {
     url: siteUrl,
     name: "CORE ENVIRONNEMENT",
     description:
-      "Location de bennes en Île-de-France avec commande en ligne et suivi digital.",
+      "Location de bennes en Île-de-France. Commande en ligne, confirmation par e-mail et rappel pour la pose.",
     inLanguage: "fr-FR",
   }
 }

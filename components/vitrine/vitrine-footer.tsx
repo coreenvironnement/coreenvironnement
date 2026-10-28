@@ -60,7 +60,7 @@ export function VitrineFooter() {
           <div className="vitrine-footer__brand">
             <VitrineLogo variant="footer" />
             <p className="vitrine-footer__tagline">
-              Location de bennes et suivi digital des déchets en Île-de-France.
+              Location de bennes en Île-de-France. Commande en ligne, confirmation par e-mail.
             </p>
             <a href={SITE_PHONE_HREF} className="vitrine-footer__phone">
               <HugeiconsIcon icon={Call02Icon} size={16} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />

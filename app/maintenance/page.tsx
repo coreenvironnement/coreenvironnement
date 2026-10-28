@@ -39,7 +39,7 @@ export default function MaintenancePage() {
 
         <div className="mt-10 w-full rounded-[1rem] border border-white/12 bg-white/[0.06] px-5 py-4 backdrop-blur-sm">
           <p className="text-sm leading-relaxed text-white/75">
-            Intervention sous 24 h · Commande en ligne · Suivi digital
+            Intervention sous 24 h · Commande en ligne · E-mail de confirmation
           </p>
         </div>
 

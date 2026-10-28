@@ -23,10 +23,9 @@ const STEP_META = [
 
 const EMPHASIS_PHRASES = [
   "intervention rapide sur vos chantiers en Île-de-France",
-  "espace client digital",
-  "l'avancée de la prestation",
-  "bons d'intervention",
-  "bons de pesée",
+  "e-mail de confirmation",
+  "vous rappelle pour caler la pose",
+  "documents de traçabilité",
   "Bordereaux de Suivi de Déchets (BSD)",
   "couvert vis-à-vis des contrôles",
   "plus de 90 % des déchets collectés",
@@ -134,7 +133,7 @@ function EngagementStep({
   mobileReveal: boolean
 }) {
   const step = STEP_META[index]
-  const isDigital = item.titre.toLowerCase().includes("suivi digital")
+  const isDigital = item.titre.toLowerCase().includes("suivi de la commande")
   const { ref, shown } = useStepReveal(reduced, mobileReveal)
 
   return (

@@ -23,12 +23,12 @@ const checks: Array<[string, boolean]> = [
   ["title meaux", buildLocalTitle(meaux) === "Location de benne à Meaux (77)"],
   [
     "h1 meaux",
-    buildLocalH1(meaux) === "Location de benne à Meaux : intervention 24h & suivi digital",
+    buildLocalH1(meaux) === "Location de benne à Meaux : intervention 24h & commande en ligne",
   ],
   [
     "desc meaux",
     buildLocalDescription(meaux) ===
-      "Location de bennes à Meaux et la Seine-et-Marne. Commande en 3 minutes, intervention sous 24 h, suivi digital et traçabilité de vos déchets.",
+      "Location de bennes à Meaux et la Seine-et-Marne. Commande en 3 minutes, intervention sous 24 h, confirmation par e-mail et rappel pour la pose.",
   ],
   ["intro homepage", DEFAULT_VARIANT.intro.length > 0],
 ]

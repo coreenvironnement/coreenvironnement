@@ -52,7 +52,7 @@ export function VitrineCompteProTeaser() {
             {comptePro.description}
           </p>
           <p className="mt-3 text-sm font-medium text-white/90">
-            Abonnement {comptePro.abonnement}
+            Abonnement prévu : {comptePro.abonnement}, pas encore ouvert.
           </p>
         </div>
         <div className="rounded-[var(--radius-card)] border border-white/10 bg-white/[0.05] p-6">

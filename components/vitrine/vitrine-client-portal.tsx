@@ -23,6 +23,7 @@ import {
 } from "@hugeicons/core-free-icons"
 
 import { espaceClientVitrine } from "@/lib/cdc/contenu-vitrine"
+import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 import { VITRINE_ICON_STROKE } from "./icons"
@@ -213,6 +214,9 @@ function DashboardMock({ reduced }: { reduced: boolean }) {
           <span aria-hidden className="h-3.5 w-px bg-brand-border" />
           <span className="truncate font-[family-name:var(--font-body)] text-[11.5px] font-medium text-brand-muted">
             Espace client
+          </span>
+          <span className="rounded-full border border-brand-border bg-white px-2 py-0.5 font-[family-name:var(--font-body)] text-[10px] font-semibold uppercase tracking-[0.08em] text-brand-muted">
+            Aperçu
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-2">
@@ -637,9 +641,9 @@ export function VitrineClientPortal() {
                   className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                 />
               </Link>
-              <Link href="/login" className="btn btn-ghost-light">
-                {content.ctaSecondary}
-              </Link>
+              <a href={SITE_PHONE_HREF} className="btn btn-ghost-light">
+                {SITE_PHONE_DISPLAY}
+              </a>
             </div>
 
             <p className="mt-5 flex items-center gap-2 font-[family-name:var(--font-body)] text-[12px] text-white/45">
@@ -666,10 +670,10 @@ export function VitrineClientPortal() {
               </span>
               <span>
                 <span className="block font-[family-name:var(--font-display)] text-[12.5px] font-semibold tracking-[-0.01em] text-brand-text">
-                  Intervention réalisée
+                  Commande confirmée
                 </span>
                 <span className="block font-[family-name:var(--font-body)] text-[11px] text-brand-muted">
-                  Bon de pesée disponible
+                  E-mail envoyé, rappel à suivre
                 </span>
               </span>
             </div>

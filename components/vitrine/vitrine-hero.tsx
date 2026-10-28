@@ -93,9 +93,15 @@ export function VitrineHero({ seoVariant }: VitrineHeroProps) {
               aria-label={`Appeler Core Environnement au ${SITE_PHONE_DISPLAY}`}
               className="btn btn-ghost-light w-full border-white/45 text-white sm:w-auto hover:border-white/60"
             >
-              Parler à un spécialiste
+              {SITE_PHONE_DISPLAY}
             </a>
           </div>
+          <p
+            className="animate-fade-up mt-4 text-[15px] font-semibold leading-snug text-white [text-shadow:0_1px_22px_rgba(24,53,116,0.22)] sm:text-base"
+            style={{ animationDelay: "360ms" }}
+          >
+            Dès 330 € pour une benne 8 m³, soit 396 € TTC.
+          </p>
         </div>
       </div>
     </section>

@@ -5,11 +5,13 @@ import { useEffect, useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   ArrowUpRight01Icon,
+  Call02Icon,
   Cancel01Icon,
   Menu01Icon,
   UserIcon,
 } from "@hugeicons/core-free-icons"
 
+import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 import { BenneIcon } from "./benne-icon"
@@ -92,6 +94,15 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
           </nav>
 
           <div className="hidden items-center gap-3 lg:flex">
+            <a
+              href={SITE_PHONE_HREF}
+              className={cn(
+                "text-[15px] font-semibold tabular-nums tracking-tight transition-colors",
+                solid ? "text-brand-navy hover:text-brand-green" : "text-white hover:text-white/80"
+              )}
+            >
+              {SITE_PHONE_DISPLAY}
+            </a>
             <Link
               href="/dashboard"
               className={cn(
@@ -113,6 +124,18 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
           </div>
 
           <div className="flex items-center gap-2 lg:hidden">
+            <a
+              href={SITE_PHONE_HREF}
+              aria-label={`Appeler le ${SITE_PHONE_DISPLAY}`}
+              className={cn(
+                "inline-flex h-10 w-10 items-center justify-center rounded-[10px] border transition-colors duration-500",
+                solid
+                  ? "border-brand-border bg-brand-bg text-brand-navy"
+                  : "border-white/20 bg-white/[0.06] text-white backdrop-blur-md"
+              )}
+            >
+              <HugeiconsIcon icon={Call02Icon} size={18} strokeWidth={VITRINE_ICON_STROKE} />
+            </a>
             <button
               type="button"
               onClick={handleOrder}
@@ -191,6 +214,9 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
             ))}
           </nav>
           <div className="container-x space-y-2.5 pb-10 pt-6">
+            <a href={SITE_PHONE_HREF} className="btn btn-ghost-light w-full">
+              {SITE_PHONE_DISPLAY}
+            </a>
             <button type="button" onClick={handleOrder} className="btn btn-accent w-full">
               Commander une benne
             </button>

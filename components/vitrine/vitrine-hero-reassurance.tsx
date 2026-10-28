@@ -20,8 +20,8 @@ const REASSURANCE = [
   },
   {
     icon: Timer01Icon,
-    label: "Suivi 100 % digital",
-    description: "Gérez vos flux en direct depuis votre smartphone",
+    label: "Confirmation par e-mail",
+    description: "Puis un rappel pour caler la pose et l'enlèvement",
   },
   {
     icon: MapPinIcon,

@@ -23,11 +23,11 @@ export const DEFAULT_VARIANT: SeoVariant = {
   intent: "default",
   title: "Location de benne en Île-de-France",
   description:
-    "Location de bennes en Île-de-France. Commande en 3 minutes, intervention sous 24 h, suivi digital et traçabilité de vos déchets.",
-  h1Line1: "Location de benne en Île-de-France : intervention 24h & suivi digital",
+    "Location de bennes en Île-de-France. Commande en 3 minutes, intervention sous 24 h, confirmation par e-mail et rappel pour la pose.",
+  h1Line1: "Location de benne en Île-de-France : intervention 24h & commande en ligne",
   h1Line2: "",
   intro:
-    "La solution clé en main pour le BTP, les artisans et les industriels. Commandez vos rotations de bennes, suivez vos flux de déchets et téléchargez vos bordereaux en quelques clics.",
+    "Commandez votre benne en ligne. Le prix s'affiche avant le paiement. Vous recevez un e-mail de confirmation, puis un rappel pour caler la pose.",
   chipLabel: "Gestion des déchets · Île-de-France",
 }
 

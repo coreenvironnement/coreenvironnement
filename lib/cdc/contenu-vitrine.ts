@@ -7,7 +7,7 @@ export const hero = {
   titre1Ligne1: "Location de Benne en Île-de-France :",
   titre1Ligne2: "Intervention 24h & Suivi Digital",
   titre2:
-    "CORE ENVIRONNEMENT : Partenaire de vos chantiers. Traçabilité et suivi digital de la première dépose jusqu'au recyclage de vos déchets sur toute l'Île-de-France.",
+    "Commandez votre benne en ligne. Le prix s'affiche avant le paiement, puis un e-mail confirme la demande et un rappel cale la pose.",
   cta: "Commander une benne",
   imageAlt:
     "Camion transportant une benne avec Paris et la Tour Eiffel en arrière-plan",
@@ -22,7 +22,7 @@ export const services = [
   {
     titre: "Location de benne déchets non dangereux",
     accroche:
-      "Mise à disposition, enlèvement et suivi digital — un interlocuteur unique, de la première dépose au recyclage.",
+      "Mise à disposition et enlèvement, avec un interlocuteur unique de la première dépose jusqu'au traitement.",
     points: [
       "de 8 m³ à 30 m³",
       "DIB, Gravats, Bois, Végétaux, Plâtres etc.",
@@ -71,9 +71,9 @@ export const engagements = [
       "Une rotation à planifier ou une benne pleine à évacuer en urgence ? Notre service logistique assure une intervention rapide sur vos chantiers en Île-de-France. Pour toute commande passée avant midi, un chauffeur intervient dès le lendemain (hors week-ends et jours fériés) pour garantir la continuité de vos travaux.",
   },
   {
-    titre: "Transparence et Suivi digital",
+    titre: "Transparence et suivi de la commande",
     texte:
-      "Fini les appels inutiles pour le suivi de vos collectes. Grâce à votre espace client digital, pilotez votre gestion des déchets 24h/24 : suivez l'avancée de la prestation en temps réel et téléchargez instantanément vos bons d'intervention ainsi que vos bons de pesée certifiés. Une traçabilité numérique totale pour une logistique sans faille.",
+      "Après la commande, vous recevez un e-mail de confirmation. Un membre de l'équipe vous rappelle pour caler la pose et reste votre interlocuteur jusqu'à l'enlèvement. Les documents de traçabilité sont transmis lorsqu'ils sont disponibles.",
   },
   {
     titre: "Conformité et traçabilité",
@@ -198,7 +198,7 @@ export const faq = [
       },
       {
         q: "Fournissez-vous des documents de traçabilité ?",
-        r: "Oui. Tous les documents réglementaires (BSD, bons de pesée, bons d'intervention) sont fournis. Pour les clients PRO, ils sont disponibles 24h/24 en libre-service via votre espace client digital.",
+        r: "Oui. Les documents réglementaires (BSD, bons de pesée, bons d'intervention) sont transmis par l'équipe lorsqu'ils sont disponibles. Le téléchargement en libre-service n'est pas encore ouvert.",
       },
     ],
   },
@@ -284,7 +284,7 @@ export const faq = [
       },
       {
         q: "Pouvez-vous gérer plusieurs chantiers simultanément ?",
-        r: "Absolument. Votre espace client pro vous permet de piloter plusieurs chantiers en parallèle avec une facturation distincte par chantier ou par code affaire.",
+        r: "Oui. Un interlocuteur peut suivre plusieurs adresses. L'espace en ligne pour les piloter soi-même n'est pas encore ouvert.",
       },
     ],
   },
@@ -314,7 +314,7 @@ export const finalCta = {
   ctaSecondary: "Nous contacter",
   reassurance: [
     "Intervention sous 24h*",
-    "Suivi digital",
+    "E-mail de confirmation",
     "Traçabilité",
     "Toute l'Île-de-France",
   ],
@@ -324,17 +324,17 @@ export const finalCta = {
 } as const
 
 export const espaceClientVitrine = {
-  eyebrow: "Espace client",
-  titre: "Pilotez vos déchets.",
-  titreSuite: "Pas vos relances.",
+  eyebrow: "Bientôt disponible",
+  titre: "Le suivi en ligne arrive.",
+  titreSuite: "Aujourd'hui, on vous rappelle.",
   description:
-    "Suivez vos prestations, centralisez vos documents et consultez la traçabilité de vos déchets depuis un espace client disponible 24h/24.",
+    "La commande est confirmée par e-mail. Un membre de l'équipe cale la pose avec vous. L'espace pour consulter les interventions et les documents n'est pas encore ouvert.",
   benefits: [
-    "Suivi des interventions",
-    "Documents centralisés",
-    "Reporting chantier",
+    "E-mail de confirmation",
+    "Rappel pour la pose",
+    "Documents transmis par l'équipe",
   ],
-  reassurance: "Accès réservé aux clients CORE ENVIRONNEMENT",
-  ctaPrimary: "Accéder à l'espace client",
-  ctaSecondary: "Se connecter",
+  reassurance: "L'aperçu à droite est illustratif. L'accès client n'est pas ouvert.",
+  ctaPrimary: "Espace client — bientôt disponible",
+  ctaSecondary: "Appeler",
 } as const

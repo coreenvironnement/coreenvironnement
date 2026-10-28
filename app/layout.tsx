@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     template: "%s | CORE ENVIRONNEMENT",
   },
   description:
-    "Location de bennes en Île-de-France. Commande en 3 minutes, intervention sous 24 h, suivi digital et traçabilité de vos déchets.",
+    "Location de bennes en Île-de-France. Commande en 3 minutes, intervention sous 24 h, confirmation par e-mail et rappel pour la pose.",
   keywords: [
     "location benne",
     "benne Île-de-France",

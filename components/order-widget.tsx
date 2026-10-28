@@ -787,7 +787,9 @@ export function OrderWidget({
               <div>
                 <p className={ORDER_SECTION_LABEL}>Choisissez votre forfait</p>
                 <p className="mt-1 text-xs leading-snug text-muted-foreground">
-                  Prix H.T. Détail des déchets acceptés par forfait.
+                  {audience === "particulier"
+                    ? "Prix TTC, celui qui sera payé. Le détail HT et la TVA s'affichent au récapitulatif."
+                    : "Prix H.T. Détail des déchets acceptés par forfait."}
                 </p>
               </div>
 
@@ -813,6 +815,7 @@ export function OrderWidget({
                     onSelect={() => setSelectedPrestationId(p.id)}
                     delay={prefersReducedMotion ? 0 : i * 0.04}
                     t={t}
+                    showTtc={audience === "particulier"}
                   />
                 ))}
               </div>
@@ -1319,14 +1322,18 @@ function PrestationCard({
   onSelect,
   delay,
   t,
+  showTtc,
 }: {
   prestation: Prestation
   selected: boolean
   onSelect: () => void
   delay: number
   t: { duration: number; ease?: readonly [number, number, number, number] }
+  showTtc: boolean
 }) {
   const visualSrc = BENNE_VISUAL_BY_VOLUME[prestation.volumeM3]
+  const price = priceBreakdownFromHt(prestation.priceHt)
+  const surcharge = priceBreakdownFromHt(prestation.surchargePerTonHt)
 
   return (
     <motion.div
@@ -1372,7 +1379,7 @@ function PrestationCard({
         </p>
         <p className="mt-1 line-clamp-2 text-[11px] leading-snug text-muted-foreground sm:text-xs">
           Jusqu’à {prestation.tonnageMax} t inclus, dépassement{" "}
-          {fmtHt(prestation.surchargePerTonHt)}/t.
+          {fmtHt(showTtc ? surcharge.ttc : surcharge.ht)}/t {showTtc ? "TTC" : "HT"}.
         </p>
         <Dialog>
           <DialogTrigger
@@ -1418,8 +1425,13 @@ function PrestationCard({
         </Dialog>
       </div>
 
-      <span className="w-[4.75rem] shrink-0 self-center text-right text-[15px] font-bold tabular-nums text-primary sm:w-[5.5rem] sm:text-lg">
-        {fmtHt(prestation.priceHt)}
+      <span className="w-[5.25rem] shrink-0 self-center text-right sm:w-[5.75rem]">
+        <span className="block text-[15px] font-bold tabular-nums text-primary sm:text-lg">
+          {fmtHt(showTtc ? price.ttc : price.ht)}
+        </span>
+        <span className="block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+          {showTtc ? "TTC" : "HT"}
+        </span>
       </span>
     </motion.div>
   )

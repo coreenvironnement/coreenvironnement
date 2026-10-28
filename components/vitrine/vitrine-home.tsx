@@ -82,6 +82,9 @@ function VitrineHomeInner({
 
       <main id="contenu">
         <VitrineHero seoVariant={seoVariant} />
+        {localSeoData?.type === "departement" ? (
+          <VitrineDepartmentGuide page={localSeoData} />
+        ) : null}
         <VitrineServices />
         <VitrineEngagements />
         <VitrineHowItWorks />
@@ -90,9 +93,6 @@ function VitrineHomeInner({
         <TestimonialsSection vitrine />
         <VitrineFaq />
         {localSeoData?.type === "ville" ? <VitrineCityGuide page={localSeoData} /> : null}
-        {localSeoData?.type === "departement" ? (
-          <VitrineDepartmentGuide page={localSeoData} />
-        ) : null}
         <VitrineLocalSeo seoVariant={seoVariant} />
         <VitrineFinalCta />
       </main>

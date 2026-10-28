@@ -39,8 +39,8 @@ export function VitrineLocalSeo({ seoVariant }: VitrineLocalSeoProps) {
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-brand-muted sm:text-base">
               CORE ENVIRONNEMENT livre des bennes dans les communes ci-dessous et
-              leurs environs. Même service : commande en ligne, intervention sous 24 h
-              et suivi digital.
+              leurs environs. Même service : commande en ligne, intervention sous 24 h,
+              e-mail de confirmation et rappel pour la pose.
             </p>
             <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {seoVariant.relatedCityLinks!.map(({ href, label }) => (
