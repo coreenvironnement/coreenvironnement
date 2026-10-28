@@ -18,11 +18,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: `${base}/mentions-legales`,
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-    {
       url: `${base}/politique-confidentialite`,
       changeFrequency: "yearly",
       priority: 0.3,

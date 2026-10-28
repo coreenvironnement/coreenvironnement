@@ -4,11 +4,14 @@ import { LegalPageShell } from "@/components/legal-page"
 import { mentionsLegalesSections } from "@/lib/legal"
 import { publicPageMetadata } from "@/lib/seo/public-page"
 
-export const metadata: Metadata = publicPageMetadata(
-  "Mentions légales",
-  "Mentions légales du site CORE ENVIRONNEMENT.",
-  "/mentions-legales",
-)
+export const metadata: Metadata = {
+  ...publicPageMetadata(
+    "Mentions légales",
+    "Mentions légales du site CORE ENVIRONNEMENT.",
+    "/mentions-legales",
+  ),
+  robots: { index: false, follow: false },
+}
 
 export default function MentionsLegalesPage() {
   return (
