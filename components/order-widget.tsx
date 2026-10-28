@@ -15,10 +15,8 @@ import {
   Headphones,
   Info,
   Loader2,
-  MapPin,
   MapPinOff,
   Recycle,
-  User,
 } from "lucide-react"
 
 import {
@@ -605,14 +603,7 @@ export function OrderWidget({
                     : "space-y-4"
                 )}
               >
-                <div className="flex gap-3 sm:gap-3.5">
-                  <span
-                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/70 text-brand-navy/35"
-                    aria-hidden
-                  >
-                    <MapPin className="size-4" />
-                  </span>
-                  <div className="min-w-0 flex-1 space-y-2.5">
+                <div className="space-y-2.5">
                     <p className={ORDER_SECTION_LABEL}>Où livrer votre benne&nbsp;?</p>
                     <div className="space-y-2">
                       <label htmlFor="order-address" className="sr-only">
@@ -639,7 +630,6 @@ export function OrderWidget({
                         </span>
                       </p>
                     </div>
-                  </div>
                 </div>
 
                 <AnimatePresence>
@@ -661,14 +651,7 @@ export function OrderWidget({
                   )}
                 </AnimatePresence>
 
-                <div className="relative z-30 flex gap-3 sm:gap-3.5">
-                  <span
-                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/70 text-brand-navy/35"
-                    aria-hidden
-                  >
-                    <Recycle className="size-4" />
-                  </span>
-                  <div className="min-w-0 flex-1 space-y-2.5">
+                <div className="relative z-30 space-y-2.5">
                     <p className={ORDER_SECTION_LABEL}>Type de déchet</p>
                     <div className="relative space-y-0">
                       <label htmlFor="order-waste-family" className="sr-only">
@@ -736,24 +719,13 @@ export function OrderWidget({
                         </Select>
                       </div>
                     </div>
-                  </div>
                 </div>
 
-                <div className="flex gap-3 sm:gap-3.5">
-                  <span
-                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/70 text-brand-navy/35"
-                    aria-hidden
-                  >
-                    <User className="size-4" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <AudienceToggle
-                      audience={audience}
-                      onChange={setAudience}
-                      subdued={embedded}
-                    />
-                  </div>
-                </div>
+                <AudienceToggle
+                  audience={audience}
+                  onChange={setAudience}
+                  subdued={embedded}
+                />
 
                 {addressError && (
                   <p className="text-center text-xs font-medium text-amber-800">
