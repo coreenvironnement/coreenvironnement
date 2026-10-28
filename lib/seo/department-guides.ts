@@ -20,13 +20,13 @@ export type DepartmentGuideCopy = {
 }
 
 const FROM_PRICE =
-  "Dès 330 € pour une benne 8 m³ gravats propres, 396 € TTC à payer. Prix affiché avant paiement, avec le suivi de votre livraison."
+  "Dès 330 € pour une benne 8 m³ gravats propres. Prix affiché avant paiement, avec le suivi de votre livraison."
 
 const GUIDES: Record<DepartmentGuideSlug, DepartmentGuideCopy> = {
   "92-hauts-de-seine": {
     title: "Location de benne 92 dès 330 €",
     description: `${FROM_PRICE} Hauts-de-Seine : Nanterre, Boulogne-Billancourt et les communes desservies.`,
-    lead: "Pour des travaux, une rénovation ou un débarras à Nanterre, Boulogne-Billancourt ou ailleurs dans le 92 : dès 330 € pour une benne 8 m³ gravats propres, 396 € TTC à payer. Vous voyez le prix avant de payer, puis vous suivez la livraison.",
+    lead: "Pour des travaux, une rénovation ou un débarras à Nanterre, Boulogne-Billancourt ou ailleurs dans le 92 : dès 330 € pour une benne 8 m³ gravats propres. Vous voyez le prix avant de payer, puis vous suivez la livraison.",
     tarif:
       "Le forfait le moins cher du catalogue est la benne 8 m³ gravats propres : dès 330 €, soit 396 € TTC. Les autres volumes et déchets sont plus élevés. Le récapitulatif détaille le montant avant paiement.",
     particuliers:
@@ -36,7 +36,7 @@ const GUIDES: Record<DepartmentGuideSlug, DepartmentGuideCopy> = {
   "78-yvelines": {
     title: "Location de benne 78 dès 330 €",
     description: `${FROM_PRICE} Yvelines : Versailles, Sartrouville, Poissy, Mantes-la-Jolie.`,
-    lead: "Location de benne en Yvelines, dès 330 € pour une benne 8 m³ gravats propres, 396 € TTC à payer. Versailles, Sartrouville, Poissy, Mantes-la-Jolie : le prix est visible avant paiement, et la livraison est suivie.",
+    lead: "Location de benne en Yvelines, dès 330 € pour une benne 8 m³ gravats propres. Versailles, Sartrouville, Poissy, Mantes-la-Jolie : le prix est visible avant paiement, et la livraison est suivie.",
     tarif:
       "Le forfait le moins cher du catalogue est la benne 8 m³ gravats propres : dès 330 €, soit 396 € TTC. Le récapitulatif montre le montant du forfait choisi. Il n’existe pas un seul prix pour tout le 78.",
     particuliers:
@@ -46,7 +46,7 @@ const GUIDES: Record<DepartmentGuideSlug, DepartmentGuideCopy> = {
   "93-seine-saint-denis": {
     title: "Location de benne 93 dès 330 €",
     description: `${FROM_PRICE} Seine-Saint-Denis : Saint-Denis, Montreuil, Aubervilliers.`,
-    lead: "Saint-Denis, Montreuil, Aubervilliers et le reste du 93 : dès 330 € pour une benne 8 m³ gravats propres, 396 € TTC à payer. Même catalogue, prix visible avant paiement, suivi de la livraison.",
+    lead: "Saint-Denis, Montreuil, Aubervilliers et le reste du 93 : dès 330 € pour une benne 8 m³ gravats propres. Même catalogue, prix visible avant paiement, suivi de la livraison.",
     tarif:
       "Le forfait le moins cher du catalogue est la benne 8 m³ gravats propres : dès 330 €, soit 396 € TTC. Le prix suit le volume et le type de déchets.",
     particuliers:
