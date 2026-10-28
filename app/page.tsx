@@ -10,9 +10,9 @@ import { getSiteUrl } from "@/lib/seo/site-url"
 
 /** Métadonnées document homepage uniquement (H1 / contenu visuel inchangés). */
 const HOME_PAGE_DOCUMENT_TITLE =
-  "Location de benne en Île-de-France | Prix clair & commande simple"
+  "Location de benne en Île-de-France dès 330 € | CORE ENVIRONNEMENT"
 const HOME_PAGE_META_DESCRIPTION =
-  "Louez votre benne simplement en Île-de-France. Choisissez votre besoin, votre volume et votre date, puis consultez le total TTC avant paiement. Suivi par e-mail et téléphone."
+  "Dès 330 € pour une benne 8 m³ gravats propres. Prix affiché avant paiement, avec le suivi de votre livraison en Île-de-France."
 
 type PageProps = {
   searchParams: Promise<{ order?: string; intent?: string }>
