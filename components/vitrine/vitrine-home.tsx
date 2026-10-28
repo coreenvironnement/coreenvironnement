@@ -23,6 +23,7 @@ import { localPageToSeoVariant } from "@/lib/seo/local-pages"
 
 import { VitrineHero } from "./vitrine-hero"
 import { VitrineCityGuide } from "./vitrine-city-guide"
+import { VitrineDepartmentGuide } from "./vitrine-department-guide"
 import { VitrineLocalSeo } from "./vitrine-local-seo"
 
 function OrderBanner({ orderParam }: { orderParam?: string }) {
@@ -89,6 +90,9 @@ function VitrineHomeInner({
         <TestimonialsSection vitrine />
         <VitrineFaq />
         {localSeoData?.type === "ville" ? <VitrineCityGuide page={localSeoData} /> : null}
+        {localSeoData?.type === "departement" ? (
+          <VitrineDepartmentGuide page={localSeoData} />
+        ) : null}
         <VitrineLocalSeo seoVariant={seoVariant} />
         <VitrineFinalCta />
       </main>
