@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Cancel01Icon, TruckIcon } from "@hugeicons/core-free-icons"
+import { Cancel01Icon } from "@hugeicons/core-free-icons"
 
 import { OrderWidget } from "@/components/order-widget"
 import { cn } from "@/lib/utils"
@@ -80,20 +80,15 @@ export function VitrineOrderModal() {
         >
           <div className="shrink-0 border-b border-brand-border px-4 pb-3 pt-3.5 sm:px-6 sm:pb-4 sm:pt-5">
             <div className="flex items-start justify-between gap-3">
-              <div className="flex min-w-0 items-start gap-3 sm:gap-3.5">
-                <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-bg-alt text-brand-green sm:h-12 sm:w-12">
-                  <HugeiconsIcon icon={TruckIcon} size={22} strokeWidth={VITRINE_ICON_STROKE} />
-                </span>
-                <div className="min-w-0 pt-0.5">
-                  <h2 className="text-[18px] font-bold leading-tight text-brand-navy sm:text-[20px]">
-                    Commander une benne
-                  </h2>
-                  <p className="mt-1.5 text-[12px] leading-snug text-brand-muted sm:text-[13px]">
-                    {audience === "professionnel"
-                      ? "Demande professionnelle · Intervention en Île-de-France"
-                      : "Paiement sécurisé · Intervention sous 24 h en Île-de-France"}
+              <div className="min-w-0 pt-0.5">
+                <h2 className="text-[18px] font-bold leading-tight text-brand-navy sm:text-[20px]">
+                  Commander une benne
+                </h2>
+                {audience === "professionnel" ? (
+                  <p className="mt-1 text-[12px] leading-snug text-brand-muted sm:text-[13px]">
+                    Demande professionnelle — sans paiement en ligne
                   </p>
-                </div>
+                ) : null}
               </div>
               <button
                 type="button"

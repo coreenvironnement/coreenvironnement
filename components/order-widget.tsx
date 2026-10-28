@@ -2,13 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react"
 import Image from "next/image"
-import { Recycle01Icon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import type { LucideIcon } from "lucide-react"
 import {
   ArrowLeft,
   BrickWall,
+  Briefcase,
   Calendar,
   ChevronRight,
   Hammer,
@@ -97,8 +96,8 @@ function AudienceToggle({
   subdued?: boolean
 }) {
   const options = [
-    { id: "particulier" as const, label: "Particulier" },
-    { id: "professionnel" as const, label: "Professionnel" },
+    { id: "particulier" as const, label: "Particulier", Icon: User },
+    { id: "professionnel" as const, label: "Professionnel", Icon: Briefcase },
   ]
 
   return (
@@ -125,12 +124,13 @@ function AudienceToggle({
               aria-pressed={active}
               onClick={() => onChange(option.id)}
               className={cn(
-                "flex min-h-10 flex-1 items-center justify-center rounded-full px-3 text-[13px] font-semibold transition-colors duration-200 sm:text-sm",
+                "flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-3 text-[13px] font-semibold transition-colors duration-200 sm:text-sm",
                 active
                   ? "bg-brand-green text-white shadow-[0_1px_2px_rgba(27,65,143,0.12)]"
                   : "text-[#8A847C] hover:text-brand-navy"
               )}
             >
+              <option.Icon className="size-4 shrink-0" aria-hidden />
               {option.label}
             </button>
           )
@@ -599,10 +599,16 @@ export function OrderWidget({
               <div
                 className={cn(
                   embedded
-                    ? "space-y-3.5 rounded-2xl bg-brand-bg-alt px-3 py-3 sm:space-y-4 sm:px-4 sm:py-4"
+                    ? "space-y-4 rounded-2xl bg-brand-bg-alt px-3 py-3 sm:space-y-5 sm:px-4 sm:py-4"
                     : "space-y-4"
                 )}
               >
+                <AudienceToggle
+                  audience={audience}
+                  onChange={setAudience}
+                  subdued={embedded}
+                />
+
                 <div className="space-y-2.5">
                     <p className={ORDER_SECTION_LABEL}>Où livrer votre benne&nbsp;?</p>
                     <div className="space-y-2">
@@ -658,13 +664,6 @@ export function OrderWidget({
                         Type de déchet
                       </label>
                       <div className="relative">
-                        <HugeiconsIcon
-                          icon={Recycle01Icon}
-                          size={20}
-                          strokeWidth={VITRINE_ICON_STROKE}
-                          className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-brand-navy/40"
-                          aria-hidden
-                        />
                         <Select
                           value={family ?? ""}
                           onValueChange={(v) => {
@@ -675,7 +674,7 @@ export function OrderWidget({
                         >
                           <SelectTrigger
                             id="order-waste-family"
-                            className="h-12 w-full max-w-none items-center justify-between rounded-xl border-2 border-primary/20 bg-white py-0 pl-12 pr-4 text-base shadow-sm focus-visible:border-primary/50 focus-visible:ring-brand-navy/30 data-[size=default]:h-12 dark:bg-white/95"
+                            className="h-12 w-full max-w-none items-center justify-between rounded-xl border-2 border-primary/20 bg-white py-0 pl-4 pr-4 text-base shadow-sm focus-visible:border-primary/50 focus-visible:ring-brand-navy/30 data-[size=default]:h-12 dark:bg-white/95"
                             size="default"
                           >
                             <SelectValue placeholder="Choisissez le type de déchet dans la liste" />
@@ -720,12 +719,6 @@ export function OrderWidget({
                       </div>
                     </div>
                 </div>
-
-                <AudienceToggle
-                  audience={audience}
-                  onChange={setAudience}
-                  subdued={embedded}
-                />
 
                 {addressError && (
                   <p className="text-center text-xs font-medium text-amber-800">
