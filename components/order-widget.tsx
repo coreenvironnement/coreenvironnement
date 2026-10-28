@@ -9,7 +9,6 @@ import type { LucideIcon } from "lucide-react"
 import {
   ArrowLeft,
   BrickWall,
-  Briefcase,
   Calendar,
   ChevronRight,
   Hammer,
@@ -99,6 +98,11 @@ function AudienceToggle({
   onChange: (value: Audience) => void
   subdued?: boolean
 }) {
+  const options = [
+    { id: "particulier" as const, label: "Particulier" },
+    { id: "professionnel" as const, label: "Professionnel" },
+  ]
+
   return (
     <div className="space-y-2.5">
       <p
@@ -110,36 +114,29 @@ function AudienceToggle({
         Vous êtes&nbsp;?
       </p>
       <div
-        className="grid grid-cols-2 gap-2.5"
+        className="flex rounded-full bg-[#F4F1EC] p-1"
         role="group"
         aria-label="Type de client"
       >
-        <button
-          type="button"
-          onClick={() => onChange("particulier")}
-          className={cn(
-            "flex min-h-[44px] items-center justify-center gap-2 rounded-xl border-2 bg-white px-2 py-2.5 text-[13px] font-semibold transition sm:text-sm",
-            audience === "particulier"
-              ? "border-[#35A238] text-[#35A238]"
-              : "border-brand-navy/10 text-brand-navy/42 hover:border-brand-navy/20 hover:text-brand-navy/65"
-          )}
-        >
-          <User className="size-4 shrink-0" aria-hidden />
-          Particulier
-        </button>
-        <button
-          type="button"
-          onClick={() => onChange("professionnel")}
-          className={cn(
-            "flex min-h-[44px] items-center justify-center gap-2 rounded-xl border-2 bg-white px-2 py-2.5 text-[13px] font-semibold transition sm:text-sm",
-            audience === "professionnel"
-              ? "border-[#35A238] text-[#35A238]"
-              : "border-brand-navy/10 text-brand-navy/42 hover:border-brand-navy/20 hover:text-brand-navy/65"
-          )}
-        >
-          <Briefcase className="size-4 shrink-0" aria-hidden />
-          Professionnel
-        </button>
+        {options.map((option) => {
+          const active = audience === option.id
+          return (
+            <button
+              key={option.id}
+              type="button"
+              aria-pressed={active}
+              onClick={() => onChange(option.id)}
+              className={cn(
+                "flex min-h-10 flex-1 items-center justify-center rounded-full px-3 text-[13px] font-semibold transition-colors duration-200 sm:text-sm",
+                active
+                  ? "bg-brand-green text-white shadow-[0_1px_2px_rgba(27,65,143,0.12)]"
+                  : "text-[#8A847C] hover:text-brand-navy"
+              )}
+            >
+              {option.label}
+            </button>
+          )
+        })}
       </div>
     </div>
   )
