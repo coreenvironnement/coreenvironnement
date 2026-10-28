@@ -29,7 +29,13 @@ for (const slug of DEPARTMENT_GUIDE_SLUGS) {
     errors.push(`${slug}: copie du guide absente.`)
     continue
   }
-  const blob = `${copy.lead} ${copy.tarif} ${copy.particuliers} ${copy.pose}`.toLowerCase()
+  const blob = `${copy.title} ${copy.description} ${copy.lead} ${copy.tarif} ${copy.particuliers} ${copy.pose}`.toLowerCase()
+  if (!blob.includes("396") || !copy.title.includes("dès 396 € TTC")) {
+    errors.push(`${slug}: le titre ne part pas du forfait réel 396 € TTC.`)
+  }
+  if (!copy.description.toLowerCase().includes("suivi")) {
+    errors.push(`${slug}: la description ne parle pas du suivi.`)
+  }
   if (!blob.includes("ttc") || !blob.includes("tva")) {
     errors.push(`${slug}: le tarif HT/TVA/TTC n’est pas expliqué.`)
   }

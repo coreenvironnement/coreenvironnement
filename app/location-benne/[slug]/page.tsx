@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 
 import { VitrineJsonLd } from "@/components/seo/vitrine-json-ld"
 import { VitrineHome } from "@/components/vitrine/vitrine-home"
+import { getDepartmentGuideMeta } from "@/lib/seo/department-guides"
 import { buildLocalDescription, buildLocalTitle } from "@/lib/seo/local-copy"
 import { getAllLocalPageSlugs, getLocalPageBySlug } from "@/lib/seo/local-pages"
 import {
@@ -28,8 +29,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const siteUrl = getSiteUrl()
   const canonical = `${siteUrl}/location-benne/${page.slug}`
-  const title = buildLocalTitle(page)
-  const description = buildLocalDescription(page)
+  const guideMeta = getDepartmentGuideMeta(page)
+  const title = guideMeta?.title ?? buildLocalTitle(page)
+  const description = guideMeta?.description ?? buildLocalDescription(page)
   const pageTitle = withBrandTitle(title)
 
   return {
