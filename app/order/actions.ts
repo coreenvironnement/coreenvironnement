@@ -22,8 +22,6 @@ import {
   type ProfessionalBenneRequestInput,
 } from "@/lib/order/pro-request"
 
-export type { OrderCheckoutInput }
-
 export type OrderCheckoutResult =
   | { error: string }
   | { checkoutUrl: string }

@@ -257,7 +257,7 @@ export const faq = [
     emoji: "💰",
     questions: [
       {
-        q: "Qu'est-ce qui est inclus dans le prix du forfait ?",
+        q: "Qu'est-ce qui est inclus dans le prix ?",
         r: "La transparence est totale : la mise à disposition de la benne, le transport (pose/retrait), le traitement des déchets en centre agréé et l'édition des documents réglementaires (BSD).",
       },
       {

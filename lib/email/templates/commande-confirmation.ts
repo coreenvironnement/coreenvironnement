@@ -31,7 +31,7 @@ export function buildCommandeConfirmationEmail(data: CommandeConfirmationData) {
     `<p>Votre commande de benne <strong>CORE ENVIRONNEMENT</strong> est confirmée. Merci pour votre confiance.</p>`,
     "<ul>",
     data.reference ? `<li><strong>Référence :</strong> ${escapeHtml(data.reference)}</li>` : "",
-    data.prestationLabel ? `<li><strong>Forfait :</strong> ${escapeHtml(data.prestationLabel)}</li>` : "",
+    data.prestationLabel ? `<li><strong>Benne :</strong> ${escapeHtml(data.prestationLabel)}</li>` : "",
     `<li><strong>Adresse :</strong> ${escapeHtml(data.adresseComplete)}${dept ? ` (${escapeHtml(dept)})` : ""}</li>`,
     data.dateLivraison
       ? `<li><strong>Livraison souhaitée :</strong> ${escapeHtml(formatDateFr(data.dateLivraison))}</li>`
@@ -39,11 +39,8 @@ export function buildCommandeConfirmationEmail(data: CommandeConfirmationData) {
     data.dateEnlevement
       ? `<li><strong>Enlèvement souhaité :</strong> ${escapeHtml(formatDateFr(data.dateEnlevement))}</li>`
       : "",
-    data.priceHt != null
-      ? `<li><strong>Montant HT :</strong> ${escapeHtml(formatEuro(data.priceHt))}</li>`
-      : "",
     breakdown
-      ? `<li><strong>Montant TTC :</strong> ${escapeHtml(formatEuro(breakdown.ttc))}</li>`
+      ? `<li><strong>Montant payé :</strong> ${escapeHtml(formatEuro(breakdown.ttc))}</li><li>dont TVA ${escapeHtml(formatEuro(breakdown.tva))}</li>`
       : "",
     "</ul>",
     `<p>${escapeHtml(commentCaFonctionne.particulier.suite)}</p>`,
@@ -58,12 +55,12 @@ export function buildCommandeConfirmationEmail(data: CommandeConfirmationData) {
     "Votre commande de benne CORE ENVIRONNEMENT est confirmée.",
     "",
     data.reference ? `Référence : ${data.reference}` : "",
-    data.prestationLabel ? `Forfait : ${data.prestationLabel}` : "",
+    data.prestationLabel ? `Benne : ${data.prestationLabel}` : "",
     `Adresse : ${data.adresseComplete}${dept ? ` (${dept})` : ""}`,
     data.dateLivraison ? `Livraison : ${formatDateFr(data.dateLivraison)}` : "",
     data.dateEnlevement ? `Enlèvement : ${formatDateFr(data.dateEnlevement)}` : "",
-    data.priceHt != null ? `Montant HT : ${formatEuro(data.priceHt)}` : "",
-    breakdown ? `Montant TTC : ${formatEuro(breakdown.ttc)}` : "",
+    breakdown ? `Montant payé : ${formatEuro(breakdown.ttc)}` : "",
+    breakdown ? `dont TVA ${formatEuro(breakdown.tva)}` : "",
     "",
     commentCaFonctionne.particulier.suite,
     "",

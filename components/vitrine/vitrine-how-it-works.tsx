@@ -35,8 +35,8 @@ type Step = {
 const PARTICULIER_STEPS: Step[] = [
   {
     num: "01",
-    label: "FLUX",
-    text: "Choisissez le type de déchets que vous souhaitez évacuer (DIB, gravats, bois, encombrants, etc.).",
+    label: "DÉCHETS",
+    text: "Choisissez ce que vous voulez jeter : gravats, bois, encombrants, ou un mélange.",
     icon: Recycle03Icon,
   },
   {
@@ -54,7 +54,7 @@ const PARTICULIER_STEPS: Step[] = [
   {
     num: "04",
     label: "PAIEMENT",
-    text: "Réglez votre forfait via notre interface de paiement 100% sécurisée.",
+    text: "Vous payez par carte. Le prix affiché est le prix à payer.",
     icon: CreditCardValidationIcon,
   },
 ]

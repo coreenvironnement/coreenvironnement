@@ -11,8 +11,13 @@ export type OrderTunnelStepId = (typeof ORDER_TUNNEL_STEPS)[number]["id"]
 export function getOrderTunnelSteps(
   audience: "particulier" | "professionnel"
 ): ReadonlyArray<{ id: OrderTunnelStepId; label: string }> {
-  if (audience !== "professionnel") return ORDER_TUNNEL_STEPS
-  return ORDER_TUNNEL_STEPS.map((step) =>
-    step.id === "payment" ? { ...step, label: "Envoi" } : step
-  )
+  return ORDER_TUNNEL_STEPS.map((step) => {
+    if (audience === "professionnel" && step.id === "payment") {
+      return { ...step, label: "Envoi" }
+    }
+    if (audience === "particulier" && step.id === "forfait") {
+      return { ...step, label: "Benne" }
+    }
+    return step
+  })
 }

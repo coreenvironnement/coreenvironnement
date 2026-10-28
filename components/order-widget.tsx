@@ -297,7 +297,11 @@ export function OrderWidget({
 
   const goToInfos = () => {
     if (!selectedPrestationId) {
-      setAddressError("Sélectionnez un forfait pour continuer.")
+      setAddressError(
+        audience === "particulier"
+          ? "Sélectionnez une benne pour continuer."
+          : "Sélectionnez un forfait pour continuer."
+      )
       return
     }
     setAddressError(null)
@@ -767,7 +771,9 @@ export function OrderWidget({
                   disabled={!canLeaveIntent}
                 >
                   <span className="flex w-full items-center justify-between gap-2">
-                    <span>Voir les forfaits</span>
+                    <span>
+                      {audience === "particulier" ? "Voir les bennes" : "Voir les forfaits"}
+                    </span>
                     <ChevronRight className="size-4 shrink-0" aria-hidden />
                   </span>
                 </Button>
@@ -785,10 +791,12 @@ export function OrderWidget({
               className="space-y-3.5"
             >
               <div>
-                <p className={ORDER_SECTION_LABEL}>Choisissez votre forfait</p>
+                <p className={ORDER_SECTION_LABEL}>
+                  {audience === "particulier" ? "Choisissez votre benne" : "Choisissez votre forfait"}
+                </p>
                 <p className="mt-1 text-xs leading-snug text-muted-foreground">
                   {audience === "particulier"
-                    ? "Prix TTC, celui qui sera payé. Le détail HT et la TVA s'affichent au récapitulatif."
+                    ? "Prix à payer, TVA incluse."
                     : "Prix H.T. Détail des déchets acceptés par forfait."}
                 </p>
               </div>
@@ -839,7 +847,9 @@ export function OrderWidget({
                   disabled={!selectedPrestationId}
                   onClick={goToInfos}
                 >
-                  Continuer avec ce forfait
+                  {audience === "particulier"
+                    ? "Continuer avec cette benne"
+                    : "Continuer avec ce forfait"}
                   <ChevronRight className="ml-2 size-4" />
                 </Button>
               </div>
@@ -1158,7 +1168,9 @@ export function OrderWidget({
                 </div>
                 <p className="font-medium text-brand-navy">{prestation.label}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {systemLabel(prestation.system)} · {prestation.volumeM3} m³
+                  {audience === "particulier"
+                    ? `${prestation.volumeM3} m³`
+                    : `${systemLabel(prestation.system)} · ${prestation.volumeM3} m³`}
                 </p>
               </section>
 
@@ -1236,26 +1248,22 @@ export function OrderWidget({
 
               {audience === "particulier" ? (
               <section className="rounded-2xl border border-primary/10 bg-white/95 px-4 py-3">
-                <h3 className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                  Prix
-                </h3>
                 {(() => {
                   const breakdown = priceBreakdownFromHt(prestation.priceHt)
                   return (
-                    <ul className="space-y-1.5 text-sm">
-                      <li className="flex justify-between gap-3">
-                        <span className="text-muted-foreground">Sous-total HT</span>
-                        <span className="tabular-nums text-brand-navy">{fmtHt(breakdown.ht)}</span>
-                      </li>
-                      <li className="flex justify-between gap-3">
-                        <span className="text-muted-foreground">TVA 20 %</span>
-                        <span className="tabular-nums text-brand-navy">{fmtHt(breakdown.tva)}</span>
-                      </li>
-                      <li className="flex items-baseline justify-between gap-3 border-t border-primary/10 pt-2 text-base font-semibold text-brand-navy">
-                        <span>Total TTC</span>
-                        <span className="tabular-nums text-primary">{fmtHt(breakdown.ttc)}</span>
-                      </li>
-                    </ul>
+                    <div className="flex items-end justify-between gap-3">
+                      <div>
+                        <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                          À payer
+                        </p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          dont TVA {fmtHt(breakdown.tva)}
+                        </p>
+                      </div>
+                      <p className="text-xl font-semibold tabular-nums text-primary">
+                        {fmtHt(breakdown.ttc)}
+                      </p>
+                    </div>
                   )
                 })()}
               </section>
@@ -1372,14 +1380,17 @@ function PrestationCard({
 
       <div className="min-w-0 flex-1">
         <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-          {systemLabel(prestation.system)} · {prestation.volumeM3} m³
+          {showTtc
+            ? `${prestation.volumeM3} m³`
+            : `${systemLabel(prestation.system)} · ${prestation.volumeM3} m³`}
         </span>
         <p className="mt-0.5 text-[13px] font-semibold leading-snug text-brand-navy sm:text-sm">
           {prestation.label}
         </p>
         <p className="mt-1 line-clamp-2 text-[11px] leading-snug text-muted-foreground sm:text-xs">
-          Jusqu’à {prestation.tonnageMax} t inclus, dépassement{" "}
-          {fmtHt(showTtc ? surcharge.ttc : surcharge.ht)}/t {showTtc ? "TTC" : "HT"}.
+          {showTtc
+            ? `Jusqu'à ${prestation.tonnageMax} tonnes. Au-delà : ${fmtHt(surcharge.ttc)} par tonne.`
+            : `Jusqu'à ${prestation.tonnageMax} t inclus, dépassement ${fmtHt(surcharge.ht)}/t HT.`}
         </p>
         <Dialog>
           <DialogTrigger

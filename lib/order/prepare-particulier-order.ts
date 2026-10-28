@@ -59,7 +59,7 @@ export async function prepareParticulierOrder(
 
   const prestation = prestationById(input.prestationId)
   if (!prestation) {
-    return { error: "Forfait sélectionné introuvable." }
+    return { error: "Benne sélectionnée introuvable." }
   }
 
   if (!input.deliveryDate.length) {
