@@ -30,14 +30,17 @@ for (const slug of DEPARTMENT_GUIDE_SLUGS) {
     continue
   }
   const blob = `${copy.title} ${copy.description} ${copy.lead} ${copy.tarif} ${copy.particuliers} ${copy.pose}`.toLowerCase()
-  if (!blob.includes("396") || !copy.title.includes("dès 396 € TTC")) {
-    errors.push(`${slug}: le titre ne part pas du forfait réel 396 € TTC.`)
+  if (!copy.title.includes("dès 330 €") || /\bHT\b/.test(copy.title)) {
+    errors.push(`${slug}: le titre doit afficher 330 € sans la mention HT.`)
+  }
+  if (!blob.includes("396")) {
+    errors.push(`${slug}: le montant TTC payé doit rester indiqué.`)
   }
   if (!copy.description.toLowerCase().includes("suivi")) {
     errors.push(`${slug}: la description ne parle pas du suivi.`)
   }
-  if (!blob.includes("ttc") || !blob.includes("tva")) {
-    errors.push(`${slug}: le tarif HT/TVA/TTC n’est pas expliqué.`)
+  if (!blob.includes("ttc")) {
+    errors.push(`${slug}: le montant TTC n’est pas indiqué.`)
   }
   if (blob.includes("autorisation est obligatoire")) {
     errors.push(`${slug}: affirmation d’autorisation obligatoire.`)
