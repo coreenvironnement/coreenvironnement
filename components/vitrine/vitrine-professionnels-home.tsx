@@ -32,10 +32,10 @@ export function VitrineProfessionnelsHome() {
             seoVariant={PROFESSIONNELS_HERO_VARIANT}
             heroOrderAudience="professionnel"
           />
+          <TestimonialsSection vitrine proOnly />
           <VitrineServices />
           <VitrineEngagements />
           <VitrineHowItWorks />
-          <TestimonialsSection vitrine />
           <VitrineFaq />
           <VitrineFinalCta />
           <VitrineAudienceSwitch mode="pro" />

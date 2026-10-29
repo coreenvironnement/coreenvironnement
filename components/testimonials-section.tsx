@@ -149,18 +149,32 @@ const vitrineTestimonials: Testimonial[] = [
   ...testimonialsEntreprisesAvecLogo.slice(1),
 ]
 
+function subtitleForVariant(particulierOnly: boolean, proOnly: boolean) {
+  if (particulierOnly) {
+    return "Retours de particuliers en Île-de-France : simplicité, ponctualité et benne bien gérée."
+  }
+  if (proOnly) {
+    return "Retours de chefs de chantier, artisans et entreprises du BTP : réactivité, suivi BSD et bennes à l’heure."
+  }
+  return "Retours de chefs de chantier, artisans et particuliers : ponctualité, sérieux et suivi au quotidien."
+}
+
 export function TestimonialsSection({
   vitrine = false,
   particulierOnly = false,
+  proOnly = false,
 }: {
   vitrine?: boolean
   particulierOnly?: boolean
+  proOnly?: boolean
 }) {
   const items = particulierOnly
     ? testimonialsParticuliers
-    : vitrine
-      ? vitrineTestimonials
-      : null
+    : proOnly
+      ? testimonialsEntreprisesAvecLogo
+      : vitrine
+        ? vitrineTestimonials
+        : null
   return (
     <section
       id="temoignages"
@@ -180,9 +194,7 @@ export function TestimonialsSection({
             Ils nous font confiance sur le terrain
           </h2>
           <p className={cn("mt-3 text-sm sm:text-base", vitrine ? "text-brand-muted" : "text-muted-foreground")}>
-            {particulierOnly
-              ? "Retours de particuliers en Île-de-France : simplicité, ponctualité et benne bien gérée."
-              : "Retours de chefs de chantier, artisans et particuliers : ponctualité, sérieux et suivi au quotidien."}
+            {subtitleForVariant(particulierOnly, proOnly)}
           </p>
         </div>
 

@@ -26,6 +26,13 @@ const PARTICULIER_NAV = [
   { label: "FAQ", href: "/#faq" },
 ] as const
 
+const PRO_NAV = [
+  { label: "Comment ça marche", href: "/professionnels#fonctionnement" },
+  { label: "Engagements", href: "/professionnels#engagements" },
+  { label: "Avis", href: "/professionnels#temoignages" },
+  { label: "FAQ", href: "/professionnels#faq" },
+] as const
+
 function AudienceBandeau({ isProPage }: { isProPage: boolean }) {
   return (
     <div
@@ -66,7 +73,7 @@ function AudienceBandeau({ isProPage }: { isProPage: boolean }) {
 export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) {
   const pathname = usePathname()
   const isProPage = pathname?.startsWith("/professionnels") ?? false
-  const navLinks = PARTICULIER_NAV
+  const navLinks = isProPage ? PRO_NAV : PARTICULIER_NAV
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const solid = forceSolid || scrolled
