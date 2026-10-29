@@ -31,6 +31,7 @@ type AddressAutocompleteProps = {
   className?: string
   inputClassName?: string
   placeholder?: string
+  warmSurface?: boolean
   "aria-invalid"?: boolean
 }
 
@@ -45,6 +46,7 @@ export function AddressAutocomplete({
   className,
   inputClassName,
   placeholder = "Numéro, rue, code postal et ville",
+  warmSurface = false,
   "aria-invalid": ariaInvalid,
 }: AddressAutocompleteProps) {
   const listboxId = useId()
@@ -174,7 +176,8 @@ export function AddressAutocomplete({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         className={cn(
-          "h-14 border-2 border-primary/20 bg-white pl-12 pr-11 text-base shadow-sm focus-visible:border-primary/50 focus-visible:ring-brand-navy/30",
+          "h-14 border-2 border-primary/20 pl-12 pr-11 text-base shadow-sm focus-visible:border-primary/50 focus-visible:ring-brand-navy/30",
+          warmSurface ? "bg-brand-warm-field" : "bg-white",
           inputClassName
         )}
       />
@@ -190,7 +193,10 @@ export function AddressAutocomplete({
           id={listboxId}
           role="listbox"
           aria-label="Suggestions d'adresse en Île-de-France"
-          className="absolute z-20 mt-1 max-h-60 w-full overflow-y-auto rounded-xl border border-primary/15 bg-white py-1 shadow-lg"
+          className={cn(
+            "absolute z-20 mt-1 max-h-60 w-full overflow-y-auto rounded-xl border border-primary/15 py-1 shadow-lg",
+            warmSurface ? "bg-brand-warm-field" : "bg-white"
+          )}
         >
           {suggestions.map((hit, index) => (
             <li

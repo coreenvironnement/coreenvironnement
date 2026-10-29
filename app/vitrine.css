@@ -18,6 +18,12 @@
   --color-brand-bg-alt: #f3f7f5;
   --color-brand-border: #e3e9e6;
 
+  /* Tunnel commande — vert doux (sélection liste déchets) */
+  --color-brand-warm: #ecf4e9;
+  --color-brand-warm-deep: #e3efe5;
+  --color-brand-warm-field: #f6fbf7;
+  --color-brand-warm-muted: #dce9de;
+
   /* Alias compat composants */
   --color-paper: #fafbfa;
   --color-surface: #f3f7f5;
@@ -684,6 +690,27 @@
   .vitrine-root .hero-reassurance-carousel {
     scroll-behavior: auto;
   }
+}
+
+/* Tunnel commande (modal) — ambiance chaleureuse */
+.order-tunnel-shell {
+  background: linear-gradient(
+    180deg,
+    var(--color-brand-warm) 0%,
+    #e9f1ec 42%,
+    var(--color-brand-warm-deep) 100%
+  );
+}
+
+.order-tunnel-header {
+  border-color: color-mix(in srgb, #35a238 14%, #e3e9e6);
+  background: color-mix(in srgb, var(--color-brand-warm) 88%, white);
+}
+
+.order-tunnel-card {
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, #35a238 16%, transparent);
+  background: color-mix(in srgb, var(--color-brand-warm-field) 92%, white);
 }
 
 /* Tunnel commande (modal) — Stripe Express Checkout & bouton payer */

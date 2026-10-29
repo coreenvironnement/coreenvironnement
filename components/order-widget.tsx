@@ -8,7 +8,6 @@ import {
   ArrowLeft,
   BrickWall,
   Briefcase,
-  Calendar,
   ChevronRight,
   Hammer,
   Headphones,
@@ -47,6 +46,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { EmbeddedCheckout } from "@/components/order/embedded-checkout"
+import { OrderDateField } from "@/components/order/order-date-field"
+import { formatOrderDatePicker } from "@/lib/format/date"
 import { submitProfessionalBenneRequest } from "@/app/order/actions"
 import {
   type BenneFamily,
@@ -77,6 +78,12 @@ const ORDER_SECTION_LABEL =
 
 const ORDER_HELP_TEXT =
   "flex items-start gap-1.5 text-[11px] leading-snug text-brand-muted sm:text-[12px]"
+
+const ORDER_TUNNEL_CARD = "order-tunnel-card"
+
+function orderFieldBg(embedded: boolean) {
+  return embedded ? "bg-brand-warm-field" : "bg-white"
+}
 
 /** Visuels forfait — mapping par volume (données métier inchangées). */
 const BENNE_VISUAL_BY_VOLUME: Record<number, string> = {
@@ -112,7 +119,7 @@ function AudienceToggle({
         Vous êtes&nbsp;?
       </p>
       <div
-        className="flex rounded-full bg-[#F4F1EC] p-1"
+        className="flex rounded-full bg-primary/10 p-1"
         role="group"
         aria-label="Type de client"
       >
@@ -230,7 +237,14 @@ export function OrderWidget({
   )
   const [addressError, setAddressError] = useState<string | null>(null)
   const [deliveryDateError, setDeliveryDateError] = useState<string | null>(null)
-  const deliveryDateRef = useRef<HTMLInputElement>(null)
+  const deliveryDateRef = useRef<HTMLDivElement>(null)
+
+  const focusDeliveryDateField = () => {
+    const root = deliveryDateRef.current
+    if (!root) return
+    const btn = root.querySelector("button")
+    btn?.focus({ preventScroll: true })
+  }
   const [family, setFamily] = useState<BenneFamily | null>(null)
   const [deliveryDate, setDeliveryDate] = useState("")
   const [pickupDate, setPickupDate] = useState("")
@@ -324,7 +338,7 @@ export function OrderWidget({
       setAddressError(null)
       requestAnimationFrame(() => {
         scrollToDeliveryDateField()
-        deliveryDateRef.current?.focus({ preventScroll: true })
+        focusDeliveryDateField()
       })
       return
     }
@@ -335,7 +349,7 @@ export function OrderWidget({
       setAddressError(null)
       requestAnimationFrame(() => {
         scrollToDeliveryDateField()
-        deliveryDateRef.current?.focus({ preventScroll: true })
+        focusDeliveryDateField()
       })
       return
     }
@@ -485,7 +499,7 @@ export function OrderWidget({
           <div className="space-y-4">
               {audience === "professionnel" ? (
                 proRequestSent ? (
-                  <div className="space-y-4 rounded-2xl border border-primary/15 bg-white px-4 py-5 text-center">
+                  <div className="order-tunnel-card space-y-4 px-4 py-5 text-center">
                     <h3 className="text-[18px] font-semibold leading-tight text-brand-navy sm:text-[20px]">
                       Demande envoyée
                     </h3>
@@ -515,7 +529,7 @@ export function OrderWidget({
                   </div>
                 ) : (
                 <div className="space-y-4">
-                  <div className="rounded-2xl border border-primary/15 bg-gradient-to-br from-white via-white to-brand-bg-alt px-4 py-4">
+                  <div className="order-tunnel-card bg-gradient-to-br from-brand-warm-field via-brand-warm-field to-brand-warm px-4 py-4">
                     <p className="text-[15px] font-semibold text-brand-navy">
                       Votre espace professionnel arrive bientôt
                     </p>
@@ -600,7 +614,7 @@ export function OrderWidget({
               <div
                 className={cn(
                   embedded
-                    ? "space-y-4 rounded-2xl bg-brand-bg-alt px-3 py-3 sm:space-y-5 sm:px-4 sm:py-4"
+                    ? "space-y-4 sm:space-y-5"
                     : "space-y-4"
                 )}
               >
@@ -628,6 +642,7 @@ export function OrderWidget({
                         onClearSelection={clearAddressSelection}
                         aria-invalid={addressError !== null && !selectedAddress}
                         inputClassName="h-12 rounded-xl"
+                        warmSurface={embedded}
                       />
                       <p className={ORDER_HELP_TEXT}>
                         <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
@@ -675,12 +690,34 @@ export function OrderWidget({
                         >
                           <SelectTrigger
                             id="order-waste-family"
-                            className="h-12 w-full max-w-none items-center justify-between rounded-xl border-2 border-primary/20 bg-white py-0 pl-4 pr-4 text-base shadow-sm focus-visible:border-primary/50 focus-visible:ring-brand-navy/30 data-[size=default]:h-12 dark:bg-white/95"
+                            className={cn(
+                              "h-12 w-full max-w-none items-center justify-between rounded-xl border-2 border-primary/20 py-0 pl-4 pr-4 text-base shadow-sm focus-visible:border-primary/50 focus-visible:ring-brand-navy/30 data-[size=default]:h-12",
+                              orderFieldBg(embedded)
+                            )}
                             size="default"
                           >
-                            <SelectValue placeholder="Choisissez le type de déchet dans la liste">
+                            <SelectValue placeholder="Choisissez le type de déchet">
                               {(value) => {
-                                if (!value) return null
+                                if (!value) {
+                                  return (
+                                    <span className="flex min-w-0 items-center gap-2.5">
+                                      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-brand-navy/[0.06] text-brand-navy/45">
+                                        <Recycle
+                                          className="size-[1.15rem]"
+                                          aria-hidden
+                                        />
+                                      </span>
+                                      <span className="min-w-0 flex-1 text-left">
+                                        <span className="block truncate text-[15px] font-semibold leading-snug text-brand-muted">
+                                          Choisissez le type de déchet
+                                        </span>
+                                        <span className="mt-0.5 block text-[11px] font-medium text-brand-muted/80">
+                                          Gravats, mélange DND…
+                                        </span>
+                                      </span>
+                                    </span>
+                                  )
+                                }
                                 const fid = value as BenneFamily
                                 const meta = FAMILY_LABELS[fid]
                                 const Icon = FAMILY_ICONS[fid]
@@ -809,6 +846,7 @@ export function OrderWidget({
                     delay={prefersReducedMotion ? 0 : i * 0.04}
                     t={t}
                     showTtc={audience === "particulier"}
+                    warmSurface={embedded}
                   />
                 ))}
               </div>
@@ -854,22 +892,21 @@ export function OrderWidget({
                 <p className={ORDER_SECTION_LABEL}>Quand souhaitez-vous la benne&nbsp;?</p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <label
-                      htmlFor="order-delivery-date"
-                      className="flex items-center gap-1.5 text-xs font-semibold text-brand-navy"
+                    <p
+                      id="order-delivery-date-label"
+                      className="text-xs font-semibold text-brand-navy"
                     >
-                      <Calendar className="size-3.5 text-brand-navy/50" aria-hidden />
                       Date de livraison&nbsp;*
-                    </label>
-                    <Input
+                    </p>
+                    <OrderDateField
                       ref={deliveryDateRef}
                       id="order-delivery-date"
-                      type="date"
                       min={minDeliveryDateISO()}
                       value={deliveryDate}
-                      aria-invalid={deliveryDateError !== null}
-                      onChange={(e) => {
-                        const next = e.target.value
+                      invalid={deliveryDateError !== null}
+                      warmSurface={embedded}
+                      placeholder="Choisir la date de livraison"
+                      onChange={(next) => {
                         setDeliveryDate(next)
                         setDeliveryDateError(null)
                         setAddressError(null)
@@ -881,12 +918,6 @@ export function OrderWidget({
                           setPickupDate("")
                         }
                       }}
-                      className={cn(
-                        "h-11 rounded-xl border-2 bg-white px-3",
-                        deliveryDateError
-                          ? "border-amber-600 ring-2 ring-amber-200/80"
-                          : "border-primary/15"
-                      )}
                     />
                     <p className={ORDER_HELP_TEXT}>
                       <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
@@ -901,27 +932,27 @@ export function OrderWidget({
                     ) : null}
                   </div>
                   <div className="space-y-1.5">
-                    <label
-                      htmlFor="order-pickup-date"
-                      className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
+                    <p
+                      id="order-pickup-date-label"
+                      className="text-xs font-medium text-muted-foreground"
                     >
-                      <Calendar className="size-3.5" aria-hidden />
                       Date d’enlèvement (optionnel)
-                    </label>
-                    <Input
+                    </p>
+                    <OrderDateField
                       id="order-pickup-date"
-                      type="date"
                       min={
                         deliveryDate.length && isValidDeliveryDate(deliveryDate)
                           ? deliveryDate
                           : minDeliveryDateISO()
                       }
                       value={pickupDate}
-                      onChange={(e) => {
-                        setPickupDate(e.target.value)
+                      warmSurface={embedded}
+                      placeholder="Choisir une date d’enlèvement"
+                      optionalHint="Optionnel"
+                      onChange={(next) => {
+                        setPickupDate(next)
                         setAddressError(null)
                       }}
-                      className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
                     />
                     {pickupDate ? (
                       <button
@@ -954,7 +985,10 @@ export function OrderWidget({
                           setCompanyName(e.target.value)
                           setAddressError(null)
                         }}
-                        className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
+                        className={cn(
+                        "h-11 rounded-xl border-2 border-primary/15 px-3",
+                        orderFieldBg(embedded)
+                      )}
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -969,7 +1003,10 @@ export function OrderWidget({
                           setProContactName(e.target.value)
                           setAddressError(null)
                         }}
-                        className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
+                        className={cn(
+                        "h-11 rounded-xl border-2 border-primary/15 px-3",
+                        orderFieldBg(embedded)
+                      )}
                       />
                     </div>
                   </>
@@ -987,7 +1024,10 @@ export function OrderWidget({
                         setContactFirstName(e.target.value)
                         setAddressError(null)
                       }}
-                      className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
+                      className={cn(
+                        "h-11 rounded-xl border-2 border-primary/15 px-3",
+                        orderFieldBg(embedded)
+                      )}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -1002,7 +1042,10 @@ export function OrderWidget({
                         setContactLastName(e.target.value)
                         setAddressError(null)
                       }}
-                      className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
+                      className={cn(
+                        "h-11 rounded-xl border-2 border-primary/15 px-3",
+                        orderFieldBg(embedded)
+                      )}
                     />
                   </div>
                 </div>
@@ -1020,7 +1063,10 @@ export function OrderWidget({
                       setContactPhone(e.target.value)
                       setAddressError(null)
                     }}
-                    className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
+                    className={cn(
+                      "h-11 rounded-xl border-2 border-primary/15 px-3",
+                      orderFieldBg(embedded)
+                    )}
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -1036,7 +1082,10 @@ export function OrderWidget({
                       setContactEmail(e.target.value)
                       setAddressError(null)
                     }}
-                    className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
+                    className={cn(
+                      "h-11 rounded-xl border-2 border-primary/15 px-3",
+                      orderFieldBg(embedded)
+                    )}
                   />
                 </div>
                 {audience === "professionnel" ? (
@@ -1053,7 +1102,10 @@ export function OrderWidget({
                         setSiret(e.target.value)
                         setAddressError(null)
                       }}
-                      className="h-11 rounded-xl border-2 border-primary/15 bg-white px-3"
+                      className={cn(
+                        "h-11 rounded-xl border-2 border-primary/15 px-3",
+                        orderFieldBg(embedded)
+                      )}
                     />
                   </div>
                 ) : null}
@@ -1104,7 +1156,12 @@ export function OrderWidget({
               </p>
 
               {audience === "professionnel" ? (
-                <section className="rounded-2xl border border-primary/10 bg-white/95 px-4 py-3">
+                <section
+                  className={cn(
+                    embedded ? ORDER_TUNNEL_CARD : "rounded-2xl border border-primary/10 bg-white/95",
+                    "px-4 py-3"
+                  )}
+                >
                   <div className="mb-1.5 flex items-center justify-between gap-2">
                     <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                       Entreprise
@@ -1138,7 +1195,12 @@ export function OrderWidget({
                 </section>
               ) : null}
 
-              <section className="rounded-2xl border border-primary/10 bg-white/95 px-4 py-3">
+              <section
+                className={cn(
+                  embedded ? ORDER_TUNNEL_CARD : "rounded-2xl border border-primary/10 bg-white/95",
+                  "px-4 py-3"
+                )}
+              >
                 <div className="mb-1.5 flex items-center justify-between gap-2">
                   <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                     {audience === "professionnel" ? "Demande" : "Votre benne"}
@@ -1159,7 +1221,12 @@ export function OrderWidget({
                 </p>
               </section>
 
-              <section className="rounded-2xl border border-primary/10 bg-white/95 px-4 py-3">
+              <section
+                className={cn(
+                  embedded ? ORDER_TUNNEL_CARD : "rounded-2xl border border-primary/10 bg-white/95",
+                  "px-4 py-3"
+                )}
+              >
                 <div className="mb-1.5 flex items-center justify-between gap-2">
                   <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                     Livraison
@@ -1188,14 +1255,14 @@ export function OrderWidget({
                   <li>
                     <span className="text-muted-foreground">Livraison · </span>
                     <span className="font-medium text-brand-navy">
-                      {new Date(deliveryDate + "T12:00:00").toLocaleDateString("fr-FR")}
+                      {formatOrderDatePicker(deliveryDate)}
                     </span>
                   </li>
                   {pickupDate ? (
                     <li>
                       <span className="text-muted-foreground">Enlèvement · </span>
                       <span className="font-medium text-brand-navy">
-                        {new Date(pickupDate + "T12:00:00").toLocaleDateString("fr-FR")}
+                        {formatOrderDatePicker(pickupDate)}
                       </span>
                     </li>
                   ) : null}
@@ -1210,7 +1277,12 @@ export function OrderWidget({
               </section>
 
               {audience === "particulier" ? (
-              <section className="rounded-2xl border border-primary/10 bg-white/95 px-4 py-3">
+              <section
+                className={cn(
+                  embedded ? ORDER_TUNNEL_CARD : "rounded-2xl border border-primary/10 bg-white/95",
+                  "px-4 py-3"
+                )}
+              >
                 <div className="mb-1.5 flex items-center justify-between gap-2">
                   <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                     Vos coordonnées
@@ -1232,7 +1304,12 @@ export function OrderWidget({
               ) : null}
 
               {audience === "particulier" ? (
-              <section className="rounded-2xl border border-primary/10 bg-white/95 px-4 py-3">
+              <section
+                className={cn(
+                  embedded ? ORDER_TUNNEL_CARD : "rounded-2xl border border-primary/10 bg-white/95",
+                  "px-4 py-3"
+                )}
+              >
                 {(() => {
                   const breakdown = priceBreakdownFromHt(prestation.priceHt)
                   return (
@@ -1269,7 +1346,7 @@ export function OrderWidget({
                   className="h-11 rounded-xl text-base font-semibold shadow-lg sm:flex-1"
                   onClick={() => setStep("payment")}
                 >
-                  {audience === "professionnel" ? "Continuer" : "Passer au paiement"}
+                  Continuer
                   <ChevronRight className="ml-2 size-4" />
                 </Button>
               </div>
@@ -1283,7 +1360,7 @@ export function OrderWidget({
         className={cn(
           "relative flex flex-col text-center",
           embedded
-            ? "gap-1 border-0 bg-transparent px-1 pb-0 pt-2 sm:px-2 sm:pt-2.5"
+            ? "gap-1 border-t border-primary/12 bg-transparent px-1 pb-0 pt-2 sm:px-2 sm:pt-2.5"
             : "gap-2 border-t border-primary/5 bg-muted/30 py-4 text-[0.65rem] text-muted-foreground"
         )}
       >
@@ -1316,6 +1393,7 @@ function PrestationCard({
   delay,
   t,
   showTtc,
+  warmSurface,
 }: {
   prestation: Prestation
   selected: boolean
@@ -1323,6 +1401,7 @@ function PrestationCard({
   delay: number
   t: { duration: number; ease?: readonly [number, number, number, number] }
   showTtc: boolean
+  warmSurface?: boolean
 }) {
   const visualSrc = BENNE_VISUAL_BY_VOLUME[prestation.volumeM3]
   const price = priceBreakdownFromHt(prestation.priceHt)
@@ -1346,8 +1425,12 @@ function PrestationCard({
         "flex w-full cursor-pointer items-center gap-2.5 overflow-visible rounded-2xl border-2 p-3 text-left shadow-sm outline-none transition-colors sm:gap-3 sm:p-3.5",
         "focus-visible:border-brand-navy",
         selected
-          ? "border-brand-navy bg-gradient-to-br from-accent to-white"
-          : "border-border/80 bg-card/90 hover:border-brand-navy/35"
+          ? warmSurface
+            ? "border-brand-navy bg-primary/10"
+            : "border-brand-navy bg-gradient-to-br from-accent to-white"
+          : warmSurface
+            ? "border-primary/20 bg-brand-warm-field hover:border-brand-navy/35 hover:bg-primary/[0.06]"
+            : "border-border/80 bg-card/90 hover:border-brand-navy/35"
       )}
     >
       <div className="flex h-[58px] w-[72px] shrink-0 items-center justify-center overflow-hidden sm:h-[72px] sm:w-[92px]">

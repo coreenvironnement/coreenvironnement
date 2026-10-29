@@ -27,13 +27,13 @@ export function OrderModalStepper({
               <div className="relative flex h-6 w-full items-center justify-center sm:h-8">
                 {index > 0 ? (
                   <span
-                    className="absolute right-1/2 top-1/2 h-px w-[calc(50%-11px)] -translate-y-1/2 bg-[#E4E7EC] sm:w-[calc(50%-16px)]"
+                    className="absolute right-1/2 top-1/2 h-px w-[calc(50%-11px)] -translate-y-1/2 bg-brand-warm-muted sm:w-[calc(50%-16px)]"
                     aria-hidden
                   />
                 ) : null}
                 {index < lastIndex ? (
                   <span
-                    className="absolute left-1/2 top-1/2 h-px w-[calc(50%-11px)] -translate-y-1/2 bg-[#E4E7EC] sm:w-[calc(50%-16px)]"
+                    className="absolute left-1/2 top-1/2 h-px w-[calc(50%-11px)] -translate-y-1/2 bg-brand-warm-muted sm:w-[calc(50%-16px)]"
                     aria-hidden
                   />
                 ) : null}
@@ -41,8 +41,8 @@ export function OrderModalStepper({
                   className={cn(
                     "relative z-10 flex h-[22px] w-[22px] items-center justify-center rounded-full text-[11px] font-semibold tabular-nums transition-colors duration-300 sm:h-8 sm:w-8 sm:text-[13px]",
                     active
-                      ? "bg-[#35A238] text-white"
-                      : "bg-[#E4E7EC] text-[#98A2B3]"
+                      ? "bg-brand-green text-white shadow-sm shadow-brand-green/25"
+                      : "bg-brand-warm-muted text-brand-navy/45"
                   )}
                   aria-hidden
                 >
@@ -54,7 +54,7 @@ export function OrderModalStepper({
                   "mt-1 w-full max-w-full text-center text-[8px] leading-[1.15] sm:mt-1.5 sm:text-[11px] sm:leading-tight",
                   active
                     ? "font-semibold text-brand-navy"
-                    : "font-medium text-[#98A2B3]"
+                    : "font-medium text-brand-navy/42"
                 )}
               >
                 {step.label}

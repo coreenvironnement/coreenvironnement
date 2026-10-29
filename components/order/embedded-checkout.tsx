@@ -221,7 +221,7 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
 
 function PaymentLoadingState() {
   return (
-    <div className="flex min-h-[180px] flex-col items-center justify-center gap-3 rounded-2xl border border-brand-border/70 bg-white px-4 py-6 text-center">
+    <div className="order-tunnel-card flex min-h-[180px] flex-col items-center justify-center gap-3 px-4 py-6 text-center">
       <span
         className="size-8 animate-spin rounded-full border-2 border-brand-navy/15 border-t-[#35A238]"
         aria-hidden
@@ -244,7 +244,7 @@ function PaymentErrorState({
   onRetry?: () => void
 }) {
   return (
-    <div className="space-y-3 rounded-2xl border border-amber-200/80 bg-white px-4 py-5 text-center">
+    <div className="order-tunnel-card space-y-3 border-amber-200/80 px-4 py-5 text-center">
       <p className="text-sm font-medium text-amber-900">{message}</p>
       <div className="flex flex-col gap-2 sm:flex-row">
         <Button variant="outline" type="button" className="h-10 rounded-xl sm:flex-1" onClick={onBack}>
@@ -369,8 +369,8 @@ function CheckoutFields({
 
   return (
     <div className="space-y-3.5">
-      <p className="text-sm text-brand-navy">
-        Total à payer :{" "}
+      <p className="rounded-xl border border-primary/12 bg-brand-warm-field/80 px-3.5 py-2.5 text-sm text-brand-navy">
+        Montant de votre commande :{" "}
         <strong className="font-semibold tabular-nums text-primary">
           {amountLabel} TTC
         </strong>
@@ -378,7 +378,7 @@ function CheckoutFields({
 
       <label
         htmlFor="order-cgv-accept"
-        className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-brand-border/80 bg-white px-3 py-2.5 text-left text-[13px] leading-snug text-brand-navy"
+        className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-primary/18 bg-brand-warm-field px-3 py-2.5 text-left text-[13px] leading-snug text-brand-navy"
       >
         <input
           id="order-cgv-accept"
@@ -437,7 +437,7 @@ function CheckoutFields({
         ) : null}
       </div>
 
-      <div className="rounded-2xl border border-brand-border/80 bg-white p-3 sm:p-3.5">
+      <div className="order-tunnel-card p-3 sm:p-3.5">
         <PaymentElement
           options={{
             layout: "tabs",
@@ -473,11 +473,11 @@ function CheckoutFields({
         </Button>
         <Button
           type="button"
-          className="order-embedded-pay-btn h-11 min-h-11 flex-1 rounded-xl border-0 bg-[#2F9632] px-4 text-base font-semibold text-white shadow-lg shadow-[#2F9632]/25 hover:bg-[#19752B] disabled:pointer-events-none disabled:bg-[#D0D5DD] disabled:text-white disabled:opacity-100 disabled:shadow-none"
+          className="order-embedded-pay-btn h-11 min-h-11 flex-1 rounded-xl border-0 bg-[#2F9632] px-4 text-[15px] font-semibold tracking-[-0.01em] text-white shadow-lg shadow-[#2F9632]/20 hover:bg-[#19752B] disabled:pointer-events-none disabled:bg-[#D0D5DD] disabled:text-white disabled:opacity-100 disabled:shadow-none"
           disabled={!stripe || !elements || busy || !cgvAccepted}
           onClick={() => void confirm()}
         >
-          {busy ? "Paiement en cours…" : `Payer ${amountLabel}`}
+          {busy ? "Finalisation en cours…" : "Finaliser ma commande"}
         </Button>
       </div>
     </div>

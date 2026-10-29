@@ -70,7 +70,7 @@ export function VitrineOrderModal() {
           aria-modal="true"
           aria-label="Commander une benne"
           className={cn(
-            "relative flex h-[100dvh] max-h-none w-screen flex-col overflow-hidden rounded-none border border-brand-border bg-brand-bg pb-[env(safe-area-inset-bottom)] shadow-[var(--shadow-vitrine-pop)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+            "order-tunnel-shell relative flex h-[100dvh] max-h-none w-screen flex-col overflow-hidden rounded-none border border-primary/15 pb-[env(safe-area-inset-bottom)] shadow-[var(--shadow-vitrine-pop)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
             "sm:h-auto sm:max-h-[92svh] sm:w-full sm:max-w-[540px] sm:rounded-2xl sm:pb-0",
             open
               ? "translate-y-0 opacity-100 sm:scale-100"
@@ -78,7 +78,7 @@ export function VitrineOrderModal() {
           )}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="shrink-0 border-b border-brand-border px-4 pb-3 pt-3.5 sm:px-6 sm:pb-4 sm:pt-5">
+          <div className="order-tunnel-header shrink-0 border-b px-4 pb-3 pt-3.5 sm:px-6 sm:pb-4 sm:pt-5">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 pt-0.5">
                 <h2 className="text-[18px] font-bold leading-tight text-brand-navy sm:text-[20px]">
@@ -94,7 +94,7 @@ export function VitrineOrderModal() {
                 type="button"
                 onClick={closeOrder}
                 aria-label="Fermer"
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-brand-muted transition-colors hover:bg-brand-bg-alt hover:text-brand-navy"
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-brand-muted transition-colors hover:bg-primary/10 hover:text-brand-navy"
               >
                 <HugeiconsIcon icon={Cancel01Icon} size={18} strokeWidth={VITRINE_ICON_STROKE} />
               </button>
