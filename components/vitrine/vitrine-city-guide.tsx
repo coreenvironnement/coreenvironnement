@@ -57,7 +57,7 @@ export function VitrineCityGuide({ page }: { page: LocalPage }) {
 
   return (
     <section
-      className="border-t border-brand-border bg-white py-14 sm:py-18 lg:py-20"
+      className="vitrine-section-warm border-t border-brand-border py-14 sm:py-18 lg:py-20"
       aria-labelledby="city-guide-title"
     >
       <div className="container-x">
@@ -79,7 +79,7 @@ export function VitrineCityGuide({ page }: { page: LocalPage }) {
 
               <ul className="mt-6 grid gap-4 sm:grid-cols-2">
                 {[variant.planning, variant.access].map((item) => (
-                  <li key={item} className="flex gap-3 rounded-xl bg-white p-4 text-sm leading-relaxed text-brand-muted">
+                  <li key={item} className="flex gap-3 rounded-xl border border-brand-green/10 bg-brand-warm p-4 text-sm leading-relaxed text-brand-muted">
                     <HugeiconsIcon
                       icon={CheckmarkCircle02Icon}
                       size={20}

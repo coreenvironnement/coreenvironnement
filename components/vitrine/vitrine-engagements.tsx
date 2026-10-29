@@ -156,7 +156,7 @@ function EngagementStep({
       <article className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 sm:gap-x-5">
         <span
           className={cn(
-            "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border bg-white transition-[border-color,box-shadow,color] duration-300 sm:h-[3.25rem] sm:w-[3.25rem]",
+            "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-brand-green/12 bg-brand-warm-field transition-[border-color,box-shadow,color] duration-300 sm:h-[3.25rem] sm:w-[3.25rem]",
             isActive
               ? "border-[#35A238]/35 text-brand-navy shadow-[0_3px_14px_-4px_rgba(53,162,56,0.22)]"
               : "border-[#d5ddd9] text-brand-navy/75 shadow-[0_2px_10px_-4px_rgba(24,53,116,0.1)]",
@@ -266,7 +266,7 @@ export function VitrineEngagements() {
   }, [activeIndex, isDesktop, reduced])
 
   return (
-    <section id="engagements" className="bg-[#FAFBFA] py-16 sm:py-20 lg:py-[5.5rem]">
+    <section id="engagements" className="vitrine-section-warm py-16 sm:py-20 lg:py-[5.5rem]">
       <div className="container-x">
         <div className="lg:grid lg:grid-cols-[minmax(0,2.5fr)_minmax(0,4fr)] lg:items-start lg:gap-12 xl:gap-16">
           <header className="flex flex-col items-center text-center lg:sticky lg:top-28 lg:self-start lg:items-start lg:text-left">

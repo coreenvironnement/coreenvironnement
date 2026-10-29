@@ -114,7 +114,7 @@ function ProfileToggle({
     <div
       role="tablist"
       aria-label="Profil de commande"
-      className="how-profile-toggle mx-auto inline-flex w-full max-w-[22rem] rounded-[var(--radius-btn)] border border-brand-border bg-white p-1 shadow-[0_1px_2px_rgb(24_53_116/0.04)] sm:max-w-[24rem]"
+      className="how-profile-toggle mx-auto inline-flex w-full max-w-[22rem] rounded-[var(--radius-btn)] border border-brand-green/14 bg-brand-warm-field p-1 shadow-[0_1px_2px_rgb(24_53_116/0.04)] sm:max-w-[24rem]"
     >
       {(
         [
@@ -148,7 +148,7 @@ function ProfileToggle({
 
 function StepCard({ num, label, text, icon }: Step) {
   return (
-    <article className="how-step-card rounded-[0.875rem] border border-brand-border/90 bg-white p-4 sm:p-5">
+    <article className="how-step-card rounded-[0.875rem] border border-brand-green/12 bg-brand-warm-field p-4 sm:p-5">
       <p className="vitrine-label text-brand-green">{num}</p>
       <span className="how-step-icon-circle mt-3 inline-flex h-11 w-11 items-center justify-center rounded-full bg-brand-green/[0.08] text-brand-green">
         <HugeiconsIcon icon={icon} size={20} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />
@@ -198,7 +198,7 @@ function AfterPanel({ description }: { description: string }) {
             key={step}
             className={index === AFTER_FLOW.length - 1 ? "min-[480px]:col-span-2" : undefined}
           >
-            <span className="how-after-tag flex items-center gap-2 rounded-[0.625rem] border border-brand-green/15 bg-white/80 px-3 py-2.5 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase leading-snug tracking-[0.05em] text-brand-navy sm:text-[11.5px]">
+            <span className="how-after-tag flex items-center gap-2 rounded-[0.625rem] border border-brand-green/15 bg-brand-warm px-3 py-2.5 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase leading-snug tracking-[0.05em] text-brand-navy sm:text-[11.5px]">
               <HugeiconsIcon
                 icon={Tick02Icon}
                 size={14}
@@ -217,7 +217,7 @@ function AfterPanel({ description }: { description: string }) {
 
 function ParticulierPanel() {
   return (
-    <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-border bg-white shadow-[0_2px_4px_rgb(24_53_116/0.03),0_12px_32px_-8px_rgb(24_53_116/0.1)]">
+    <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(24_53_116/0.03),0_12px_32px_-8px_rgb(24_53_116/0.1)]">
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
         <div className="how-panel-main p-6 sm:p-8 lg:p-9 xl:p-10">
           <h3 className="text-lg leading-snug text-brand-navy sm:text-xl">
@@ -272,7 +272,7 @@ function ProSidePanel() {
 
 function ProfessionnelPanel() {
   return (
-    <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-border bg-white shadow-[0_2px_4px_rgb(24_53_116/0.03),0_12px_32px_-8px_rgb(24_53_116/0.1)]">
+    <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(24_53_116/0.03),0_12px_32px_-8px_rgb(24_53_116/0.1)]">
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
         <div className="how-panel-main p-6 sm:p-8 lg:p-9 xl:p-10">
           <h3 className="text-lg leading-snug text-brand-navy sm:text-xl">

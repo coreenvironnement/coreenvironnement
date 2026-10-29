@@ -55,7 +55,7 @@ function cardArticleClass(vitrine?: boolean, extra?: string) {
   return cn(
     "flex flex-col rounded-2xl p-4 sm:p-5",
     vitrine
-      ? "w-[calc(100vw-2rem)] shrink-0 snap-center border border-brand-border bg-brand-bg shadow-[var(--shadow-vitrine-soft)] sm:w-full sm:min-w-0"
+      ? "w-[calc(100vw-2rem)] shrink-0 snap-center border border-brand-green/14 bg-brand-warm-field shadow-[var(--shadow-vitrine-soft)] sm:w-full sm:min-w-0"
       : "w-[min(100vw-3rem,380px)] shrink-0 snap-center sm:w-[calc(50%-0.75rem)] sm:max-w-none lg:w-[calc(33.333%-0.75rem)] border border-white/40 bg-card/90 shadow-[0_14px_50px_-28px_rgba(27,65,143,0.35)] backdrop-blur-sm",
     extra
   )
@@ -156,7 +156,7 @@ export function TestimonialsSection({ vitrine = false }: { vitrine?: boolean }) 
       className={cn(
         "py-14 sm:py-20",
         vitrine
-          ? "border-t border-brand-border bg-brand-bg"
+          ? "vitrine-section-warm border-t border-brand-border"
           : "border-t border-border/40 bg-[color-mix(in_srgb,var(--secondary)_42%,transparent)]"
       )}
     >

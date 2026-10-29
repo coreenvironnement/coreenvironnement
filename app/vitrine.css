@@ -95,6 +95,17 @@
     @apply rounded-[var(--radius-card)] border border-brand-border bg-brand-bg shadow-[var(--shadow-vitrine-soft)] transition duration-300;
   }
 
+  /* Bandes landing blanches → palette tunnel commande */
+  .vitrine-root .vitrine-section-warm {
+    background: linear-gradient(
+      180deg,
+      var(--color-brand-warm) 0%,
+      var(--color-brand-warm-field) 55%,
+      color-mix(in srgb, var(--color-brand-warm-deep) 92%, white) 100%
+    );
+    @apply text-brand-navy;
+  }
+
   .vitrine-root .btn,
   .vitrine-root .btn-accent,
   .vitrine-root .btn-primary,
@@ -425,7 +436,7 @@
   }
 
   .vitrine-root #services .service-flip-face.card-vitrine {
-    @apply border-[#E3E9E6] bg-white;
+    @apply border-brand-border bg-brand-warm-field;
     box-shadow:
       0 1px 2px rgb(24 53 116 / 0.025),
       0 6px 18px -6px rgb(24 53 116 / 0.055);
@@ -433,12 +444,12 @@
 
   @media (max-width: 639px) {
     .vitrine-root #services .service-flip-face.card-vitrine.service-flip-face--stripe {
-      background-color: #f3f6fb;
+      background-color: var(--color-brand-warm-muted);
     }
   }
 
   .vitrine-root #services .service-flip-card--featured .service-flip-front {
-    @apply border-brand-green/22 bg-gradient-to-br from-white to-[#f5faf6];
+    @apply border-brand-green/22 bg-gradient-to-br from-brand-warm-field to-brand-warm;
   }
 
   .vitrine-root #services .service-flip-card:focus-visible {

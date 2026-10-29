@@ -29,7 +29,7 @@ export function VitrineDepartmentGuide({ page }: { page: LocalPage }) {
 
   return (
     <section
-      className="border-t border-brand-border bg-white py-14 sm:py-18 lg:py-20"
+      className="vitrine-section-warm border-t border-brand-border py-14 sm:py-18 lg:py-20"
       aria-labelledby="department-guide-title"
     >
       <div className="container-x">
