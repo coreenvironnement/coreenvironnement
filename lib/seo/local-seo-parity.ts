@@ -64,11 +64,14 @@ export function assertLocalSeoParity() {
       errors.push(`${slug}: chip not deterministic`)
     }
 
-    if (!variant.h1Line1.includes("Location de benne") || !variant.h1Line1.includes("intervention 24h")) {
+    if (
+      !variant.h1Line1.includes("Location de benne") ||
+      !variant.h1Line1.includes("24 h")
+    ) {
       errors.push(`${slug}: h1 left homepage template`)
     }
 
-    if (!variant.description.includes("Commande en 3 minutes")) {
+    if (!variant.description.includes("commande en 2 minutes")) {
       errors.push(`${slug}: description left homepage template`)
     }
 
