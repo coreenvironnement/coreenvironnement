@@ -1,7 +1,9 @@
 "use client"
 
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import { Star } from "lucide-react"
+import { useEffect, useLayoutEffect, useState } from "react"
 
 import { hero } from "@/lib/cdc/contenu-vitrine"
 import type { SeoVariant } from "@/lib/seo/landing-variants"
@@ -21,8 +23,40 @@ import { LocalBreadcrumbs } from "@/components/seo/local-breadcrumbs"
 import type { LocalPage } from "@/lib/seo/local-copy"
 
 import { HeroOrderCard } from "./hero-order-card"
-import { VITRINE_HEADER_TOTAL_OFFSET_CLASS } from "./vitrine-header"
+import {
+  readVitrineScrollSolid,
+  VITRINE_HEADER_TOTAL_OFFSET_CLASS,
+  VITRINE_SCROLL_SOLID_THRESHOLD,
+} from "./vitrine-header"
 import { VitrineHeroReassurance } from "./vitrine-hero-reassurance"
+
+function useHeroBackdropPinned() {
+  const pathname = usePathname()
+  const [pinned, setPinned] = useState(true)
+
+  const sync = () => {
+    setPinned((window.scrollY || document.documentElement.scrollTop || 0) <= VITRINE_SCROLL_SOLID_THRESHOLD)
+  }
+
+  useLayoutEffect(() => {
+    sync()
+    const raf = requestAnimationFrame(sync)
+    return () => cancelAnimationFrame(raf)
+  }, [pathname])
+
+  useEffect(() => {
+    const onScroll = () => setPinned(!readVitrineScrollSolid())
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("pageshow", onScroll)
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("pageshow", onScroll)
+    }
+  }, [pathname])
+
+  return pinned
+}
 
 type VitrineHeroProps = {
   seoVariant: SeoVariant
@@ -99,14 +133,19 @@ export function VitrineHero({
   localPage,
   heroOrderAudience = "particulier",
 }: VitrineHeroProps) {
+  const backdropPinned = useHeroBackdropPinned()
+  const backdropLayerClass = backdropPinned
+    ? "pointer-events-none fixed inset-x-0 top-0 z-[1] h-[100svh] overflow-hidden"
+    : "pointer-events-none absolute inset-0 overflow-hidden"
+
   return (
     <>
     <section
       id="accueil"
-      className="relative isolate flex min-h-[100svh] flex-col justify-center overflow-hidden bg-brand-navy"
+      className="relative z-10 flex min-h-[100svh] flex-col justify-center overflow-hidden bg-brand-navy"
     >
-      <div className="absolute inset-0 overflow-hidden md:hidden">
-        <div className="hero-bg-frame hero-bg-frame--mobile relative">
+      <div className={cn(backdropLayerClass, "md:hidden")}>
+        <div className="hero-bg-frame hero-bg-frame--mobile relative h-full w-full">
           <Image
             src="/images/hero-paris-truck-mobile.png"
             alt={hero.imageAlt}
@@ -116,9 +155,10 @@ export function VitrineHero({
             className="object-cover object-center"
           />
         </div>
+        <div aria-hidden="true" className="hero-overlay hero-overlay--mobile" />
       </div>
-      <div className="absolute inset-0 hidden overflow-hidden md:block">
-        <div className="hero-bg-frame hero-bg-frame--desktop relative">
+      <div className={cn(backdropLayerClass, "hidden md:block")}>
+        <div className="hero-bg-frame hero-bg-frame--desktop relative h-full w-full">
           <Image
             src="/images/hero-paris-truck-desktop.png"
             alt={hero.imageAlt}
@@ -128,10 +168,8 @@ export function VitrineHero({
             className="object-cover object-[55%_center]"
           />
         </div>
+        <div aria-hidden="true" className="hero-overlay hero-overlay--desktop" />
       </div>
-
-      <div aria-hidden="true" className="hero-overlay hero-overlay--mobile md:hidden" />
-      <div aria-hidden="true" className="hero-overlay hero-overlay--desktop hidden md:block" />
 
       <div
         className={cn(
