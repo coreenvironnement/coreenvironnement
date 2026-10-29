@@ -178,11 +178,11 @@ export function VitrineHero({
         )}
       >
         {localPage ? <LocalBreadcrumbs page={localPage} /> : null}
-        <div className="relative flex flex-col gap-8 max-lg:gap-7 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-start lg:gap-12 xl:grid-cols-[minmax(0,1fr)_440px] xl:gap-14">
-          <div className="relative order-1 max-w-[760px] lg:max-w-none lg:-translate-y-2">
+        <div className="relative flex flex-col gap-8 max-lg:gap-7 lg:grid lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:items-center lg:gap-12 xl:grid-cols-[440px_minmax(0,1fr)] xl:gap-14">
+          <div className="relative order-1 max-w-[760px] lg:order-none lg:col-start-2 lg:row-start-1 lg:max-w-none">
             <div
               aria-hidden
-              className="hero-readability-glow pointer-events-none absolute -inset-x-3 -inset-y-5 rounded-[1.25rem] md:-inset-x-10 md:-inset-y-12 md:rounded-[2rem]"
+              className="hero-readability-glow pointer-events-none absolute -inset-x-3 -inset-y-5 rounded-[1.25rem] md:-inset-x-10 md:-inset-y-12 md:rounded-[2rem] lg:hidden"
             />
             <div
               className="animate-fade-up hidden md:block"
@@ -219,7 +219,7 @@ export function VitrineHero({
           </div>
 
           <div
-            className="animate-fade-up order-2 -mt-1 w-full max-lg:mt-4 lg:sticky lg:top-28 lg:order-none lg:mt-0"
+            className="animate-fade-up order-2 -mt-1 w-full max-lg:mt-4 lg:order-none lg:col-start-1 lg:row-start-1 lg:mt-0"
             style={{ animationDelay: "280ms" }}
           >
             <HeroOrderCard defaultAudience={heroOrderAudience} />
