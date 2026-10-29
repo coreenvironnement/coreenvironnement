@@ -8,7 +8,7 @@ import {
   useState,
   type KeyboardEvent,
 } from "react"
-import { Loader2, MapPin } from "lucide-react"
+import { Loader2, MapPin, Search } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
 import {
@@ -17,8 +17,9 @@ import {
 } from "@/lib/geo/ban-api"
 import { cn } from "@/lib/utils"
 
-const DEBOUNCE_MS = 300
+const DEBOUNCE_MS = 280
 const MIN_QUERY_LENGTH = 3
+const SUGGESTION_LIMIT = 8
 
 type AddressAutocompleteProps = {
   id?: string
@@ -33,6 +34,16 @@ type AddressAutocompleteProps = {
   placeholder?: string
   warmSurface?: boolean
   "aria-invalid"?: boolean
+}
+
+function suggestionSecondaryLine(hit: AddressGeocodeHit): string | null {
+  if (hit.label.includes(hit.postcode)) {
+    return hit.city ? `${hit.city} (${hit.departementCode})` : null
+  }
+  if (hit.postcode && hit.city) {
+    return `${hit.postcode} ${hit.city}`
+  }
+  return hit.city || null
 }
 
 export function AddressAutocomplete({
@@ -51,23 +62,29 @@ export function AddressAutocomplete({
 }: AddressAutocompleteProps) {
   const listboxId = useId()
   const containerRef = useRef<HTMLDivElement>(null)
-  const [open, setOpen] = useState(false)
+  const [focused, setFocused] = useState(false)
   const [loading, setLoading] = useState(false)
   const [suggestions, setSuggestions] = useState<AddressGeocodeHit[]>([])
   const [activeIndex, setActiveIndex] = useState(-1)
   const [fetchError, setFetchError] = useState<string | null>(null)
+  const [searchSettled, setSearchSettled] = useState(false)
+
+  const trimmed = value.trim()
+  const queryTooShort = trimmed.length > 0 && trimmed.length < MIN_QUERY_LENGTH
+  const skipSearch =
+    trimmed.length < MIN_QUERY_LENGTH || selected?.label === trimmed
 
   const closeList = useCallback(() => {
-    setOpen(false)
+    setFocused(false)
     setActiveIndex(-1)
   }, [])
 
   useEffect(() => {
-    const q = value.trim()
-    if (q.length < MIN_QUERY_LENGTH || selected?.label === q) {
+    if (skipSearch) {
       setSuggestions([])
       setLoading(false)
       setFetchError(null)
+      setSearchSettled(false)
       return
     }
 
@@ -75,17 +92,22 @@ export function AddressAutocomplete({
     const timer = window.setTimeout(async () => {
       setLoading(true)
       setFetchError(null)
+      setSearchSettled(false)
       try {
-        const results = await searchBanAddresses(q, 5, controller.signal)
+        const results = await searchBanAddresses(
+          trimmed,
+          SUGGESTION_LIMIT,
+          controller.signal
+        )
         if (controller.signal.aborted) return
         setSuggestions(results)
-        setOpen(results.length > 0)
         setActiveIndex(results.length > 0 ? 0 : -1)
+        setSearchSettled(true)
       } catch {
         if (controller.signal.aborted) return
         setSuggestions([])
         setFetchError("Impossible de charger les suggestions d'adresse.")
-        setOpen(false)
+        setSearchSettled(true)
       } finally {
         if (!controller.signal.aborted) setLoading(false)
       }
@@ -95,7 +117,7 @@ export function AddressAutocomplete({
       controller.abort()
       window.clearTimeout(timer)
     }
-  }, [value, selected?.label])
+  }, [trimmed, skipSearch])
 
   useEffect(() => {
     const onPointerDown = (event: MouseEvent) => {
@@ -103,7 +125,6 @@ export function AddressAutocomplete({
         closeList()
       }
     }
-    // Capture phase: close before sibling controls (e.g. waste-type Select) receive the click.
     document.addEventListener("pointerdown", onPointerDown, true)
     return () => document.removeEventListener("pointerdown", onPointerDown, true)
   }, [closeList])
@@ -113,8 +134,17 @@ export function AddressAutocomplete({
     closeList()
   }
 
+  const showPanel =
+    focused &&
+    !disabled &&
+    (queryTooShort ||
+      loading ||
+      fetchError !== null ||
+      (searchSettled && !skipSearch) ||
+      suggestions.length > 0)
+
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (!open || suggestions.length === 0) {
+    if (!showPanel || suggestions.length === 0) {
       if (event.key === "Escape") closeList()
       return
     }
@@ -144,6 +174,11 @@ export function AddressAutocomplete({
   const activeOptionId =
     activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : undefined
 
+  const panelSurface = cn(
+    "absolute z-20 mt-1.5 w-full overflow-hidden rounded-xl border border-primary/15 shadow-lg",
+    warmSurface ? "bg-brand-warm-field" : "bg-white"
+  )
+
   return (
     <div ref={containerRef} className={cn("relative", className)}>
       <MapPin
@@ -153,8 +188,8 @@ export function AddressAutocomplete({
       <Input
         id={id}
         role="combobox"
-        aria-expanded={open}
-        aria-controls={listboxId}
+        aria-expanded={showPanel}
+        aria-controls={showPanel ? listboxId : undefined}
         aria-activedescendant={activeOptionId}
         aria-autocomplete="list"
         aria-invalid={ariaInvalid}
@@ -167,11 +202,9 @@ export function AddressAutocomplete({
             onClearSelection()
           }
         }}
-        onFocus={() => {
-          if (suggestions.length > 0) setOpen(true)
-        }}
+        onFocus={() => setFocused(true)}
         onBlur={() => {
-          window.setTimeout(() => closeList(), 0)
+          window.setTimeout(() => closeList(), 150)
         }}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
@@ -185,48 +218,77 @@ export function AddressAutocomplete({
       />
       {loading ? (
         <Loader2
-          className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 animate-spin text-brand-navy/40"
+          className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 animate-spin text-brand-navy/45"
           aria-hidden
         />
-      ) : null}
+      ) : (
+        <Search
+          className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-brand-navy/25"
+          aria-hidden
+        />
+      )}
 
-      {open && suggestions.length > 0 ? (
-        <ul
-          id={listboxId}
-          role="listbox"
-          aria-label="Suggestions d'adresse en Île-de-France"
-          className={cn(
-            "absolute z-20 mt-1 max-h-60 w-full overflow-y-auto rounded-xl border border-primary/15 py-1 shadow-lg",
-            warmSurface ? "bg-brand-warm-field" : "bg-white"
-          )}
-        >
-          {suggestions.map((hit, index) => (
-            <li
-              key={`${hit.label}-${index}`}
-              id={`${listboxId}-option-${index}`}
-              role="option"
-              aria-selected={index === activeIndex}
-              className={cn(
-                "cursor-pointer px-4 py-2.5 text-left text-sm text-brand-navy transition-colors hover:bg-primary/10",
-                index === activeIndex && "bg-primary/10"
-              )}
-              onMouseEnter={() => setActiveIndex(index)}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => pickSuggestion(hit)}
+      {showPanel ? (
+        <div id={listboxId} role="presentation" className={panelSurface}>
+          {queryTooShort ? (
+            <p className="px-4 py-3 text-sm text-brand-muted" role="status">
+              Saisissez au moins {MIN_QUERY_LENGTH} caractères (numéro, rue ou
+              code postal en Île-de-France).
+            </p>
+          ) : loading ? (
+            <div
+              className="flex items-center gap-2 px-4 py-3 text-sm text-brand-muted"
+              role="status"
+              aria-live="polite"
             >
-              <span className="font-medium">{hit.label}</span>
-              <span className="mt-0.5 block text-xs text-muted-foreground">
-                {hit.postcode} {hit.city}
-              </span>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-
-      {fetchError ? (
-        <p className="mt-1 text-xs text-amber-800" role="status">
-          {fetchError}
-        </p>
+              <Loader2 className="size-4 shrink-0 animate-spin text-brand-navy/45" />
+              Recherche d&apos;adresses…
+            </div>
+          ) : fetchError ? (
+            <p className="px-4 py-3 text-sm text-amber-900" role="alert">
+              {fetchError}
+            </p>
+          ) : suggestions.length > 0 ? (
+            <ul
+              role="listbox"
+              aria-label="Suggestions d'adresse en Île-de-France"
+              className="max-h-64 overflow-y-auto py-1"
+            >
+              {suggestions.map((hit, index) => {
+                const secondary = suggestionSecondaryLine(hit)
+                return (
+                  <li
+                    key={`${hit.label}-${hit.postcode}-${index}`}
+                    id={`${listboxId}-option-${index}`}
+                    role="option"
+                    aria-selected={index === activeIndex}
+                    className={cn(
+                      "cursor-pointer px-4 py-2.5 text-left transition-colors hover:bg-primary/10",
+                      index === activeIndex && "bg-primary/10"
+                    )}
+                    onMouseEnter={() => setActiveIndex(index)}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => pickSuggestion(hit)}
+                  >
+                    <span className="block text-sm font-medium leading-snug text-brand-navy">
+                      {hit.label}
+                    </span>
+                    {secondary ? (
+                      <span className="mt-0.5 block text-xs text-brand-muted">
+                        {secondary}
+                      </span>
+                    ) : null}
+                  </li>
+                )
+              })}
+            </ul>
+          ) : searchSettled ? (
+            <p className="px-4 py-3 text-sm text-brand-muted" role="status">
+              Aucune adresse trouvée en Île-de-France. Ajoutez un numéro, une rue
+              ou un code postal (75, 77, 78, 91, 92, 93, 94, 95).
+            </p>
+          ) : null}
+        </div>
       ) : null}
     </div>
   )

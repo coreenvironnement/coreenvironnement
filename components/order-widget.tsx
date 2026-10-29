@@ -41,11 +41,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { EmbeddedCheckout } from "@/components/order/embedded-checkout"
 import { OrderDateField } from "@/components/order/order-date-field"
+import { OrderTunnelContinueButton } from "@/components/order/order-tunnel-continue-button"
+import { ParticulierWastePicker } from "@/components/order/particulier-waste-picker"
+import { WasteFamilySelect } from "@/components/order/waste-situation-picker"
 import {
-  WasteFamilyExactListDisclosure,
-  WasteFamilySelect,
-  WasteSituationPicker,
-} from "@/components/order/waste-situation-picker"
+  particulierWasteOptionById,
+  type ParticulierWasteOptionId,
+} from "@/lib/order/particulier-waste-options"
 import { formatOrderDatePicker } from "@/lib/format/date"
 import { submitProfessionalBenneRequest } from "@/app/order/actions"
 import {
@@ -188,6 +190,8 @@ export function OrderWidget({
     btn?.focus({ preventScroll: true })
   }
   const [family, setFamily] = useState<BenneFamily | null>(null)
+  const [particulierWasteId, setParticulierWasteId] =
+    useState<ParticulierWasteOptionId | null>(null)
   const [deliveryDate, setDeliveryDate] = useState("")
   const [pickupDate, setPickupDate] = useState("")
   const [selectedPrestationId, setSelectedPrestationId] = useState<
@@ -226,7 +230,8 @@ export function OrderWidget({
   }
 
   const zoneOk = selectedAddress !== null
-  const canLeaveIntentWaste = family !== null
+  const canLeaveIntentWaste =
+    audience === "particulier" ? particulierWasteId !== null : family !== null
 
   const syncDraftFromWidget = () => {
     if (!embedded) return
@@ -263,7 +268,12 @@ export function OrderWidget({
       setAddressError("Indiquez l’adresse de livraison de la benne.")
       return
     }
-    if (!family) {
+    if (audience === "particulier") {
+      if (!particulierWasteId) {
+        setAddressError("Choisissez ce que vous souhaitez jeter.")
+        return
+      }
+    } else if (!family) {
       setAddressError("Choisissez un type de déchet dans la liste.")
       return
     }
@@ -312,7 +322,7 @@ export function OrderWidget({
       setDeliveryDateError(
         "La date de livraison doit être au moins 24 h après votre commande (fuseau Europe/Paris)."
       )
-      setAddressError(null)
+    setAddressError(null)
       requestAnimationFrame(() => {
         scrollToDeliveryDateField()
         focusDeliveryDateField()
@@ -610,32 +620,32 @@ export function OrderWidget({
                 />
 
                 <div className="space-y-2.5">
-                  <p className={ORDER_SECTION_LABEL}>Où livrer votre benne&nbsp;?</p>
-                  <div className="space-y-2">
-                    <label htmlFor="order-address" className="sr-only">
-                      Adresse de livraison
-                    </label>
-                    <AddressAutocomplete
-                      id="order-address"
-                      value={address}
-                      selected={selectedAddress}
-                      onValueChange={(next) => {
-                        setAddress(next)
-                        setAddressError(null)
-                      }}
-                      onSelect={handleAddressSelect}
-                      onClearSelection={clearAddressSelection}
-                      aria-invalid={addressError !== null && !selectedAddress}
+                    <p className={ORDER_SECTION_LABEL}>Où livrer votre benne&nbsp;?</p>
+                    <div className="space-y-2">
+                      <label htmlFor="order-address" className="sr-only">
+                        Adresse de livraison
+                      </label>
+                      <AddressAutocomplete
+                        id="order-address"
+                        value={address}
+                        selected={selectedAddress}
+                        onValueChange={(next) => {
+                          setAddress(next)
+                          setAddressError(null)
+                        }}
+                        onSelect={handleAddressSelect}
+                        onClearSelection={clearAddressSelection}
+                        aria-invalid={addressError !== null && !selectedAddress}
                       inputClassName="h-12 rounded-xl"
                       warmSurface={embedded}
-                    />
-                    <p className={ORDER_HELP_TEXT}>
-                      <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
-                      <span>
+                      />
+                      <p className={ORDER_HELP_TEXT}>
+                        <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
+                        <span>
                         Saisissez votre adresse en Île-de-France et choisissez une
                         suggestion.
-                      </span>
-                    </p>
+                        </span>
+                      </p>
                   </div>
                 </div>
 
@@ -692,49 +702,76 @@ export function OrderWidget({
                   embedded ? "space-y-4 sm:space-y-5" : "space-y-4"
                 )}
               >
-                {selectedAddress ? (
-                  <div
-                    className={cn(
-                      embedded ? ORDER_TUNNEL_CARD : "rounded-xl border border-primary/12 bg-white/95",
-                      "flex items-start gap-2.5 px-3.5 py-3"
-                    )}
-                  >
-                    <MapPin className="mt-0.5 size-4 shrink-0 text-brand-green" aria-hidden />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[11px] font-semibold uppercase tracking-wide text-brand-muted">
-                        Livraison
-                      </p>
-                      <p className="mt-0.5 text-[13px] font-medium leading-snug text-brand-navy sm:text-sm">
-                        {selectedAddress.label}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      className="inline-flex shrink-0 items-center gap-1 text-[12px] font-semibold text-brand-green hover:text-[#19752B]"
-                      onClick={() => {
-                        setAddressError(null)
-                        setIntentPhase("location")
-                      }}
-                    >
-                      <Pencil className="size-3.5" aria-hidden />
-                      Modifier
-                    </button>
-                  </div>
-                ) : null}
-
-                <div className="relative z-30 space-y-2.5">
-                  <p className={ORDER_SECTION_LABEL}>Type de déchet</p>
-                  {audience === "particulier" ? (
-                    <div className="space-y-2.5">
-                      <WasteSituationPicker
-                        family={family}
-                        warmSurface={embedded}
-                        onSelectFamily={(fid) => {
-                          setFamily(fid)
+                {audience === "particulier" ? (
+                  <>
+                    <div className="flex items-center gap-2.5">
+                      <button
+                        type="button"
+                        aria-label="Retour à l’adresse de livraison"
+                        className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg border-2 border-brand-green/35 bg-white text-brand-navy shadow-sm transition-colors hover:border-brand-green hover:bg-brand-warm-field"
+                        onClick={() => {
                           setAddressError(null)
+                          setIntentPhase("location")
                         }}
-                      />
-                      <WasteFamilyExactListDisclosure
+                      >
+                        <ArrowLeft className="size-[18px] text-brand-green" aria-hidden />
+                      </button>
+                      <h3 className="text-[17px] font-bold leading-snug text-brand-navy sm:text-[18px]">
+                        Que souhaitez-vous jeter ?
+                      </h3>
+                    </div>
+
+                    <ParticulierWastePicker
+                      value={particulierWasteId}
+                      onChange={(id) => {
+                        setParticulierWasteId(id)
+                        const mapped = particulierWasteOptionById(id)
+                        if (mapped) setFamily(mapped.family)
+                        setSelectedPrestationId(null)
+                        setAddressError(null)
+                      }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    {selectedAddress ? (
+                      <div
+                        className={cn(
+                          embedded
+                            ? ORDER_TUNNEL_CARD
+                            : "rounded-xl border border-primary/12 bg-white/95",
+                          "flex items-start gap-2.5 px-3.5 py-3"
+                        )}
+                      >
+                        <MapPin
+                          className="mt-0.5 size-4 shrink-0 text-brand-green"
+                          aria-hidden
+                        />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[11px] font-semibold uppercase tracking-wide text-brand-muted">
+                            Livraison
+                          </p>
+                          <p className="mt-0.5 text-[13px] font-medium leading-snug text-brand-navy sm:text-sm">
+                            {selectedAddress.label}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          className="inline-flex shrink-0 items-center gap-1 text-[12px] font-semibold text-brand-green hover:text-[#19752B]"
+                          onClick={() => {
+                            setAddressError(null)
+                            setIntentPhase("location")
+                          }}
+                        >
+                          <Pencil className="size-3.5" aria-hidden />
+                          Modifier
+                        </button>
+                      </div>
+                    ) : null}
+
+                    <div className="relative z-30 space-y-2.5">
+                      <p className={ORDER_SECTION_LABEL}>Type de déchet</p>
+                      <WasteFamilySelect
                         family={family}
                         embedded={embedded}
                         onSelectFamily={(fid) => {
@@ -743,17 +780,8 @@ export function OrderWidget({
                         }}
                       />
                     </div>
-                  ) : (
-                    <WasteFamilySelect
-                      family={family}
-                      embedded={embedded}
-                      onSelectFamily={(fid) => {
-                        setFamily(fid)
-                        setAddressError(null)
-                      }}
-                    />
-                  )}
-                </div>
+                  </>
+                )}
 
                 {addressError ? (
                   <p className="text-center text-xs font-medium text-amber-800">
@@ -761,19 +789,31 @@ export function OrderWidget({
                   </p>
                 ) : null}
 
-                <Button
-                  type="button"
-                  className="mt-0.5 h-11 w-full rounded-xl border-0 bg-[#2F9632] px-4 text-base font-semibold text-white shadow-lg shadow-[#2F9632]/25 hover:bg-[#19752B] disabled:cursor-not-allowed disabled:bg-[#2F9632] disabled:opacity-60 disabled:shadow-md"
-                  onClick={goToForfait}
-                  disabled={!canLeaveIntentWaste}
-                >
-                  <span className="flex w-full items-center justify-between gap-2">
-                    <span>
-                      {audience === "particulier" ? "Voir les bennes" : "Voir les forfaits"}
+                {audience === "particulier" ? (
+                  <div
+                    className={cn(
+                      embedded &&
+                        "sticky bottom-0 z-20 -mx-4 border-t border-primary/10 bg-gradient-to-t from-brand-warm via-brand-warm/95 to-brand-warm/80 px-4 pb-1 pt-3 sm:-mx-6 sm:px-6"
+                    )}
+                  >
+                    <OrderTunnelContinueButton
+                      onClick={goToForfait}
+                      disabled={!canLeaveIntentWaste}
+                    />
+                  </div>
+                ) : (
+                  <Button
+                    type="button"
+                    className="mt-0.5 h-11 w-full rounded-xl border-0 bg-[#2F9632] px-4 text-base font-semibold text-white shadow-lg shadow-[#2F9632]/25 hover:bg-[#19752B] disabled:cursor-not-allowed disabled:bg-[#2F9632] disabled:opacity-60 disabled:shadow-md"
+                    onClick={goToForfait}
+                    disabled={!canLeaveIntentWaste}
+                  >
+                    <span className="flex w-full items-center justify-between gap-2">
+                      <span>Voir les forfaits</span>
+                      <ChevronRight className="size-4 shrink-0" aria-hidden />
                     </span>
-                    <ChevronRight className="size-4 shrink-0" aria-hidden />
-                  </span>
-                </Button>
+                  </Button>
+                )}
               </div>
             </motion.div>
           )}
@@ -899,7 +939,7 @@ export function OrderWidget({
                       <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
                       <span>
                         Livraison possible à partir de 24 h après votre commande.
-                      </span>
+                  </span>
                     </p>
                     {deliveryDateError ? (
                       <p className="text-xs font-medium text-amber-800">
@@ -966,7 +1006,7 @@ export function OrderWidget({
                         orderFieldBg(embedded)
                       )}
                       />
-                    </div>
+                </div>
                     <div className="space-y-1.5">
                       <label htmlFor="order-pro-contact" className="text-xs font-semibold text-brand-navy">
                         Nom et prénom du contact&nbsp;*
@@ -1048,22 +1088,22 @@ export function OrderWidget({
                 <div className="space-y-1.5">
                   <label htmlFor="order-contact-email" className="text-xs font-semibold text-brand-navy">
                     {audience === "professionnel" ? "Adresse e-mail" : "Email"}&nbsp;*
-                  </label>
-                  <Input
-                    id="order-contact-email"
-                    type="email"
-                    autoComplete="email"
-                    value={contactEmail}
-                    onChange={(e) => {
-                      setContactEmail(e.target.value)
+                    </label>
+                    <Input
+                      id="order-contact-email"
+                      type="email"
+                      autoComplete="email"
+                      value={contactEmail}
+                      onChange={(e) => {
+                        setContactEmail(e.target.value)
                       setAddressError(null)
                     }}
                     className={cn(
                       "h-11 rounded-xl border-2 border-primary/15 px-3",
                       orderFieldBg(embedded)
                     )}
-                  />
-                </div>
+                    />
+                  </div>
                 {audience === "professionnel" ? (
                   <div className="space-y-1.5">
                     <label htmlFor="order-siret" className="text-xs font-medium text-muted-foreground">
@@ -1085,7 +1125,7 @@ export function OrderWidget({
                     />
                   </div>
                 ) : null}
-              </div>
+                </div>
 
               {addressError && (
                 <p className="text-center text-xs font-medium text-amber-800">
@@ -1106,8 +1146,8 @@ export function OrderWidget({
                   <ArrowLeft className="mr-2 size-4" />
                   Retour
                 </Button>
-                <Button
-                  type="button"
+                  <Button
+                    type="button"
                   className="h-11 rounded-xl text-base font-semibold shadow-lg sm:flex-1"
                   onClick={goToPayment}
                 >
@@ -1230,7 +1270,7 @@ export function OrderWidget({
                         {FAMILY_LABELS[family].title}
                       </span>
                     </li>
-                  ) : null}
+                ) : null}
                   <li>
                     <span className="text-muted-foreground">Livraison · </span>
                     <span className="font-medium text-brand-navy">
@@ -1409,7 +1449,7 @@ function PrestationCard({
             : "border-brand-navy bg-gradient-to-br from-accent to-white"
           : warmSurface
             ? "border-primary/20 bg-brand-warm-field hover:border-brand-navy/35 hover:bg-primary/[0.06]"
-            : "border-border/80 bg-card/90 hover:border-brand-navy/35"
+          : "border-border/80 bg-card/90 hover:border-brand-navy/35"
       )}
     >
       <div className="flex h-[58px] w-[72px] shrink-0 items-center justify-center overflow-hidden sm:h-[72px] sm:w-[92px]">
@@ -1430,10 +1470,10 @@ function PrestationCard({
           {showTtc
             ? `${prestation.volumeM3} m³`
             : `${systemLabel(prestation.system)} · ${prestation.volumeM3} m³`}
-        </span>
+          </span>
         <p className="mt-0.5 text-[13px] font-semibold leading-snug text-brand-navy sm:text-sm">
-          {prestation.label}
-        </p>
+            {prestation.label}
+          </p>
         <p className="mt-1 line-clamp-2 text-[11px] leading-snug text-muted-foreground sm:text-xs">
           {showTtc
             ? `Jusqu'à ${prestation.tonnageMax} tonnes. Au-delà : ${fmtHt(surcharge.ttc)} par tonne.`

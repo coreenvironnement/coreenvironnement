@@ -46,10 +46,12 @@ function mapFeature(
   }
 }
 
+const BAN_FETCH_LIMIT = 50
+
 /** Recherche d'adresses via la Base Adresse Nationale (API publique, sans clé). */
 export async function searchBanAddresses(
   query: string,
-  limit = 5,
+  limit = 8,
   signal?: AbortSignal
 ): Promise<AddressGeocodeHit[]> {
   const q = query.trim()
@@ -57,9 +59,14 @@ export async function searchBanAddresses(
 
   const params = new URLSearchParams({
     q,
-    limit: String(Math.min(limit * 2, 10)),
+    limit: String(BAN_FETCH_LIMIT),
     autocomplete: "1",
   })
+
+  const postcodeInQuery = q.match(/\b(75|77|78|91|92|93|94|95)\d{3}\b/)?.[0]
+  if (postcodeInQuery) {
+    params.set("postcode", postcodeInQuery)
+  }
 
   const res = await fetch(`${BAN_SEARCH_URL}?${params.toString()}`, {
     headers: { Accept: "application/json" },
