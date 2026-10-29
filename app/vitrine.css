@@ -498,14 +498,8 @@
   }
 
   .vitrine-root .hero-overlay--desktop {
-    /* Voile uniforme en largeur — lisibilité carte + texte des deux côtés */
-    background:
-      linear-gradient(
-        180deg,
-        rgb(24 53 116 / 0.56) 0%,
-        rgb(24 53 116 / 0.48) 45%,
-        rgb(24 53 116 / 0.48) 100%
-      );
+    /* Voile uniforme en largeur — lisibilité carte + texte + nav transparente */
+    background: rgb(24 53 116 / 0.52);
   }
 
   /* Mobile : voile plus léger, couverture ~95 % de l’image */

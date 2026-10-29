@@ -142,7 +142,7 @@ export function VitrineHero({
     <>
     <section
       id="accueil"
-      className="relative z-10 flex min-h-[100svh] flex-col justify-center overflow-hidden bg-brand-navy"
+      className="relative z-10 flex min-h-[100svh] flex-col justify-center overflow-hidden bg-transparent"
     >
       <div className={cn(backdropLayerClass, "md:hidden")}>
         <div className="hero-bg-frame hero-bg-frame--mobile relative h-full w-full">
@@ -179,7 +179,7 @@ export function VitrineHero({
       >
         {localPage ? <LocalBreadcrumbs page={localPage} /> : null}
         <div className="relative flex flex-col gap-8 max-lg:gap-7 lg:grid lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:items-center lg:gap-12 xl:grid-cols-[440px_minmax(0,1fr)] xl:gap-14">
-          <div className="relative order-1 max-w-[760px] lg:order-none lg:col-start-2 lg:row-start-1 lg:max-w-none">
+          <div className="relative order-1 max-w-[760px] lg:order-none lg:col-start-2 lg:row-start-1 lg:max-w-none lg:pl-2 xl:pl-6">
             <div
               aria-hidden
               className="hero-readability-glow pointer-events-none absolute -inset-x-3 -inset-y-5 rounded-[1.25rem] md:-inset-x-10 md:-inset-y-12 md:rounded-[2rem] lg:hidden"
