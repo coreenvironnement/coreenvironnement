@@ -678,12 +678,34 @@ export function OrderWidget({
                             className="h-12 w-full max-w-none items-center justify-between rounded-xl border-2 border-primary/20 bg-white py-0 pl-4 pr-4 text-base shadow-sm focus-visible:border-primary/50 focus-visible:ring-brand-navy/30 data-[size=default]:h-12 dark:bg-white/95"
                             size="default"
                           >
-                            <SelectValue placeholder="Choisissez le type de déchet dans la liste" />
+                            <SelectValue placeholder="Choisissez le type de déchet dans la liste">
+                              {(value) => {
+                                if (!value) return null
+                                const fid = value as BenneFamily
+                                const meta = FAMILY_LABELS[fid]
+                                const Icon = FAMILY_ICONS[fid]
+                                if (!meta || !Icon) return null
+                                return (
+                                  <span className="flex min-w-0 items-center gap-2.5">
+                                    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                                      <Icon
+                                        className="size-[1.15rem] text-primary"
+                                        aria-hidden
+                                      />
+                                    </span>
+                                    <span className="truncate font-medium text-foreground">
+                                      {meta.title}
+                                    </span>
+                                  </span>
+                                )
+                              }}
+                            </SelectValue>
                           </SelectTrigger>
                           <SelectContent
                             side="bottom"
                             align="start"
                             sideOffset={6}
+                            alignItemWithTrigger={false}
                             className="z-[100] rounded-xl border-primary/15"
                           >
                             {FAMILIES.map((fid) => {
