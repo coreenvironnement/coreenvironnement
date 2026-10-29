@@ -694,7 +694,7 @@ export function OrderWidget({
                                   key={fid}
                                   value={fid}
                                   label={meta.title}
-                                  className="cursor-pointer py-3"
+                                  className="cursor-pointer py-3 hover:bg-primary/10 focus:bg-primary/10 data-highlighted:bg-primary/10 data-selected:bg-primary/10"
                                 >
                                   <span className="flex w-full items-start gap-3 text-left">
                                     <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">

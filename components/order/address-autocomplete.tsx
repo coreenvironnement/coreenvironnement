@@ -199,8 +199,8 @@ export function AddressAutocomplete({
               role="option"
               aria-selected={index === activeIndex}
               className={cn(
-                "cursor-pointer px-4 py-2.5 text-left text-sm text-brand-navy transition-colors",
-                index === activeIndex ? "bg-primary/10" : "hover:bg-muted/60"
+                "cursor-pointer px-4 py-2.5 text-left text-sm text-brand-navy transition-colors hover:bg-primary/10",
+                index === activeIndex && "bg-primary/10"
               )}
               onMouseEnter={() => setActiveIndex(index)}
               onMouseDown={(e) => e.preventDefault()}
