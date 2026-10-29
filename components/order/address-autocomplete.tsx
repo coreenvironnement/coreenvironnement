@@ -36,16 +36,6 @@ type AddressAutocompleteProps = {
   "aria-invalid"?: boolean
 }
 
-function suggestionSecondaryLine(hit: AddressGeocodeHit): string | null {
-  if (hit.label.includes(hit.postcode)) {
-    return hit.city ? `${hit.city} (${hit.departementCode})` : null
-  }
-  if (hit.postcode && hit.city) {
-    return `${hit.postcode} ${hit.city}`
-  }
-  return hit.city || null
-}
-
 export function AddressAutocomplete({
   id,
   value,
@@ -70,7 +60,6 @@ export function AddressAutocomplete({
   const [searchSettled, setSearchSettled] = useState(false)
 
   const trimmed = value.trim()
-  const queryTooShort = trimmed.length > 0 && trimmed.length < MIN_QUERY_LENGTH
   const skipSearch =
     trimmed.length < MIN_QUERY_LENGTH || selected?.label === trimmed
 
@@ -137,8 +126,7 @@ export function AddressAutocomplete({
   const showPanel =
     focused &&
     !disabled &&
-    (queryTooShort ||
-      loading ||
+    (loading ||
       fetchError !== null ||
       (searchSettled && !skipSearch) ||
       suggestions.length > 0)
@@ -230,12 +218,7 @@ export function AddressAutocomplete({
 
       {showPanel ? (
         <div id={listboxId} role="presentation" className={panelSurface}>
-          {queryTooShort ? (
-            <p className="px-4 py-3 text-sm text-brand-muted" role="status">
-              Saisissez au moins {MIN_QUERY_LENGTH} caractères (numéro, rue ou
-              code postal en Île-de-France).
-            </p>
-          ) : loading ? (
+          {loading ? (
             <div
               className="flex items-center gap-2 px-4 py-3 text-sm text-brand-muted"
               role="status"
@@ -254,9 +237,7 @@ export function AddressAutocomplete({
               aria-label="Suggestions d'adresse en Île-de-France"
               className="max-h-64 overflow-y-auto py-1"
             >
-              {suggestions.map((hit, index) => {
-                const secondary = suggestionSecondaryLine(hit)
-                return (
+              {suggestions.map((hit, index) => (
                   <li
                     key={`${hit.label}-${hit.postcode}-${index}`}
                     id={`${listboxId}-option-${index}`}
@@ -273,14 +254,8 @@ export function AddressAutocomplete({
                     <span className="block text-sm font-medium leading-snug text-brand-navy">
                       {hit.label}
                     </span>
-                    {secondary ? (
-                      <span className="mt-0.5 block text-xs text-brand-muted">
-                        {secondary}
-                      </span>
-                    ) : null}
                   </li>
-                )
-              })}
+                ))}
             </ul>
           ) : searchSettled ? (
             <p className="px-4 py-3 text-sm text-brand-muted" role="status">
