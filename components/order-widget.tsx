@@ -3,18 +3,14 @@
 import { useEffect, useMemo, useRef, useState, useTransition } from "react"
 import Image from "next/image"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
-import type { LucideIcon } from "lucide-react"
 import {
   ArrowLeft,
-  BrickWall,
   Briefcase,
   ChevronRight,
-  Hammer,
   Headphones,
   Info,
   Loader2,
   MapPinOff,
-  Recycle,
   User,
 } from "lucide-react"
 
@@ -38,15 +34,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { EmbeddedCheckout } from "@/components/order/embedded-checkout"
 import { OrderDateField } from "@/components/order/order-date-field"
+import {
+  WasteFamilyExactListDisclosure,
+  WasteFamilySelect,
+  WasteSituationPicker,
+} from "@/components/order/waste-situation-picker"
 import { formatOrderDatePicker } from "@/lib/format/date"
 import { submitProfessionalBenneRequest } from "@/app/order/actions"
 import {
@@ -150,18 +144,6 @@ function AudienceToggle({
       </div>
     </div>
   )
-}
-
-const FAMILIES: BenneFamily[] = [
-  "melange_dnd",
-  "gravats_melanges",
-  "gravats_propres",
-]
-
-const FAMILY_ICONS: Record<BenneFamily, LucideIcon> = {
-  melange_dnd: Recycle,
-  gravats_melanges: Hammer,
-  gravats_propres: BrickWall,
 }
 
 type Audience = "particulier" | "professionnel"
@@ -683,110 +665,36 @@ export function OrderWidget({
                 </AnimatePresence>
 
                 <div className="relative z-30 space-y-2.5">
-                    <p className={ORDER_SECTION_LABEL}>Type de déchet</p>
-                    <div className="relative space-y-0">
-                      <label htmlFor="order-waste-family" className="sr-only">
-                        Type de déchet
-                      </label>
-                      <div className="relative">
-                        <Select
-                          value={family ?? ""}
-                          onValueChange={(v) => {
-                            if (!v) return
-                            setFamily(v as BenneFamily)
-                            setAddressError(null)
-                          }}
-                        >
-                          <SelectTrigger
-                            id="order-waste-family"
-                            className={cn(
-                              "h-12 w-full max-w-none items-center justify-between rounded-xl border-2 border-primary/20 py-0 pl-4 pr-4 text-base shadow-sm focus-visible:border-primary/50 focus-visible:ring-brand-navy/30 data-[size=default]:h-12",
-                              orderFieldBg(embedded)
-                            )}
-                            size="default"
-                          >
-                            <SelectValue placeholder="Choisissez le type de déchet">
-                              {(value) => {
-                                if (!value) {
-                                  return (
-                                    <span className="flex min-w-0 items-center gap-2.5">
-                                      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-brand-navy/[0.06] text-brand-navy/45">
-                                        <Recycle
-                                          className="size-[1.15rem]"
-                                          aria-hidden
-                                        />
-                                      </span>
-                                      <span className="min-w-0 flex-1 text-left">
-                                        <span className="block truncate text-[15px] font-semibold leading-snug text-brand-muted">
-                                          Choisissez le type de déchet
-                                        </span>
-                                        <span className="mt-0.5 block text-[11px] font-medium text-brand-muted/80">
-                                          Gravats, mélange DND…
-                                        </span>
-                                      </span>
-                                    </span>
-                                  )
-                                }
-                                const fid = value as BenneFamily
-                                const meta = FAMILY_LABELS[fid]
-                                const Icon = FAMILY_ICONS[fid]
-                                if (!meta || !Icon) return null
-                                return (
-                                  <span className="flex min-w-0 items-center gap-2.5">
-                                    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                                      <Icon
-                                        className="size-[1.15rem] text-primary"
-                                        aria-hidden
-                                      />
-                                    </span>
-                                    <span className="truncate font-medium text-brand-navy">
-                                      {meta.title}
-                                    </span>
-                                  </span>
-                                )
-                              }}
-                            </SelectValue>
-                          </SelectTrigger>
-                          <SelectContent
-                            side="bottom"
-                            align="start"
-                            sideOffset={6}
-                            alignItemWithTrigger={false}
-                            className="z-[100] rounded-xl border-primary/15 bg-brand-warm-field text-brand-navy"
-                          >
-                            {FAMILIES.map((fid) => {
-                              const meta = FAMILY_LABELS[fid]
-                              const Icon = FAMILY_ICONS[fid]
-                              return (
-                                <SelectItem
-                                  key={fid}
-                                  value={fid}
-                                  label={meta.title}
-                                  className="cursor-pointer py-3 hover:bg-primary/10 focus:bg-primary/10 data-highlighted:bg-primary/10 data-selected:bg-primary/10"
-                                >
-                                  <span className="flex w-full items-start gap-3 text-left">
-                                    <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                                      <Icon
-                                        className="size-[1.15rem] text-primary"
-                                        aria-hidden
-                                      />
-                                    </span>
-                                    <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                                      <span className="font-medium leading-snug text-brand-navy">
-                                        {meta.title}
-                                      </span>
-                                      <span className="text-xs font-normal leading-snug text-brand-muted">
-                                        {meta.description}
-                                      </span>
-                                    </span>
-                                  </span>
-                                </SelectItem>
-                              )
-                            })}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                  <p className={ORDER_SECTION_LABEL}>Type de déchet</p>
+                  {audience === "particulier" ? (
+                    <div className="space-y-2.5">
+                      <WasteSituationPicker
+                        family={family}
+                        warmSurface={embedded}
+                        onSelectFamily={(fid) => {
+                          setFamily(fid)
+                          setAddressError(null)
+                        }}
+                      />
+                      <WasteFamilyExactListDisclosure
+                        family={family}
+                        embedded={embedded}
+                        onSelectFamily={(fid) => {
+                          setFamily(fid)
+                          setAddressError(null)
+                        }}
+                      />
                     </div>
+                  ) : (
+                    <WasteFamilySelect
+                      family={family}
+                      embedded={embedded}
+                      onSelectFamily={(fid) => {
+                        setFamily(fid)
+                        setAddressError(null)
+                      }}
+                    />
+                  )}
                 </div>
 
                 {addressError && (
