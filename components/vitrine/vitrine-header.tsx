@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useLayoutEffect, useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   ArrowUpRight01Icon,
@@ -18,6 +18,14 @@ import { VitrineLogo } from "./logo"
 
 /** Hauteur approximative bandeau + barre (pour scroll-margin / hero padding). */
 export const VITRINE_HEADER_TOTAL_OFFSET_CLASS = "pt-[7.25rem] sm:pt-[7.75rem] lg:pt-[8.25rem]"
+
+const SCROLL_SOLID_THRESHOLD = 16
+
+function readScrollSolid(): boolean {
+  if (typeof window === "undefined") return false
+  const y = window.scrollY || document.documentElement.scrollTop || 0
+  return y > SCROLL_SOLID_THRESHOLD
+}
 
 const PARTICULIER_NAV = [
   { label: "Comment ça marche", href: "/#parcours" },
@@ -78,9 +86,12 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
   const [menuOpen, setMenuOpen] = useState(false)
   const solid = forceSolid || scrolled
 
+  useLayoutEffect(() => {
+    setScrolled(readScrollSolid())
+  }, [pathname])
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16)
-    onScroll()
+    const onScroll = () => setScrolled(readScrollSolid())
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
@@ -99,16 +110,17 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
 
   return (
     <>
-      <header
-        className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,border-color] duration-500 ease-out",
-          solid
-            ? "border-b border-brand-border bg-brand-bg/90 shadow-[var(--shadow-vitrine-soft)] backdrop-blur-xl"
-            : "border-b border-transparent bg-transparent"
-        )}
-      >
+      <header className="fixed inset-x-0 top-0 z-50">
         <AudienceBandeau isProPage={isProPage} />
 
+        <div
+          className={cn(
+            "transition-[background-color,box-shadow,border-color] duration-500 ease-out",
+            solid
+              ? "border-b border-brand-border bg-brand-bg/90 shadow-[var(--shadow-vitrine-soft)] backdrop-blur-xl"
+              : "border-b border-transparent bg-transparent"
+          )}
+        >
         <div className="container-x flex h-[72px] items-center justify-between gap-4 lg:h-[84px]">
           <Link href={logoHref} aria-label="CORE ENVIRONNEMENT — Accueil" className="shrink-0">
             <VitrineLogo priority variant="header" transparent={!solid} />
@@ -191,6 +203,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
               <HugeiconsIcon icon={Menu01Icon} size={20} strokeWidth={VITRINE_ICON_STROKE} />
             </button>
           </div>
+        </div>
         </div>
       </header>
 

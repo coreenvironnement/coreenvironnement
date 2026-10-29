@@ -25,8 +25,6 @@ import { VitrineEarlyLocalLinks } from "./vitrine-early-local-links"
 import { VitrineLocationHub } from "./vitrine-location-hub"
 import { VitrineLongtailIntro } from "./vitrine-longtail-intro"
 import { VitrineSeoPricingSection } from "./vitrine-seo-pricing-section"
-import { LocalBreadcrumbs } from "@/components/seo/local-breadcrumbs"
-
 function OrderBanner({ orderParam }: { orderParam?: string }) {
   const { openOrder } = useVitrineOrder()
 
@@ -84,12 +82,7 @@ function VitrineHomeInner({
       <OrderBanner orderParam={orderParam} />
 
       <main id="contenu">
-        {localSeoData ? (
-          <div className="relative z-20 pt-[7.25rem] sm:pt-[7.75rem]">
-            <LocalBreadcrumbs page={localSeoData} />
-          </div>
-        ) : null}
-        <VitrineHero seoVariant={seoVariant} compactTop={Boolean(localSeoData)} />
+        <VitrineHero seoVariant={seoVariant} localPage={localSeoData} />
         {hubPage ? <VitrineEarlyLocalLinks mode="hub" /> : null}
         {!hubPage && !localSeoData ? <VitrineEarlyLocalLinks mode="home" /> : null}
         {localSeoData ? (

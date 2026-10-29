@@ -17,12 +17,16 @@ import { cn } from "@/lib/utils"
 
 import type { OrderAudience } from "@/components/order/order-audience-toggle"
 
+import { LocalBreadcrumbs } from "@/components/seo/local-breadcrumbs"
+import type { LocalPage } from "@/lib/seo/local-copy"
+
 import { HeroOrderCard } from "./hero-order-card"
+import { VITRINE_HEADER_TOTAL_OFFSET_CLASS } from "./vitrine-header"
 import { VitrineHeroReassurance } from "./vitrine-hero-reassurance"
 
 type VitrineHeroProps = {
   seoVariant: SeoVariant
-  compactTop?: boolean
+  localPage?: LocalPage
   heroOrderAudience?: OrderAudience
 }
 
@@ -92,7 +96,7 @@ function HeroGoogleRatingBadge({ className }: { className?: string }) {
 
 export function VitrineHero({
   seoVariant,
-  compactTop,
+  localPage,
   heroOrderAudience = "particulier",
 }: VitrineHeroProps) {
   return (
@@ -130,12 +134,12 @@ export function VitrineHero({
       <div aria-hidden="true" className="hero-overlay hero-overlay--desktop hidden md:block" />
 
       <div
-        className={
-          compactTop
-            ? "container-x relative z-10 pb-16 pt-4 sm:pb-28 sm:pt-6 lg:pb-32"
-            : "container-x relative z-10 pb-16 pt-[7.25rem] sm:pb-28 sm:pt-[7.75rem] lg:pb-32 lg:pt-[8.25rem]"
-        }
+        className={cn(
+          "container-x relative z-10 pb-16 sm:pb-28 lg:pb-32",
+          VITRINE_HEADER_TOTAL_OFFSET_CLASS
+        )}
       >
+        {localPage ? <LocalBreadcrumbs page={localPage} /> : null}
         <div className="relative flex flex-col gap-8 max-lg:gap-7 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-start lg:gap-12 xl:grid-cols-[minmax(0,1fr)_440px] xl:gap-14">
           <div className="relative order-1 max-w-[760px] lg:max-w-none lg:-translate-y-2">
             <div
