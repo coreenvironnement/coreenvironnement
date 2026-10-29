@@ -177,7 +177,9 @@ export function AddressAutocomplete({
         placeholder={placeholder}
         className={cn(
           "h-14 border-2 border-primary/20 pl-12 pr-11 text-base shadow-sm focus-visible:border-primary/50 focus-visible:ring-brand-navy/30",
-          warmSurface ? "bg-brand-warm-field" : "bg-white",
+          warmSurface
+            ? "bg-brand-warm-field text-brand-navy placeholder:text-brand-muted"
+            : "bg-white",
           inputClassName
         )}
       />

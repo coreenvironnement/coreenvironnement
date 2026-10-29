@@ -82,7 +82,11 @@ const ORDER_HELP_TEXT =
 const ORDER_TUNNEL_CARD = "order-tunnel-card"
 
 function orderFieldBg(embedded: boolean) {
-  return embedded ? "bg-brand-warm-field" : "bg-white"
+  return embedded ? "bg-brand-warm-field text-brand-navy" : "bg-white"
+}
+
+function orderOutlineBtn(embedded: boolean) {
+  return embedded ? "order-tunnel-outline-btn h-11 rounded-xl" : "h-11 rounded-xl"
 }
 
 /** Visuels forfait — mapping par volume (données métier inchangées). */
@@ -490,7 +494,12 @@ export function OrderWidget({
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.07] via-transparent to-brand-navy/[0.05]" />
       ) : null}
 
-      <CardContent className={cn("relative space-y-3", embedded ? "px-0 pb-0 pt-0" : "pt-8")}>
+      <CardContent
+        className={cn(
+          "relative space-y-3",
+          embedded ? "order-tunnel-form px-0 pb-0 pt-0" : "pt-8"
+        )}
+      >
         {!embedded ? (
           <OrderStepProgress currentStepIdx={currentStepIdx} steps={steps} />
         ) : null}
@@ -566,7 +575,7 @@ export function OrderWidget({
                   <Button
                     variant="outline"
                     type="button"
-                    className="h-10 w-full rounded-xl"
+                    className={cn(orderOutlineBtn(embedded), "h-10 w-full")}
                     disabled={isSubmittingPro}
                     onClick={() => setStep("recap")}
                   >
@@ -730,7 +739,7 @@ export function OrderWidget({
                                         aria-hidden
                                       />
                                     </span>
-                                    <span className="truncate font-medium text-foreground">
+                                    <span className="truncate font-medium text-brand-navy">
                                       {meta.title}
                                     </span>
                                   </span>
@@ -743,7 +752,7 @@ export function OrderWidget({
                             align="start"
                             sideOffset={6}
                             alignItemWithTrigger={false}
-                            className="z-[100] rounded-xl border-primary/15"
+                            className="z-[100] rounded-xl border-primary/15 bg-brand-warm-field text-brand-navy"
                           >
                             {FAMILIES.map((fid) => {
                               const meta = FAMILY_LABELS[fid]
@@ -763,10 +772,10 @@ export function OrderWidget({
                                       />
                                     </span>
                                     <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                                      <span className="font-medium leading-snug text-foreground">
+                                      <span className="font-medium leading-snug text-brand-navy">
                                         {meta.title}
                                       </span>
-                                      <span className="text-xs font-normal leading-snug text-muted-foreground">
+                                      <span className="text-xs font-normal leading-snug text-brand-muted">
                                         {meta.description}
                                       </span>
                                     </span>
@@ -855,7 +864,7 @@ export function OrderWidget({
                 <Button
                   variant="outline"
                   type="button"
-                  className="h-11 rounded-xl sm:flex-1"
+                  className={cn(orderOutlineBtn(embedded), "sm:flex-1")}
                   onClick={() => {
                     setAddressError(null)
                     setStep("intent")
@@ -1121,7 +1130,7 @@ export function OrderWidget({
                 <Button
                   variant="outline"
                   type="button"
-                  className="h-11 rounded-xl sm:flex-1"
+                  className={cn(orderOutlineBtn(embedded), "sm:flex-1")}
                   onClick={() => {
                     setAddressError(null)
                     setStep("forfait")
@@ -1335,7 +1344,7 @@ export function OrderWidget({
                 <Button
                   variant="outline"
                   type="button"
-                  className="h-11 rounded-xl sm:flex-1"
+                  className={cn(orderOutlineBtn(embedded), "sm:flex-1")}
                   onClick={() => setStep("infos")}
                 >
                   <ArrowLeft className="mr-2 size-4" />

@@ -21,7 +21,7 @@
   /* Tunnel commande — vert doux (sélection liste déchets) */
   --color-brand-warm: #ecf4e9;
   --color-brand-warm-deep: #e3efe5;
-  --color-brand-warm-field: #f6fbf7;
+  --color-brand-warm-field: #eef5eb;
   --color-brand-warm-muted: #dce9de;
 
   /* Alias compat composants */
@@ -711,6 +711,35 @@
   border-radius: 1rem;
   border: 1px solid color-mix(in srgb, #35a238 16%, transparent);
   background: color-mix(in srgb, var(--color-brand-warm-field) 92%, white);
+}
+
+/* Formulaire modal — même palette que la liste « type de déchet » */
+.order-tunnel-form {
+  color: var(--color-brand-navy);
+}
+
+.order-tunnel-form .text-foreground {
+  color: var(--color-brand-navy);
+}
+
+.order-tunnel-form .text-muted-foreground {
+  color: var(--color-brand-muted);
+}
+
+.order-tunnel-form [data-slot="input"]::placeholder {
+  color: color-mix(in srgb, var(--color-brand-muted) 88%, transparent);
+}
+
+.order-tunnel-form .order-tunnel-outline-btn {
+  border-color: color-mix(in srgb, #35a238 22%, #e3e9e6);
+  background-color: var(--color-brand-warm-field);
+  color: var(--color-brand-navy);
+}
+
+.order-tunnel-form .order-tunnel-outline-btn:hover {
+  border-color: color-mix(in srgb, #35a238 32%, #e3e9e6);
+  background-color: color-mix(in srgb, #35a238 10%, var(--color-brand-warm-field));
+  color: var(--color-brand-navy);
 }
 
 /* Tunnel commande (modal) — Stripe Express Checkout & bouton payer */
