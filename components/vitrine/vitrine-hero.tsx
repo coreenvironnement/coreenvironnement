@@ -23,6 +23,23 @@ type VitrineHeroProps = {
   compactTop?: boolean
 }
 
+const H1_PRIX_HIGHLIGHT = "meilleur prix"
+
+/** Met « meilleur prix » en vert CTA dans la ligne H1 (home + pages locales). */
+function heroH1WithPrixHighlight(line: string) {
+  const lower = line.toLowerCase()
+  const idx = lower.indexOf(H1_PRIX_HIGHLIGHT)
+  if (idx === -1) return line
+  const end = idx + H1_PRIX_HIGHLIGHT.length
+  return (
+    <>
+      {line.slice(0, idx)}
+      <span className="font-semibold text-brand-green">{line.slice(idx, end)}</span>
+      {line.slice(end)}
+    </>
+  )
+}
+
 function HeroGoogleRatingBadge({ className }: { className?: string }) {
   const ratingLabel = SITE_GOOGLE_RATING.toLocaleString("fr-FR", {
     minimumFractionDigits: 1,
@@ -129,7 +146,7 @@ export function VitrineHero({ seoVariant, compactTop }: VitrineHeroProps) {
               className="animate-fade-up mt-0 text-[clamp(1.82rem,5.35vw,2.17rem)] leading-[1.1] text-white [text-shadow:0_1px_28px_rgba(24,53,116,0.28),0_2px_56px_rgba(24,53,116,0.14)] md:mt-6 sm:text-[clamp(2.15rem,4.4vw,3.45rem)] sm:leading-[1.08]"
               style={{ animationDelay: "140ms" }}
             >
-              <span className="block">{seoVariant.h1Line1}</span>
+              <span className="block">{heroH1WithPrixHighlight(seoVariant.h1Line1)}</span>
               {seoVariant.h1Line2 ? (
                 <span className="mt-1 block">{seoVariant.h1Line2}</span>
               ) : null}
