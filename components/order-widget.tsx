@@ -42,12 +42,14 @@ import { Input } from "@/components/ui/input"
 import { EmbeddedCheckout } from "@/components/order/embedded-checkout"
 import { OrderDateField } from "@/components/order/order-date-field"
 import { OrderTunnelContinueButton } from "@/components/order/order-tunnel-continue-button"
+import { ParticulierVolumeStep } from "@/components/order/particulier-volume-step"
 import { ParticulierWastePicker } from "@/components/order/particulier-waste-picker"
 import { WasteFamilySelect } from "@/components/order/waste-situation-picker"
 import {
   particulierWasteOptionById,
   type ParticulierWasteOptionId,
 } from "@/lib/order/particulier-waste-options"
+import { prestationIdForFamilyVolume } from "@/lib/order/volume-estimator"
 import { formatOrderDatePicker } from "@/lib/format/date"
 import { submitProfessionalBenneRequest } from "@/app/order/actions"
 import {
@@ -101,7 +103,7 @@ const BENNE_VISUAL_BY_VOLUME: Record<number, string> = {
 
 type Audience = OrderAudience
 
-type IntentPhase = "location" | "waste"
+type IntentPhase = "location" | "waste" | "volume"
 
 function fmtHt(n: number) {
   return new Intl.NumberFormat("fr-FR", {
@@ -192,6 +194,7 @@ export function OrderWidget({
   const [family, setFamily] = useState<BenneFamily | null>(null)
   const [particulierWasteId, setParticulierWasteId] =
     useState<ParticulierWasteOptionId | null>(null)
+  const [volumeHintM3, setVolumeHintM3] = useState<number | null>(null)
   const [deliveryDate, setDeliveryDate] = useState("")
   const [pickupDate, setPickupDate] = useState("")
   const [selectedPrestationId, setSelectedPrestationId] = useState<
@@ -261,7 +264,23 @@ export function OrderWidget({
     scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
   }
 
-  const goToForfait = () => {
+  const goToIntentVolume = () => {
+    setAddressError(null)
+    if (!zoneOk) {
+      setIntentPhase("location")
+      setAddressError("Indiquez l’adresse de livraison de la benne.")
+      return
+    }
+    if (!particulierWasteId) {
+      setAddressError("Choisissez ce que vous souhaitez jeter.")
+      return
+    }
+    syncDraftFromWidget()
+    setIntentPhase("volume")
+    scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
+  }
+
+  const goToForfait = (preselectVolumeM3?: number | null) => {
     setAddressError(null)
     if (!zoneOk) {
       setIntentPhase("location")
@@ -277,8 +296,14 @@ export function OrderWidget({
       setAddressError("Choisissez un type de déchet dans la liste.")
       return
     }
+    if (preselectVolumeM3 != null && family) {
+      setVolumeHintM3(preselectVolumeM3)
+      const pid = prestationIdForFamilyVolume(family, preselectVolumeM3)
+      if (pid) setSelectedPrestationId(pid)
+    }
     syncDraftFromWidget()
     setStep("forfait")
+    scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
   }
 
   const goToInfos = () => {
@@ -797,7 +822,7 @@ export function OrderWidget({
                     )}
                   >
                     <OrderTunnelContinueButton
-                      onClick={goToForfait}
+                      onClick={goToIntentVolume}
                       disabled={!canLeaveIntentWaste}
                     />
                   </div>
@@ -805,7 +830,7 @@ export function OrderWidget({
                   <Button
                     type="button"
                     className="mt-0.5 h-11 w-full rounded-xl border-0 bg-[#2F9632] px-4 text-base font-semibold text-white shadow-lg shadow-[#2F9632]/25 hover:bg-[#19752B] disabled:cursor-not-allowed disabled:bg-[#2F9632] disabled:opacity-60 disabled:shadow-md"
-                    onClick={goToForfait}
+                    onClick={() => goToForfait()}
                     disabled={!canLeaveIntentWaste}
                   >
                     <span className="flex w-full items-center justify-between gap-2">
@@ -817,6 +842,31 @@ export function OrderWidget({
               </div>
             </motion.div>
           )}
+
+          {step === "intent" &&
+            intentPhase === "volume" &&
+            audience === "particulier" &&
+            particulierWasteId &&
+            family ? (
+            <motion.div
+              key="intent-volume"
+              initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
+              transition={t}
+            >
+              <ParticulierVolumeStep
+                embedded={embedded}
+                family={family}
+                wasteId={particulierWasteId}
+                onBackToWaste={() => {
+                  setAddressError(null)
+                  setIntentPhase("waste")
+                }}
+                onContinue={(knownVolumeM3) => goToForfait(knownVolumeM3)}
+              />
+            </motion.div>
+          ) : null}
 
           {step === "forfait" && family && (
             <motion.div
@@ -836,6 +886,13 @@ export function OrderWidget({
                     ? "Prix à payer, TVA incluse."
                     : "Prix H.T. Détail des déchets acceptés par forfait."}
                 </p>
+                {audience === "particulier" && volumeHintM3 ? (
+                  <p className="mt-2 rounded-lg border border-primary/12 bg-brand-warm-field/80 px-3 py-2 text-[12px] leading-snug text-brand-navy">
+                    Indication volume :{" "}
+                    <strong>{volumeHintM3} m³</strong> (estimation ou choix
+                    personnel, sans garantie).
+                  </p>
+                ) : null}
               </div>
 
               {addressError && (
@@ -857,6 +914,11 @@ export function OrderWidget({
                     key={p.id}
                     prestation={p}
                     selected={selectedPrestationId === p.id}
+                    recommended={
+                      audience === "particulier" &&
+                      volumeHintM3 !== null &&
+                      p.volumeM3 === volumeHintM3
+                    }
                     onSelect={() => setSelectedPrestationId(p.id)}
                     delay={prefersReducedMotion ? 0 : i * 0.04}
                     t={t}
@@ -874,7 +936,9 @@ export function OrderWidget({
                   onClick={() => {
                     setAddressError(null)
                     setStep("intent")
-                    setIntentPhase("waste")
+                    setIntentPhase(
+                      audience === "particulier" ? "volume" : "waste"
+                    )
                   }}
                 >
                   <ArrowLeft className="mr-2 size-4" />
@@ -1408,6 +1472,7 @@ export function OrderWidget({
 function PrestationCard({
   prestation,
   selected,
+  recommended,
   onSelect,
   delay,
   t,
@@ -1416,6 +1481,7 @@ function PrestationCard({
 }: {
   prestation: Prestation
   selected: boolean
+  recommended?: boolean
   onSelect: () => void
   delay: number
   t: { duration: number; ease?: readonly [number, number, number, number] }
@@ -1466,11 +1532,18 @@ function PrestationCard({
       </div>
 
       <div className="min-w-0 flex-1">
-        <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-          {showTtc
-            ? `${prestation.volumeM3} m³`
-            : `${systemLabel(prestation.system)} · ${prestation.volumeM3} m³`}
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            {showTtc
+              ? `${prestation.volumeM3} m³`
+              : `${systemLabel(prestation.system)} · ${prestation.volumeM3} m³`}
           </span>
+          {recommended ? (
+            <span className="rounded-md bg-brand-green/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-green">
+              Suggestion
+            </span>
+          ) : null}
+        </div>
         <p className="mt-0.5 text-[13px] font-semibold leading-snug text-brand-navy sm:text-sm">
             {prestation.label}
           </p>
