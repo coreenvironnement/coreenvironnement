@@ -86,16 +86,25 @@ export function VitrineSeoPricingSection({
             ))}
           </ul>
 
-          {showHubLink ? (
-            <p className="mt-8 text-sm text-brand-muted">
-              <Link
-                href="/location-benne"
-                className="font-semibold text-brand-navy underline-offset-2 hover:text-brand-green hover:underline"
-              >
-                Voir toutes les communes desservies en Île-de-France
-              </Link>
-            </p>
-          ) : null}
+          <p className="mt-8 text-sm text-brand-muted">
+            {showHubLink ? (
+              <>
+                <Link
+                  href="/location-benne"
+                  className="font-semibold text-brand-navy underline-offset-2 hover:text-brand-green hover:underline"
+                >
+                  Voir toutes les communes desservies en Île-de-France
+                </Link>
+                {" · "}
+              </>
+            ) : null}
+            <Link
+              href="/location-benne/volume"
+              className="font-semibold text-brand-navy underline-offset-2 hover:text-brand-green hover:underline"
+            >
+              Guide des volumes
+            </Link>
+          </p>
 
           <p className="mt-4 text-xs leading-relaxed text-brand-muted">
             Contenu revu en octobre 2026. Pas besoin d’appeler pour obtenir un premier tarif : utilisez

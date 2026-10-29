@@ -469,6 +469,25 @@ export function getDepartementPages(): LocalPage[] {
   return LOCAL_PAGES.filter((page) => page.type === "departement")
 }
 
+/** Villes « principales » d’un département (maillage hub / above the fold). */
+export function getFeaturedCityPagesForDepartement(departementSlug: string): LocalPage[] {
+  const def = DEPARTEMENTS.find((d) => d.slug === departementSlug)
+  if (!def) return []
+  return def.villesPrincipales
+    .map((name) => getLocalPageBySlug(slugify(name)))
+    .filter((page): page is LocalPage => page != null && page.type === "ville")
+}
+
+export function getHubDepartementSections(): Array<{
+  departement: LocalPage
+  featuredCities: LocalPage[]
+}> {
+  return getDepartementPages().map((departement) => ({
+    departement,
+    featuredCities: getFeaturedCityPagesForDepartement(departement.slug),
+  }))
+}
+
 export function getCityPagesForDepartement(departementSlug: string): LocalPage[] {
   return LOCAL_PAGES.filter(
     (page) => page.type === "ville" && page.departementSlug === departementSlug

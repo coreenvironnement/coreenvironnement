@@ -21,6 +21,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
     },
     {
+      url: `${base}/location-benne/volume`,
+      changeFrequency: "monthly",
+      priority: 0.85,
+      lastModified,
+    },
+    {
       url: `${base}/pro`,
       changeFrequency: "monthly",
       priority: 0.8,

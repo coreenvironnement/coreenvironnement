@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Alert02Icon,
@@ -63,7 +64,15 @@ export function VitrineParticulierConseils() {
                       {carte.texte}
                     </p>
                     {"cta" in carte && carte.cta ? (
-                      <div className="mt-4">
+                      <div className="mt-4 space-y-2">
+                        {carte.id === "volume" ? (
+                          <Link
+                            href="/location-benne/volume"
+                            className="block text-[14px] font-semibold text-brand-navy underline-offset-2 hover:text-brand-green hover:underline"
+                          >
+                            Lire le guide volume complet →
+                          </Link>
+                        ) : null}
                         <button
                           type="button"
                           onClick={() => {

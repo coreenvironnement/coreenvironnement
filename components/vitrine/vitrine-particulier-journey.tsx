@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   ContainerIcon,
@@ -38,6 +39,14 @@ export function VitrineParticulierJourney() {
         </h2>
         <p className="mt-4 text-[16px] leading-relaxed text-brand-muted sm:text-[17px]">
           {parcours.intro}
+        </p>
+        <p className="mt-3 text-[14px] leading-relaxed text-brand-muted sm:text-[15px]">
+          <Link
+            href="/location-benne/volume"
+            className="font-semibold text-brand-navy underline-offset-2 hover:text-brand-green hover:underline"
+          >
+            Guide des volumes de benne (m³, gravats, débarras)
+          </Link>
         </p>
 
         <ol className="mt-10 space-y-0">

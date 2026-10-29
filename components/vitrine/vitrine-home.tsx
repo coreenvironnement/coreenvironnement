@@ -21,6 +21,7 @@ import { VitrineHero } from "./vitrine-hero"
 import { VitrineCityGuide } from "./vitrine-city-guide"
 import { VitrineDepartmentGuide } from "./vitrine-department-guide"
 import { VitrineLocalSeo } from "./vitrine-local-seo"
+import { VitrineEarlyLocalLinks } from "./vitrine-early-local-links"
 import { VitrineLocationHub } from "./vitrine-location-hub"
 import { VitrineLongtailIntro } from "./vitrine-longtail-intro"
 import { VitrineSeoPricingSection } from "./vitrine-seo-pricing-section"
@@ -89,6 +90,11 @@ function VitrineHomeInner({
           </div>
         ) : null}
         <VitrineHero seoVariant={seoVariant} compactTop={Boolean(localSeoData)} />
+        {hubPage ? <VitrineEarlyLocalLinks mode="hub" /> : null}
+        {!hubPage && !localSeoData ? <VitrineEarlyLocalLinks mode="home" /> : null}
+        {localSeoData ? (
+          <VitrineEarlyLocalLinks mode="local" page={localSeoData} />
+        ) : null}
         {hubPage ? <VitrineLocationHub /> : null}
         {localSeoData?.type === "departement" ? (
           <VitrineDepartmentGuide page={localSeoData} />
