@@ -12,7 +12,7 @@ import { getSiteUrl } from "@/lib/seo/site-url"
 const HOME_PAGE_DOCUMENT_TITLE =
   "Location de benne en Île-de-France dès 330 € | CORE ENVIRONNEMENT"
 const HOME_PAGE_META_DESCRIPTION =
-  "Dès 330 € HT · prix affiché avant paiement · commande en 2 minutes. Livraison rapide sous 24 h en Île-de-France."
+  "Dès 330 € HT · tarif selon adresse et déchet · commande en 2 minutes. Livraison rapide sous 24 h en Île-de-France."
 
 type PageProps = {
   searchParams: Promise<{ order?: string; intent?: string }>

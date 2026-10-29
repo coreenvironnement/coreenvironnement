@@ -116,7 +116,7 @@ export function HeroOrderCard({ className }: HeroOrderCardProps) {
       </Button>
 
       <p className="text-center text-[11px] leading-snug text-brand-muted sm:text-xs">
-        Dès 330 € HT · prix affiché avant paiement
+        Pas besoin d&apos;appeler pour connaître le prix.
       </p>
     </div>
   )

@@ -23,12 +23,12 @@ export const DEFAULT_VARIANT: SeoVariant = {
   intent: "default",
   title: "Location de benne en Île-de-France",
   description:
-    "Location de bennes en Île-de-France. Dès 330 € HT, prix affiché avant paiement, commande en 2 minutes, livraison rapide sous 24 h.",
+    "Location de bennes en Île-de-France. Dès 330 € HT, tarif selon adresse et déchet, commande en 2 minutes, livraison rapide sous 24 h.",
   h1Line1:
     "Location de benne au meilleur prix : livraison rapide 24 h en Île-de-France",
   h1Line2: "",
   intro:
-    "Dès 330 € HT · prix affiché avant paiement · commande en 2 minutes.",
+    "Dès 330 € HT · tarif selon adresse et déchet · commande en 2 minutes.",
   chipLabel: "Gestion des déchets · Île-de-France",
 }
 

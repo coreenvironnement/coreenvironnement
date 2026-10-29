@@ -29,7 +29,7 @@ const checks: Array<[string, boolean]> = [
   [
     "desc meaux",
     buildLocalDescription(meaux) ===
-      "Location de bennes à Meaux et la Seine-et-Marne. Dès 330 € HT, prix affiché avant paiement, commande en 2 minutes, livraison rapide sous 24 h.",
+      "Location de bennes à Meaux et la Seine-et-Marne. Dès 330 € HT, tarif selon adresse et déchet, commande en 2 minutes, livraison rapide sous 24 h.",
   ],
   ["intro homepage", DEFAULT_VARIANT.intro.length > 0],
 ]
