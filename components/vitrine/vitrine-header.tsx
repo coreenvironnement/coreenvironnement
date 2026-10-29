@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   ArrowUpRight01Icon,
@@ -26,13 +26,6 @@ const PARTICULIER_NAV = [
   { label: "FAQ", href: "/#faq" },
 ] as const
 
-const PRO_NAV = [
-  { label: "Services", href: "/professionnels#services" },
-  { label: "Engagements", href: "/professionnels#engagements" },
-  { label: "Fonctionnement", href: "/professionnels#fonctionnement" },
-  { label: "FAQ", href: "/professionnels#faq" },
-] as const
-
 function AudienceBandeau({ isProPage }: { isProPage: boolean }) {
   return (
     <div
@@ -46,22 +39,22 @@ function AudienceBandeau({ isProPage }: { isProPage: boolean }) {
       <p className="container-x py-2 sm:py-2.5">
         {isProPage ? (
           <>
-            Commande particulier en ligne ?{" "}
+            Vous êtes un particulier ?{" "}
             <Link
               href="/"
               className="font-semibold text-brand-green underline-offset-2 hover:underline"
             >
-              Accueil particulier
+              Accéder à la page particulier
             </Link>
           </>
         ) : (
           <>
-            Vous êtes professionnel (chantier, entreprise) ?{" "}
+            Vous êtes un professionnel ?{" "}
             <Link
               href="/professionnels"
               className="font-semibold text-brand-green underline-offset-2 hover:underline"
             >
-              Accéder à l&apos;espace pro
+              Accéder à la page pro
             </Link>
           </>
         )}
@@ -73,10 +66,7 @@ function AudienceBandeau({ isProPage }: { isProPage: boolean }) {
 export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) {
   const pathname = usePathname()
   const isProPage = pathname?.startsWith("/professionnels") ?? false
-  const navLinks = useMemo(
-    () => (isProPage ? PRO_NAV : PARTICULIER_NAV),
-    [isProPage]
-  )
+  const navLinks = PARTICULIER_NAV
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const solid = forceSolid || scrolled

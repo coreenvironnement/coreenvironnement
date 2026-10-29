@@ -388,12 +388,12 @@ export const particulierAccueil = {
   switchPro: {
     label: "Vous gérez des chantiers ou des volumes réguliers ?",
     href: "/professionnels",
-    link: "Découvrir l’offre professionnelle",
+    link: "Accéder à la page pro",
   },
   switchParticulier: {
     label: "Particulier : commande en ligne en quelques minutes",
     href: "/",
-    link: "Retour à l’accueil particulier",
+    link: "Accéder à la page particulier",
   },
 } as const
 
