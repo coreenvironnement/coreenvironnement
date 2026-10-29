@@ -24,8 +24,8 @@ export function OrderAudienceToggle({
   variant = "tunnel",
 }: OrderAudienceToggleProps) {
   const heroOptions = [
-    { id: "professionnel" as const, label: "Professionnel" },
     { id: "particulier" as const, label: "Particulier" },
+    { id: "professionnel" as const, label: "Professionnel" },
   ] as const
 
   const tunnelOptions = [
