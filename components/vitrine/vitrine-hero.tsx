@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import { Star } from "lucide-react"
 
 import { hero } from "@/lib/cdc/contenu-vitrine"
 import type { SeoVariant } from "@/lib/seo/landing-variants"
@@ -49,10 +50,20 @@ function HeroGoogleRatingBadge({ className }: { className?: string }) {
           aria-hidden
         />
       </span>
-      <span className="min-w-0 text-left text-[13px] font-semibold leading-snug text-white sm:text-[14px]">
-        Note Google {ratingLabel}{" "}
-        <span className="font-medium text-white/88">
-          ({SITE_GOOGLE_REVIEW_COUNT} avis)
+      <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+        <span className="flex items-center gap-0.5" aria-hidden>
+          {Array.from({ length: 5 }, (_, i) => (
+            <Star
+              key={i}
+              className="size-3.5 shrink-0 fill-amber-400 text-amber-400 sm:size-4"
+            />
+          ))}
+        </span>
+        <span className="text-left text-[13px] font-semibold leading-snug text-white sm:text-[14px]">
+          Note Google {ratingLabel}{" "}
+          <span className="font-medium text-white/88">
+            ({SITE_GOOGLE_REVIEW_COUNT} avis)
+          </span>
         </span>
       </span>
     </a>
