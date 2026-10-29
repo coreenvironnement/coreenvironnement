@@ -105,8 +105,8 @@ export function VitrineHero({ seoVariant }: VitrineHeroProps) {
       <div aria-hidden="true" className="hero-overlay hero-overlay--desktop hidden md:block" />
 
       <div className="container-x relative z-10 pb-16 pt-24 sm:pb-28 sm:pt-[6.25rem] lg:pb-32 lg:pt-32">
-        <div className="relative grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_440px] xl:gap-14">
-          <div className="relative max-w-[760px] lg:max-w-none lg:-translate-y-2">
+        <div className="relative flex flex-col gap-8 max-lg:gap-7 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-start lg:gap-12 xl:grid-cols-[minmax(0,1fr)_440px] xl:gap-14">
+          <div className="relative order-1 max-w-[760px] lg:max-w-none lg:-translate-y-2">
             <div
               aria-hidden
               className="hero-readability-glow pointer-events-none absolute -inset-x-3 -inset-y-5 rounded-[1.25rem] md:-inset-x-10 md:-inset-y-12 md:rounded-[2rem]"
@@ -126,7 +126,7 @@ export function VitrineHero({ seoVariant }: VitrineHeroProps) {
             </h1>
 
             <p
-              className="animate-fade-up mt-6 max-w-[520px] text-[17px] leading-[1.84] text-white/95 [text-shadow:0_1px_22px_rgba(24,53,116,0.22)] sm:mt-6 sm:max-w-[540px] sm:text-[18px] sm:leading-[1.72]"
+              className="animate-fade-up mt-6 hidden max-w-[520px] text-[17px] leading-[1.84] text-white/95 [text-shadow:0_1px_22px_rgba(24,53,116,0.22)] lg:block sm:mt-6 sm:max-w-[540px] sm:text-[18px] sm:leading-[1.72]"
               style={{ animationDelay: "220ms" }}
             >
               {seoVariant.intro ?? hero.titre2}
@@ -142,7 +142,10 @@ export function VitrineHero({ seoVariant }: VitrineHeroProps) {
             </a>
           </div>
 
-          <div className="animate-fade-up w-full lg:sticky lg:top-28" style={{ animationDelay: "280ms" }}>
+          <div
+            className="animate-fade-up order-2 -mt-1 w-full max-lg:mt-4 lg:sticky lg:top-28 lg:order-none lg:mt-0"
+            style={{ animationDelay: "280ms" }}
+          >
             <HeroOrderCard />
             <a
               href={SITE_PHONE_HREF}

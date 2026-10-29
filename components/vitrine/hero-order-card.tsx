@@ -65,7 +65,7 @@ export function HeroOrderCard({ className }: HeroOrderCardProps) {
         id="hero-order-card-title"
         className="text-left text-[17px] font-bold leading-snug tracking-[-0.02em] text-brand-navy sm:text-[18px]"
       >
-        Votre tarif en deux informations
+        Votre tarif, tout de suite en ligne
       </h2>
 
       <OrderAudienceToggle
@@ -107,7 +107,7 @@ export function HeroOrderCard({ className }: HeroOrderCardProps) {
         className="hero-order-card__cta group flex min-h-12 w-full items-center justify-between gap-3 rounded-xl bg-brand-navy px-4 py-3 text-left text-[15px] font-semibold leading-snug text-white shadow-[0_8px_24px_-8px_rgb(24_53_116/0.45)] transition-colors hover:bg-[#152d66] sm:text-base"
         onClick={continueToModal}
       >
-        <span className="min-w-0 flex-1">Voir les bennes et tarifs disponibles</span>
+        <span className="min-w-0 flex-1">Voir mon tarif</span>
         <span
           className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-green text-white shadow-sm transition-colors group-hover:bg-[#19752B]"
           aria-hidden
@@ -116,9 +116,10 @@ export function HeroOrderCard({ className }: HeroOrderCardProps) {
         </span>
       </button>
 
-      <div className="hero-order-card__footer space-y-1 pt-4 text-center text-[11px] leading-snug text-brand-muted sm:text-xs">
-        <p>Dès 330 € HT · commande en 2 minutes</p>
-        <p>Pas besoin d&apos;appeler pour connaître le prix.</p>
+      <div className="hero-order-card__footer pt-4 text-center text-[11px] leading-snug text-brand-muted sm:text-xs">
+        <p>
+          Dès 330 € HT · commande en 2 minutes · pas besoin d&apos;appeler
+        </p>
       </div>
     </div>
   )
