@@ -81,7 +81,7 @@ function VitrineHomeInner({
       <VitrineHeader />
       <OrderBanner orderParam={orderParam} />
 
-      <main id="contenu">
+      <main id="contenu" className="relative">
         <VitrineHero seoVariant={seoVariant} localPage={localSeoData} />
         {hubPage ? <VitrineEarlyLocalLinks mode="hub" /> : null}
         {!hubPage && !localSeoData ? <VitrineEarlyLocalLinks mode="home" /> : null}

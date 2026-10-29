@@ -19,12 +19,27 @@ import { VitrineLogo } from "./logo"
 /** Hauteur approximative bandeau + barre (pour scroll-margin / hero padding). */
 export const VITRINE_HEADER_TOTAL_OFFSET_CLASS = "pt-[7.25rem] sm:pt-[7.75rem] lg:pt-[8.25rem]"
 
-const SCROLL_SOLID_THRESHOLD = 16
+export const VITRINE_SCROLL_SOLID_THRESHOLD = 16
 
-function readScrollSolid(): boolean {
+export function readVitrineScrollSolid(): boolean {
   if (typeof window === "undefined") return false
   const y = window.scrollY || document.documentElement.scrollTop || 0
-  return y > SCROLL_SOLID_THRESHOLD
+  return y > VITRINE_SCROLL_SOLID_THRESHOLD
+}
+
+function syncHeaderScrollSolid(setScrolled: (v: boolean) => void) {
+  setScrolled(readVitrineScrollSolid())
+}
+
+/** Pages avec hero plein écran sous le header fixe (barre transparente au scroll 0). */
+function isHeroUnderHeaderRoute(pathname: string | null): boolean {
+  if (!pathname) return false
+  if (pathname === "/location-benne/volume") return false
+  return (
+    pathname === "/" ||
+    pathname.startsWith("/location-benne") ||
+    pathname.startsWith("/professionnels")
+  )
 }
 
 const PARTICULIER_NAV = [
@@ -87,14 +102,26 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
   const solid = forceSolid || scrolled
 
   useLayoutEffect(() => {
-    setScrolled(readScrollSolid())
+    syncHeaderScrollSolid(setScrolled)
+    const raf = requestAnimationFrame(() => syncHeaderScrollSolid(setScrolled))
+    const t = window.setTimeout(() => syncHeaderScrollSolid(setScrolled), 0)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.clearTimeout(t)
+    }
   }, [pathname])
 
   useEffect(() => {
-    const onScroll = () => setScrolled(readScrollSolid())
+    const onScroll = () => syncHeaderScrollSolid(setScrolled)
+    const onPageShow = () => syncHeaderScrollSolid(setScrolled)
+
     window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [])
+    window.addEventListener("pageshow", onPageShow)
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("pageshow", onPageShow)
+    }
+  }, [pathname])
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : ""
@@ -118,7 +145,10 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
             "transition-[background-color,box-shadow,border-color] duration-500 ease-out",
             solid
               ? "border-b border-brand-border bg-brand-bg/90 shadow-[var(--shadow-vitrine-soft)] backdrop-blur-xl"
-              : "border-b border-transparent bg-transparent"
+              : cn(
+                  "border-b border-transparent bg-transparent shadow-none backdrop-blur-none",
+                  isHeroUnderHeaderRoute(pathname) && "supports-[backdrop-filter]:bg-transparent"
+                )
           )}
         >
         <div className="container-x flex h-[72px] items-center justify-between gap-4 lg:h-[84px]">

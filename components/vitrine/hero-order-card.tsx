@@ -139,7 +139,7 @@ export function HeroOrderCard({
         <p>
           {isPro
             ? "Réponse sous 24 h · Île-de-France · interlocuteur dédié au suivi"
-            : "Dès 330 € HT · commande en 2 minutes · pas besoin d&apos;appeler"}
+            : "Dès 330 € HT · commande en 2 minutes · pas besoin d'appeler"}
         </p>
       </div>
     </div>
