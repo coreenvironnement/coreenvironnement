@@ -149,7 +149,18 @@ const vitrineTestimonials: Testimonial[] = [
   ...testimonialsEntreprisesAvecLogo.slice(1),
 ]
 
-export function TestimonialsSection({ vitrine = false }: { vitrine?: boolean }) {
+export function TestimonialsSection({
+  vitrine = false,
+  particulierOnly = false,
+}: {
+  vitrine?: boolean
+  particulierOnly?: boolean
+}) {
+  const items = particulierOnly
+    ? testimonialsParticuliers
+    : vitrine
+      ? vitrineTestimonials
+      : null
   return (
     <section
       id="temoignages"
@@ -169,14 +180,15 @@ export function TestimonialsSection({ vitrine = false }: { vitrine?: boolean }) 
             Ils nous font confiance sur le terrain
           </h2>
           <p className={cn("mt-3 text-sm sm:text-base", vitrine ? "text-brand-muted" : "text-muted-foreground")}>
-            Retours de chefs de chantier, artisans et particuliers : ponctualité,
-            sérieux et suivi au quotidien.
+            {particulierOnly
+              ? "Retours de particuliers en Île-de-France : simplicité, ponctualité et benne bien gérée."
+              : "Retours de chefs de chantier, artisans et particuliers : ponctualité, sérieux et suivi au quotidien."}
           </p>
         </div>
 
-        {vitrine ? (
+        {vitrine && items ? (
           <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 pl-4 pr-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:pb-0 sm:pl-0 sm:pr-0 lg:grid-cols-3">
-            {vitrineTestimonials.map((t, i) => (
+            {items.map((t, i) => (
               <TestimonialCard
                 key={t.id}
                 t={t}

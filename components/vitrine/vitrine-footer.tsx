@@ -18,11 +18,11 @@ import { VitrineLogo } from "./logo"
 
 const NAV_LINKS = [
   { href: "/location-benne", label: "Villes desservies" },
-  { href: "/#services", label: "Nos services" },
-  { href: "/#engagements", label: "Nos engagements" },
-  { href: "/#espace-client", label: "Espace client" },
-  { href: "/#fonctionnement", label: "Comment ça fonctionne" },
+  { href: "/#parcours", label: "Comment ça marche" },
+  { href: "/#conseils", label: "Conseils" },
   { href: "/#faq", label: "FAQ" },
+  { href: "/professionnels", label: "Professionnels" },
+  { href: "/pro", label: "Compte pro (bientôt)" },
 ] as const
 
 const TRUST_INDICATORS = [

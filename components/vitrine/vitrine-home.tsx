@@ -6,14 +6,10 @@ import { TestimonialsSection } from "@/components/testimonials-section"
 
 import { VitrineOrderProvider, useVitrineOrder } from "./order-context"
 import { VitrineOrderModal } from "./order-modal"
-import { VitrineClientPortal } from "./vitrine-client-portal"
-import {
-  VitrineCompteProTeaser,
-  VitrineEngagements,
-  VitrineHowItWorks,
-  VitrineServices,
-} from "./vitrine-sections"
-import { VitrineFaq } from "./vitrine-faq"
+import { VitrineAudienceSwitch } from "./vitrine-audience-switch"
+import { VitrineParticulierConseils } from "./vitrine-particulier-conseils"
+import { VitrineParticulierFaq } from "./vitrine-particulier-faq"
+import { VitrineParticulierJourney } from "./vitrine-particulier-journey"
 import { VitrineFinalCta } from "./vitrine-final-cta"
 import { VitrineFooter } from "./vitrine-footer"
 import { VitrineHeader } from "./vitrine-header"
@@ -100,16 +96,14 @@ function VitrineHomeInner({
         {localSeoData?.type === "longtail" ? (
           <VitrineLongtailIntro page={localSeoData} />
         ) : null}
-        <VitrineServices />
-        <VitrineEngagements />
-        <VitrineHowItWorks />
-        <VitrineClientPortal />
-        <VitrineCompteProTeaser />
-        <TestimonialsSection vitrine />
-        <VitrineFaq />
+        <VitrineParticulierJourney />
+        <VitrineParticulierConseils />
+        <TestimonialsSection vitrine particulierOnly />
+        <VitrineParticulierFaq />
         {localSeoData?.type === "ville" ? <VitrineCityGuide page={localSeoData} /> : null}
-        {!localSeoData || hubPage ? <VitrineSeoPricingSection showHubLink={!hubPage} /> : null}
-        <VitrineLocalSeo seoVariant={seoVariant} />
+        {hubPage ? <VitrineSeoPricingSection showHubLink={false} /> : null}
+        {localSeoData ? <VitrineLocalSeo seoVariant={seoVariant} /> : null}
+        <VitrineAudienceSwitch mode="particulier" />
         <VitrineFinalCta />
       </main>
 

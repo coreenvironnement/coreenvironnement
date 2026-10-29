@@ -322,6 +322,124 @@ export const espaceClient = {
   ],
 } as const
 
+/** Parcours particulier — accueil court (hero inchangé). */
+export const particulierAccueil = {
+  parcours: {
+    eyebrow: "Comment ça se passe",
+    titre: "On livre la benne, vous remplissez, on évacue pour vous",
+    intro:
+      "Ce n’est pas seulement une « location » : un chauffeur pose la benne chez vous, vous chargez vos déchets autorisés, puis nous repassons pour l’enlèvement et le traitement en centre agréé.",
+    etapes: [
+      {
+        num: "01",
+        titre: "Vous commandez en ligne",
+        texte:
+          "Adresse, type de déchet, volume (notre estimateur vous aide), benne et paiement. Le tarif s’affiche avant de valider.",
+      },
+      {
+        num: "02",
+        titre: "Un chauffeur pose la benne",
+        texte:
+          "Livraison à l’adresse indiquée. Nous vous rappelons si besoin pour caler la pose et vérifier l’accès.",
+      },
+      {
+        num: "03",
+        titre: "Vous remplissez",
+        texte:
+          "Gravats, encombrants ou déchets autorisés pour le forfait choisi — sans dépasser le bord de la benne.",
+      },
+      {
+        num: "04",
+        titre: "On enlève et on traite",
+        texte:
+          "Le chauffeur repart avec la benne. CORE ENVIRONNEMENT assure l’évacuation et le traitement : pas de trajet déchetterie pour vous.",
+      },
+    ],
+  },
+  conseils: {
+    eyebrow: "Avant de commander",
+    titre: "Conseils pratiques",
+    cartes: [
+      {
+        id: "volume",
+        titre: "Quel volume de benne ?",
+        texte:
+          "Estimez l’espace occupé (longueur × largeur × hauteur en mètres). Gravats et terre : le poids compte autant que le volume.",
+        cta: "Utiliser l’estimateur dans la commande",
+        ctaHint:
+          "Après l’adresse et le type de déchet, l’outil vous propose une capacité indicative (sans garantie).",
+      },
+      {
+        id: "voie-publique",
+        titre: "Benne dans la rue ou sur le trottoir ?",
+        texte:
+          "Sur voie publique, une autorisation mairie (AOT) peut être obligatoire. Déposer des déchets sans benne ou en dehors du cadre légal expose à des amendes et des nuisances pour le voisinage.",
+      },
+      {
+        id: "tri",
+        titre: "Que mettre dans la benne ?",
+        texte:
+          "Respectez le type de déchet choisi à la commande (pas de mélange interdit, pas de produits dangereux). En cas de doute, appelez-nous avant de charger.",
+      },
+    ],
+  },
+  faqTitre: "Questions fréquentes",
+  faqIntro: "Les réponses essentielles avant de commander en ligne.",
+  switchPro: {
+    label: "Vous gérez des chantiers ou des volumes réguliers ?",
+    href: "/professionnels",
+    link: "Découvrir l’offre professionnelle",
+  },
+  switchParticulier: {
+    label: "Particulier : commande en ligne en quelques minutes",
+    href: "/",
+    link: "Retour à l’accueil particulier",
+  },
+} as const
+
+/** FAQ courte affichée sur l’accueil particulier (pas de jargon pro). */
+export const particulierFaq = [
+  {
+    q: "Quels sont vos délais de livraison ?",
+    r: "Livraison possible sous 24 h en Île-de-France selon l’heure de commande et les disponibilités. Un rappel téléphonique peut caler la pose avec le chauffeur.",
+  },
+  {
+    q: "Combien coûte une benne pour un particulier ?",
+    r: "Le tarif dépend de l’adresse, du type de déchet et du volume. Le montant TTC s’affiche dans le tunnel avant le paiement (ex. gravats propres 8 m³ dès 396 € TTC).",
+  },
+  {
+    q: "Faut-il téléphoner pour commander ?",
+    r: "Non : vous pouvez tout faire en ligne. Le téléphone reste disponible si vous préférez être guidé.",
+  },
+  {
+    q: "Comment choisir la taille de la benne ?",
+    r: "Dans la commande, après le type de déchet, utilisez l’estimateur de volume ou indiquez la capacité si vous la connaissez déjà. Prévoyez une petite marge.",
+  },
+  {
+    q: "Que se passe-t-il après le paiement ?",
+    r: "Vous recevez un e-mail de confirmation. L’équipe vous rappelle pour confirmer l’accès et l’horaire de pose. Le chauffeur livre, puis repasse pour l’enlèvement une fois la benne remplie.",
+  },
+  {
+    q: "Quels déchets sont interdits ?",
+    r: "Amiante, produits chimiques, peintures liquides, batteries, gaz, pneus, etc. Ils ne vont pas dans une benne classique. Demandez-nous conseil en cas de doute.",
+  },
+  {
+    q: "Dois-je être présent quand le chauffeur arrive ?",
+    r: "Ce n’est pas obligatoire si l’accès est libre, mais un contact joignable par téléphone est recommandé pour guider la pose.",
+  },
+  {
+    q: "Peut-on dépasser le bord de la benne ?",
+    r: "Non : pour la sécurité, le chargement doit rester à ras bord. Un débordement peut entraîner un refus d’enlèvement ou des frais supplémentaires.",
+  },
+] as const
+
+export const professionnelsPage = {
+  eyebrow: "Professionnels",
+  titre: "Location de benne et gestion des déchets pour vos chantiers",
+  intro:
+    "Services, volumes, conformité et suivi : l’offre CORE ENVIRONNEMENT pour les entreprises et artisans en Île-de-France. Commande en ligne sans paiement immédiat ou espace pro en préparation.",
+} as const
+
 export const finalCta = {
   eyebrow: "Votre chantier, notre priorité",
   titre: "Besoin d'une benne",

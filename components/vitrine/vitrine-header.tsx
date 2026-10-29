@@ -1,7 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { usePathname } from "next/navigation"
+import { useEffect, useMemo, useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   ArrowUpRight01Icon,
@@ -19,15 +20,28 @@ import { VITRINE_ICON_STROKE } from "./icons"
 import { VitrineLogo } from "./logo"
 import { useVitrineOrder } from "./order-context"
 
-const NAV_LINKS = [
-  { label: "Accueil", href: "/#accueil" },
-  { label: "Services", href: "/#services" },
-  { label: "Engagements", href: "/#engagements" },
-  { label: "Fonctionnement", href: "/#fonctionnement" },
+const PARTICULIER_NAV = [
+  { label: "Comment ça marche", href: "/#parcours" },
+  { label: "Conseils", href: "/#conseils" },
+  { label: "Avis", href: "/#temoignages" },
   { label: "FAQ", href: "/#faq" },
+  { label: "Professionnels", href: "/professionnels" },
+] as const
+
+const PRO_NAV = [
+  { label: "Particulier", href: "/" },
+  { label: "Services", href: "/professionnels#services" },
+  { label: "Engagements", href: "/professionnels#engagements" },
+  { label: "Fonctionnement", href: "/professionnels#fonctionnement" },
+  { label: "FAQ", href: "/professionnels#faq" },
 ] as const
 
 export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) {
+  const pathname = usePathname()
+  const navLinks = useMemo(
+    () => (pathname?.startsWith("/professionnels") ? PRO_NAV : PARTICULIER_NAV),
+    [pathname]
+  )
   const { openOrder } = useVitrineOrder()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -71,7 +85,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
           </Link>
 
           <nav aria-label="Navigation principale" className="hidden items-center gap-7 xl:gap-8 lg:flex">
-            {NAV_LINKS.map((link) => (
+            {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
@@ -196,7 +210,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
             </button>
           </div>
           <nav aria-label="Navigation mobile" className="container-x flex flex-1 flex-col justify-center">
-            {[...NAV_LINKS, { label: "Espace client", href: "/dashboard" }].map((link) => (
+            {[...navLinks, { label: "Espace client", href: "/dashboard" }].map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
