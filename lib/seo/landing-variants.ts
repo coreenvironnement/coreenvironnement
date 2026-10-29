@@ -46,3 +46,17 @@ export function getSeoVariant(_intent?: SeoIntent): SeoVariant {
 export function getDefaultSeoVariant(): SeoVariant {
   return DEFAULT_VARIANT
 }
+
+/** Hero page /professionnels (H1 distinct de l’accueil particulier). */
+export const PROFESSIONNELS_HERO_VARIANT: SeoVariant = {
+  intent: "default",
+  title: "Location de benne professionnelle en Île-de-France",
+  description:
+    "Entreprises et artisans : location de bennes, conformité et réactivité sous 24 h en Île-de-France. Demande en ligne, tarif HT selon adresse et déchet.",
+  h1Line1: "Location de benne pour vos chantiers en Île-de-France",
+  h1Line2: "Demande pro en ligne, sans paiement immédiat",
+  intro:
+    "Artisans, PME et gestionnaires de chantier : même catalogue de bennes, tarif HT selon adresse et type de déchet.",
+  chipLabel: "Professionnels · Île-de-France",
+  canonicalPath: "/professionnels",
+}

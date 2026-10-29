@@ -84,7 +84,7 @@ function VitrineHomeInner({
 
       <main id="contenu">
         {localSeoData ? (
-          <div className="relative z-20 pt-24 sm:pt-[6.25rem]">
+          <div className="relative z-20 pt-[7.25rem] sm:pt-[7.75rem]">
             <LocalBreadcrumbs page={localSeoData} />
           </div>
         ) : null}

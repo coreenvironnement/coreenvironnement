@@ -6,43 +6,77 @@ import { useEffect, useMemo, useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   ArrowUpRight01Icon,
-  Call02Icon,
   Cancel01Icon,
   Menu01Icon,
   UserIcon,
 } from "@hugeicons/core-free-icons"
 
-import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
-import { BenneIcon } from "./benne-icon"
 import { VITRINE_ICON_STROKE } from "./icons"
 import { VitrineLogo } from "./logo"
-import { useVitrineOrder } from "./order-context"
+
+/** Hauteur approximative bandeau + barre (pour scroll-margin / hero padding). */
+export const VITRINE_HEADER_TOTAL_OFFSET_CLASS = "pt-[7.25rem] sm:pt-[7.75rem] lg:pt-[8.25rem]"
 
 const PARTICULIER_NAV = [
   { label: "Comment ça marche", href: "/#parcours" },
   { label: "Conseils", href: "/#conseils" },
   { label: "Avis", href: "/#temoignages" },
   { label: "FAQ", href: "/#faq" },
-  { label: "Professionnels", href: "/professionnels" },
 ] as const
 
 const PRO_NAV = [
-  { label: "Particulier", href: "/" },
   { label: "Services", href: "/professionnels#services" },
   { label: "Engagements", href: "/professionnels#engagements" },
   { label: "Fonctionnement", href: "/professionnels#fonctionnement" },
   { label: "FAQ", href: "/professionnels#faq" },
 ] as const
 
+function AudienceBandeau({ isProPage }: { isProPage: boolean }) {
+  return (
+    <div
+      className={cn(
+        "border-b text-center text-[12px] leading-snug sm:text-[13px]",
+        isProPage
+          ? "border-white/10 bg-[#0f2552] text-white/90"
+          : "border-brand-green/20 bg-[#0f2552]/95 text-white/90 backdrop-blur-sm"
+      )}
+    >
+      <p className="container-x py-2 sm:py-2.5">
+        {isProPage ? (
+          <>
+            Commande particulier en ligne ?{" "}
+            <Link
+              href="/"
+              className="font-semibold text-brand-green underline-offset-2 hover:underline"
+            >
+              Accueil particulier
+            </Link>
+          </>
+        ) : (
+          <>
+            Vous êtes professionnel (chantier, entreprise) ?{" "}
+            <Link
+              href="/professionnels"
+              className="font-semibold text-brand-green underline-offset-2 hover:underline"
+            >
+              Accéder à l&apos;espace pro
+            </Link>
+          </>
+        )}
+      </p>
+    </div>
+  )
+}
+
 export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) {
   const pathname = usePathname()
+  const isProPage = pathname?.startsWith("/professionnels") ?? false
   const navLinks = useMemo(
-    () => (pathname?.startsWith("/professionnels") ? PRO_NAV : PARTICULIER_NAV),
-    [pathname]
+    () => (isProPage ? PRO_NAV : PARTICULIER_NAV),
+    [isProPage]
   )
-  const { openOrder } = useVitrineOrder()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const solid = forceSolid || scrolled
@@ -64,10 +98,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
     }
   }, [menuOpen])
 
-  const handleOrder = () => {
-    setMenuOpen(false)
-    openOrder()
-  }
+  const logoHref = isProPage ? "/professionnels" : "/#accueil"
 
   return (
     <>
@@ -79,12 +110,14 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
             : "border-b border-transparent bg-transparent"
         )}
       >
-        <div className="container-x flex h-[72px] items-center justify-between gap-5 lg:h-[84px]">
-          <Link href="/#accueil" aria-label="CORE ENVIRONNEMENT — Accueil" className="shrink-0">
+        <AudienceBandeau isProPage={isProPage} />
+
+        <div className="container-x flex h-[72px] items-center justify-between gap-4 lg:h-[84px]">
+          <Link href={logoHref} aria-label="CORE ENVIRONNEMENT — Accueil" className="shrink-0">
             <VitrineLogo priority variant="header" transparent={!solid} />
           </Link>
 
-          <nav aria-label="Navigation principale" className="hidden items-center gap-7 xl:gap-8 lg:flex">
+          <nav aria-label="Navigation principale" className="hidden items-center gap-6 xl:gap-7 lg:flex">
             {navLinks.map((link) => (
               <a
                 key={link.href}
@@ -105,18 +138,34 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
                 />
               </a>
             ))}
+            {!isProPage ? (
+              <Link
+                href="/professionnels"
+                className={cn(
+                  "rounded-full px-3.5 py-1.5 text-[14px] font-semibold transition-colors",
+                  solid
+                    ? "bg-brand-navy text-white hover:bg-[#152d66]"
+                    : "border border-white/35 bg-white/10 text-white hover:bg-white/15"
+                )}
+              >
+                Professionnels
+              </Link>
+            ) : (
+              <Link
+                href="/"
+                className={cn(
+                  "rounded-full px-3.5 py-1.5 text-[14px] font-semibold transition-colors",
+                  solid
+                    ? "border border-brand-border bg-white text-brand-navy hover:border-brand-green/40"
+                    : "border border-white/35 bg-white/10 text-white hover:bg-white/15"
+                )}
+              >
+                Particulier
+              </Link>
+            )}
           </nav>
 
-          <div className="hidden items-center gap-3 lg:flex">
-            <a
-              href={SITE_PHONE_HREF}
-              className={cn(
-                "text-[15px] font-semibold tabular-nums tracking-tight transition-colors",
-                solid ? "text-brand-navy hover:text-brand-green" : "text-white hover:text-white/80"
-              )}
-            >
-              {SITE_PHONE_DISPLAY}
-            </a>
+          <div className="hidden lg:flex">
             <Link
               href="/dashboard"
               className={cn(
@@ -127,38 +176,9 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
               <HugeiconsIcon icon={UserIcon} size={16} strokeWidth={VITRINE_ICON_STROKE} />
               Espace client
             </Link>
-            <button
-              type="button"
-              onClick={() => openOrder()}
-              className="btn btn-sm btn-accent group"
-            >
-              Commander une benne
-              <BenneIcon className="h-4 w-4 shrink-0" />
-            </button>
           </div>
 
           <div className="flex items-center gap-2 lg:hidden">
-            <a
-              href={SITE_PHONE_HREF}
-              aria-label={`Appeler le ${SITE_PHONE_DISPLAY}`}
-              className={cn(
-                "inline-flex h-10 w-10 items-center justify-center rounded-[10px] border transition-colors duration-500",
-                solid
-                  ? "border-brand-border bg-brand-bg text-brand-navy"
-                  : "border-white/20 bg-white/[0.06] text-white backdrop-blur-md"
-              )}
-            >
-              <HugeiconsIcon icon={Call02Icon} size={18} strokeWidth={VITRINE_ICON_STROKE} />
-            </a>
-            <button
-              type="button"
-              onClick={handleOrder}
-              className="btn btn-sm btn-accent group"
-              aria-label="Commander une benne"
-            >
-              <BenneIcon className="h-[18px] w-[18px] shrink-0 text-white" />
-              <span className="hidden min-[430px]:inline">Commander</span>
-            </button>
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
@@ -210,7 +230,13 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
             </button>
           </div>
           <nav aria-label="Navigation mobile" className="container-x flex flex-1 flex-col justify-center">
-            {[...navLinks, { label: "Espace client", href: "/dashboard" }].map((link) => (
+            {[
+              ...navLinks,
+              isProPage
+                ? { label: "Particulier", href: "/" }
+                : { label: "Professionnels", href: "/professionnels" },
+              { label: "Espace client", href: "/dashboard" },
+            ].map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
@@ -227,17 +253,6 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
               </Link>
             ))}
           </nav>
-          <div className="container-x space-y-2.5 pb-10 pt-6">
-            <a href={SITE_PHONE_HREF} className="btn btn-ghost-light w-full">
-              {SITE_PHONE_DISPLAY}
-            </a>
-            <button type="button" onClick={handleOrder} className="btn btn-accent w-full">
-              Commander une benne
-            </button>
-            <Link href="/pro" className="btn btn-ghost-light w-full">
-              Espace pro — bientôt disponible
-            </Link>
-          </div>
         </div>
       </div>
     </>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ChevronRight } from "lucide-react"
 
 import {
@@ -18,15 +18,28 @@ import { useVitrineOrder } from "./order-context"
 
 type HeroOrderCardProps = {
   className?: string
+  /** Présélectionne le profil (ex. page /professionnels). */
+  defaultAudience?: OrderAudience
 }
 
-export function HeroOrderCard({ className }: HeroOrderCardProps) {
+export function HeroOrderCard({
+  className,
+  defaultAudience = "particulier",
+}: HeroOrderCardProps) {
   const { draft, patchDraft, openOrder } = useVitrineOrder()
+
+  useEffect(() => {
+    if (defaultAudience !== draft.audience) {
+      patchDraft({ audience: defaultAudience })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- sync once on mount / page
+  }, [defaultAudience])
   const [addressError, setAddressError] = useState<string | null>(null)
 
-  const audience = draft.audience
+  const audience = draft.audience ?? defaultAudience
   const address = draft.address
   const selectedAddress = draft.selectedAddress
+  const isPro = audience === "professionnel"
 
   const handleAudience = (value: OrderAudience) => {
     patchDraft({ audience: value })
@@ -65,7 +78,9 @@ export function HeroOrderCard({ className }: HeroOrderCardProps) {
         id="hero-order-card-title"
         className="text-left text-[17px] font-bold leading-snug tracking-[-0.02em] text-brand-navy sm:text-[18px]"
       >
-        Votre tarif, tout de suite en ligne
+        {isPro
+          ? "Votre demande de benne, en ligne"
+          : "Votre tarif, tout de suite en ligne"}
       </h2>
 
       <OrderAudienceToggle
@@ -94,7 +109,9 @@ export function HeroOrderCard({ className }: HeroOrderCardProps) {
           warmSurface={false}
         />
         <p className="text-[12px] leading-snug text-brand-muted sm:text-[13px]">
-          Tarif calculé selon votre adresse et votre déchet.
+          {isPro
+            ? "Tarif HT selon adresse et déchet — demande sans paiement en ligne."
+            : "Tarif calculé selon votre adresse et votre déchet."}
         </p>
       </div>
 
@@ -107,7 +124,9 @@ export function HeroOrderCard({ className }: HeroOrderCardProps) {
         className="hero-order-card__cta group flex min-h-12 w-full items-center justify-between gap-3 rounded-xl bg-brand-navy px-4 py-3 text-left text-[15px] font-semibold leading-snug text-white shadow-[0_8px_24px_-8px_rgb(24_53_116/0.45)] transition-colors hover:bg-[#152d66] sm:text-base"
         onClick={continueToModal}
       >
-        <span className="min-w-0 flex-1">Voir les bennes et tarifs disponibles</span>
+        <span className="min-w-0 flex-1">
+          {isPro ? "Continuer ma demande professionnelle" : "Voir les bennes et tarifs disponibles"}
+        </span>
         <span
           className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-green text-white shadow-sm transition-colors group-hover:bg-[#19752B]"
           aria-hidden
@@ -118,7 +137,9 @@ export function HeroOrderCard({ className }: HeroOrderCardProps) {
 
       <div className="hero-order-card__footer pt-4 text-center text-[11px] leading-snug text-brand-muted sm:text-xs">
         <p>
-          Dès 330 € HT · commande en 2 minutes · pas besoin d&apos;appeler
+          {isPro
+            ? "Réponse sous 24 h · Île-de-France · interlocuteur dédié au suivi"
+            : "Dès 330 € HT · commande en 2 minutes · pas besoin d&apos;appeler"}
         </p>
       </div>
     </div>

@@ -16,7 +16,7 @@ export function VitrinePublicShell({
     <VitrineOrderProvider>
       <div className="vitrine-root min-h-screen">
         <VitrineHeader forceSolid />
-        <main id="contenu" className="pt-[72px] lg:pt-[84px]">
+        <main id="contenu" className="pt-[7.25rem] lg:pt-[8.25rem]">
           {children}
         </main>
         <VitrineFooter />

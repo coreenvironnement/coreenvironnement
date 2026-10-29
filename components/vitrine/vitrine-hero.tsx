@@ -15,12 +15,15 @@ import {
 } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
+import type { OrderAudience } from "@/components/order/order-audience-toggle"
+
 import { HeroOrderCard } from "./hero-order-card"
 import { VitrineHeroReassurance } from "./vitrine-hero-reassurance"
 
 type VitrineHeroProps = {
   seoVariant: SeoVariant
   compactTop?: boolean
+  heroOrderAudience?: OrderAudience
 }
 
 const H1_PRIX_HIGHLIGHT = "meilleur prix"
@@ -87,7 +90,11 @@ function HeroGoogleRatingBadge({ className }: { className?: string }) {
   )
 }
 
-export function VitrineHero({ seoVariant, compactTop }: VitrineHeroProps) {
+export function VitrineHero({
+  seoVariant,
+  compactTop,
+  heroOrderAudience = "particulier",
+}: VitrineHeroProps) {
   return (
     <>
     <section
@@ -126,7 +133,7 @@ export function VitrineHero({ seoVariant, compactTop }: VitrineHeroProps) {
         className={
           compactTop
             ? "container-x relative z-10 pb-16 pt-4 sm:pb-28 sm:pt-6 lg:pb-32"
-            : "container-x relative z-10 pb-16 pt-24 sm:pb-28 sm:pt-[6.25rem] lg:pb-32 lg:pt-32"
+            : "container-x relative z-10 pb-16 pt-[7.25rem] sm:pb-28 sm:pt-[7.75rem] lg:pb-32 lg:pt-[8.25rem]"
         }
       >
         <div className="relative flex flex-col gap-8 max-lg:gap-7 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-start lg:gap-12 xl:grid-cols-[minmax(0,1fr)_440px] xl:gap-14">
@@ -173,7 +180,7 @@ export function VitrineHero({ seoVariant, compactTop }: VitrineHeroProps) {
             className="animate-fade-up order-2 -mt-1 w-full max-lg:mt-4 lg:sticky lg:top-28 lg:order-none lg:mt-0"
             style={{ animationDelay: "280ms" }}
           >
-            <HeroOrderCard />
+            <HeroOrderCard defaultAudience={heroOrderAudience} />
             <div
               className="animate-fade-up mt-4 flex justify-center md:hidden"
               style={{ animationDelay: "340ms" }}
