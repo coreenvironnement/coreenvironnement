@@ -57,7 +57,6 @@ export function AddressAutocomplete({
   const [suggestions, setSuggestions] = useState<AddressGeocodeHit[]>([])
   const [activeIndex, setActiveIndex] = useState(-1)
   const [fetchError, setFetchError] = useState<string | null>(null)
-  const [searchSettled, setSearchSettled] = useState(false)
 
   const trimmed = value.trim()
   const skipSearch =
@@ -73,7 +72,6 @@ export function AddressAutocomplete({
       setSuggestions([])
       setLoading(false)
       setFetchError(null)
-      setSearchSettled(false)
       return
     }
 
@@ -81,7 +79,6 @@ export function AddressAutocomplete({
     const timer = window.setTimeout(async () => {
       setLoading(true)
       setFetchError(null)
-      setSearchSettled(false)
       try {
         const results = await searchBanAddresses(
           trimmed,
@@ -91,12 +88,10 @@ export function AddressAutocomplete({
         if (controller.signal.aborted) return
         setSuggestions(results)
         setActiveIndex(results.length > 0 ? 0 : -1)
-        setSearchSettled(true)
       } catch {
         if (controller.signal.aborted) return
         setSuggestions([])
         setFetchError("Impossible de charger les suggestions d'adresse.")
-        setSearchSettled(true)
       } finally {
         if (!controller.signal.aborted) setLoading(false)
       }
@@ -126,10 +121,7 @@ export function AddressAutocomplete({
   const showPanel =
     focused &&
     !disabled &&
-    (loading ||
-      fetchError !== null ||
-      (searchSettled && !skipSearch) ||
-      suggestions.length > 0)
+    (loading || fetchError !== null || suggestions.length > 0)
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (!showPanel || suggestions.length === 0) {
@@ -257,11 +249,6 @@ export function AddressAutocomplete({
                   </li>
                 ))}
             </ul>
-          ) : searchSettled ? (
-            <p className="px-4 py-3 text-sm text-brand-muted" role="status">
-              Aucune adresse trouvée en Île-de-France. Ajoutez un numéro, une rue
-              ou un code postal (75, 77, 78, 91, 92, 93, 94, 95).
-            </p>
           ) : null}
         </div>
       ) : null}
