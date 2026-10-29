@@ -110,7 +110,7 @@ export function VitrineCityGuide({ page }: { page: LocalPage }) {
                 <li>Date souhaitée et coordonnées de contact</li>
               </ul>
               <div className="mt-7 flex flex-col gap-3">
-                <button type="button" onClick={openOrder} className="btn btn-accent w-full">
+                <button type="button" onClick={() => openOrder()} className="btn btn-accent w-full">
                   Commander une benne
                 </button>
                 <a href={SITE_PHONE_HREF} className="btn btn-ghost-light w-full">

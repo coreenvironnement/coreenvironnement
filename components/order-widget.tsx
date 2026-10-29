@@ -5,13 +5,13 @@ import Image from "next/image"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import {
   ArrowLeft,
-  Briefcase,
   ChevronRight,
   Headphones,
   Info,
   Loader2,
+  MapPin,
   MapPinOff,
-  User,
+  Pencil,
 } from "lucide-react"
 
 import {
@@ -19,6 +19,11 @@ import {
   type AddressGeocodeHit,
 } from "@/components/order/address-autocomplete"
 
+import {
+  OrderAudienceToggle,
+  type OrderAudience,
+} from "@/components/order/order-audience-toggle"
+import { useVitrineOrder } from "@/components/vitrine/order-context"
 import { VITRINE_ICON_STROKE } from "@/components/vitrine/icons"
 import { Button } from "@/components/ui/button"
 import {
@@ -92,61 +97,9 @@ const BENNE_VISUAL_BY_VOLUME: Record<number, string> = {
   30: "/images/benne-30m3.png",
 }
 
-function AudienceToggle({
-  audience,
-  onChange,
-  subdued,
-}: {
-  audience: Audience
-  onChange: (value: Audience) => void
-  subdued?: boolean
-}) {
-  const options = [
-    { id: "particulier" as const, label: "Particulier", Icon: User },
-    { id: "professionnel" as const, label: "Professionnel", Icon: Briefcase },
-  ]
+type Audience = OrderAudience
 
-  return (
-    <div className="space-y-2.5">
-      <p
-        className={cn(
-          ORDER_SECTION_LABEL,
-          subdued && "text-[13px] font-semibold sm:text-[14px]"
-        )}
-      >
-        Vous êtes&nbsp;?
-      </p>
-      <div
-        className="flex rounded-full bg-primary/10 p-1"
-        role="group"
-        aria-label="Type de client"
-      >
-        {options.map((option) => {
-          const active = audience === option.id
-          return (
-            <button
-              key={option.id}
-              type="button"
-              aria-pressed={active}
-              onClick={() => onChange(option.id)}
-              className={cn(
-                "flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-3 text-[13px] font-semibold transition-colors duration-200 sm:text-sm",
-                active
-                  ? "bg-brand-green text-white shadow-[0_1px_2px_rgba(27,65,143,0.12)]"
-                  : "text-[#8A847C] hover:text-brand-navy"
-              )}
-            >
-              <option.Icon className="size-4 shrink-0" aria-hidden />
-              {option.label}
-            </button>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
-type Audience = "particulier" | "professionnel"
+type IntentPhase = "location" | "waste"
 
 function fmtHt(n: number) {
   return new Intl.NumberFormat("fr-FR", {
@@ -210,12 +163,15 @@ export function OrderWidget({
   scrollContainerRef,
 }: OrderWidgetProps) {
   const embedded = variant === "embedded"
+  const { draft, patchDraft, resolveIntentPhase, intentStart } = useVitrineOrder()
+  const modalWasOpen = useRef(false)
   const prefersReducedMotion = useReducedMotion()
   const t = prefersReducedMotion
     ? { duration: 0.01 }
     : { duration: 0.38, ease: [0.22, 1, 0.36, 1] as const }
 
   const [step, setStep] = useState<OrderTunnelStepId>("intent")
+  const [intentPhase, setIntentPhase] = useState<IntentPhase>("location")
   const [audience, setAudience] = useState<Audience>("particulier")
   const [address, setAddress] = useState("")
   const [selectedAddress, setSelectedAddress] = useState<AddressGeocodeHit | null>(
@@ -270,9 +226,20 @@ export function OrderWidget({
   }
 
   const zoneOk = selectedAddress !== null
-  const canLeaveIntent = zoneOk && family !== null
+  const canLeaveIntentWaste = family !== null
 
-  const goToForfait = () => {
+  const syncDraftFromWidget = () => {
+    if (!embedded) return
+    patchDraft({ audience, address, selectedAddress })
+  }
+
+  const applyDraft = (source: typeof draft) => {
+    setAudience(source.audience)
+    setAddress(source.address)
+    setSelectedAddress(source.selectedAddress)
+  }
+
+  const goToIntentWaste = () => {
     setAddressError(null)
     if (!address.trim().length) {
       setAddressError("Indiquez l’adresse de livraison de la benne.")
@@ -284,10 +251,23 @@ export function OrderWidget({
       )
       return
     }
+    syncDraftFromWidget()
+    setIntentPhase("waste")
+    scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
+  }
+
+  const goToForfait = () => {
+    setAddressError(null)
+    if (!zoneOk) {
+      setIntentPhase("location")
+      setAddressError("Indiquez l’adresse de livraison de la benne.")
+      return
+    }
     if (!family) {
       setAddressError("Choisissez un type de déchet dans la liste.")
       return
     }
+    syncDraftFromWidget()
     setStep("forfait")
   }
 
@@ -437,6 +417,22 @@ export function OrderWidget({
   useEffect(() => {
     onAudienceChange?.(audience)
   }, [audience, onAudienceChange])
+
+  useEffect(() => {
+    if (!embedded) return
+    if (open && !modalWasOpen.current) {
+      applyDraft(draft)
+      setStep("intent")
+      setIntentPhase(resolveIntentPhase())
+      setAddressError(null)
+    }
+    modalWasOpen.current = open
+  }, [open, embedded, intentStart, draft, resolveIntentPhase])
+
+  useEffect(() => {
+    if (!embedded || !open) return
+    patchDraft({ audience, address, selectedAddress })
+  }, [embedded, open, audience, address, selectedAddress, patchDraft])
 
   useEffect(() => {
     if (step !== "infos") return
@@ -593,9 +589,9 @@ export function OrderWidget({
           </div>
         ) : (
         <AnimatePresence mode="wait">
-          {step === "intent" && (
+          {step === "intent" && intentPhase === "location" && (
             <motion.div
-              key="intent"
+              key="intent-location"
               initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 24 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
@@ -604,45 +600,43 @@ export function OrderWidget({
             >
               <div
                 className={cn(
-                  embedded
-                    ? "space-y-4 sm:space-y-5"
-                    : "space-y-4"
+                  embedded ? "space-y-4 sm:space-y-5" : "space-y-4"
                 )}
               >
-                <AudienceToggle
+                <OrderAudienceToggle
                   audience={audience}
                   onChange={setAudience}
                   subdued={embedded}
                 />
 
                 <div className="space-y-2.5">
-                    <p className={ORDER_SECTION_LABEL}>Où livrer votre benne&nbsp;?</p>
-                    <div className="space-y-2">
-                      <label htmlFor="order-address" className="sr-only">
-                        Adresse de livraison
-                      </label>
-                      <AddressAutocomplete
-                        id="order-address"
-                        value={address}
-                        selected={selectedAddress}
-                        onValueChange={(next) => {
-                          setAddress(next)
-                          setAddressError(null)
-                        }}
-                        onSelect={handleAddressSelect}
-                        onClearSelection={clearAddressSelection}
-                        aria-invalid={addressError !== null && !selectedAddress}
-                        inputClassName="h-12 rounded-xl"
-                        warmSurface={embedded}
-                      />
-                      <p className={ORDER_HELP_TEXT}>
-                        <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
-                        <span>
-                          Saisissez votre adresse en Île-de-France et choisissez une
-                          suggestion.
-                        </span>
-                      </p>
-                    </div>
+                  <p className={ORDER_SECTION_LABEL}>Où livrer votre benne&nbsp;?</p>
+                  <div className="space-y-2">
+                    <label htmlFor="order-address" className="sr-only">
+                      Adresse de livraison
+                    </label>
+                    <AddressAutocomplete
+                      id="order-address"
+                      value={address}
+                      selected={selectedAddress}
+                      onValueChange={(next) => {
+                        setAddress(next)
+                        setAddressError(null)
+                      }}
+                      onSelect={handleAddressSelect}
+                      onClearSelection={clearAddressSelection}
+                      aria-invalid={addressError !== null && !selectedAddress}
+                      inputClassName="h-12 rounded-xl"
+                      warmSurface={embedded}
+                    />
+                    <p className={ORDER_HELP_TEXT}>
+                      <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
+                      <span>
+                        Saisissez votre adresse en Île-de-France et choisissez une
+                        suggestion.
+                      </span>
+                    </p>
+                  </div>
                 </div>
 
                 <AnimatePresence>
@@ -663,6 +657,70 @@ export function OrderWidget({
                     </motion.div>
                   )}
                 </AnimatePresence>
+
+                {addressError ? (
+                  <p className="text-center text-xs font-medium text-amber-800">
+                    {addressError}
+                  </p>
+                ) : null}
+
+                <Button
+                  type="button"
+                  className="mt-0.5 h-11 w-full rounded-xl border-0 bg-[#2F9632] px-4 text-base font-semibold text-white shadow-lg shadow-[#2F9632]/25 hover:bg-[#19752B]"
+                  onClick={goToIntentWaste}
+                >
+                  <span className="flex w-full items-center justify-between gap-2">
+                    <span>Continuer</span>
+                    <ChevronRight className="size-4 shrink-0" aria-hidden />
+                  </span>
+                </Button>
+              </div>
+            </motion.div>
+          )}
+
+          {step === "intent" && intentPhase === "waste" && (
+            <motion.div
+              key="intent-waste"
+              initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
+              transition={t}
+              className={cn(embedded ? "" : "space-y-4")}
+            >
+              <div
+                className={cn(
+                  embedded ? "space-y-4 sm:space-y-5" : "space-y-4"
+                )}
+              >
+                {selectedAddress ? (
+                  <div
+                    className={cn(
+                      embedded ? ORDER_TUNNEL_CARD : "rounded-xl border border-primary/12 bg-white/95",
+                      "flex items-start gap-2.5 px-3.5 py-3"
+                    )}
+                  >
+                    <MapPin className="mt-0.5 size-4 shrink-0 text-brand-green" aria-hidden />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-brand-muted">
+                        Livraison
+                      </p>
+                      <p className="mt-0.5 text-[13px] font-medium leading-snug text-brand-navy sm:text-sm">
+                        {selectedAddress.label}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className="inline-flex shrink-0 items-center gap-1 text-[12px] font-semibold text-brand-green hover:text-[#19752B]"
+                      onClick={() => {
+                        setAddressError(null)
+                        setIntentPhase("location")
+                      }}
+                    >
+                      <Pencil className="size-3.5" aria-hidden />
+                      Modifier
+                    </button>
+                  </div>
+                ) : null}
 
                 <div className="relative z-30 space-y-2.5">
                   <p className={ORDER_SECTION_LABEL}>Type de déchet</p>
@@ -697,17 +755,17 @@ export function OrderWidget({
                   )}
                 </div>
 
-                {addressError && (
+                {addressError ? (
                   <p className="text-center text-xs font-medium text-amber-800">
                     {addressError}
                   </p>
-                )}
+                ) : null}
 
                 <Button
                   type="button"
                   className="mt-0.5 h-11 w-full rounded-xl border-0 bg-[#2F9632] px-4 text-base font-semibold text-white shadow-lg shadow-[#2F9632]/25 hover:bg-[#19752B] disabled:cursor-not-allowed disabled:bg-[#2F9632] disabled:opacity-60 disabled:shadow-md"
                   onClick={goToForfait}
-                  disabled={!canLeaveIntent}
+                  disabled={!canLeaveIntentWaste}
                 >
                   <span className="flex w-full items-center justify-between gap-2">
                     <span>
@@ -776,6 +834,7 @@ export function OrderWidget({
                   onClick={() => {
                     setAddressError(null)
                     setStep("intent")
+                    setIntentPhase("waste")
                   }}
                 >
                   <ArrowLeft className="mr-2 size-4" />
@@ -1151,7 +1210,10 @@ export function OrderWidget({
                   <button
                     type="button"
                     className="text-[11px] font-medium text-primary/70 hover:text-primary hover:underline"
-                    onClick={() => setStep("intent")}
+                    onClick={() => {
+                      setStep("intent")
+                      setIntentPhase("waste")
+                    }}
                   >
                     Modifier
                   </button>

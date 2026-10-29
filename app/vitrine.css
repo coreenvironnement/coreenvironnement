@@ -724,6 +724,20 @@
   background: color-mix(in srgb, var(--color-brand-warm-field) 92%, white);
 }
 
+.vitrine-root .hero-order-card {
+  border-radius: 1.25rem;
+  border: 1px solid color-mix(in srgb, #35a238 18%, transparent);
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--color-brand-warm-field) 96%, white) 0%,
+    var(--color-brand-warm-field) 48%,
+    color-mix(in srgb, var(--color-brand-warm) 90%, white) 100%
+  );
+  box-shadow:
+    0 2px 4px rgb(24 53 116 / 0.06),
+    0 16px 40px -12px rgb(24 53 116 / 0.22);
+}
+
 /* Formulaire modal — même palette que la liste « type de déchet » */
 .order-tunnel-form {
   color: var(--color-brand-navy);

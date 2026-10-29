@@ -103,7 +103,7 @@ export function VitrineFinalCta() {
           <div className="mt-9 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
             <button
               type="button"
-              onClick={openOrder}
+              onClick={() => openOrder()}
               className="btn btn-accent group w-full px-7 sm:w-auto"
             >
               {content.ctaPrimary}

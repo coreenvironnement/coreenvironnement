@@ -82,7 +82,7 @@ export function VitrineDepartmentGuide({ page }: { page: LocalPage }) {
           ) : null}
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <button type="button" onClick={openOrder} className="btn btn-accent">
+            <button type="button" onClick={() => openOrder()} className="btn btn-accent">
               Commander une benne
             </button>
             <a href={SITE_PHONE_HREF} className="btn btn-ghost-dark">

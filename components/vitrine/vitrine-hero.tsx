@@ -15,9 +15,8 @@ import {
 } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
-import { BenneIcon } from "./benne-icon"
+import { HeroOrderCard } from "./hero-order-card"
 import { VitrineHeroReassurance } from "./vitrine-hero-reassurance"
-import { useVitrineOrder } from "./order-context"
 
 type VitrineHeroProps = {
   seoVariant: SeoVariant
@@ -71,8 +70,6 @@ function HeroGoogleRatingBadge({ className }: { className?: string }) {
 }
 
 export function VitrineHero({ seoVariant }: VitrineHeroProps) {
-  const { openOrder } = useVitrineOrder()
-
   return (
     <>
     <section
@@ -108,54 +105,53 @@ export function VitrineHero({ seoVariant }: VitrineHeroProps) {
       <div aria-hidden="true" className="hero-overlay hero-overlay--desktop hidden md:block" />
 
       <div className="container-x relative z-10 pb-16 pt-24 sm:pb-28 sm:pt-[6.25rem] lg:pb-32 lg:pt-32">
-        <div className="relative max-w-[760px] lg:max-w-[640px] xl:max-w-[680px] lg:-translate-y-2">
-          <div
-            aria-hidden
-            className="hero-readability-glow pointer-events-none absolute -inset-x-3 -inset-y-5 rounded-[1.25rem] md:-inset-x-10 md:-inset-y-12 md:rounded-[2rem]"
-          />
-          <div className="animate-fade-up" style={{ animationDelay: "60ms" }}>
-            <HeroGoogleRatingBadge />
-          </div>
+        <div className="relative grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_440px] xl:gap-14">
+          <div className="relative max-w-[760px] lg:max-w-none lg:-translate-y-2">
+            <div
+              aria-hidden
+              className="hero-readability-glow pointer-events-none absolute -inset-x-3 -inset-y-5 rounded-[1.25rem] md:-inset-x-10 md:-inset-y-12 md:rounded-[2rem]"
+            />
+            <div className="animate-fade-up" style={{ animationDelay: "60ms" }}>
+              <HeroGoogleRatingBadge />
+            </div>
 
-          <h1
-            className="animate-fade-up mt-5 text-[clamp(1.82rem,5.35vw,2.17rem)] leading-[1.1] text-white [text-shadow:0_1px_28px_rgba(24,53,116,0.28),0_2px_56px_rgba(24,53,116,0.14)] sm:mt-6 sm:text-[clamp(2.15rem,4.4vw,3.45rem)] sm:leading-[1.08]"
-            style={{ animationDelay: "140ms" }}
-          >
-            <span className="block">{seoVariant.h1Line1}</span>
-            {seoVariant.h1Line2 ? (
-              <span className="mt-1 block">{seoVariant.h1Line2}</span>
-            ) : null}
-          </h1>
+            <h1
+              className="animate-fade-up mt-5 text-[clamp(1.82rem,5.35vw,2.17rem)] leading-[1.1] text-white [text-shadow:0_1px_28px_rgba(24,53,116,0.28),0_2px_56px_rgba(24,53,116,0.14)] sm:mt-6 sm:text-[clamp(2.15rem,4.4vw,3.45rem)] sm:leading-[1.08]"
+              style={{ animationDelay: "140ms" }}
+            >
+              <span className="block">{seoVariant.h1Line1}</span>
+              {seoVariant.h1Line2 ? (
+                <span className="mt-1 block">{seoVariant.h1Line2}</span>
+              ) : null}
+            </h1>
 
-          <p
-            className="animate-fade-up mt-6 max-w-[520px] text-[17px] leading-[1.84] text-white/95 [text-shadow:0_1px_22px_rgba(24,53,116,0.22)] sm:mt-6 sm:max-w-[540px] sm:text-[18px] sm:leading-[1.72]"
-            style={{ animationDelay: "220ms" }}
-          >
-            {seoVariant.intro ?? hero.titre2}
-          </p>
+            <p
+              className="animate-fade-up mt-6 max-w-[520px] text-[17px] leading-[1.84] text-white/95 [text-shadow:0_1px_22px_rgba(24,53,116,0.22)] sm:mt-6 sm:max-w-[540px] sm:text-[18px] sm:leading-[1.72]"
+              style={{ animationDelay: "220ms" }}
+            >
+              {seoVariant.intro ?? hero.titre2}
+            </p>
 
-          <div
-            className="animate-fade-up mt-9 flex w-full flex-col gap-3 sm:mt-9 sm:w-auto sm:flex-row sm:items-center"
-            style={{ animationDelay: "300ms" }}
-          >
-            <button type="button" onClick={openOrder} className="btn btn-accent group w-full sm:w-auto">
-              {hero.cta}
-              <BenneIcon className="h-[18px] w-[18px] shrink-0" />
-            </button>
             <a
               href={SITE_PHONE_HREF}
               aria-label={`Appeler Core Environnement au ${SITE_PHONE_DISPLAY}`}
-              className="btn btn-ghost-light w-full border-white/45 text-white sm:w-auto hover:border-white/60"
+              className="animate-fade-up btn btn-ghost-light mt-8 hidden w-full border-white/45 text-white sm:inline-flex sm:w-auto hover:border-white/60 lg:mt-9"
+              style={{ animationDelay: "300ms" }}
             >
               {SITE_PHONE_DISPLAY}
             </a>
           </div>
-          <p
-            className="animate-fade-up mt-4 text-[15px] font-semibold leading-snug text-white [text-shadow:0_1px_22px_rgba(24,53,116,0.22)] sm:text-base"
-            style={{ animationDelay: "360ms" }}
-          >
-            Dès 330 € pour une benne 8 m³, soit 396 € TTC.
-          </p>
+
+          <div className="animate-fade-up w-full lg:sticky lg:top-28" style={{ animationDelay: "280ms" }}>
+            <HeroOrderCard />
+            <a
+              href={SITE_PHONE_HREF}
+              aria-label={`Appeler Core Environnement au ${SITE_PHONE_DISPLAY}`}
+              className="btn btn-ghost-light mt-4 w-full border-white/45 text-white sm:hidden hover:border-white/60"
+            >
+              {SITE_PHONE_DISPLAY}
+            </a>
+          </div>
         </div>
       </div>
     </section>

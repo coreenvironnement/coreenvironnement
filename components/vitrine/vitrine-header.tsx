@@ -115,7 +115,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
             </Link>
             <button
               type="button"
-              onClick={openOrder}
+              onClick={() => openOrder()}
               className="btn btn-sm btn-accent group"
             >
               Commander une benne
