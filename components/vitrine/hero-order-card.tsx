@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronRight, Info } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 
 import {
   AddressAutocomplete,
@@ -12,7 +12,6 @@ import {
   ORDER_FIELD_SECTION_LABEL,
   type OrderAudience,
 } from "@/components/order/order-audience-toggle"
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 import { useVitrineOrder } from "./order-context"
@@ -57,31 +56,33 @@ export function HeroOrderCard({ className }: HeroOrderCardProps) {
   return (
     <div
       className={cn(
-        "hero-order-card order-tunnel-form relative z-20 w-full space-y-4 p-4 sm:p-5",
+        "hero-order-card order-tunnel-form relative z-20 flex w-full flex-col gap-5 p-5 sm:gap-5 sm:p-6",
         className
       )}
       aria-labelledby="hero-order-card-title"
     >
-      <div>
-        <p
-          id="hero-order-card-title"
-          className="text-[13px] font-semibold text-brand-navy sm:text-sm"
-        >
-          Votre tarif en deux infos
-        </p>
-        <p className="mt-0.5 text-[12px] leading-snug text-brand-muted sm:text-[13px]">
-          Particulier ou pro, puis adresse de livraison en Île-de-France.
-        </p>
-      </div>
+      <h2
+        id="hero-order-card-title"
+        className="text-left text-[17px] font-bold leading-snug tracking-[-0.02em] text-brand-navy sm:text-[18px]"
+      >
+        Votre tarif en deux informations
+      </h2>
 
-      <OrderAudienceToggle audience={audience} onChange={handleAudience} subdued />
+      <OrderAudienceToggle
+        variant="hero"
+        audience={audience}
+        onChange={handleAudience}
+      />
 
-      <div className="space-y-2.5">
-        <p className={ORDER_FIELD_SECTION_LABEL}>Où livrer votre benne&nbsp;?</p>
+      <div className="space-y-2">
+        <p className={cn(ORDER_FIELD_SECTION_LABEL, "text-[15px] sm:text-[15px]")}>
+          Adresse de livraison
+        </p>
         <AddressAutocomplete
           id="hero-order-address"
           value={address}
           selected={selectedAddress}
+          placeholder="Rechercher une adresse…"
           onValueChange={(next) => {
             patchDraft({ address: next, selectedAddress: null })
             setAddressError(null)
@@ -89,35 +90,36 @@ export function HeroOrderCard({ className }: HeroOrderCardProps) {
           onSelect={handleAddressSelect}
           onClearSelection={() => patchDraft({ selectedAddress: null })}
           aria-invalid={addressError !== null && !selectedAddress}
-          inputClassName="h-12 rounded-xl"
-          warmSurface
+          inputClassName="h-12 rounded-xl border-brand-green/15 bg-white"
+          warmSurface={false}
         />
-        <p className="flex items-start gap-1.5 text-[11px] leading-snug text-brand-muted sm:text-[12px]">
-          <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
-          <span>
-            Saisissez votre adresse en Île-de-France et choisissez une suggestion.
-          </span>
+        <p className="text-[12px] leading-snug text-brand-muted sm:text-[13px]">
+          Tarif calculé selon votre adresse et votre déchet.
         </p>
       </div>
 
       {addressError ? (
-        <p className="text-center text-xs font-medium text-amber-800">{addressError}</p>
+        <p className="-mt-2 text-center text-xs font-medium text-amber-800">{addressError}</p>
       ) : null}
 
-      <Button
+      <button
         type="button"
-        className="h-11 w-full rounded-xl border-0 bg-[#2F9632] px-4 text-base font-semibold text-white shadow-lg shadow-[#2F9632]/25 hover:bg-[#19752B]"
+        className="hero-order-card__cta group flex min-h-12 w-full items-center justify-between gap-3 rounded-xl bg-brand-navy px-4 py-3 text-left text-[15px] font-semibold leading-snug text-white shadow-[0_8px_24px_-8px_rgb(24_53_116/0.45)] transition-colors hover:bg-[#152d66] sm:text-base"
         onClick={continueToModal}
       >
-        <span className="flex w-full items-center justify-between gap-2">
-          <span>Voir les tarifs disponibles</span>
-          <ChevronRight className="size-4 shrink-0" aria-hidden />
+        <span className="min-w-0 flex-1">Voir les bennes et tarifs disponibles</span>
+        <span
+          className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-green text-white shadow-sm transition-colors group-hover:bg-[#19752B]"
+          aria-hidden
+        >
+          <ChevronRight className="size-5" strokeWidth={2.25} />
         </span>
-      </Button>
+      </button>
 
-      <p className="text-center text-[11px] leading-snug text-brand-muted sm:text-xs">
-        Pas besoin d&apos;appeler pour connaître le prix.
-      </p>
+      <div className="hero-order-card__footer space-y-1 pt-4 text-center text-[11px] leading-snug text-brand-muted sm:text-xs">
+        <p>Dès 330 € HT · commande en 2 minutes</p>
+        <p>Pas besoin d&apos;appeler pour connaître le prix.</p>
+      </div>
     </div>
   )
 }
