@@ -20,6 +20,7 @@ import { VitrineHeroReassurance } from "./vitrine-hero-reassurance"
 
 type VitrineHeroProps = {
   seoVariant: SeoVariant
+  compactTop?: boolean
 }
 
 function HeroGoogleRatingBadge({ className }: { className?: string }) {
@@ -69,7 +70,7 @@ function HeroGoogleRatingBadge({ className }: { className?: string }) {
   )
 }
 
-export function VitrineHero({ seoVariant }: VitrineHeroProps) {
+export function VitrineHero({ seoVariant, compactTop }: VitrineHeroProps) {
   return (
     <>
     <section
@@ -104,19 +105,28 @@ export function VitrineHero({ seoVariant }: VitrineHeroProps) {
       <div aria-hidden="true" className="hero-overlay hero-overlay--mobile md:hidden" />
       <div aria-hidden="true" className="hero-overlay hero-overlay--desktop hidden md:block" />
 
-      <div className="container-x relative z-10 pb-16 pt-24 sm:pb-28 sm:pt-[6.25rem] lg:pb-32 lg:pt-32">
+      <div
+        className={
+          compactTop
+            ? "container-x relative z-10 pb-16 pt-4 sm:pb-28 sm:pt-6 lg:pb-32"
+            : "container-x relative z-10 pb-16 pt-24 sm:pb-28 sm:pt-[6.25rem] lg:pb-32 lg:pt-32"
+        }
+      >
         <div className="relative flex flex-col gap-8 max-lg:gap-7 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-start lg:gap-12 xl:grid-cols-[minmax(0,1fr)_440px] xl:gap-14">
           <div className="relative order-1 max-w-[760px] lg:max-w-none lg:-translate-y-2">
             <div
               aria-hidden
               className="hero-readability-glow pointer-events-none absolute -inset-x-3 -inset-y-5 rounded-[1.25rem] md:-inset-x-10 md:-inset-y-12 md:rounded-[2rem]"
             />
-            <div className="animate-fade-up" style={{ animationDelay: "60ms" }}>
+            <div
+              className="animate-fade-up hidden md:block"
+              style={{ animationDelay: "60ms" }}
+            >
               <HeroGoogleRatingBadge />
             </div>
 
             <h1
-              className="animate-fade-up mt-5 text-[clamp(1.82rem,5.35vw,2.17rem)] leading-[1.1] text-white [text-shadow:0_1px_28px_rgba(24,53,116,0.28),0_2px_56px_rgba(24,53,116,0.14)] sm:mt-6 sm:text-[clamp(2.15rem,4.4vw,3.45rem)] sm:leading-[1.08]"
+              className="animate-fade-up mt-0 text-[clamp(1.82rem,5.35vw,2.17rem)] leading-[1.1] text-white [text-shadow:0_1px_28px_rgba(24,53,116,0.28),0_2px_56px_rgba(24,53,116,0.14)] md:mt-6 sm:text-[clamp(2.15rem,4.4vw,3.45rem)] sm:leading-[1.08]"
               style={{ animationDelay: "140ms" }}
             >
               <span className="block">{seoVariant.h1Line1}</span>
@@ -147,13 +157,12 @@ export function VitrineHero({ seoVariant }: VitrineHeroProps) {
             style={{ animationDelay: "280ms" }}
           >
             <HeroOrderCard />
-            <a
-              href={SITE_PHONE_HREF}
-              aria-label={`Appeler Core Environnement au ${SITE_PHONE_DISPLAY}`}
-              className="btn btn-ghost-light mt-4 w-full border-white/45 text-white sm:hidden hover:border-white/60"
+            <div
+              className="animate-fade-up mt-4 flex justify-center md:hidden"
+              style={{ animationDelay: "340ms" }}
             >
-              {SITE_PHONE_DISPLAY}
-            </a>
+              <HeroGoogleRatingBadge className="w-full max-w-full justify-center sm:w-auto sm:justify-start" />
+            </div>
           </div>
         </div>
       </div>

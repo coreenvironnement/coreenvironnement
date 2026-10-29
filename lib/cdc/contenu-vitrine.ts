@@ -221,6 +221,24 @@ export const faq = [
     ],
   },
   {
+    categorie: "Prix et commande en ligne",
+    emoji: "💶",
+    questions: [
+      {
+        q: "Combien coûte une benne 8 m³ en Île-de-France ?",
+        r: "Le forfait le plus accessible est la benne 8 m³ gravats propres : dès 330 € HT, soit 396 € TTC pour un particulier. Les autres volumes et types de déchets sont plus élevés. Le montant exact s'affiche dans le tunnel avant validation.",
+      },
+      {
+        q: "Faut-il téléphoner pour connaître le prix ?",
+        r: "Non. Indiquez votre adresse et votre type de déchet en ligne : le tarif du forfait choisi s'affiche avant le paiement. Vous pouvez appeler si vous préférez être accompagné.",
+      },
+      {
+        q: "En combien de temps puis-je obtenir un tarif ?",
+        r: "En quelques minutes : profil, adresse, type de déchet, choix de la benne, puis récapitulatif. La commande complète est pensée pour rester courte.",
+      },
+    ],
+  },
+  {
     categorie: "Paiement et offre PRO",
     emoji: "💳",
     questions: [

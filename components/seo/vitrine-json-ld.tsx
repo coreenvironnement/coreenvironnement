@@ -1,9 +1,16 @@
 import { faq } from "@/lib/cdc/contenu-vitrine"
+import { buildLocalBreadcrumbs } from "@/lib/seo/breadcrumbs"
 import { DEFAULT_VARIANT } from "@/lib/seo/landing-variants"
 import { buildLocalDescription } from "@/lib/seo/local-copy"
 import type { LocalPage } from "@/lib/seo/local-pages"
+import { getEntryPriceHt } from "@/lib/seo/pricing-snapshot"
 import { getSiteUrl } from "@/lib/seo/site-url"
-import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
+import {
+  SITE_GOOGLE_RATING,
+  SITE_GOOGLE_REVIEW_COUNT,
+  SITE_PHONE_DISPLAY,
+  SITE_PHONE_HREF,
+} from "@/lib/site"
 
 function buildFaqSchema() {
   const mainEntity = faq.flatMap((section) =>
@@ -21,6 +28,25 @@ function buildFaqSchema() {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity,
+  }
+}
+
+function buildBreadcrumbListSchema(siteUrl: string, localPage?: LocalPage) {
+  if (!localPage) return null
+
+  const items = buildLocalBreadcrumbs(localPage)
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.label,
+      item: item.href.startsWith("http")
+        ? item.href
+        : `${siteUrl}${item.href === "/" ? "" : item.href}`,
+    })),
   }
 }
 
@@ -45,6 +71,8 @@ function buildLocalBusinessSchema(siteUrl: string, localPage?: LocalPage) {
         { "@type": "City", name: "Paris" },
       ]
 
+  const entryHt = getEntryPriceHt()
+
   return {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -56,6 +84,13 @@ function buildLocalBusinessSchema(siteUrl: string, localPage?: LocalPage) {
       ? buildLocalDescription(localPage)
       : DEFAULT_VARIANT.description,
     areaServed,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: SITE_GOOGLE_RATING,
+      reviewCount: SITE_GOOGLE_REVIEW_COUNT,
+      bestRating: 5,
+      worstRating: 1,
+    },
     serviceArea: {
       "@type": "GeoCircle",
       geoMidpoint: {
@@ -75,11 +110,14 @@ function buildLocalBusinessSchema(siteUrl: string, localPage?: LocalPage) {
     },
     makesOffer: {
       "@type": "Offer",
+      price: entryHt,
+      priceCurrency: "EUR",
+      description: "Prix de départ pour une benne 8 m³ gravats propres (HT, zone standard).",
       itemOffered: {
         "@type": "Service",
-        name: "Location de benne",
+        name: "Location de benne 8 m³ gravats propres",
         description:
-          "Location de bennes pour gravats, DIB et déchets de chantier en Île-de-France.",
+          "Location de bennes pour gravats et déchets de chantier en Île-de-France.",
         areaServed: localPage
           ? `${localPage.nom}, Île-de-France`
           : "Île-de-France",
@@ -95,8 +133,7 @@ function buildWebSiteSchema(siteUrl: string) {
     "@id": `${siteUrl}/#website`,
     url: siteUrl,
     name: "CORE ENVIRONNEMENT",
-    description:
-      "Location de bennes en Île-de-France. Commande en ligne, confirmation par e-mail et rappel pour la pose.",
+    description: DEFAULT_VARIANT.description,
     inLanguage: "fr-FR",
   }
 }
@@ -107,13 +144,14 @@ export function VitrineJsonLd({ localPage }: { localPage?: LocalPage } = {}) {
     buildWebSiteSchema(siteUrl),
     buildLocalBusinessSchema(siteUrl, localPage),
     buildFaqSchema(),
-  ]
+    buildBreadcrumbListSchema(siteUrl, localPage),
+  ].filter((schema): schema is NonNullable<typeof schema> => schema !== null)
 
   return (
     <>
-      {schemas.map((schema) => (
+      {schemas.map((schema, index) => (
         <script
-          key={schema["@type"]}
+          key={`${schema["@type"]}-${index}`}
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />

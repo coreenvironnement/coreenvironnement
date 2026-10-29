@@ -99,7 +99,7 @@ export function VitrineDepartmentGuide({ page }: { page: LocalPage }) {
               aria-hidden
             />
             Même catalogue, même délai minimum de 24 h et mêmes volumes que sur le reste du site.
-            Aucune règle municipale n’est affirmée ici.
+            Contenu revu en octobre 2026.
           </p>
         </div>
       </div>

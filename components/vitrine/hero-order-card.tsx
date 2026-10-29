@@ -107,7 +107,7 @@ export function HeroOrderCard({ className }: HeroOrderCardProps) {
         className="hero-order-card__cta group flex min-h-12 w-full items-center justify-between gap-3 rounded-xl bg-brand-navy px-4 py-3 text-left text-[15px] font-semibold leading-snug text-white shadow-[0_8px_24px_-8px_rgb(24_53_116/0.45)] transition-colors hover:bg-[#152d66] sm:text-base"
         onClick={continueToModal}
       >
-        <span className="min-w-0 flex-1">Voir mon tarif</span>
+        <span className="min-w-0 flex-1">Voir les bennes et tarifs disponibles</span>
         <span
           className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-green text-white shadow-sm transition-colors group-hover:bg-[#19752B]"
           aria-hidden

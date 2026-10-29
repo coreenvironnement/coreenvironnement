@@ -39,8 +39,8 @@ export function VitrineLocalSeo({ seoVariant }: VitrineLocalSeoProps) {
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-brand-muted sm:text-base">
               CORE ENVIRONNEMENT livre des bennes dans les communes ci-dessous et
-              leurs environs. Même service : commande en ligne, intervention sous 24 h,
-              e-mail de confirmation et rappel pour la pose.
+              leurs environs. Même service : tarif selon adresse et déchet, commande en
+              ligne, livraison sous 24 h selon disponibilité.
             </p>
             <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {seoVariant.relatedCityLinks!.map(({ href, label }) => (
@@ -70,7 +70,14 @@ export function VitrineLocalSeo({ seoVariant }: VitrineLocalSeoProps) {
           </h2>
           {!showCityGrid ? (
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-brand-muted sm:text-base">
-              Location de benne dans les 8 départements d&apos;Île-de-France.
+              Location de benne dans les 8 départements d&apos;Île-de-France.{" "}
+              <Link
+                href="/location-benne"
+                className="font-medium text-brand-navy underline-offset-2 hover:text-brand-green hover:underline"
+              >
+                Voir l&apos;index des communes
+              </Link>
+              .
             </p>
           ) : null}
           <ul className="mt-4 flex flex-wrap gap-2">

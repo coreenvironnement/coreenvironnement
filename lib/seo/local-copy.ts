@@ -4,6 +4,10 @@ import {
   HOME_GEO_TOKEN,
   type SeoVariant,
 } from "@/lib/seo/landing-variants"
+import {
+  buildLongtailDescription,
+  buildLongtailTitle,
+} from "@/lib/seo/longtail-seo"
 
 export type LocalPageType = "departement" | "ville" | "longtail"
 
@@ -75,19 +79,25 @@ export function geoPrepositionalPhrase(page: LocalPage): string {
 }
 
 export function buildLocalTitle(page: LocalPage): string {
+  if (page.type === "longtail") {
+    return buildLongtailTitle(page)
+  }
   if (page.departementCode === "75" && !isCityScoped(page)) {
-    return "Location de benne à Paris (75)"
+    return "Location de benne à Paris dès 330 € HT · livraison 24 h"
   }
   if (isCityScoped(page) && page.city) {
     if (page.departementCode === "75" && page.city === "Paris") {
-      return "Location de benne à Paris (75)"
+      return "Location de benne à Paris (75) · tarif en ligne"
     }
-    return `Location de benne à ${page.city} (${page.departementCode})`
+    return `Location de benne à ${page.city} (${page.departementCode}) · tarif en ligne`
   }
-  return `Location de benne en ${page.departementNom} (${page.departementCode})`
+  return `Location de benne en ${page.departementNom} dès 330 € HT · livraison 24 h`
 }
 
 export function buildLocalDescription(page: LocalPage): string {
+  if (page.type === "longtail") {
+    return buildLongtailDescription(page)
+  }
   const replacement = isCityScoped(page)
     ? `à ${geoCoverageLabel(page)}`
     : page.departementCode === "75"

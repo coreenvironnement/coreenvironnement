@@ -17,6 +17,7 @@ import { VITRINE_ICON_STROKE } from "./icons"
 import { VitrineLogo } from "./logo"
 
 const NAV_LINKS = [
+  { href: "/location-benne", label: "Villes desservies" },
   { href: "/#services", label: "Nos services" },
   { href: "/#engagements", label: "Nos engagements" },
   { href: "/#espace-client", label: "Espace client" },
@@ -60,7 +61,7 @@ export function VitrineFooter() {
           <div className="vitrine-footer__brand">
             <VitrineLogo variant="footer" />
             <p className="vitrine-footer__tagline">
-              Location de bennes en Île-de-France. Commande en ligne, confirmation par e-mail.
+              Location de bennes en Île-de-France. Tarif en ligne, commande en 2 minutes.
             </p>
             <a href={SITE_PHONE_HREF} className="vitrine-footer__phone">
               <HugeiconsIcon icon={Call02Icon} size={16} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />

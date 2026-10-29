@@ -5,6 +5,10 @@ import { ArrowUpRight01Icon, CheckmarkCircle02Icon, InformationCircleIcon } from
 
 import type { LocalPage } from "@/lib/seo/local-copy"
 import { getCityOfficialInfo } from "@/lib/seo/city-official-info"
+import {
+  getEntryPriceHt,
+  getEntryPriceTtcParticulier,
+} from "@/lib/seo/pricing-snapshot"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 
 import { VITRINE_ICON_STROKE } from "./icons"
@@ -94,8 +98,9 @@ export function VitrineCityGuide({ page }: { page: LocalPage }) {
 
               <p className="mt-6 text-sm leading-relaxed text-brand-muted">
                 Le catalogue propose notamment les gravats propres, les déchets non dangereux en
-                mélange, le bois, les végétaux et le plâtre. En cas de doute sur un déchet ou sur
-                l’accès, contactez CORE avant de valider.
+                mélange, le bois, les végétaux et le plâtre. À partir de {getEntryPriceHt()} € HT (
+                {getEntryPriceTtcParticulier()} € TTC particulier pour une 8 m³ gravats propres).
+                Le tarif exact dépend de l’adresse et du forfait choisi en ligne.
               </p>
             </article>
 

@@ -4,6 +4,7 @@ import {
   buildLocalH1,
   buildLocalTitle,
 } from "../lib/seo/local-copy"
+import { buildLongtailTitle } from "../lib/seo/longtail-seo"
 import { getLocalPageBySlug } from "../lib/seo/local-pages"
 import { assertLocalSeoParity } from "../lib/seo/local-seo-parity"
 
@@ -20,7 +21,10 @@ if (!meaux) {
 }
 
 const checks: Array<[string, boolean]> = [
-  ["title meaux", buildLocalTitle(meaux) === "Location de benne à Meaux (77)"],
+  [
+    "title meaux",
+    buildLocalTitle(meaux) === "Location de benne à Meaux (77) · tarif en ligne",
+  ],
   [
     "h1 meaux",
     buildLocalH1(meaux) ===
@@ -35,13 +39,19 @@ const checks: Array<[string, boolean]> = [
 ]
 
 const paris = getLocalPageBySlug("75-paris")
-if (!paris || buildLocalTitle(paris) !== "Location de benne à Paris (75)") {
-  checks.push(["title paris", false])
+if (
+  !paris ||
+  buildLocalTitle(paris) !== "Location de benne à Paris dès 330 € HT · livraison 24 h"
+) {
+  checks.push(["title paris dept", false])
 }
 
 const longtail = getLocalPageBySlug("enlevement-gravats-meaux")
-if (!longtail || buildLocalTitle(longtail) !== buildLocalTitle(meaux)) {
-  checks.push(["longtail parent", false])
+if (
+  !longtail ||
+  buildLongtailTitle(longtail) !== "Enlèvement gravats Meaux · benne et tarif en ligne"
+) {
+  checks.push(["longtail meaux title", false])
 }
 
 const failed = checks.filter(([, ok]) => !ok)

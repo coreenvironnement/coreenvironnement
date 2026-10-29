@@ -5,12 +5,20 @@ import { getSiteUrl } from "@/lib/seo/site-url"
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = getSiteUrl()
+  const lastModified = new Date()
 
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: base,
       changeFrequency: "weekly",
       priority: 1,
+      lastModified,
+    },
+    {
+      url: `${base}/location-benne`,
+      changeFrequency: "weekly",
+      priority: 0.95,
+      lastModified,
     },
     {
       url: `${base}/pro`,
@@ -36,6 +44,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority:
         page?.type === "departement" ? 0.9 : page?.type === "longtail" ? 0.65 : 0.7,
+      lastModified,
     }
   })
 

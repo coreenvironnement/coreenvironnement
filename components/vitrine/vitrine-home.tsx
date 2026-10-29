@@ -25,6 +25,10 @@ import { VitrineHero } from "./vitrine-hero"
 import { VitrineCityGuide } from "./vitrine-city-guide"
 import { VitrineDepartmentGuide } from "./vitrine-department-guide"
 import { VitrineLocalSeo } from "./vitrine-local-seo"
+import { VitrineLocationHub } from "./vitrine-location-hub"
+import { VitrineLongtailIntro } from "./vitrine-longtail-intro"
+import { VitrineSeoPricingSection } from "./vitrine-seo-pricing-section"
+import { LocalBreadcrumbs } from "@/components/seo/local-breadcrumbs"
 
 function OrderBanner({ orderParam }: { orderParam?: string }) {
   const { openOrder } = useVitrineOrder()
@@ -39,7 +43,7 @@ function OrderBanner({ orderParam }: { orderParam?: string }) {
     return (
       <div className="container-x relative z-20 -mb-6 pt-24">
         <p className="rounded-xl border border-brand-green/30 bg-brand-bg-alt px-4 py-3 text-center text-sm text-brand-navy">
-          Paiement reçu. Votre commande est confirmée — vous recevrez un e-mail de
+          Paiement reçu. Votre commande est confirmée. Vous recevrez un e-mail de
           confirmation sous peu.
         </p>
       </div>
@@ -63,10 +67,12 @@ function VitrineHomeInner({
   orderParam,
   seoVariant,
   localSeoData,
+  hubPage,
 }: {
   orderParam?: string
   seoVariant: SeoVariant
   localSeoData?: LocalPage
+  hubPage?: boolean
 }) {
   return (
     <div className="vitrine-root min-h-screen">
@@ -81,9 +87,18 @@ function VitrineHomeInner({
       <OrderBanner orderParam={orderParam} />
 
       <main id="contenu">
-        <VitrineHero seoVariant={seoVariant} />
+        {localSeoData ? (
+          <div className="relative z-20 pt-24 sm:pt-[6.25rem]">
+            <LocalBreadcrumbs page={localSeoData} />
+          </div>
+        ) : null}
+        <VitrineHero seoVariant={seoVariant} compactTop={Boolean(localSeoData)} />
+        {hubPage ? <VitrineLocationHub /> : null}
         {localSeoData?.type === "departement" ? (
           <VitrineDepartmentGuide page={localSeoData} />
+        ) : null}
+        {localSeoData?.type === "longtail" ? (
+          <VitrineLongtailIntro page={localSeoData} />
         ) : null}
         <VitrineServices />
         <VitrineEngagements />
@@ -93,6 +108,7 @@ function VitrineHomeInner({
         <TestimonialsSection vitrine />
         <VitrineFaq />
         {localSeoData?.type === "ville" ? <VitrineCityGuide page={localSeoData} /> : null}
+        {!localSeoData || hubPage ? <VitrineSeoPricingSection showHubLink={!hubPage} /> : null}
         <VitrineLocalSeo seoVariant={seoVariant} />
         <VitrineFinalCta />
       </main>
@@ -107,10 +123,12 @@ export function VitrineHome({
   orderParam,
   seoVariant,
   localSeoData,
+  hubPage,
 }: {
   orderParam?: string
   seoVariant?: SeoVariant
   localSeoData?: LocalPage
+  hubPage?: boolean
 }) {
   const variant = localSeoData
     ? localPageToSeoVariant(localSeoData)
@@ -122,6 +140,7 @@ export function VitrineHome({
         orderParam={orderParam}
         seoVariant={variant}
         localSeoData={localSeoData}
+        hubPage={hubPage}
       />
     </VitrineOrderProvider>
   )

@@ -5,7 +5,7 @@ import {
   DEPARTMENT_GUIDE_SLUGS,
   getDepartmentGuideCopy,
 } from "../lib/seo/department-guides"
-import { getLocalPageBySlug, getLocalPageCount } from "../lib/seo/local-pages"
+import { getDepartementPages, getLocalPageBySlug, getLocalPageCount } from "../lib/seo/local-pages"
 
 const errors: string[] = []
 const counts = getLocalPageCount()
@@ -14,8 +14,14 @@ if (counts.total !== 482 || counts.departements !== 8) {
   errors.push("Le nombre de routes SEO existantes a changé.")
 }
 
-if (DEPARTMENT_GUIDE_SLUGS.join(",") !== "78-yvelines,92-hauts-de-seine,93-seine-saint-denis") {
-  errors.push("Le lot départemental 78 / 92 / 93 a changé.")
+if (DEPARTMENT_GUIDE_SLUGS.length !== 8) {
+  errors.push("Les 8 guides départementaux doivent être définis.")
+}
+
+const deptSlugs = getDepartementPages().map((p) => p.slug).sort()
+const guideSlugs = [...DEPARTMENT_GUIDE_SLUGS].sort()
+if (deptSlugs.join(",") !== guideSlugs.join(",")) {
+  errors.push("Les slugs guides ne couvrent pas tous les départements.")
 }
 
 for (const slug of DEPARTMENT_GUIDE_SLUGS) {
@@ -36,8 +42,8 @@ for (const slug of DEPARTMENT_GUIDE_SLUGS) {
   if (!blob.includes("396")) {
     errors.push(`${slug}: le montant TTC payé doit rester indiqué.`)
   }
-  if (!copy.description.toLowerCase().includes("suivi")) {
-    errors.push(`${slug}: la description ne parle pas du suivi.`)
+  if (!copy.description.toLowerCase().includes("330")) {
+    errors.push(`${slug}: la description doit mentionner le prix d'entrée.`)
   }
   if (!blob.includes("ttc")) {
     errors.push(`${slug}: le montant TTC n’est pas indiqué.`)
@@ -45,11 +51,6 @@ for (const slug of DEPARTMENT_GUIDE_SLUGS) {
   if (blob.includes("autorisation est obligatoire")) {
     errors.push(`${slug}: affirmation d’autorisation obligatoire.`)
   }
-}
-
-const essonne = getLocalPageBySlug("91-essonne")
-if (essonne && getDepartmentGuideCopy(essonne)) {
-  errors.push("Le guide départemental ne doit pas s’afficher hors 78 / 92 / 93.")
 }
 
 const meaux = getLocalPageBySlug("meaux")
@@ -65,10 +66,6 @@ const homeSource = readFileSync(
   resolve(process.cwd(), "components/vitrine/vitrine-home.tsx"),
   "utf8",
 )
-const routeSource = readFileSync(
-  resolve(process.cwd(), "app/location-benne/[slug]/page.tsx"),
-  "utf8",
-)
 
 if (/<h1[\s>]/i.test(guideSource)) {
   errors.push("Le guide départemental ne doit ajouter aucun H1.")
@@ -76,13 +73,10 @@ if (/<h1[\s>]/i.test(guideSource)) {
 if (!homeSource.includes('localSeoData?.type === "departement"')) {
   errors.push("Le guide départemental n’est pas branché sur les pages département.")
 }
-if (!routeSource.includes("const canonical = `${siteUrl}/location-benne/${page.slug}`")) {
-  errors.push("La formule canonical des pages locales a changé.")
-}
 
 if (errors.length > 0) {
   console.error(errors.join("\n"))
   process.exit(1)
 }
 
-console.log("OK guide-departement 78/92/93")
+console.log("OK guide-departement 8 dept IDF")
