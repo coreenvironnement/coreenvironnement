@@ -721,7 +721,7 @@
 .vitrine-root .hero-order-card {
   border-radius: 1rem;
   border: 1px solid color-mix(in srgb, #35a238 14%, #e3e9e6);
-  background: color-mix(in srgb, white 94%, var(--color-brand-warm-field));
+  background: #ecf4e9;
   box-shadow:
     0 1px 2px rgb(24 53 116 / 0.04),
     0 12px 36px -10px rgb(24 53 116 / 0.18);
