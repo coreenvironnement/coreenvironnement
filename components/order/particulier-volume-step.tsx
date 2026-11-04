@@ -15,10 +15,13 @@ import {
 import { motion, AnimatePresence } from "framer-motion"
 
 import { OrderTunnelContinueButton } from "@/components/order/order-tunnel-continue-button"
+import type { OrderAudience } from "@/components/order/order-audience-toggle"
 import type { ParticulierWasteOptionId } from "@/lib/order/particulier-waste-options"
 import {
   availableVolumesForFamily,
   recommendBenneVolume,
+  recommendedMarginPercentForFamily,
+  recommendedMarginPercentForWaste,
   volumeFromBagsM3,
   volumeFromDimensionsM3,
   type VolumeRecommendation,
@@ -48,6 +51,14 @@ const LOADING_STEPS = [
 function parseDim(raw: string): number {
   const n = parseFloat(raw.replace(",", "."))
   return Number.isFinite(n) && n > 0 ? n : 0
+}
+
+function defaultVolumeMarginPercent(
+  family: BenneFamily,
+  wasteId: ParticulierWasteOptionId | null
+): number {
+  if (wasteId) return recommendedMarginPercentForWaste(wasteId)
+  return recommendedMarginPercentForFamily(family)
 }
 
 function VolumeDisclaimer() {
@@ -190,7 +201,9 @@ function ComputingOverlay({ onDone }: { onDone: () => void }) {
 
 export type ParticulierVolumeStepProps = {
   family: BenneFamily
-  wasteId: ParticulierWasteOptionId
+  /** Particulier : option déchet UI. Pro : omis (catalogue familial). */
+  wasteId?: ParticulierWasteOptionId | null
+  audience?: OrderAudience
   embedded?: boolean
   onBackToWaste: () => void
   onContinue: (knownVolumeM3: number | null) => void
@@ -198,11 +211,13 @@ export type ParticulierVolumeStepProps = {
 
 export function ParticulierVolumeStep({
   family,
-  wasteId,
+  wasteId = null,
+  audience = "particulier",
   embedded,
   onBackToWaste,
   onContinue,
 }: ParticulierVolumeStepProps) {
+  const isPro = audience === "professionnel"
   const volumes = useMemo(() => availableVolumesForFamily(family), [family])
   const [view, setView] = useState<View>("choice")
   const [estimatorMode, setEstimatorMode] = useState<EstimatorMode>("regular")
@@ -211,7 +226,9 @@ export function ParticulierVolumeStep({
   const [height, setHeight] = useState("")
   const [bagCount, setBagCount] = useState("")
   const [litersPerBag, setLitersPerBag] = useState("100")
-  const [marginPercent, setMarginPercent] = useState(10)
+  const [marginPercent, setMarginPercent] = useState(() =>
+    defaultVolumeMarginPercent(family, wasteId)
+  )
   const [result, setResult] = useState<VolumeRecommendation | null>(null)
   const [knownPick, setKnownPick] = useState<number | null>(null)
 
@@ -221,7 +238,7 @@ export function ParticulierVolumeStep({
     setHeight("")
     setBagCount("")
     setLitersPerBag("100")
-    setMarginPercent(10)
+    setMarginPercent(defaultVolumeMarginPercent(family, wasteId))
     setResult(null)
   }
 
@@ -239,7 +256,7 @@ export function ParticulierVolumeStep({
         parseDim(height)
       )
     }
-    const rec = recommendBenneVolume(estimated, family, wasteId, marginPercent)
+    const rec = recommendBenneVolume(estimated, family, wasteId ?? null, marginPercent)
     setResult(rec)
   }, [
     bagCount,
@@ -496,6 +513,11 @@ export function ParticulierVolumeStep({
                 onChange={(e) => setMarginPercent(Number(e.target.value))}
                 className="h-2 w-full accent-brand-green"
               />
+              {wasteId === "terre_cailloux" ? (
+                <p className="text-[12px] leading-snug text-brand-muted">
+                  Marge recommandée 20&nbsp;% pour terre et cailloux
+                </p>
+              ) : null}
             </label>
 
             <OrderTunnelContinueButton
@@ -542,6 +564,15 @@ export function ParticulierVolumeStep({
               ) : null}
             </div>
 
+            {result.extraBennesMessage ? (
+              <div
+                className="rounded-xl border border-brand-navy/20 bg-brand-navy/5 px-3.5 py-3 text-[13px] leading-snug text-brand-navy"
+                role="status"
+              >
+                {result.extraBennesMessage}
+              </div>
+            ) : null}
+
             {result.note ? (
               <p className="text-[12px] leading-snug text-brand-muted">{result.note}</p>
             ) : null}
@@ -558,7 +589,7 @@ export function ParticulierVolumeStep({
               disabled={!result.recommendedVolumeM3}
               onClick={() => onContinue(result.recommendedVolumeM3)}
             >
-              Voir les bennes adaptées
+              {isPro ? "Voir les forfaits adaptés" : "Voir les bennes adaptées"}
             </OrderTunnelContinueButton>
           </motion.div>
         ) : null}
@@ -575,7 +606,9 @@ export function ParticulierVolumeStep({
             disabled={knownPick === null}
             onClick={() => onContinue(knownPick)}
           >
-            Continuer vers le choix de benne
+            {isPro
+              ? "Continuer vers le choix de forfait"
+              : "Continuer vers le choix de benne"}
           </OrderTunnelContinueButton>
         </div>
       ) : null}
