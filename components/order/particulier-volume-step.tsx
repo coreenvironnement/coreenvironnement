@@ -1,15 +1,14 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useState } from "react"
+import Image from "next/image"
 import {
   AlertTriangle,
   ArrowLeft,
   Box,
-  Layers,
   Loader2,
   Phone,
   Ruler,
-  ShoppingBag,
   Sparkles,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -40,6 +39,40 @@ type View =
   | "result"
 
 type EstimatorMode = "regular" | "irregular" | "bags"
+
+function volumeEstimatorImageSrc(imageFile: string): string {
+  return `/images/${encodeURIComponent(imageFile)}`
+}
+
+const ESTIMATOR_MODE_OPTIONS: ReadonlyArray<{
+  id: EstimatorMode
+  label: string
+  hint: string
+  imageFile: string
+  imageAlt: string
+}> = [
+  {
+    id: "regular",
+    label: "Tas régulier",
+    hint: "Longueur × largeur × hauteur (m)",
+    imageFile: "Tas rectangulaire de gravats de chantier-2.png",
+    imageAlt: "Tas rectangulaire de gravats de chantier",
+  },
+  {
+    id: "irregular",
+    label: "Tas irrégulier",
+    hint: "L × l × hauteur moyenne estimée",
+    imageFile: "Tas de gravats de chantier-1.png",
+    imageAlt: "Tas irrégulier de gravats de chantier",
+  },
+  {
+    id: "bags",
+    label: "Sacs / litres",
+    hint: "Nombre × capacité (100 L = 0,1 m³)",
+    imageFile: "Big bag rempli de gravats-3.png",
+    imageAlt: "Big bag rempli de gravats",
+  },
+]
 
 const LOADING_MS = 950
 const LOADING_STEPS = [
@@ -410,30 +443,9 @@ export function ParticulierVolumeStep({
             key="est-mode"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-2.5"
+            className="grid gap-3 sm:grid-cols-3"
           >
-            {(
-              [
-                {
-                  id: "regular" as const,
-                  label: "Tas régulier",
-                  hint: "Longueur × largeur × hauteur (m)",
-                  icon: Box,
-                },
-                {
-                  id: "irregular" as const,
-                  label: "Tas irrégulier",
-                  hint: "L × l × hauteur moyenne estimée",
-                  icon: Layers,
-                },
-                {
-                  id: "bags" as const,
-                  label: "Sacs / litres",
-                  hint: "Nombre × capacité (100 L = 0,1 m³)",
-                  icon: ShoppingBag,
-                },
-              ] as const
-            ).map((item) => (
+            {ESTIMATOR_MODE_OPTIONS.map((item) => (
               <button
                 key={item.id}
                 type="button"
@@ -441,16 +453,22 @@ export function ParticulierVolumeStep({
                   setEstimatorMode(item.id)
                   setView("estimator-form")
                 }}
-                className="flex w-full items-center gap-3 rounded-xl border-2 border-primary/12 bg-white px-3.5 py-3.5 text-left hover:border-brand-green/35"
+                className="flex flex-col overflow-hidden rounded-xl border-2 border-primary/12 bg-white text-left shadow-sm transition-[border-color,box-shadow] hover:border-brand-green/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
               >
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-navy/8 text-brand-navy">
-                  <item.icon className="size-5" aria-hidden />
-                </span>
-                <span>
+                <div className="relative aspect-[4/3] w-full bg-[#F2F4F7]">
+                  <Image
+                    src={volumeEstimatorImageSrc(item.imageFile)}
+                    alt={item.imageAlt}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 88vw, 200px"
+                  />
+                </div>
+                <span className="px-2.5 pb-3 pt-2.5 sm:px-3">
                   <span className="block text-[14px] font-semibold text-brand-navy">
                     {item.label}
                   </span>
-                  <span className="block text-[12px] text-brand-muted">
+                  <span className="mt-0.5 block text-[12px] leading-snug text-brand-muted">
                     {item.hint}
                   </span>
                 </span>
