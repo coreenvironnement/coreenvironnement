@@ -331,8 +331,15 @@ function ProfessionnelPanel() {
   )
 }
 
-export function VitrineHowItWorks() {
-  const [profile, setProfile] = useState<Profile>("particulier")
+type VitrineHowItWorksProps = {
+  /** Présélectionne l’onglet (ex. page /professionnels). */
+  defaultProfile?: Profile
+}
+
+export function VitrineHowItWorks({
+  defaultProfile = "particulier",
+}: VitrineHowItWorksProps = {}) {
+  const [profile, setProfile] = useState<Profile>(defaultProfile)
 
   return (
     <section id="fonctionnement" className="bg-[#F3F6FB] pb-16 pt-16 max-sm:pt-[5.75rem] sm:py-20 lg:py-[5.5rem]">

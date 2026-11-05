@@ -35,7 +35,7 @@ export function VitrineProfessionnelsHome() {
           <TestimonialsSection vitrine proOnly />
           <VitrineServices />
           <VitrineEngagements />
-          <VitrineHowItWorks />
+          <VitrineHowItWorks defaultProfile="professionnel" />
           <VitrineFaq />
           <VitrineFinalCta />
           <VitrineAudienceSwitch mode="pro" />
