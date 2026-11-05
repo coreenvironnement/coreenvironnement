@@ -67,12 +67,90 @@ const ESTIMATOR_MODE_OPTIONS: ReadonlyArray<{
   },
   {
     id: "bags",
-    label: "Sacs / litres",
+    label: "Sac big bag",
     hint: "Nombre × capacité (100 L = 0,1 m³)",
     imageFile: "Big bag rempli de gravats-3.png",
     imageAlt: "Big bag rempli de gravats",
   },
 ]
+
+function EstimatorModeSelectionIndicator({
+  selected,
+  className,
+}: {
+  selected: boolean
+  className?: string
+}) {
+  return (
+    <span
+      className={cn(
+        "flex size-[22px] shrink-0 items-center justify-center rounded-full border-2 bg-white shadow-sm",
+        selected ? "border-brand-green" : "border-[#D0D5DD]",
+        className
+      )}
+      aria-hidden
+    >
+      {selected ? <span className="size-2.5 rounded-full bg-brand-green" /> : null}
+    </span>
+  )
+}
+
+function EstimatorModeOptionCard({
+  label,
+  hint,
+  imageFile,
+  imageAlt,
+  selected,
+  onClick,
+}: {
+  label: string
+  hint: string
+  imageFile: string
+  imageAlt: string
+  selected: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      role="radio"
+      aria-checked={selected}
+      onClick={onClick}
+      className={cn(
+        "flex w-full items-center gap-2.5 overflow-hidden rounded-xl border-2 bg-white text-left shadow-sm outline-none transition-[border-color,box-shadow]",
+        "p-2.5 focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2",
+        "sm:flex-col sm:items-stretch sm:p-0",
+        selected
+          ? "border-brand-green ring-1 ring-brand-green/25"
+          : "border-primary/12 hover:border-brand-green/35 sm:border-primary/12"
+      )}
+    >
+      <div className="relative h-20 w-[100px] shrink-0 overflow-hidden rounded-lg bg-[#F2F4F7] sm:aspect-[4/3] sm:h-auto sm:w-full sm:rounded-none">
+        <Image
+          src={volumeEstimatorImageSrc(imageFile)}
+          alt={imageAlt}
+          fill
+          className="object-contain p-0.5 sm:object-cover sm:p-0"
+          sizes="(max-width: 640px) 100px, 200px"
+        />
+      </div>
+      <span className="flex min-w-0 flex-1 items-center gap-2 sm:block sm:px-3 sm:pb-3 sm:pt-2.5">
+        <span className="min-w-0 flex-1">
+          <span className="block text-[13px] font-semibold leading-snug text-brand-navy sm:text-[14px]">
+            {label}
+          </span>
+          <span className="mt-0.5 block text-[11px] leading-snug text-brand-muted sm:text-[12px]">
+            {hint}
+          </span>
+        </span>
+        <EstimatorModeSelectionIndicator
+          selected={selected}
+          className="sm:hidden"
+        />
+      </span>
+    </button>
+  )
+}
 
 const LOADING_MS = 950
 const LOADING_STEPS = [
@@ -94,10 +172,13 @@ function defaultVolumeMarginPercent(
   return recommendedMarginPercentForFamily(family)
 }
 
-function VolumeDisclaimer() {
+function VolumeDisclaimer({ className }: { className?: string }) {
   return (
     <div
-      className="rounded-xl border border-brand-navy/10 bg-brand-warm-field/90 px-3.5 py-3 text-[12px] leading-snug text-brand-navy sm:text-[13px]"
+      className={cn(
+        "rounded-xl border border-brand-navy/10 bg-brand-warm-field/90 px-3.5 py-3 text-[12px] leading-snug text-brand-navy sm:text-[13px]",
+        className
+      )}
       role="note"
     >
       <div className="flex gap-2">
@@ -380,7 +461,9 @@ export function ParticulierVolumeStep({
         </div>
       </div>
 
-      <VolumeDisclaimer />
+      <VolumeDisclaimer
+        className={view === "estimator-mode" ? "max-sm:hidden" : undefined}
+      />
 
       <AnimatePresence mode="wait">
         {view === "choice" ? (
@@ -457,36 +540,23 @@ export function ParticulierVolumeStep({
             key="est-mode"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="grid gap-3 sm:grid-cols-3"
+            className="flex flex-col gap-2 sm:grid sm:grid-cols-3 sm:gap-3"
+            role="radiogroup"
+            aria-label="Méthode d'estimation du volume"
           >
             {ESTIMATOR_MODE_OPTIONS.map((item) => (
-              <button
+              <EstimatorModeOptionCard
                 key={item.id}
-                type="button"
+                label={item.label}
+                hint={item.hint}
+                imageFile={item.imageFile}
+                imageAlt={item.imageAlt}
+                selected={estimatorMode === item.id}
                 onClick={() => {
                   setEstimatorMode(item.id)
                   setView("estimator-form")
                 }}
-                className="flex flex-col overflow-hidden rounded-xl border-2 border-primary/12 bg-white text-left shadow-sm transition-[border-color,box-shadow] hover:border-brand-green/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
-              >
-                <div className="relative aspect-[4/3] w-full bg-[#F2F4F7]">
-                  <Image
-                    src={volumeEstimatorImageSrc(item.imageFile)}
-                    alt={item.imageAlt}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 640px) 88vw, 200px"
-                  />
-                </div>
-                <span className="px-2.5 pb-3 pt-2.5 sm:px-3">
-                  <span className="block text-[14px] font-semibold text-brand-navy">
-                    {item.label}
-                  </span>
-                  <span className="mt-0.5 block text-[12px] leading-snug text-brand-muted">
-                    {item.hint}
-                  </span>
-                </span>
-              </button>
+              />
             ))}
           </motion.div>
         ) : null}

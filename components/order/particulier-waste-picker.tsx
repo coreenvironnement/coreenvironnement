@@ -17,7 +17,7 @@ export function ParticulierWastePicker({
 }) {
   return (
     <div
-      className="grid grid-cols-2 gap-3 sm:gap-3.5"
+      className="grid grid-cols-2 gap-3 sm:gap-3.5 lg:grid-cols-3 lg:gap-4"
       role="radiogroup"
       aria-label="Que souhaitez-vous jeter ?"
     >
@@ -38,13 +38,13 @@ export function ParticulierWastePicker({
                 : "border-[#E4E7EC] hover:border-brand-green/35"
             )}
           >
-            <div className="relative aspect-[4/3] w-full bg-[#F2F4F7]">
+            <div className="relative aspect-[4/3] w-full bg-[#F2F4F7] lg:aspect-[16/10]">
               <Image
                 src={option.imageSrc}
                 alt=""
                 fill
-                className="object-cover"
-                sizes="(max-width: 540px) 44vw, 220px"
+                className="object-cover object-center"
+                sizes="(max-width: 1023px) 44vw, 350px"
               />
               <span
                 className={cn(

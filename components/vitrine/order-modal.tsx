@@ -89,7 +89,7 @@ export function VitrineOrderModal() {
           aria-label={orderModalTitle(audience, stepIndex)}
           className={cn(
             "order-tunnel-shell relative flex h-[100dvh] max-h-none w-full min-w-0 max-w-[100vw] flex-col overflow-hidden rounded-none border border-primary/15 pb-[env(safe-area-inset-bottom)] shadow-[var(--shadow-vitrine-pop)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
-            "sm:h-auto sm:max-h-[92svh] sm:w-full sm:max-w-[540px] sm:rounded-2xl sm:pb-0",
+            "sm:h-auto sm:max-h-[92svh] sm:w-full sm:max-w-[540px] sm:rounded-2xl sm:pb-0 lg:max-w-[1120px]",
             open
               ? "translate-y-0 opacity-100 sm:scale-100"
               : "translate-y-8 opacity-0 sm:translate-y-4 sm:scale-[0.97]"
