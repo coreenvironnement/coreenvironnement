@@ -95,6 +95,7 @@ export function HeroOrderCard({
         </p>
         <AddressAutocomplete
           id="hero-order-address"
+          className="hero-order-card__address"
           value={address}
           selected={selectedAddress}
           placeholder="Rechercher une adresse…"
@@ -105,12 +106,12 @@ export function HeroOrderCard({
           onSelect={handleAddressSelect}
           onClearSelection={() => patchDraft({ selectedAddress: null })}
           aria-invalid={addressError !== null && !selectedAddress}
-          inputClassName="h-12 rounded-xl border-brand-green/15 bg-white"
+          inputClassName="hero-order-card__address-input h-12 rounded-xl"
           warmSurface={false}
         />
         <p className="text-[12px] leading-snug text-brand-muted sm:text-[13px]">
           {isPro
-            ? "Tarif HT selon adresse et déchet — demande sans paiement en ligne."
+            ? "Tarif HT selon adresse et déchet : demande sans paiement en ligne."
             : "Tarif calculé selon votre adresse et votre déchet."}
         </p>
       </div>
@@ -138,8 +139,8 @@ export function HeroOrderCard({
       <div className="hero-order-card__footer pt-4 text-center text-[11px] leading-snug text-brand-muted sm:text-xs">
         <p>
           {isPro
-            ? "Réponse sous 24 h · Île-de-France · interlocuteur dédié au suivi"
-            : "Dès 330 € HT · commande en 2 minutes · pas besoin d\u2019appeler"}
+            ? "Réponse sous 24 h, Île-de-France, interlocuteur dédié au suivi"
+            : "Dès 330 € HT, commande en 2 minutes, pas besoin d\u2019appeler"}
         </p>
       </div>
     </div>

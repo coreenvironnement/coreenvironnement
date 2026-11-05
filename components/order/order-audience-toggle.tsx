@@ -36,7 +36,7 @@ export function OrderAudienceToggle({
   if (variant === "hero") {
     return (
       <div
-        className="flex rounded-xl bg-brand-warm-muted/80 p-1"
+        className="order-audience-toggle--hero flex rounded-xl p-1"
         role="group"
         aria-label="Type de client"
       >

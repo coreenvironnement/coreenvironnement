@@ -731,6 +731,23 @@
   border-top: 1px solid color-mix(in srgb, #35a238 12%, #e3e9e6);
 }
 
+/* Hero — toggle & adresse alignés sur #ecf4e9 (sans impacter le tunnel modal) */
+.vitrine-root .hero-order-card .order-audience-toggle--hero {
+  background: var(--color-brand-warm);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #35a238 12%, #e3e9e6);
+}
+
+.vitrine-root .hero-order-card .hero-order-card__address [data-slot="input"] {
+  border-color: color-mix(in srgb, #35a238 14%, #e3e9e6);
+  background: color-mix(in srgb, var(--color-brand-warm) 18%, white);
+  box-shadow: 0 1px 2px rgb(24 53 116 / 0.04);
+}
+
+.vitrine-root .hero-order-card .hero-order-card__address [data-slot="input"]:focus-visible {
+  border-color: color-mix(in srgb, #35a238 28%, #e3e9e6);
+  background: #fff;
+}
+
 /* Formulaire modal — même palette que la liste « type de déchet » */
 .order-tunnel-form {
   color: var(--color-brand-navy);
