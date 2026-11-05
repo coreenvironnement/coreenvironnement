@@ -33,12 +33,22 @@ function SegmentBadge({
   )
 }
 
-function StarRating({ vitrine }: { vitrine?: boolean }) {
+function StarRating({
+  vitrine,
+  compact,
+}: {
+  vitrine?: boolean
+  compact?: boolean
+}) {
   return (
     <div
       className={cn(
-        "mb-3 flex items-center gap-0.5",
-        vitrine && "max-md:mx-auto max-md:justify-center md:mx-0 md:justify-start"
+        "flex items-center gap-0.5",
+        compact ? "mb-2.5" : "mb-3",
+        vitrine &&
+          !compact &&
+          "max-md:mx-auto max-md:justify-center md:mx-0 md:justify-start",
+        compact && "justify-start"
       )}
       role="img"
       aria-label="5 sur 5 étoiles"
@@ -61,6 +71,50 @@ function cardArticleClass(vitrine?: boolean, extra?: string) {
       ? "w-[calc(100vw-2rem)] shrink-0 snap-center border border-brand-green/14 bg-brand-warm-field shadow-[var(--shadow-vitrine-soft)] max-md:text-center sm:w-full sm:min-w-0 md:text-left"
       : "w-[min(100vw-3rem,380px)] shrink-0 snap-center sm:w-[calc(50%-0.75rem)] sm:max-w-none lg:w-[calc(33.333%-0.75rem)] border border-white/40 bg-card/90 shadow-[0_14px_50px_-28px_rgba(27,65,143,0.35)] backdrop-blur-sm",
     extra
+  )
+}
+
+function TestimonialCardProVitrine({ t, i }: { t: Testimonial; i: number }) {
+  const logoAlt = t.logoSrc
+    ? t.role.replace(/^.*?, /, "").trim() || "Entreprise"
+    : ""
+
+  return (
+    <article
+      className={cn(
+        cardArticleClass(true),
+        "max-md:text-left md:text-left"
+      )}
+      style={{ animationDelay: `${i * 40}ms` }}
+    >
+      <StarRating vitrine compact />
+      <blockquote className="flex-1 text-left text-sm leading-relaxed text-brand-text sm:text-[0.95rem]">
+        «&nbsp;{t.quote}&nbsp;»
+      </blockquote>
+      <footer className="mt-5 border-t border-brand-border pt-4">
+        <div className="flex items-end justify-between gap-4">
+          <div className="min-w-0 text-left">
+            <p className="font-semibold text-brand-navy font-[family-name:var(--font-display)]">
+              {t.author}
+            </p>
+            <p className="mt-1 text-xs font-medium text-brand-navy/80 sm:text-sm">
+              {t.role}
+            </p>
+          </div>
+          {t.logoSrc ? (
+            <div className="relative h-9 w-[min(108px,38%)] shrink-0 opacity-90">
+              <Image
+                src={t.logoSrc}
+                alt={logoAlt}
+                fill
+                className="object-contain object-right"
+                sizes="108px"
+              />
+            </div>
+          ) : null}
+        </div>
+      </footer>
+    </article>
   )
 }
 
@@ -178,6 +232,15 @@ export function TestimonialsSection({
       : vitrine
         ? vitrineTestimonials
         : null
+
+  const sectionEyebrow = proOnly ? "Témoignages clients" : "Témoignages"
+  const sectionTitle = proOnly
+    ? "Des professionnels partagent leur expérience"
+    : "Ils nous font confiance sur le terrain"
+  const sectionIntro = proOnly
+    ? "Livraison, enlèvement et échanges avec notre équipe : des professionnels racontent comment se passent leurs prestations sur chantier."
+    : subtitleForVariant(particulierOnly, proOnly)
+
   return (
     <section
       id="temoignages"
@@ -191,27 +254,31 @@ export function TestimonialsSection({
       <div className={cn("mx-auto max-w-6xl px-4 sm:px-6 lg:px-8", vitrine && "container-x max-w-7xl")}>
         <div className="mx-auto mb-10 max-w-2xl text-center">
           <p className={cn(vitrine ? "section-eyebrow" : "text-xs font-semibold uppercase tracking-[0.22em] text-primary")}>
-            Témoignages
+            {sectionEyebrow}
           </p>
           <h2 className={cn("mt-2 text-balance sm:text-3xl", vitrine ? "section-title mt-3" : "text-2xl font-bold tracking-tight text-brand-navy")}>
-            Ils nous font confiance sur le terrain
+            {sectionTitle}
           </h2>
           <p className={cn("mt-3 text-sm sm:text-base", vitrine ? "text-brand-muted" : "text-muted-foreground")}>
-            {subtitleForVariant(particulierOnly, proOnly)}
+            {sectionIntro}
           </p>
         </div>
 
         {vitrine && items ? (
           <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 pl-4 pr-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:pb-0 sm:pl-0 sm:pr-0 lg:grid-cols-3">
-            {items.map((t, i) => (
-              <TestimonialCard
-                key={t.id}
-                t={t}
-                i={i}
-                withLogo={Boolean(t.logoSrc)}
-                vitrine
-              />
-            ))}
+            {items.map((t, i) =>
+              proOnly ? (
+                <TestimonialCardProVitrine key={t.id} t={t} i={i} />
+              ) : (
+                <TestimonialCard
+                  key={t.id}
+                  t={t}
+                  i={i}
+                  withLogo={Boolean(t.logoSrc)}
+                  vitrine
+                />
+              )
+            )}
           </div>
         ) : (
           <>

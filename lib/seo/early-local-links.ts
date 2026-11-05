@@ -5,16 +5,31 @@ import {
   getFeaturedCityPagesForDepartement,
 } from "@/lib/seo/local-pages"
 
-/** Liens locaux visibles sous le hero sur l’accueil particulier. */
-export const HOME_EARLY_LOCAL_LINKS: SeoLink[] = [
-  { href: "/location-benne/75-paris", label: "Paris" },
+/** Communes phares sous le hero — accueil particulier. */
+export const HOME_EARLY_LOCAL_SECTOR_LINKS: SeoLink[] = [
+  { href: "/location-benne/75-paris", label: "Paris (75)" },
   { href: "/location-benne/meaux", label: "Meaux (77)" },
   { href: "/location-benne/versailles", label: "Versailles (78)" },
   { href: "/location-benne/nanterre", label: "Nanterre (92)" },
   { href: "/location-benne/saint-denis", label: "Saint-Denis (93)" },
   { href: "/location-benne/creteil", label: "Créteil (94)" },
   { href: "/location-benne/argenteuil", label: "Argenteuil (95)" },
-  { href: "/location-benne", label: "Toutes les communes" },
+]
+
+export const HOME_EARLY_ALL_COMMUNES_LINK: SeoLink = {
+  href: "/location-benne",
+  label: "Voir toutes les communes desservies",
+}
+
+export const HOME_EARLY_VOLUME_GUIDE_LINK: SeoLink = {
+  href: "/location-benne/volume",
+  label: "Consulter le guide des volumes",
+}
+
+/** Liste plate — hub /location-benne (filtre « toutes les communes » côté UI). */
+export const HOME_EARLY_LOCAL_LINKS: SeoLink[] = [
+  ...HOME_EARLY_LOCAL_SECTOR_LINKS,
+  HOME_EARLY_ALL_COMMUNES_LINK,
   { href: "/location-benne/volume", label: "Quel volume choisir ?" },
 ]
 
