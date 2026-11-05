@@ -144,7 +144,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
           className={cn(
             "transition-[background-color,box-shadow,border-color] duration-500 ease-out",
             solid
-              ? "border-b border-brand-border bg-brand-bg/90 shadow-[var(--shadow-vitrine-soft)] backdrop-blur-xl"
+              ? "border-b border-brand-border bg-brand-warm shadow-[var(--shadow-vitrine-soft)]"
               : cn(
                   "border-b border-transparent bg-transparent shadow-none backdrop-blur-none",
                   isHeroUnderHeaderRoute(pathname) && "supports-[backdrop-filter]:bg-transparent"
@@ -164,7 +164,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
                 className={cn(
                   "group relative text-[15px] font-medium transition-colors duration-300 font-[family-name:var(--font-body)]",
                   solid
-                    ? "text-brand-muted hover:text-brand-navy"
+                    ? "text-brand-navy hover:text-brand-navy/85"
                     : "text-white/90 hover:text-white"
                 )}
               >
@@ -226,7 +226,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
               className={cn(
                 "inline-flex h-10 w-10 items-center justify-center rounded-[10px] border transition-colors duration-500",
                 solid
-                  ? "border-brand-border bg-brand-bg text-brand-navy hover:bg-brand-bg-alt"
+                  ? "border-brand-border bg-brand-warm text-brand-navy hover:bg-brand-warm-field"
                   : "border-white/20 bg-white/[0.06] text-white backdrop-blur-md hover:bg-white/[0.12]"
               )}
             >
