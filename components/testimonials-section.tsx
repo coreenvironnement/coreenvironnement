@@ -1,6 +1,7 @@
 import Image from "next/image"
 import { Star } from "lucide-react"
 
+import { ParticulierTestimonialsCarousel } from "@/components/vitrine/particulier-testimonials-carousel"
 import { ParticulierTestimonialIcon } from "@/components/vitrine/particulier-testimonial-icon"
 import {
   testimonialsEntreprisesAvecLogo,
@@ -233,13 +234,21 @@ export function TestimonialsSection({
         ? vitrineTestimonials
         : null
 
-  const sectionEyebrow = proOnly ? "Témoignages clients" : "Témoignages"
+  const sectionEyebrow = proOnly
+    ? "Témoignages clients"
+    : particulierOnly
+      ? "Avis clients"
+      : "Témoignages"
   const sectionTitle = proOnly
     ? "Des professionnels partagent leur expérience"
-    : "Ils nous font confiance sur le terrain"
+    : particulierOnly
+      ? "Ils ont loué une benne pour leurs travaux"
+      : "Ils nous font confiance sur le terrain"
   const sectionIntro = proOnly
     ? "Livraison, enlèvement et échanges avec notre équipe : des professionnels racontent comment se passent leurs prestations sur chantier."
-    : subtitleForVariant(particulierOnly, proOnly)
+    : particulierOnly
+      ? "Rénovation ou débarras : nos clients racontent comment s’est passée leur location, de la commande à l’enlèvement."
+      : subtitleForVariant(particulierOnly, proOnly)
 
   return (
     <section
@@ -265,21 +274,25 @@ export function TestimonialsSection({
         </div>
 
         {vitrine && items ? (
-          <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 pl-4 pr-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:pb-0 sm:pl-0 sm:pr-0 lg:grid-cols-3">
-            {items.map((t, i) =>
-              proOnly ? (
-                <TestimonialCardProVitrine key={t.id} t={t} i={i} />
-              ) : (
-                <TestimonialCard
-                  key={t.id}
-                  t={t}
-                  i={i}
-                  withLogo={Boolean(t.logoSrc)}
-                  vitrine
-                />
-              )
-            )}
-          </div>
+          particulierOnly ? (
+            <ParticulierTestimonialsCarousel items={items} />
+          ) : (
+            <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 pl-4 pr-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:pb-0 sm:pl-0 sm:pr-0 lg:grid-cols-3">
+              {items.map((t, i) =>
+                proOnly ? (
+                  <TestimonialCardProVitrine key={t.id} t={t} i={i} />
+                ) : (
+                  <TestimonialCard
+                    key={t.id}
+                    t={t}
+                    i={i}
+                    withLogo={Boolean(t.logoSrc)}
+                    vitrine
+                  />
+                )
+              )}
+            </div>
+          )
         ) : (
           <>
             <div className="mb-11">
