@@ -454,6 +454,22 @@ export const professionnelsPage = {
     "Services, volumes, conformité et suivi : l’offre CORE ENVIRONNEMENT pour les entreprises et artisans en Île-de-France. Commande en ligne sans paiement immédiat ou espace pro en préparation.",
 } as const
 
+/** Copy section « Comment ça fonctionne » — page /professionnels uniquement. */
+export const professionnelsCommentCaFonctionne = {
+  titre: "Préparez votre demande de benne en ligne",
+  intro:
+    "Indiquez les besoins de votre chantier et consultez les offres proposées. Vous pourrez vérifier le récapitulatif avant de transmettre votre demande à notre équipe.",
+  envoiDemande: {
+    label: "ENVOI DE LA DEMANDE",
+    text: "Vérifiez les informations, puis transmettez votre demande. Notre équipe vous recontacte pour confirmer l’intervention et les modalités de règlement.",
+  },
+  suite:
+    "Après l’envoi, notre équipe reprend les informations de votre demande avec vous pour préparer l’intervention et préciser les modalités de règlement.",
+} as const
+
+export const professionnelsFaqModalitesPaiement =
+  "Votre demande professionnelle s’effectue en ligne, sans paiement dans le formulaire. Les modalités de règlement sont précisées avec notre équipe avant confirmation de la prestation."
+
 export const finalCta = {
   eyebrow: "Votre chantier, notre priorité",
   titre: "Besoin d'une benne",

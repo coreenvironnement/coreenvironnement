@@ -39,21 +39,21 @@ const REASSURANCE_PARTICULIER: ReassuranceItem[] = [
 
 const REASSURANCE_PROFESSIONNEL: ReassuranceItem[] = [
   {
-    Icon: Truck,
-    label: "Livraison possible sous 24 h",
+    Icon: ClipboardText,
+    label: "Votre demande en ligne",
     description:
-      "Selon vos adresses de livraison et les disponibilités sur vos chantiers.",
+      "Renseignez l’adresse, les déchets et le volume pour préparer votre besoin.",
   },
   {
-    Icon: ClipboardText,
+    Icon: Truck,
     label: "Suivi de commande en ligne",
     description:
-      "Consultez l’avancement de vos demandes depuis votre espace client.",
+      "Retrouvez l’avancement de vos commandes confirmées dans votre espace client.",
   },
   {
     Icon: MapPin,
-    label: "Livraison en Île-de-France",
-    description: "Un interlocuteur unique pour l’ensemble de vos sites.",
+    label: "Vos chantiers en Île-de-France",
+    description: "Consultez les offres proposées à l’adresse de votre chantier.",
   },
 ]
 

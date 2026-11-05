@@ -49,13 +49,13 @@ export function getDefaultSeoVariant(): SeoVariant {
 /** Hero page /professionnels (H1 distinct de l’accueil particulier). */
 export const PROFESSIONNELS_HERO_VARIANT: SeoVariant = {
   intent: "default",
-  title: "Location de benne professionnelle en Île-de-France",
+  title: "Location de benne pour professionnels en Île-de-France | CORE",
   description:
-    "Entreprises et artisans : location de bennes, conformité et réactivité sous 24 h en Île-de-France. Demande en ligne, tarif HT selon adresse et déchet.",
+    "Location de benne pour vos chantiers en Île-de-France : tarifs HT en ligne, demande professionnelle et accompagnement pour la livraison et l’enlèvement.",
   h1Line1: "Location de benne pour vos chantiers en Île-de-France",
-  h1Line2: "Demande pro en ligne, sans paiement immédiat",
+  h1Line2: "",
   intro:
-    "Artisans, PME et gestionnaires de chantier : même catalogue de bennes, tarif HT selon adresse et type de déchet.",
+    "Préparez votre demande en ligne. Une fois votre commande confirmée, retrouvez son avancement dans votre espace client. Notre équipe organise la livraison et l’enlèvement de votre benne.",
   chipLabel: "Professionnels · Île-de-France",
   canonicalPath: "/professionnels",
 }

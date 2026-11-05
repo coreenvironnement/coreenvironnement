@@ -34,6 +34,8 @@ export type ProfessionalBenneRequestInput = {
 
 export type PreparedProfessionalBenneRequest = {
   reference: string
+  prestationId: string
+  commandeId?: string
   companyName: string
   contactName: string
   contactPhone: string
@@ -157,6 +159,7 @@ export function prepareProfessionalBenneRequest(
 
   return {
     reference: generateProRequestReference(),
+    prestationId: input.prestationId,
     companyName,
     contactName,
     contactPhone,

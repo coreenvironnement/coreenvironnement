@@ -86,7 +86,7 @@ export function HeroOrderCard({
         className="w-full text-[17px] font-bold leading-snug tracking-[-0.02em] text-brand-navy sm:text-[18px] lg:text-left"
       >
         {isPro
-          ? "Votre demande de benne, en ligne"
+          ? "Préparez votre demande de benne"
           : "Trouvez votre benne et consultez son tarif"}
       </h2>
 
@@ -105,16 +105,14 @@ export function HeroOrderCard({
             "text-[15px] max-lg:text-center lg:text-left sm:text-[15px]"
           )}
         >
-          {isPro ? "Adresse de livraison" : "Où faut-il livrer la benne ?"}
+          {isPro ? "Où se trouve votre chantier ?" : "Où faut-il livrer la benne ?"}
         </p>
         <AddressAutocomplete
           id="hero-order-address"
           className="hero-order-card__address"
           value={address}
           selected={selectedAddress}
-          placeholder={
-            isPro ? "Rechercher une adresse…" : "Saisissez l’adresse de livraison"
-          }
+          placeholder="Saisissez l’adresse de livraison"
           onValueChange={(next) => {
             patchDraft({ address: next, selectedAddress: null })
             setAddressError(null)
@@ -142,7 +140,7 @@ export function HeroOrderCard({
             className="text-[12px] leading-snug text-brand-muted max-lg:text-center lg:text-left sm:text-[13px]"
           >
             {isPro
-              ? "Tarif HT selon adresse et déchet : demande sans paiement en ligne."
+              ? "Votre adresse permet d’afficher les bennes et les tarifs HT proposés dans votre secteur."
               : "Votre adresse permet d’afficher les bennes et tarifs proposés dans votre secteur."}
           </p>
         )}
@@ -154,7 +152,7 @@ export function HeroOrderCard({
         onClick={continueToModal}
       >
         <span className="min-w-0 flex-1">
-          {isPro ? "Continuer ma demande professionnelle" : "Voir les bennes et les tarifs"}
+          {isPro ? "Voir les bennes et les tarifs HT" : "Voir les bennes et les tarifs"}
         </span>
         <ChevronRight
           className="size-5 shrink-0 transition-transform group-hover:translate-x-0.5"
@@ -162,6 +160,12 @@ export function HeroOrderCard({
           aria-hidden
         />
       </button>
+
+      {isPro ? (
+        <p className="text-center text-[12px] leading-snug text-brand-muted sm:text-[13px]">
+          Vous pourrez vérifier votre demande avant de l’envoyer.
+        </p>
+      ) : null}
 
       <div
         className={cn(
@@ -173,7 +177,7 @@ export function HeroOrderCard({
       >
         <p>
           {isPro
-            ? "Réponse sous 24 h, Île-de-France, interlocuteur dédié au suivi"
+            ? "Les modalités d’intervention et de règlement sont précisées avec notre équipe."
             : minTtcLabel
               ? `Dès ${minTtcLabel} € TTC`
               : "Le tarif dépend de votre adresse, des déchets et de la benne choisie."}

@@ -31,7 +31,9 @@ export function buildDemandeProAdminEmail(data: PreparedProfessionalBenneRequest
       ? `<li><strong>Enlèvement :</strong> ${escapeHtml(formatDateFr(data.pickupDate))}</li>`
       : "<li><strong>Enlèvement :</strong> Non renseigné</li>",
     "</ul>",
-    "<p>Aucun compte professionnel ni paiement n'a été créé.</p>",
+    data.commandeId
+      ? `<p><strong>Commande enregistrée :</strong> ${escapeHtml(data.commandeId)} (audience professionnel, paiement sur facture).</p>`
+      : "",
   ].filter(Boolean)
 
   const text = [
@@ -54,7 +56,9 @@ export function buildDemandeProAdminEmail(data: PreparedProfessionalBenneRequest
       ? `Enlèvement : ${formatDateFr(data.pickupDate)}`
       : "Enlèvement : Non renseigné",
     "",
-    "Aucun compte professionnel ni paiement n'a été créé.",
+    data.commandeId
+      ? `Commande enregistrée : ${data.commandeId} (audience professionnel, paiement sur facture).`
+      : "",
   ]
     .filter(Boolean)
     .join("\n")

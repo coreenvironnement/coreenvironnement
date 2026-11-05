@@ -4,7 +4,7 @@ import { useCallback, useId, useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowDown01Icon } from "@hugeicons/core-free-icons"
 
-import { faq } from "@/lib/cdc/contenu-vitrine"
+import { faq, professionnelsFaqModalitesPaiement } from "@/lib/cdc/contenu-vitrine"
 import { cn } from "@/lib/utils"
 
 import { VITRINE_ICON_STROKE } from "./icons"
@@ -191,10 +191,29 @@ function FaqCategoryItem({
   )
 }
 
-export function VitrineFaq() {
+const PAYMENT_QUESTION = "Quelles sont les modalités de paiement ?"
+
+function faqForPage(professionnelsPage: boolean) {
+  if (!professionnelsPage) return faq
+  return faq.map((group) => ({
+    ...group,
+    questions: group.questions.map((item) =>
+      item.q === PAYMENT_QUESTION
+        ? { ...item, r: professionnelsFaqModalitesPaiement }
+        : item
+    ),
+  }))
+}
+
+type VitrineFaqProps = {
+  professionnelsPage?: boolean
+}
+
+export function VitrineFaq({ professionnelsPage = false }: VitrineFaqProps = {}) {
   const baseId = useId()
   const [openCategorySlug, setOpenCategorySlug] = useState<string | null>(null)
   const [openQuestionId, setOpenQuestionId] = useState<string | null>(null)
+  const faqItems = faqForPage(professionnelsPage)
 
   const handleToggleCategory = useCallback((categorySlug: string) => {
     setOpenCategorySlug((current) => {
@@ -230,7 +249,7 @@ export function VitrineFaq() {
         </div>
 
         <div className="mx-auto mt-10 max-w-3xl overflow-hidden rounded-[var(--radius-card)] border border-brand-border bg-brand-bg">
-          {faq.map((group) => {
+          {faqItems.map((group) => {
             const categorySlug = slugify(group.categorie)
             const isOpen = openCategorySlug === categorySlug
 

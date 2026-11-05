@@ -187,7 +187,7 @@ export function VitrineHero({
             <p
               className={cn(
                 "animate-fade-up mt-4 max-w-[540px] text-[16px] leading-[1.72] text-white/95 [text-shadow:0_1px_22px_rgba(14,32,16,0.24)] sm:mt-5 sm:text-[17px] sm:leading-[1.78] lg:mt-6 lg:max-w-[520px] lg:text-[18px]",
-                isParticulier ? "max-lg:mx-auto lg:mx-0" : "hidden lg:block sm:max-w-[540px] sm:leading-[1.72]"
+                isParticulier ? "max-lg:mx-auto lg:mx-0" : "max-lg:mx-auto lg:mx-0"
               )}
               style={{ animationDelay: "220ms" }}
             >

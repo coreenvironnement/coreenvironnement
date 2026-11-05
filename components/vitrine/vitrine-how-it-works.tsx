@@ -12,6 +12,7 @@ import {
   Leaf01Icon,
   Login01Icon,
   Location01Icon,
+  MailSend01Icon,
   PackageDimensions01Icon,
   Recycle03Icon,
   Tick02Icon,
@@ -19,7 +20,10 @@ import {
   UserAdd01Icon,
 } from "@hugeicons/core-free-icons"
 
-import { commentCaFonctionne } from "@/lib/cdc/contenu-vitrine"
+import {
+  commentCaFonctionne,
+  professionnelsCommentCaFonctionne,
+} from "@/lib/cdc/contenu-vitrine"
 
 import { VITRINE_ICON_STROKE } from "./icons"
 
@@ -294,7 +298,24 @@ function ProSidePanel() {
   )
 }
 
-function ProfessionnelPanel() {
+function buildProOrderStepsForProfessionnelsPage(): Step[] {
+  const { envoiDemande } = professionnelsCommentCaFonctionne
+  return [
+    ...PRO_ORDER_STEPS,
+    {
+      num: "06",
+      label: envoiDemande.label,
+      text: envoiDemande.text,
+      icon: MailSend01Icon,
+    },
+  ]
+}
+
+function ProfessionnelPanel({ professionnelsPageLayout = false }: { professionnelsPageLayout?: boolean }) {
+  const orderSteps = professionnelsPageLayout
+    ? buildProOrderStepsForProfessionnelsPage()
+    : PRO_ORDER_STEPS
+
   return (
     <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(14_32_16/0.03),0_12px_32px_-8px_rgb(14_32_16/0.1)]">
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
@@ -323,9 +344,13 @@ function ProfessionnelPanel() {
             <p className="vitrine-label text-brand-navy/70">PASSER UNE COMMANDE</p>
           </div>
 
-          <StepsGrid steps={PRO_ORDER_STEPS} />
+          <StepsGrid steps={orderSteps} />
         </div>
-        <ProSidePanel />
+        {professionnelsPageLayout ? (
+          <AfterPanel description={professionnelsCommentCaFonctionne.suite} />
+        ) : (
+          <ProSidePanel />
+        )}
       </div>
     </div>
   )
@@ -334,12 +359,22 @@ function ProfessionnelPanel() {
 type VitrineHowItWorksProps = {
   /** Présélectionne l’onglet (ex. page /professionnels). */
   defaultProfile?: Profile
+  /** Textes « Comment ça fonctionne » de la page /professionnels. */
+  professionnelsPageLayout?: boolean
 }
 
 export function VitrineHowItWorks({
   defaultProfile = "particulier",
+  professionnelsPageLayout = false,
 }: VitrineHowItWorksProps = {}) {
   const [profile, setProfile] = useState<Profile>(defaultProfile)
+
+  const sectionTitle = professionnelsPageLayout
+    ? professionnelsCommentCaFonctionne.titre
+    : commentCaFonctionne.titre
+  const sectionIntro = professionnelsPageLayout
+    ? professionnelsCommentCaFonctionne.intro
+    : commentCaFonctionne.intro
 
   return (
     <section id="fonctionnement" className="bg-[#F3F6FB] pb-16 pt-16 max-sm:pt-[5.75rem] sm:py-20 lg:py-[5.5rem]">
@@ -347,11 +382,17 @@ export function VitrineHowItWorks({
         <div className="mx-auto max-w-3xl text-center">
           <p className="section-eyebrow">Comment ça fonctionne</p>
           <h2 className="section-title mt-3">
-            Louez votre benne
-            <span className="block">en 3 minutes chrono</span>
+            {professionnelsPageLayout ? (
+              sectionTitle
+            ) : (
+              <>
+                Louez votre benne
+                <span className="block">en 3 minutes chrono</span>
+              </>
+            )}
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-brand-muted sm:text-base">
-            {commentCaFonctionne.intro}
+            {sectionIntro}
           </p>
           <div className="mt-8 sm:mt-9">
             <ProfileToggle profile={profile} onChange={setProfile} />
@@ -365,7 +406,11 @@ export function VitrineHowItWorks({
           className="how-panel-wrap mx-auto mt-10 max-w-5xl sm:mt-12 lg:max-w-6xl"
         >
           <div key={profile} className="how-panel-enter">
-            {profile === "particulier" ? <ParticulierPanel /> : <ProfessionnelPanel />}
+            {profile === "particulier" ? (
+              <ParticulierPanel />
+            ) : (
+              <ProfessionnelPanel professionnelsPageLayout={professionnelsPageLayout} />
+            )}
           </div>
         </div>
       </div>

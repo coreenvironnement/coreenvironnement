@@ -11,7 +11,13 @@ import {
   isStripePaymentConfigured,
   stripeCheckoutPaymentOptions,
 } from "@/lib/stripe/server"
+import {
+  authUserIdForProContactEmail,
+  ensureProClientForCommande,
+} from "@/lib/auth/pro-client"
+import { createProCommandeFromRequest } from "@/lib/order/create-pro-commande"
 import { createServiceClient } from "@/lib/supabase/service"
+import { createClient } from "@/lib/supabase/server"
 import type { OrderCheckoutInput } from "@/lib/order/checkout-input"
 import {
   notifyDemandeProAdmin,
@@ -131,7 +137,30 @@ export async function submitProfessionalBenneRequest(
     return prepared
   }
 
-  const admin = await notifyDemandeProAdmin(prepared)
+  const authSupabase = await createClient()
+  const {
+    data: { user: authUser },
+  } = await authSupabase.auth.getUser()
+  const linkedClientId = authUserIdForProContactEmail(authUser, prepared.contactEmail)
+
+  const created = await createProCommandeFromRequest(input, prepared, {
+    clientId: linkedClientId,
+  })
+  if ("error" in created) {
+    return created
+  }
+
+  const serviceSupabase = createServiceClient()
+  await ensureProClientForCommande(serviceSupabase, created.commandeId, {
+    sendConfirmationEmail: "initial",
+  })
+
+  const preparedWithCommande = {
+    ...prepared,
+    commandeId: created.commandeId,
+  }
+
+  const admin = await notifyDemandeProAdmin(preparedWithCommande)
   if (!admin.sent) {
     return {
       error:
@@ -141,7 +170,7 @@ export async function submitProfessionalBenneRequest(
     }
   }
 
-  const client = await notifyDemandeProClient(prepared)
+  const client = await notifyDemandeProClient(preparedWithCommande)
   return {
     success: true,
     reference: prepared.reference,
