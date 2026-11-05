@@ -32,8 +32,8 @@
   --radius-btn: 0.625rem;
   --radius-card: 1.125rem;
 
-  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-body: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 
   --shadow-vitrine-soft: 0 1px 2px rgb(24 53 116 / 0.04), 0 8px 24px -8px rgb(24 53 116 / 0.08);
   --shadow-vitrine-pop: 0 20px 48px -16px rgb(24 53 116 / 0.22);
@@ -114,7 +114,7 @@
   .vitrine-root .btn-ghost-light,
   .vitrine-root .btn-ghost-sky {
     @apply relative inline-flex h-11 select-none items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-btn)] px-[1.125rem] font-[family-name:var(--font-display)] text-sm font-semibold tracking-[-0.01em] transition-all duration-300 ease-out;
-    /* CTA : Geist 600 */
+    /* CTA : Manrope semibold */
   }
 
   .vitrine-root .btn-sm {

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans, Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Manrope } from "next/font/google";
 
 import "./globals.css";
 import "./vitrine.css";
@@ -11,16 +11,10 @@ import {
 } from "@/lib/seo/share-metadata";
 import { getSiteUrl } from "@/lib/seo/site-url";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
-  weight: ["600", "700"],
-});
-
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
-  subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -62,9 +56,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${geistSans.variable} ${dmSans.variable}`}>
+    <html lang="fr" className={manrope.variable}>
       <body
-        className={`${geistSans.variable} ${dmSans.variable} ${geistMono.variable} relative min-h-screen bg-background font-sans antialiased`}
+        className={`${manrope.variable} ${geistMono.variable} relative min-h-screen bg-background font-sans antialiased`}
       >
         <LayoutChrome>{children}</LayoutChrome>
       </body>
