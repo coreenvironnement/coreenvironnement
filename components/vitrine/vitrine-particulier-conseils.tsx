@@ -17,6 +17,8 @@ import { useVitrineOrder } from "./order-context"
 const CARD_ICONS = {
   volume: PackageDimensions01Icon,
   emplacement: Location01Icon,
+  "voie-publique": Location01Icon,
+  tri: Recycle03Icon,
   dechets: Recycle03Icon,
 } as const
 
@@ -79,7 +81,10 @@ export function VitrineParticulierConseils() {
                         {carte.ctaHint}
                       </p>
                     ) : null}
-                    {"guideLabel" in carte && carte.guideLabel ? (
+                    {"guideLabel" in carte &&
+                    "guideHref" in carte &&
+                    carte.guideLabel &&
+                    carte.guideHref ? (
                       <Link
                         href={carte.guideHref}
                         className="block text-[14px] font-medium text-brand-navy underline-offset-2 hover:text-brand-green hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"

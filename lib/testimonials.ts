@@ -55,11 +55,43 @@ export const testimonials: Testimonial[] = [
     segment: "pro",
   },
   {
-    id: "thomas-b",
+    id: "google-test-l",
     quote:
-      "Réponse très rapide pour le devis. J’avais peur que ce soit compliqué de louer une benne en tant que particulier, mais tout a été très simple : livraison le jour voulu et prix correct. Ça nous a évité 20 allers-retours à la déchetterie avec notre voiture.",
-    author: "Thomas B.",
-    role: "Particulier",
+      "J'ai commandé une Benne pour débarrasser le chantier suite à la rénovation de ma maison.\nService impeccable ! la prise en charge est rapide",
+    author: "Test L.",
+    role: "Particulier · Avis Google",
+    segment: "particulier",
+  },
+  {
+    id: "google-habib-s",
+    quote:
+      "Benne louée pour évacuer les gravats d'un petit chantier de démolition. Vraiment pratique de pouvoir tout commander et payer directement depuis son téléphone. RAS",
+    author: "Habib S.",
+    role: "Particulier · Avis Google",
+    segment: "particulier",
+  },
+  {
+    id: "google-touria-h",
+    quote:
+      "Au top. Troisième chantier avec la location de benne, ça se passe super bien.",
+    author: "Touria H.",
+    role: "Particulier · Avis Google",
+    segment: "particulier",
+  },
+  {
+    id: "google-celina-h",
+    quote:
+      "Personne très sympathique, sérieuse et professionnelle. Service au top, je recommande vivement !",
+    author: "Celina H.",
+    role: "Particulier · Avis Google",
+    segment: "particulier",
+  },
+  {
+    id: "google-raam-d",
+    quote:
+      "Core Environnement est une entreprise sérieuse et professionnelle. La commande de benne se fait très simplement en quelques clics, avec des tarifs clairs : on sait directement ce que l’on va payer. Livraison rapide sous 24h en Île-de-France et surtout un service client humain, disponible et chaleureux. Je recommande sans hésiter !",
+    author: "Raam D.",
+    role: "Particulier · Avis Google",
     segment: "particulier",
   },
 ]

@@ -5,7 +5,9 @@ import Image from "next/image"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import {
   ArrowLeft,
+  CheckCircle2,
   ChevronRight,
+  Circle,
   Headphones,
   Info,
   Loader2,
@@ -54,6 +56,7 @@ import { formatOrderDatePicker } from "@/lib/format/date"
 import { submitProfessionalBenneRequest } from "@/app/order/actions"
 import {
   type BenneFamily,
+  type BenneSystem,
   type Prestation,
   FAMILY_LABELS,
   prestationsByFamily,
@@ -194,6 +197,9 @@ export function OrderWidget({
   const [particulierWasteId, setParticulierWasteId] =
     useState<ParticulierWasteOptionId | null>(null)
   const [volumeHintM3, setVolumeHintM3] = useState<number | null>(null)
+  const [volumeHintOrigin, setVolumeHintOrigin] = useState<
+    "estimated" | "chosen" | "unknown"
+  >("unknown")
   const [deliveryDate, setDeliveryDate] = useState("")
   const [pickupDate, setPickupDate] = useState("")
   const [selectedPrestationId, setSelectedPrestationId] = useState<
@@ -284,7 +290,10 @@ export function OrderWidget({
     scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
   }
 
-  const goToForfait = (preselectVolumeM3?: number | null) => {
+  const goToForfait = (
+    preselectVolumeM3?: number | null,
+    volumeOrigin?: "estimated" | "chosen"
+  ) => {
     setAddressError(null)
     if (!zoneOk) {
       setIntentPhase("location")
@@ -302,6 +311,7 @@ export function OrderWidget({
     }
     if (preselectVolumeM3 != null && family) {
       setVolumeHintM3(preselectVolumeM3)
+      setVolumeHintOrigin(volumeOrigin ?? "unknown")
       const pid = prestationIdForFamilyVolume(family, preselectVolumeM3)
       if (pid) setSelectedPrestationId(pid)
     }
@@ -869,7 +879,9 @@ export function OrderWidget({
                   setAddressError(null)
                   setIntentPhase("waste")
                 }}
-                onContinue={(knownVolumeM3) => goToForfait(knownVolumeM3)}
+                onContinue={(volumeM3, volumeOrigin) =>
+                  goToForfait(volumeM3, volumeOrigin)
+                }
               />
             </motion.div>
           ) : null}
@@ -889,10 +901,48 @@ export function OrderWidget({
                 </p>
                 <p className="mt-1 text-xs leading-snug text-muted-foreground">
                   {audience === "particulier"
-                    ? "Prix à payer, TVA incluse."
+                    ? "Comparez les volumes et les tarifs TTC. Le poids compris dans le tarif est précisé pour chaque benne."
                     : "Prix H.T. Détail des déchets acceptés par forfait."}
                 </p>
-                {volumeHintM3 ? (
+                {audience === "particulier" ? (
+                  <p className="mt-1.5 text-[11px] leading-snug text-muted-foreground">
+                    Ne dépassez pas le bord de la benne. Au-delà du poids
+                    inclus, le supplément par tonne est indiqué sur chaque
+                    offre.
+                  </p>
+                ) : null}
+                {volumeHintM3 && audience === "particulier" ? (
+                  <div className="mt-2 space-y-1.5 rounded-lg border border-primary/12 bg-brand-warm-field/80 px-3 py-2.5">
+                    <p className="text-[12px] leading-snug text-brand-navy">
+                      {volumeHintOrigin === "estimated" ? (
+                        <>
+                          Votre volume estimé :{" "}
+                          <strong className="tabular-nums">
+                            {volumeHintM3} m³
+                          </strong>
+                        </>
+                      ) : volumeHintOrigin === "chosen" ? (
+                        <>
+                          Votre volume choisi :{" "}
+                          <strong className="tabular-nums">
+                            {volumeHintM3} m³
+                          </strong>
+                        </>
+                      ) : (
+                        <>
+                          Volume indiqué pour votre projet :{" "}
+                          <strong className="tabular-nums">
+                            {volumeHintM3} m³
+                          </strong>
+                        </>
+                      )}
+                    </p>
+                    <p className="text-[11px] leading-snug text-brand-muted">
+                      Le poids des déchets compte aussi dans le choix de votre
+                      benne.
+                    </p>
+                  </div>
+                ) : volumeHintM3 ? (
                   <p className="mt-2 rounded-lg border border-primary/12 bg-brand-warm-field/80 px-3 py-2 text-[12px] leading-snug text-brand-navy">
                     Indication volume :{" "}
                     <strong>{volumeHintM3} m³</strong> (estimation ou choix
@@ -932,31 +982,43 @@ export function OrderWidget({
                 ))}
               </div>
 
-              <div className="flex flex-col gap-2 pt-0.5 sm:flex-row sm:gap-3">
-                <Button
-                  variant="outline"
-                  type="button"
-                  className={cn(orderOutlineBtn(embedded), "sm:flex-1")}
-                  onClick={() => {
-                    setAddressError(null)
-                    setStep("intent")
-                    setIntentPhase("volume")
-                  }}
-                >
-                  <ArrowLeft className="mr-2 size-4" />
-                  Retour
-                </Button>
-                <Button
-                  type="button"
-                  className="h-11 w-full rounded-xl border-0 bg-[#35A238] px-3 text-sm font-semibold text-white shadow-lg shadow-[#35A238]/20 hover:bg-[#19752B] disabled:pointer-events-none disabled:bg-[#D0D5DD] disabled:text-white disabled:opacity-100 disabled:shadow-none sm:flex-1"
-                  disabled={!selectedPrestationId}
-                  onClick={goToInfos}
-                >
-                  {audience === "particulier"
-                    ? "Continuer avec cette benne"
-                    : "Continuer avec ce forfait"}
-                  <ChevronRight className="ml-2 size-4" />
-                </Button>
+              <div className="space-y-2 pt-0.5">
+                <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+                  <Button
+                    variant="outline"
+                    type="button"
+                    className={cn(
+                      orderOutlineBtn(embedded),
+                      "border-primary/20 bg-transparent font-medium text-brand-muted hover:bg-primary/5 hover:text-brand-navy sm:flex-1",
+                      embedded && "order-tunnel-outline-btn"
+                    )}
+                    onClick={() => {
+                      setAddressError(null)
+                      setStep("intent")
+                      setIntentPhase("volume")
+                    }}
+                  >
+                    <ArrowLeft className="mr-2 size-4" />
+                    Retour
+                  </Button>
+                  <Button
+                    type="button"
+                    className="h-11 w-full rounded-xl border-0 bg-[#35A238] px-3 text-sm font-semibold text-white shadow-lg shadow-[#35A238]/20 hover:bg-[#19752B] disabled:pointer-events-none disabled:bg-[#D0D5DD] disabled:text-white disabled:opacity-100 disabled:shadow-none sm:flex-1"
+                    disabled={!selectedPrestationId}
+                    onClick={goToInfos}
+                  >
+                    {audience === "particulier"
+                      ? "Continuer avec cette benne"
+                      : "Continuer avec ce forfait"}
+                    <ChevronRight className="ml-2 size-4" />
+                  </Button>
+                </div>
+                {audience === "particulier" ? (
+                  <p className="text-center text-[11px] leading-snug text-brand-muted">
+                    Vous choisirez ensuite vos dates et renseignerez vos
+                    coordonnées.
+                  </p>
+                ) : null}
               </div>
             </motion.div>
           )}
@@ -1582,6 +1644,19 @@ export function OrderWidget({
   )
 }
 
+function prestationWasteSubtitle(label: string): string {
+  const comma = label.indexOf(", ")
+  if (comma < 0) return ""
+  const tail = label.slice(comma + 2).trim()
+  if (tail.startsWith("gravats")) return `Pour les ${tail}`
+  if (tail.startsWith("mélange")) return `Pour le ${tail}`
+  return `Pour ${tail}`
+}
+
+function benneSystemSecondary(system: BenneSystem): string {
+  return system === "chaine" ? "Benne à chaîne" : "Benne ampliroll"
+}
+
 function PrestationCard({
   prestation,
   selected,
@@ -1604,11 +1679,75 @@ function PrestationCard({
   const visualSrc = BENNE_VISUAL_BY_VOLUME[prestation.volumeM3]
   const price = priceBreakdownFromHt(prestation.priceHt)
   const surcharge = priceBreakdownFromHt(prestation.surchargePerTonHt)
+  const wasteSubtitle = prestationWasteSubtitle(prestation.label)
+
+  const wastesDialog = (
+    <Dialog>
+      <DialogTrigger
+        render={
+          <Button
+            type="button"
+            variant="ghost"
+            size="xs"
+            className="mt-1.5 h-auto min-h-7 px-0 py-0.5 text-left text-xs font-medium text-brand-navy underline-offset-2 hover:underline"
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            onKeyDown={(e: React.KeyboardEvent) => e.stopPropagation()}
+          />
+        }
+      >
+        <Info className="mr-1 size-3.5 shrink-0 opacity-70" />
+        {showTtc
+          ? "Voir les déchets acceptés et interdits"
+          : "Déchets acceptés / exclus"}
+      </DialogTrigger>
+      <DialogContent
+        overlayClassName="z-[80]"
+        className="z-[80] max-h-[min(80vh,480px)] overflow-y-auto sm:max-w-md"
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+      >
+        <DialogHeader>
+          <DialogTitle className="text-brand-navy">
+            {prestation.label}
+          </DialogTitle>
+          <div className="space-y-3 pt-2 text-left text-sm">
+            <div>
+              <p className="font-medium text-primary">Acceptés</p>
+              <p className="text-muted-foreground">
+                {prestation.acceptedSummary}
+              </p>
+            </div>
+            <div>
+              <p className="font-medium text-rose-800">Exclus</p>
+              <p className="text-muted-foreground">
+                {prestation.excludedSummary}
+              </p>
+            </div>
+          </div>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  )
+
+  const selectionIndicator = (
+    <span
+      className="shrink-0 pt-0.5"
+      aria-hidden={!selected}
+      title={selected ? "Benne sélectionnée" : undefined}
+    >
+      {selected ? (
+        <CheckCircle2 className="size-5 text-brand-green" strokeWidth={2.25} />
+      ) : (
+        <Circle className="size-5 text-primary/25" strokeWidth={2} />
+      )}
+    </span>
+  )
 
   return (
     <motion.div
       role="button"
       tabIndex={0}
+      aria-pressed={selected}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ ...t, delay }}
@@ -1620,18 +1759,18 @@ function PrestationCard({
         }
       }}
       className={cn(
-        "flex w-full min-w-0 cursor-pointer items-center gap-2 overflow-hidden rounded-2xl border-2 p-3 text-left shadow-sm outline-none transition-colors sm:gap-3 sm:p-3.5",
-        "focus-visible:border-brand-green",
+        "flex w-full min-w-0 cursor-pointer gap-2.5 overflow-hidden rounded-2xl border-2 p-3 text-left shadow-sm outline-none transition-[border-color,box-shadow,background-color] sm:gap-3 sm:p-3.5",
+        "focus-visible:border-brand-green focus-visible:ring-2 focus-visible:ring-brand-green/25",
         selected
           ? warmSurface
-            ? "border-brand-green bg-primary/10"
-            : "border-brand-green bg-gradient-to-br from-accent to-white"
+            ? "border-brand-green bg-primary/10 shadow-md ring-2 ring-brand-green/20"
+            : "border-brand-green bg-gradient-to-br from-accent to-white shadow-md ring-2 ring-brand-green/20"
           : warmSurface
             ? "border-primary/20 bg-brand-warm-field hover:border-brand-green/35 hover:bg-primary/[0.06]"
-          : "border-border/80 bg-card/90 hover:border-brand-green/35"
+            : "border-border/80 bg-card/90 hover:border-brand-green/35"
       )}
     >
-      <div className="flex h-[58px] w-[64px] shrink-0 items-center justify-center overflow-hidden sm:h-[72px] sm:w-[92px]">
+      <div className="flex h-[52px] w-[56px] shrink-0 items-center justify-center overflow-hidden sm:h-[68px] sm:w-[80px]">
         {visualSrc ? (
           <Image
             src={visualSrc}
@@ -1639,84 +1778,90 @@ function PrestationCard({
             width={368}
             height={207}
             className="h-full w-full object-contain object-center"
-            sizes="92px"
+            sizes="(max-width: 640px) 56px, 80px"
           />
         ) : null}
       </div>
 
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-            {showTtc
-              ? `${prestation.volumeM3} m³`
-              : `${systemLabel(prestation.system)}, ${prestation.volumeM3} m³`}
-          </span>
-          {recommended ? (
-            <span className="rounded-md bg-brand-green/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-green">
-              Suggestion
-            </span>
-          ) : null}
-        </div>
-        <p className="mt-0.5 text-[13px] font-semibold leading-snug text-brand-navy sm:text-sm">
-            {prestation.label}
-          </p>
-        <p className="mt-1 line-clamp-2 text-[11px] leading-snug text-muted-foreground sm:text-xs">
-          {showTtc
-            ? `Jusqu'à ${prestation.tonnageMax} tonnes. Au-delà : ${fmtHt(surcharge.ttc)} par tonne.`
-            : `Jusqu'à ${prestation.tonnageMax} t inclus, dépassement ${fmtHt(surcharge.ht)}/t HT.`}
-        </p>
-        <Dialog>
-          <DialogTrigger
-            render={
-              <Button
-                type="button"
-                variant="ghost"
-                size="xs"
-                className="mt-1.5 h-7 px-0 text-xs text-brand-navy"
-                onClick={(e: React.MouseEvent) => e.stopPropagation()}
-              />
-            }
-          >
-            <Info className="mr-1 size-3.5" />
-            Déchets acceptés / exclus
-          </DialogTrigger>
-          <DialogContent
-            overlayClassName="z-[80]"
-            className="z-[80] max-h-[min(80vh,480px)] overflow-y-auto sm:max-w-md"
-            onClick={(e) => e.stopPropagation()}
-            onPointerDown={(e) => e.stopPropagation()}
-          >
-            <DialogHeader>
-              <DialogTitle className="text-brand-navy">
-                {prestation.label}
-              </DialogTitle>
-              <div className="space-y-3 pt-2 text-left text-sm">
-                <div>
-                  <p className="font-medium text-primary">Acceptés</p>
-                  <p className="text-muted-foreground">
-                    {prestation.acceptedSummary}
-                  </p>
-                </div>
-                <div>
-                  <p className="font-medium text-rose-800">Exclus</p>
-                  <p className="text-muted-foreground">
-                    {prestation.excludedSummary}
-                  </p>
-                </div>
+      {showTtc ? (
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <div className="flex items-start gap-2">
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <p className="text-[15px] font-bold leading-snug text-brand-navy sm:text-base">
+                  Benne de {prestation.volumeM3} m³
+                </p>
+                {recommended ? (
+                  <span className="rounded-md border border-brand-green/25 bg-brand-green/10 px-2 py-0.5 text-[10px] font-semibold text-brand-green">
+                    Volume suggéré
+                  </span>
+                ) : null}
               </div>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
-      </div>
+              {wasteSubtitle ? (
+                <p className="mt-0.5 text-[13px] font-medium leading-snug text-brand-navy/85">
+                  {wasteSubtitle}
+                </p>
+              ) : null}
+              <p className="mt-0.5 text-[11px] text-muted-foreground">
+                {benneSystemSecondary(prestation.system)}
+              </p>
+            </div>
+            {selectionIndicator}
+          </div>
 
-      <span className="ml-auto w-[4.75rem] shrink-0 self-center text-right sm:ml-0 sm:w-[5.75rem]">
-        <span className="block text-[14px] font-bold tabular-nums text-primary sm:text-lg">
-          {fmtHt(showTtc ? price.ttc : price.ht)}
-        </span>
-        <span className="block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-          {showTtc ? "TTC" : "HT"}
-        </span>
-      </span>
+          <div className="flex flex-col gap-2 border-t border-primary/8 pt-2 sm:flex-row sm:items-end sm:justify-between sm:gap-3">
+            <div className="min-w-0 space-y-0.5 text-[11px] leading-snug text-muted-foreground sm:text-xs">
+              <p>
+                Jusqu&apos;à {prestation.tonnageMax} tonnes au tarif affiché.
+              </p>
+              <p>
+                Au-delà : {fmtHt(surcharge.ttc)} par tonne supplémentaire.
+              </p>
+            </div>
+            <div className="flex w-full shrink-0 items-baseline justify-between gap-2 sm:w-auto sm:flex-col sm:items-end sm:justify-center sm:text-right">
+              <span className="text-[18px] font-bold tabular-nums text-primary sm:text-xl">
+                {fmtHt(price.ttc)}
+              </span>
+              <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                TTC
+              </span>
+            </div>
+          </div>
+
+          {wastesDialog}
+        </div>
+      ) : (
+        <>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                {`${systemLabel(prestation.system)}, ${prestation.volumeM3} m³`}
+              </span>
+              {recommended ? (
+                <span className="rounded-md bg-brand-green/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-green">
+                  Suggestion
+                </span>
+              ) : null}
+            </div>
+            <p className="mt-0.5 text-[13px] font-semibold leading-snug text-brand-navy sm:text-sm">
+              {prestation.label}
+            </p>
+            <p className="mt-1 line-clamp-2 text-[11px] leading-snug text-muted-foreground sm:text-xs">
+              {`Jusqu'à ${prestation.tonnageMax} t inclus, dépassement ${fmtHt(surcharge.ht)}/t HT.`}
+            </p>
+            {wastesDialog}
+          </div>
+
+          <span className="ml-auto w-[4.75rem] shrink-0 self-center text-right sm:ml-0 sm:w-[5.75rem]">
+            <span className="block text-[14px] font-bold tabular-nums text-primary sm:text-lg">
+              {fmtHt(price.ht)}
+            </span>
+            <span className="block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              HT
+            </span>
+          </span>
+        </>
+      )}
     </motion.div>
   )
 }

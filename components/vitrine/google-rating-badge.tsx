@@ -35,7 +35,7 @@ export function GoogleRatingBadge({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        "group inline-flex max-w-full items-center gap-2.5 rounded-full border py-1.5 pl-1.5 pr-4 backdrop-blur-md transition duration-300",
+        "group inline-flex max-w-full items-center justify-center gap-2.5 rounded-full border px-3.5 py-1.5 backdrop-blur-md transition duration-300",
         isCard
           ? "border-brand-navy/10 bg-white/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_6px_20px_-10px_rgba(14,32,16,0.25)] hover:border-brand-green/25 hover:bg-white/90"
           : "border-white/22 bg-white/[0.1] shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_-14px_rgba(0,0,0,0.45)] hover:border-white/38 hover:bg-white/[0.14]",
@@ -53,11 +53,11 @@ export function GoogleRatingBadge({
           aria-hidden
         />
       </span>
-      <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+      <span className="flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
         {compact ? (
           <span
             className={cn(
-              "text-left text-[13px] font-semibold leading-snug sm:text-[14px]",
+              "text-[13px] font-semibold leading-snug sm:text-[14px]",
               isCard ? "text-brand-navy" : "text-white"
             )}
           >
@@ -65,7 +65,7 @@ export function GoogleRatingBadge({
           </span>
         ) : (
           <>
-            <span className="flex items-center gap-0.5" aria-hidden>
+            <span className="flex items-center justify-center gap-0.5" aria-hidden>
               {Array.from({ length: 5 }, (_, i) => (
                 <Star
                   key={i}
@@ -75,7 +75,7 @@ export function GoogleRatingBadge({
             </span>
             <span
               className={cn(
-                "text-left text-[13px] font-semibold leading-snug sm:text-[14px]",
+                "text-[13px] font-semibold leading-snug sm:text-[14px]",
                 isCard ? "text-brand-navy" : "text-white"
               )}
             >

@@ -7,10 +7,8 @@ import {
   ArrowRight01Icon,
   Calendar03Icon,
   ContainerIcon,
-  CreditCardValidationIcon,
   Leaf01Icon,
   Login01Icon,
-  Location01Icon,
   PackageDimensions01Icon,
   Recycle03Icon,
   Tick02Icon,
@@ -18,8 +16,9 @@ import {
   UserAdd01Icon,
 } from "@hugeicons/core-free-icons"
 
-import { commentCaFonctionne } from "@/lib/cdc/contenu-vitrine"
+import { commentCaFonctionne, particulierAccueil } from "@/lib/cdc/contenu-vitrine"
 
+import { CoreScrollJourney } from "./core-scroll-journey"
 import { VITRINE_ICON_STROKE } from "./icons"
 
 type Profile = "particulier" | "professionnel"
@@ -32,32 +31,7 @@ type Step = {
   icon: StepIcon
 }
 
-const PARTICULIER_STEPS: Step[] = [
-  {
-    num: "01",
-    label: "DÉCHETS",
-    text: "Choisissez ce que vous voulez jeter : gravats, bois, encombrants, ou un mélange.",
-    icon: Recycle03Icon,
-  },
-  {
-    num: "02",
-    label: "VOLUME",
-    text: "Sélectionnez le volume de la benne adaptée à vos besoins.",
-    icon: PackageDimensions01Icon,
-  },
-  {
-    num: "03",
-    label: "DATE & LIEU",
-    text: "Indiquez la date et l'adresse d'intervention en Île-de-France.",
-    icon: Location01Icon,
-  },
-  {
-    num: "04",
-    label: "PAIEMENT",
-    text: "Vous payez par carte. Le prix affiché est le prix à payer.",
-    icon: CreditCardValidationIcon,
-  },
-]
+const volumeGuideLink = particulierAccueil.parcours.etapes[0]?.lien
 
 const PRO_ACCOUNT_STEPS: Step[] = [
   {
@@ -175,9 +149,13 @@ function StepsGrid({ steps, className = "" }: { steps: Step[]; className?: strin
   )
 }
 
-function AfterPanel({ description }: { description: string }) {
+function AfterPanel({ description, below = false }: { description: string; below?: boolean }) {
   return (
-    <aside className="how-after-panel flex h-full flex-col border-t border-brand-green/10 p-6 sm:p-8 lg:border-t-0 lg:border-l lg:p-8 xl:p-10">
+    <aside
+      className={`how-after-panel flex h-full flex-col border-t border-brand-green/10 p-6 sm:p-8 lg:p-8 xl:p-10 ${
+        below ? "" : "lg:border-t-0 lg:border-l"
+      }`}
+    >
       <div className="flex items-center gap-2.5">
         <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-green/[0.12] text-brand-green">
           <HugeiconsIcon icon={Leaf01Icon} size={18} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />
@@ -218,15 +196,13 @@ function AfterPanel({ description }: { description: string }) {
 function ParticulierPanel() {
   return (
     <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(14_32_16/0.03),0_12px_32px_-8px_rgb(14_32_16/0.1)]">
-      <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
-        <div className="how-panel-main p-6 sm:p-8 lg:p-9 xl:p-10">
-          <h3 className="text-lg leading-snug text-brand-navy sm:text-xl">
-            {commentCaFonctionne.particulier.accroche}
-          </h3>
-          <StepsGrid steps={PARTICULIER_STEPS} className="mt-6 sm:mt-8" />
-        </div>
-        <AfterPanel description={commentCaFonctionne.particulier.suite} />
-      </div>
+      <CoreScrollJourney
+        volumeGuideHref="/location-benne/volume"
+        volumeGuideLabel={
+          volumeGuideLink?.label ?? "Choisir le volume de benne adapté à mon projet"
+        }
+      />
+      <AfterPanel below description={commentCaFonctionne.particulier.suite} />
     </div>
   )
 }
@@ -307,11 +283,19 @@ function ProfessionnelPanel() {
   )
 }
 
-export function VitrineHowItWorks() {
+type VitrineHowItWorksProps = {
+  /** Ancre de navigation (`/#parcours` accueil, `#fonctionnement` page pro). */
+  sectionId?: "parcours" | "fonctionnement"
+}
+
+export function VitrineHowItWorks({ sectionId = "fonctionnement" }: VitrineHowItWorksProps) {
   const [profile, setProfile] = useState<Profile>("particulier")
 
   return (
-    <section id="fonctionnement" className="bg-[#F3F6FB] pb-16 pt-16 max-sm:pt-[5.75rem] sm:py-20 lg:py-[5.5rem]">
+    <section
+      id={sectionId}
+      className="bg-[#F3F6FB] pb-16 pt-16 max-sm:pt-[5.75rem] sm:py-20 lg:py-[5.5rem]"
+    >
       <div className="container-x">
         <div className="mx-auto max-w-3xl text-center">
           <p className="section-eyebrow">Comment ça fonctionne</p>

@@ -241,7 +241,10 @@ export type ParticulierVolumeStepProps = {
   audience?: OrderAudience
   embedded?: boolean
   onBackToWaste: () => void
-  onContinue: (knownVolumeM3: number | null) => void
+  onContinue: (
+    volumeM3: number | null,
+    origin: "estimated" | "chosen"
+  ) => void
 }
 
 export function ParticulierVolumeStep({
@@ -616,7 +619,9 @@ export function ParticulierVolumeStep({
 
             <OrderTunnelContinueButton
               disabled={!result.recommendedVolumeM3}
-              onClick={() => onContinue(result.recommendedVolumeM3)}
+              onClick={() =>
+                onContinue(result.recommendedVolumeM3, "estimated")
+              }
             >
               {isPro ? "Voir les forfaits adaptés" : "Voir les bennes adaptées"}
             </OrderTunnelContinueButton>
@@ -633,7 +638,7 @@ export function ParticulierVolumeStep({
         >
           <OrderTunnelContinueButton
             disabled={knownPick === null}
-            onClick={() => onContinue(knownPick)}
+            onClick={() => onContinue(knownPick, "chosen")}
           >
             {isPro
               ? "Continuer vers le choix de forfait"
