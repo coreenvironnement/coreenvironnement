@@ -14,13 +14,13 @@ import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { VITRINE_ICON_STROKE } from "./icons"
 import { useVitrineOrder } from "./order-context"
 
-const CARD_ICONS = {
+const CARD_ICONS: Record<string, typeof PackageDimensions01Icon> = {
   volume: PackageDimensions01Icon,
   emplacement: Location01Icon,
   "voie-publique": Location01Icon,
-  tri: Recycle03Icon,
   dechets: Recycle03Icon,
-} as const
+  tri: Recycle03Icon,
+}
 
 export function VitrineParticulierConseils() {
   const { conseils } = particulierAccueil
@@ -44,9 +44,22 @@ export function VitrineParticulierConseils() {
 
         <div className="mx-auto mt-10 grid max-w-5xl gap-6 md:grid-cols-3 md:gap-5 lg:gap-6">
           {conseils.cartes.map((carte) => {
-            const Icon =
-              CARD_ICONS[carte.id as keyof typeof CARD_ICONS] ??
-              PackageDimensions01Icon
+            const carteId = carte.id as string
+            const extras = carte as Record<string, unknown>
+            const guideHref =
+              typeof extras.guideHref === "string" ? extras.guideHref : null
+            const guideLabel =
+              typeof extras.guideLabel === "string" ? extras.guideLabel : null
+            const linkHref =
+              typeof extras.linkHref === "string" ? extras.linkHref : null
+            const linkLabel =
+              typeof extras.linkLabel === "string" ? extras.linkLabel : null
+            const contactLabel =
+              typeof extras.contactLabel === "string"
+                ? extras.contactLabel
+                : null
+
+            const Icon = CARD_ICONS[carte.id] ?? PackageDimensions01Icon
             return (
               <article
                 key={carte.id}
@@ -81,42 +94,51 @@ export function VitrineParticulierConseils() {
                         {carte.ctaHint}
                       </p>
                     ) : null}
-                    {"guideLabel" in carte &&
-                    "guideHref" in carte &&
-                    carte.guideLabel &&
-                    carte.guideHref ? (
+                    {guideLabel && guideHref ? (
                       <Link
-                        href={carte.guideHref}
+                        href={guideHref}
                         className="block text-[14px] font-medium text-brand-navy underline-offset-2 hover:text-brand-green hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
                       >
-                        {carte.guideLabel}
+                        {guideLabel}
                       </Link>
                     ) : null}
                   </div>
                 ) : null}
 
-                {carte.id === "emplacement" &&
-                "linkLabel" in carte &&
-                carte.linkLabel ? (
+                {(carteId === "emplacement" || carteId === "voie-publique") &&
+                linkLabel &&
+                linkHref ? (
                   <p className="mt-5">
                     <a
-                      href={carte.linkHref}
+                      href={linkHref}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[14px] font-medium text-brand-navy underline-offset-2 hover:text-brand-green hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
                     >
-                      {carte.linkLabel}
+                      {linkLabel}
                     </a>
                   </p>
                 ) : null}
 
-                {carte.id === "dechets" && "contactLabel" in carte ? (
+                {carteId === "dechets" && contactLabel ? (
                   <p className="mt-5">
                     <a
                       href={SITE_PHONE_HREF}
                       className="text-[14px] font-medium text-brand-navy underline-offset-2 hover:text-brand-green hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
                     >
-                      {carte.contactLabel}
+                      {contactLabel}
+                    </a>
+                    <span className="sr-only"> — {SITE_PHONE_DISPLAY}</span>
+                  </p>
+                ) : null}
+
+                {carteId === "tri" && !contactLabel ? (
+                  <p className="mt-5">
+                    <a
+                      href={SITE_PHONE_HREF}
+                      className="text-[14px] font-medium text-brand-navy underline-offset-2 hover:text-brand-green hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
+                    >
+                      Nous appeler en cas de doute
                     </a>
                     <span className="sr-only"> — {SITE_PHONE_DISPLAY}</span>
                   </p>
