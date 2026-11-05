@@ -6,7 +6,6 @@ import {
   getShareOpenGraphImages,
   getShareTwitterImages,
 } from "@/lib/seo/share-metadata"
-import { withBrandTitle } from "@/lib/seo/page-title"
 import { getSiteUrl } from "@/lib/seo/site-url"
 import {
   VOLUME_GUIDE_DESCRIPTION,
@@ -14,11 +13,11 @@ import {
 } from "@/lib/seo/volume-guide-content"
 
 export const metadata: Metadata = {
-  title: { absolute: withBrandTitle(VOLUME_GUIDE_TITLE) },
+  title: { absolute: VOLUME_GUIDE_TITLE },
   description: VOLUME_GUIDE_DESCRIPTION,
   alternates: { canonical: `${getSiteUrl()}/location-benne/volume` },
   openGraph: {
-    title: withBrandTitle(VOLUME_GUIDE_TITLE),
+    title: VOLUME_GUIDE_TITLE,
     description: VOLUME_GUIDE_DESCRIPTION,
     url: `${getSiteUrl()}/location-benne/volume`,
     siteName: "CORE ENVIRONNEMENT",
@@ -28,7 +27,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: withBrandTitle(VOLUME_GUIDE_TITLE),
+    title: VOLUME_GUIDE_TITLE,
     description: VOLUME_GUIDE_DESCRIPTION,
     images: getShareTwitterImages(),
   },
