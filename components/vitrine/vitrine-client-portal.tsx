@@ -32,8 +32,8 @@ import { VitrineLogo } from "./logo"
 const BENEFIT_ICONS = [TruckIcon, File02Icon, ChartColumnIcon] as const
 
 const FRACTIONS = [
-  { name: "DIB", value: 46, color: "bg-brand-navy" },
-  { name: "Gravats", value: 28, color: "bg-brand-sky" },
+  { name: "DIB", value: 46, color: "bg-brand-green-dark" },
+  { name: "Gravats", value: 28, color: "bg-brand-green" },
   { name: "Bois", value: 16, color: "bg-brand-green" },
   { name: "Plâtre", value: 10, color: "bg-[#AEBBD3]" },
 ]
@@ -144,11 +144,11 @@ function StatusBadge({ status }: { status: "Réalisée" | "Programmée" }) {
     <span
       className={cn(
         "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-[3px] font-[family-name:var(--font-display)] text-[11px] font-semibold",
-        done ? "bg-brand-green/10 text-brand-green-dark" : "bg-brand-sky/10 text-[#1878a4]"
+        done ? "bg-brand-green/10 text-brand-green-dark" : "bg-brand-green/10 text-brand-green-dark"
       )}
     >
       <span
-        className={cn("h-1.5 w-1.5 rounded-full", done ? "bg-brand-green" : "bg-brand-sky")}
+        className={cn("h-1.5 w-1.5 rounded-full", done ? "bg-brand-green" : "bg-brand-green/45")}
       />
       {status}
     </span>
@@ -468,7 +468,7 @@ function DashboardMock({ reduced }: { reduced: boolean }) {
                         </p>
                       </div>
                     </div>
-                    <span className="inline-flex shrink-0 items-center gap-1 rounded-[8px] bg-brand-navy/5 px-2 py-1.5 font-[family-name:var(--font-body)] text-[11px] font-medium text-brand-navy">
+                    <span className="inline-flex shrink-0 items-center gap-1 rounded-[8px] bg-brand-green/5 px-2 py-1.5 font-[family-name:var(--font-body)] text-[11px] font-medium text-brand-navy">
                       <HugeiconsIcon icon={Download04Icon} size={13} strokeWidth={VITRINE_ICON_STROKE} />
                       <span className="hidden min-[420px]:inline">Télécharger</span>
                     </span>
@@ -580,7 +580,7 @@ export function VitrineClientPortal() {
   return (
     <section
       id="espace-client"
-      className="relative scroll-mt-[72px] overflow-hidden border-b border-white/10 bg-brand-navy py-16 text-white sm:py-20 lg:py-24"
+      className="relative scroll-mt-[72px] overflow-hidden border-b border-white/10 bg-brand-forest py-16 text-white sm:py-20 lg:py-24"
     >
       <div
         aria-hidden
@@ -617,7 +617,7 @@ export function VitrineClientPortal() {
             <ul className="mt-8 space-y-3">
               {content.benefits.map((label, i) => (
                 <li key={label} className="flex items-center gap-3">
-                  <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-white/14 bg-white/5 text-brand-sky">
+                  <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-white/14 bg-white/5 text-brand-green">
                     <HugeiconsIcon
                       icon={BENEFIT_ICONS[i] ?? TruckIcon}
                       size={17}

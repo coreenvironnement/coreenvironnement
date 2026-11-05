@@ -61,7 +61,7 @@ export function VitrineLocalSeo({ seoVariant }: VitrineLocalSeoProps) {
           <h2
             className={
               showCityGrid
-                ? "text-sm font-semibold uppercase tracking-[0.14em] text-brand-sky"
+                ? "text-sm font-semibold uppercase tracking-[0.14em] text-brand-green"
                 : "font-[family-name:var(--font-display)] text-xl font-semibold text-brand-navy sm:text-2xl"
             }
             id={showCityGrid ? undefined : "zones-intervention-title"}

@@ -38,11 +38,11 @@ export function VitrineServices() {
 
 export function VitrineCompteProTeaser() {
   return (
-    <section id="compte-pro" className="border-b border-brand-border bg-brand-navy py-16 text-white sm:py-20">
+    <section id="compte-pro" className="border-b border-brand-border bg-brand-forest py-16 text-white sm:py-20">
       <div className="container-x grid gap-8 lg:grid-cols-2 lg:items-center">
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <p className="section-eyebrow section-eyebrow--inverse text-brand-sky">Compte professionnel</p>
+            <p className="section-eyebrow section-eyebrow--inverse text-brand-green">Compte professionnel</p>
             <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white">
               Bientôt disponible
             </span>

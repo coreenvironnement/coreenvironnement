@@ -8,10 +8,10 @@ export const metadata: Metadata = {
 
 export default function MaintenancePage() {
   return (
-    <div className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden bg-[#183574] px-6 py-16 text-white">
+    <div className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden bg-[#0c1810] px-6 py-16 text-white">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_-10%,rgba(38,157,210,0.22),transparent_58%),radial-gradient(90%_60%_at_100%_100%,rgba(53,162,56,0.14),transparent_55%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_-10%,rgba(53,162,56,0.22),transparent_58%),radial-gradient(90%_60%_at_100%_100%,rgba(53,162,56,0.14),transparent_55%)]"
       />
 
       <div className="relative z-10 flex w-full max-w-lg flex-col items-center text-center">

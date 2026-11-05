@@ -37,7 +37,7 @@ export function LegalPageShell({
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <Link
         href="/"
-        className="text-sm font-medium text-brand-sky transition hover:text-brand-navy"
+        className="text-sm font-medium text-brand-green transition hover:text-brand-navy"
       >
         ← Retour à l&apos;accueil
       </Link>

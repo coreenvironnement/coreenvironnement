@@ -103,7 +103,7 @@ export default async function AdminCommandesPage({ searchParams }: PageProps) {
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition",
                   active && emphasize && "border-primary bg-primary text-primary-foreground",
-                  active && !emphasize && "border-brand-navy bg-brand-navy text-white",
+                  active && !emphasize && "border-brand-green bg-brand-green text-white",
                   !active && emphasize && "border-primary/40 bg-primary/12 text-brand-navy",
                   !active && !emphasize && "border-border bg-background text-brand-navy hover:bg-muted"
                 )}

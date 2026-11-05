@@ -83,7 +83,7 @@ export function SiteHeader() {
         <div className="flex shrink-0 items-center gap-2">
           <a
             href={SITE_PHONE_HREF}
-            className="hidden items-center gap-2 rounded-full border border-transparent bg-[#38a234] px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-[#2d8a2a] md:inline-flex"
+            className="hidden items-center gap-2 rounded-full border border-transparent bg-[#35A238] px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-[#19752B] md:inline-flex"
           >
             <Phone className="size-4 shrink-0" aria-hidden />
             {SITE_PHONE_DISPLAY}
@@ -117,7 +117,7 @@ export function SiteHeader() {
                 <a
                   href={SITE_PHONE_HREF}
                   onClick={() => setMobileOpen(false)}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#38a234] py-3 text-sm font-semibold text-white shadow-md"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#35A238] py-3 text-sm font-semibold text-white shadow-md hover:bg-[#19752B]"
                 >
                   <Phone className="size-4 shrink-0" aria-hidden />
                   {SITE_PHONE_DISPLAY}

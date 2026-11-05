@@ -172,7 +172,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
                 <span
                   className={cn(
                     "absolute -bottom-[7px] left-0 h-px w-full origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100",
-                    solid ? "bg-brand-navy" : "bg-white"
+                    solid ? "bg-brand-green" : "bg-white"
                   )}
                 />
               </a>
@@ -183,7 +183,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
                 className={cn(
                   "rounded-full px-3.5 py-1.5 text-[14px] font-semibold transition-colors",
                   solid
-                    ? "bg-brand-navy text-white hover:bg-[#152d66]"
+                    ? "bg-brand-green text-white hover:bg-brand-green-dark"
                     : "border border-white/35 bg-white/10 text-white hover:bg-white/15"
                 )}
               >
@@ -244,7 +244,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
         <div
           onClick={() => setMenuOpen(false)}
           className={cn(
-            "absolute inset-0 bg-brand-navy/70 backdrop-blur-sm transition-opacity duration-400",
+            "absolute inset-0 bg-brand-forest/70 backdrop-blur-sm transition-opacity duration-400",
             menuOpen ? "opacity-100" : "opacity-0"
           )}
         />
@@ -253,8 +253,8 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
           aria-modal="true"
           aria-label="Menu de navigation"
           className={cn(
-            "absolute inset-x-0 top-0 flex h-[100svh] flex-col bg-brand-navy text-white transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]",
-            "bg-[radial-gradient(120%_80%_at_50%_-10%,rgba(38,157,210,0.18),transparent_60%)]",
+            "absolute inset-x-0 top-0 flex h-[100svh] flex-col bg-brand-forest text-white transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]",
+            "bg-[radial-gradient(120%_80%_at_50%_-10%,rgba(53,162,56,0.18),transparent_60%)]",
             menuOpen ? "translate-y-0 opacity-100" : "-translate-y-6 opacity-0"
           )}
         >

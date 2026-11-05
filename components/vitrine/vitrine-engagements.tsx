@@ -159,8 +159,8 @@ function EngagementStep({
             "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-brand-green/12 bg-brand-warm-field transition-[border-color,box-shadow,color] duration-300 sm:h-[3.25rem] sm:w-[3.25rem]",
             isActive
               ? "border-[#35A238]/35 text-brand-navy shadow-[0_3px_14px_-4px_rgba(53,162,56,0.22)]"
-              : "border-[#d5ddd9] text-brand-navy/75 shadow-[0_2px_10px_-4px_rgba(24,53,116,0.1)]",
-            isDigital && !isActive && "border-brand-sky/25 text-brand-sky/80"
+              : "border-[#d5ddd9] text-brand-navy/75 shadow-[0_2px_10px_-4px_rgba(14,32,16,0.1)]",
+            isDigital && !isActive && "border-brand-green/25 text-brand-green/80"
           )}
         >
           <HugeiconsIcon

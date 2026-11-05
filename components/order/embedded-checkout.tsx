@@ -150,7 +150,7 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
               theme: "stripe" as const,
               variables: {
                 colorPrimary: "#35A238",
-                colorText: "#122a5c",
+                colorText: "#172033",
                 borderRadius: "12px",
               },
             },
@@ -223,7 +223,7 @@ function PaymentLoadingState() {
   return (
     <div className="order-tunnel-card flex min-h-[180px] flex-col items-center justify-center gap-3 px-4 py-6 text-center">
       <span
-        className="size-8 animate-spin rounded-full border-2 border-brand-navy/15 border-t-[#35A238]"
+        className="size-8 animate-spin rounded-full border-2 border-brand-green/15 border-t-[#35A238]"
         aria-hidden
       />
       <p className="text-sm font-medium text-brand-navy">
@@ -388,7 +388,7 @@ function CheckoutFields({
             setCgvAccepted(e.target.checked)
             if (e.target.checked) setError(null)
           }}
-          className="mt-0.5 size-4 shrink-0 accent-[#2F9632]"
+          className="mt-0.5 size-4 shrink-0 accent-[#35A238]"
         />
         <span>
           J’ai lu et j’accepte les{" "}
@@ -473,7 +473,7 @@ function CheckoutFields({
         </Button>
         <Button
           type="button"
-          className="order-embedded-pay-btn h-11 min-h-11 flex-1 rounded-xl border-0 bg-[#2F9632] px-4 text-[15px] font-semibold tracking-[-0.01em] text-white shadow-lg shadow-[#2F9632]/20 hover:bg-[#19752B] disabled:pointer-events-none disabled:bg-[#D0D5DD] disabled:text-white disabled:opacity-100 disabled:shadow-none"
+          className="order-embedded-pay-btn h-11 min-h-11 flex-1 rounded-xl border-0 bg-[#35A238] px-4 text-[15px] font-semibold tracking-[-0.01em] text-white shadow-lg shadow-[#35A238]/20 hover:bg-[#19752B] disabled:pointer-events-none disabled:bg-[#D0D5DD] disabled:text-white disabled:opacity-100 disabled:shadow-none"
           disabled={!stripe || !elements || busy || !cgvAccepted}
           onClick={() => void confirm()}
         >

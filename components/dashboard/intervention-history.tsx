@@ -98,7 +98,7 @@ export function DashboardSubNav({
         href={`/dashboard?chantier=${chantierId}`}
         className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
           active === "overview"
-            ? "bg-brand-navy text-white"
+            ? "bg-brand-green text-white"
             : "text-muted-foreground hover:bg-muted/60 hover:text-brand-navy"
         }`}
         aria-current={active === "overview" ? "page" : undefined}
@@ -109,7 +109,7 @@ export function DashboardSubNav({
         href={`/dashboard/historique?chantier=${chantierId}`}
         className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
           active === "historique"
-            ? "bg-brand-navy text-white"
+            ? "bg-brand-green text-white"
             : "text-muted-foreground hover:bg-muted/60 hover:text-brand-navy"
         }`}
         aria-current={active === "historique" ? "page" : undefined}

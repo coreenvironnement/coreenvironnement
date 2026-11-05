@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import Image from "next/image"
 import {
-  AlertTriangle,
   ArrowLeft,
   Box,
+  Info,
   Loader2,
   Phone,
   Ruler,
@@ -97,21 +97,19 @@ function defaultVolumeMarginPercent(
 function VolumeDisclaimer() {
   return (
     <div
-      className="rounded-xl border border-amber-200/80 bg-amber-50/90 px-3.5 py-3 text-[12px] leading-snug text-amber-950 sm:text-[13px]"
+      className="rounded-xl border border-brand-navy/10 bg-brand-warm-field/90 px-3.5 py-3 text-[12px] leading-snug text-brand-navy sm:text-[13px]"
       role="note"
     >
       <div className="flex gap-2">
-        <AlertTriangle
-          className="mt-0.5 size-4 shrink-0 text-amber-700"
+        <Info
+          className="mt-0.5 size-4 shrink-0 text-brand-green"
           aria-hidden
         />
         <p>
-          Outil d&apos;aide à la décision,{" "}
-          <strong>sans garantie</strong>. Aucun calculateur n&apos;est fiable à
-          100&nbsp;% : forme du tas, foisonnement et remplissage réel peuvent
-          fausser le résultat.{" "}
-          <strong>Vous restez responsable</strong> du volume et du poids
-          chargés.
+          L&apos;estimation reste indicative : la forme du tas, la nature des
+          déchets et leur poids influencent le choix de la benne. Vérifiez
+          également les limites de poids et de remplissage indiquées pour la
+          benne choisie.
         </p>
       </div>
     </div>
@@ -123,12 +121,14 @@ function ChoiceCard({
   description,
   icon: Icon,
   onClick,
+  selected,
   accent,
 }: {
   title: string
   description: string
   icon: typeof Ruler
   onClick: () => void
+  selected?: boolean
   accent?: boolean
 }) {
   return (
@@ -136,16 +136,18 @@ function ChoiceCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "group flex w-full flex-col rounded-2xl border-2 p-4 text-left shadow-sm transition-all",
-        accent
-          ? "border-brand-green/40 bg-gradient-to-br from-white to-brand-warm-field hover:border-brand-green hover:shadow-md"
-          : "border-primary/15 bg-white hover:border-brand-navy/30 hover:shadow-md"
+        "group flex w-full flex-col rounded-2xl border-2 p-4 text-left shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/45 focus-visible:ring-offset-2",
+        selected
+          ? "border-brand-green bg-brand-green/5 shadow-md ring-1 ring-brand-green/20"
+          : accent
+            ? "border-brand-green/40 bg-gradient-to-br from-white to-brand-warm-field hover:border-brand-green hover:shadow-md"
+            : "border-primary/15 bg-white hover:border-brand-green/30 hover:shadow-md"
       )}
     >
       <span
         className={cn(
           "mb-3 inline-flex size-11 items-center justify-center rounded-xl",
-          accent ? "bg-brand-green/15 text-brand-green" : "bg-brand-navy/8 text-brand-navy"
+          accent ? "bg-brand-green/15 text-brand-green" : "bg-brand-green/8 text-brand-navy"
         )}
       >
         <Icon className="size-5" strokeWidth={2} aria-hidden />
@@ -208,7 +210,7 @@ function ComputingOverlay({ onDone }: { onDone: () => void }) {
     <div className="flex min-h-[220px] flex-col items-center justify-center gap-4 px-4 py-8 text-center">
       <div className="relative">
         <div className="absolute inset-0 animate-ping rounded-full bg-brand-green/20" />
-        <div className="relative flex size-16 items-center justify-center rounded-full bg-brand-navy text-white shadow-lg">
+        <div className="relative flex size-16 items-center justify-center rounded-full bg-brand-green text-white shadow-lg">
           <Loader2 className="size-8 animate-spin" aria-hidden />
         </div>
       </div>
@@ -220,7 +222,7 @@ function ComputingOverlay({ onDone }: { onDone: () => void }) {
           {LOADING_STEPS[stepIdx]}
         </p>
       </div>
-      <div className="h-1 w-full max-w-[200px] overflow-hidden rounded-full bg-brand-navy/10">
+      <div className="h-1 w-full max-w-[200px] overflow-hidden rounded-full bg-brand-green/10">
         <motion.div
           className="h-full rounded-full bg-brand-green"
           initial={{ width: "8%" }}
@@ -264,6 +266,9 @@ export function ParticulierVolumeStep({
   )
   const [result, setResult] = useState<VolumeRecommendation | null>(null)
   const [knownPick, setKnownPick] = useState<number | null>(null)
+  const [choiceHighlight, setChoiceHighlight] = useState<"known" | "estimate" | null>(
+    null
+  )
 
   const resetEstimatorInputs = () => {
     setLength("")
@@ -333,7 +338,7 @@ export function ParticulierVolumeStep({
 
   const title =
     view === "choice"
-      ? "Quelle capacité de benne vous faut-il ?"
+      ? "Quel volume de déchets souhaitez-vous évacuer ?"
       : view === "known"
         ? "Je connais le volume dont j’ai besoin"
         : view === "estimator-mode"
@@ -365,8 +370,8 @@ export function ParticulierVolumeStep({
           </h3>
           {view === "choice" ? (
             <p className="mt-1 text-[12px] leading-snug text-brand-muted sm:text-[13px]">
-              Le volume en m³ aide à choisir ; le type de déchet et le poids
-              comptent aussi.
+              Choisissez un volume si vous le connaissez, ou utilisez
+              l&apos;estimateur pour vous aider à l&apos;évaluer.
             </p>
           ) : null}
         </div>
@@ -385,16 +390,22 @@ export function ParticulierVolumeStep({
           >
             <ChoiceCard
               title="Je connais le volume"
-              description="Vous savez déjà si vous avez besoin de 8, 10, 15 m³ ou plus."
+              description="Sélectionnez directement le volume correspondant à votre besoin."
               icon={Box}
-              onClick={() => setView("known")}
+              selected={choiceHighlight === "known"}
+              onClick={() => {
+                setChoiceHighlight("known")
+                setView("known")
+              }}
             />
             <ChoiceCard
-              title="Je ne sais pas : estimer"
-              description="Calculez un ordre de grandeur à partir des dimensions ou des sacs."
+              title="J'ai besoin d'une estimation"
+              description="Estimez votre volume à partir des dimensions du tas ou du nombre de sacs."
               icon={Sparkles}
               accent
+              selected={choiceHighlight === "estimate"}
               onClick={() => {
+                setChoiceHighlight("estimate")
                 resetEstimatorInputs()
                 setView("estimator-mode")
               }}
@@ -422,7 +433,7 @@ export function ParticulierVolumeStep({
                   className={cn(
                     "rounded-xl border-2 px-3 py-4 text-center transition-colors",
                     knownPick === v
-                      ? "border-brand-navy bg-primary/10 shadow-sm"
+                      ? "border-brand-green bg-primary/10 shadow-sm"
                       : "border-primary/15 bg-white hover:border-brand-green/40"
                   )}
                 >
@@ -565,7 +576,7 @@ export function ParticulierVolumeStep({
             animate={{ opacity: 1, y: 0 }}
             className="space-y-4"
           >
-            <div className="rounded-2xl border-2 border-brand-navy/15 bg-gradient-to-br from-white to-brand-warm-field p-4 text-center shadow-sm">
+            <div className="rounded-2xl border-2 border-brand-green/15 bg-gradient-to-br from-white to-brand-warm-field p-4 text-center shadow-sm">
               <p className="text-[12px] font-semibold uppercase tracking-wide text-brand-muted">
                 Volume estimé
               </p>
@@ -584,7 +595,7 @@ export function ParticulierVolumeStep({
 
             {result.extraBennesMessage ? (
               <div
-                className="rounded-xl border border-brand-navy/20 bg-brand-navy/5 px-3.5 py-3 text-[13px] leading-snug text-brand-navy"
+                className="rounded-xl border border-brand-green/20 bg-brand-green/5 px-3.5 py-3 text-[13px] leading-snug text-brand-navy"
                 role="status"
               >
                 {result.extraBennesMessage}
@@ -632,13 +643,15 @@ export function ParticulierVolumeStep({
       ) : null}
 
       {view === "choice" ? (
-        <a
-          href={SITE_PHONE_HREF}
-          className="flex items-center justify-center gap-2 py-1 text-[13px] font-semibold text-brand-green hover:text-[#19752B]"
-        >
-          <Phone className="size-4" aria-hidden />
-          Un renseignement ? {SITE_PHONE_DISPLAY}
-        </a>
+        <p className="py-1 text-center text-[13px] text-brand-muted">
+          Besoin d&apos;un conseil ?{" "}
+          <a
+            href={SITE_PHONE_HREF}
+            className="font-semibold text-brand-green hover:text-brand-green-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
+          >
+            {SITE_PHONE_DISPLAY}
+          </a>
+        </p>
       ) : null}
     </div>
   )

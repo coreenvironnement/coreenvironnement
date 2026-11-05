@@ -13,10 +13,10 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
   const isDashboard = pathname.startsWith("/dashboard")
   const isStandalone =
     pathname === "/" ||
-    pathname === "/professionnels" ||
     pathname === "/login" ||
     pathname === "/pro" ||
     pathname === "/maintenance" ||
+    pathname.startsWith("/professionnels") ||
     pathname.startsWith("/location-benne")
 
   if (isStandalone) {
@@ -42,8 +42,8 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
         aria-hidden
         style={{
           background: `
-              radial-gradient(ellipse 110% 90% at 50% -30%, color-mix(in srgb, #38a234 16%, transparent), transparent 58%),
-              radial-gradient(ellipse 55% 45% at 100% 0%, color-mix(in srgb, #1b418f 10%, transparent), transparent 50%),
+              radial-gradient(ellipse 110% 90% at 50% -30%, color-mix(in srgb, #35a238 16%, transparent), transparent 58%),
+              radial-gradient(ellipse 55% 45% at 100% 0%, color-mix(in srgb, #19752b 10%, transparent), transparent 50%),
               var(--background)
             `,
         }}

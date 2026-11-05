@@ -22,7 +22,7 @@ function SegmentBadge({
         "inline-flex rounded-full px-2 py-0.5 text-[0.65rem] font-medium uppercase tracking-wide",
         vitrine && "font-[family-name:var(--font-body)]",
         segment === "pro"
-          ? "bg-brand-navy/10 text-brand-navy"
+          ? "bg-brand-green/10 text-brand-navy"
           : vitrine
             ? "bg-brand-green/12 text-brand-green-dark"
             : "bg-primary/12 text-brand-green-dark"
@@ -33,10 +33,13 @@ function SegmentBadge({
   )
 }
 
-function StarRating() {
+function StarRating({ vitrine }: { vitrine?: boolean }) {
   return (
     <div
-      className="mb-3 flex items-center gap-0.5"
+      className={cn(
+        "mb-3 flex items-center gap-0.5",
+        vitrine && "max-md:mx-auto max-md:justify-center md:mx-0 md:justify-start"
+      )}
       role="img"
       aria-label="5 sur 5 étoiles"
     >
@@ -55,7 +58,7 @@ function cardArticleClass(vitrine?: boolean, extra?: string) {
   return cn(
     "flex flex-col rounded-2xl p-4 sm:p-5",
     vitrine
-      ? "w-[calc(100vw-2rem)] shrink-0 snap-center border border-brand-green/14 bg-brand-warm-field shadow-[var(--shadow-vitrine-soft)] sm:w-full sm:min-w-0"
+      ? "w-[calc(100vw-2rem)] shrink-0 snap-center border border-brand-green/14 bg-brand-warm-field shadow-[var(--shadow-vitrine-soft)] max-md:text-center sm:w-full sm:min-w-0 md:text-left"
       : "w-[min(100vw-3rem,380px)] shrink-0 snap-center sm:w-[calc(50%-0.75rem)] sm:max-w-none lg:w-[calc(33.333%-0.75rem)] border border-white/40 bg-card/90 shadow-[0_14px_50px_-28px_rgba(27,65,143,0.35)] backdrop-blur-sm",
     extra
   )
@@ -85,7 +88,7 @@ function TestimonialCard({
         <div
           className={cn(
             "mb-4 flex min-h-[3rem] items-center justify-between gap-3 border-b pb-3",
-            vitrine ? "border-brand-border" : "border-border/40"
+            vitrine ? "border-brand-border max-md:justify-center" : "border-border/40"
           )}
         >
           <div className="relative h-11 w-[min(152px,45%)] shrink-0">
@@ -93,7 +96,7 @@ function TestimonialCard({
               src={t.logoSrc}
               alt={logoAlt}
               fill
-              className="object-contain object-left"
+              className={cn("object-contain", vitrine ? "object-center md:object-left" : "object-left")}
               sizes="152px"
             />
           </div>
@@ -103,7 +106,7 @@ function TestimonialCard({
         <div
           className={cn(
             "mb-4 flex min-h-[3rem] items-center justify-between gap-3 border-b pb-3",
-            vitrine ? "border-brand-border" : "border-border/40"
+            vitrine ? "border-brand-border max-md:justify-center max-md:gap-4" : "border-border/40"
           )}
         >
           <ParticulierTestimonialIcon
@@ -112,7 +115,7 @@ function TestimonialCard({
           <SegmentBadge segment={t.segment} vitrine={vitrine} />
         </div>
       )}
-      <StarRating />
+      <StarRating vitrine={vitrine} />
       <blockquote
         className={cn(
           "flex-1 text-sm leading-relaxed sm:text-[0.95rem]",

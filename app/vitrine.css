@@ -2,14 +2,16 @@
 
 /*
  * Palette vitrine — logo CORE ENVIRONNEMENT
- * ~70 % neutre · ~20 % navy · accents vert / bleu digital
+ * ~70 % neutre · ~20 % navy · accents & CTA #35a238
  */
 
 @theme {
-  --color-brand-navy: #183574;
+  --color-brand-navy: #172033;
+  --color-brand-forest: #0c1810;
   --color-brand-green: #35a238;
   --color-brand-green-dark: #19752b;
-  --color-brand-sky: #269dd2;
+  /* Alias legacy « sky » → vert CTA (plus de bleu turquoise) */
+  --color-brand-sky: #35a238;
 
   --color-brand-text: #172033;
   --color-brand-muted: #667085;
@@ -35,8 +37,8 @@
   --font-display: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 
-  --shadow-vitrine-soft: 0 1px 2px rgb(24 53 116 / 0.04), 0 8px 24px -8px rgb(24 53 116 / 0.08);
-  --shadow-vitrine-pop: 0 20px 48px -16px rgb(24 53 116 / 0.22);
+  --shadow-vitrine-soft: 0 1px 2px rgb(14 32 16 / 0.04), 0 8px 24px -8px rgb(14 32 16 / 0.08);
+  --shadow-vitrine-pop: 0 20px 48px -16px rgb(14 32 16 / 0.22);
 }
 
 @layer components {
@@ -127,9 +129,9 @@
     @apply bg-brand-green text-white shadow-[var(--shadow-vitrine-soft)] hover:bg-brand-green-dark active:scale-[0.99];
   }
 
-  /* Secondaire structure — navy */
+  /* Secondaire structure — vert profond */
   .vitrine-root .btn-primary {
-    @apply bg-brand-navy text-white shadow-[var(--shadow-vitrine-soft)] hover:bg-[#122a5c] active:scale-[0.99];
+    @apply bg-brand-green text-white shadow-[var(--shadow-vitrine-soft)] hover:bg-brand-green-dark active:scale-[0.99];
   }
 
   .vitrine-root .btn-light {
@@ -137,7 +139,7 @@
   }
 
   .vitrine-root .btn-ghost-dark {
-    @apply border border-brand-border text-brand-text hover:border-brand-navy/20 hover:bg-brand-bg-alt;
+    @apply border border-brand-border text-brand-text hover:border-brand-green/25 hover:bg-brand-bg-alt;
   }
 
   .vitrine-root .btn-ghost-light {
@@ -146,16 +148,16 @@
 
   /* Espace client / digital */
   .vitrine-root .btn-ghost-sky {
-    @apply border border-brand-sky/25 text-brand-sky hover:border-brand-sky/40 hover:bg-brand-sky/[0.06];
+    @apply border border-brand-green/25 text-brand-green hover:border-brand-green/40 hover:bg-brand-green/[0.06];
   }
 
   .vitrine-root .link-digital {
-    @apply font-semibold text-brand-sky transition hover:text-brand-navy;
+    @apply font-semibold text-brand-green transition hover:text-brand-green-dark;
   }
 
   /* ── Footer premium ── */
   .vitrine-root .vitrine-footer {
-    @apply relative overflow-hidden bg-[#030B26] text-white;
+    @apply relative overflow-hidden bg-brand-forest text-white;
   }
 
   .vitrine-root .vitrine-footer__pattern {
@@ -170,7 +172,7 @@
     border-radius: 68% 32% 58% 42% / 48% 52% 48% 52%;
     background:
       radial-gradient(ellipse at 42% 58%, rgb(53 162 56 / 0.14) 0%, transparent 62%),
-      radial-gradient(ellipse at 58% 42%, rgb(38 157 210 / 0.12) 0%, transparent 68%);
+      radial-gradient(ellipse at 58% 42%, rgb(53 162 56 / 0.1) 0%, transparent 68%);
     transform: rotate(-18deg);
   }
 
@@ -229,11 +231,11 @@
   }
 
   .vitrine-root .vitrine-footer__columns {
-    @apply grid gap-9 text-center sm:grid-cols-2 sm:gap-10 lg:text-left xl:grid-cols-4 xl:gap-8;
+    @apply grid gap-9 text-center max-md:justify-items-center sm:grid-cols-2 sm:gap-10 lg:justify-items-stretch lg:text-left xl:grid-cols-4 xl:gap-8;
   }
 
   .vitrine-root .vitrine-footer__column-title {
-    @apply font-[family-name:var(--font-body)] text-[11px] font-medium uppercase tracking-[0.18em] text-brand-sky/90;
+    @apply font-[family-name:var(--font-body)] text-[11px] font-medium uppercase tracking-[0.18em] text-brand-green/90;
   }
 
   .vitrine-root .vitrine-footer__links {
@@ -245,7 +247,7 @@
   }
 
   .vitrine-root .vitrine-footer__link-accent {
-    @apply font-semibold text-brand-sky hover:text-white;
+    @apply font-semibold text-brand-green hover:text-white;
   }
 
   .vitrine-root .vitrine-footer__cta-card {
@@ -332,15 +334,15 @@
   }
 
   .vitrine-root .service-flip-action {
-    @apply inline-flex min-h-11 min-w-[9.5rem] items-center justify-center gap-2 rounded-[var(--radius-btn)] border border-brand-navy/15 bg-transparent px-4 py-2 font-[family-name:var(--font-display)] text-[13px] font-semibold tracking-[-0.01em] text-brand-navy transition-all duration-300 ease-out;
+    @apply inline-flex min-h-11 min-w-[9.5rem] items-center justify-center gap-2 rounded-[var(--radius-btn)] border border-brand-green/20 bg-transparent px-4 py-2 font-[family-name:var(--font-display)] text-[13px] font-semibold tracking-[-0.01em] text-brand-navy transition-all duration-300 ease-out;
   }
 
   @media (max-width: 639px) {
     .vitrine-root #services .service-flip-front {
       box-shadow:
         inset 0 3px 0 0 rgb(53 162 56 / 0.32),
-        0 1px 2px rgb(24 53 116 / 0.025),
-        0 6px 18px -6px rgb(24 53 116 / 0.055);
+        0 1px 2px rgb(14 32 16 / 0.025),
+        0 6px 18px -6px rgb(14 32 16 / 0.055);
     }
 
     .vitrine-root #services .service-flip-face {
@@ -366,7 +368,7 @@
   }
 
   .vitrine-root .service-flip-action:hover {
-    @apply border-brand-navy/25 bg-brand-navy/[0.03];
+    @apply border-brand-green/30 bg-brand-green/[0.04];
   }
 
   .vitrine-root .service-flip-action:focus-visible {
@@ -382,7 +384,7 @@
       @apply -translate-y-1 border-brand-green/30;
       box-shadow:
         0 3px 6px rgb(53 162 56 / 0.045),
-        0 14px 34px -12px rgb(24 53 116 / 0.11);
+        0 14px 34px -12px rgb(14 32 16 / 0.11);
     }
 
     .vitrine-root #services .service-flip-card:not(.is-flipped):hover .service-flip-icon-wrap {
@@ -438,8 +440,8 @@
   .vitrine-root #services .service-flip-face.card-vitrine {
     @apply border-brand-border bg-brand-warm-field;
     box-shadow:
-      0 1px 2px rgb(24 53 116 / 0.025),
-      0 6px 18px -6px rgb(24 53 116 / 0.055);
+      0 1px 2px rgb(14 32 16 / 0.025),
+      0 6px 18px -6px rgb(14 32 16 / 0.055);
   }
 
   @media (max-width: 639px) {
@@ -467,7 +469,7 @@
   .vitrine-root .how-step-card:hover {
     @apply border-brand-green/20;
     box-shadow:
-      0 2px 6px rgb(24 53 116 / 0.04),
+      0 2px 6px rgb(14 32 16 / 0.04),
       0 8px 20px -6px rgb(53 162 56 / 0.1);
   }
 
@@ -476,7 +478,7 @@
   }
 
   .vitrine-root .how-login-link {
-    @apply font-[family-name:var(--font-display)] text-sm font-semibold text-brand-sky transition hover:text-brand-navy;
+    @apply font-[family-name:var(--font-display)] text-sm font-semibold text-brand-green transition hover:text-brand-green-dark;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -486,10 +488,10 @@
   }
 
   .vitrine-root #services .service-flip-card.is-flipped .service-flip-back {
-    @apply border-brand-navy/12;
+    @apply border-brand-green/15;
     box-shadow:
-      0 2px 4px rgb(24 53 116 / 0.035),
-      0 10px 28px -8px rgb(24 53 116 / 0.09);
+      0 2px 4px rgb(14 32 16 / 0.035),
+      0 10px 28px -8px rgb(14 32 16 / 0.09);
   }
 
   /* Hero — overlays plein écran pour la lisibilité du texte */
@@ -499,7 +501,7 @@
 
   .vitrine-root .hero-overlay--desktop {
     /* Voile uniforme en largeur — lisibilité carte + texte + nav transparente */
-    background: rgb(24 53 116 / 0.52);
+    background: rgb(14 32 16 / 0.52);
   }
 
   /* Mobile : voile plus léger, couverture ~95 % de l’image */
@@ -507,17 +509,17 @@
     background:
       linear-gradient(
         180deg,
-        rgb(24 53 116 / 0.08) 0%,
+        rgb(14 32 16 / 0.08) 0%,
         transparent 38%,
-        rgb(24 53 116 / 0.05) 100%
+        rgb(14 32 16 / 0.05) 100%
       ),
       linear-gradient(
         90deg,
-        rgb(24 53 116 / 0.58) 0%,
-        rgb(24 53 116 / 0.48) 28%,
-        rgb(24 53 116 / 0.34) 52%,
-        rgb(24 53 116 / 0.20) 72%,
-        rgb(24 53 116 / 0.08) 88%,
+        rgb(14 32 16 / 0.58) 0%,
+        rgb(14 32 16 / 0.48) 28%,
+        rgb(14 32 16 / 0.34) 52%,
+        rgb(14 32 16 / 0.20) 72%,
+        rgb(14 32 16 / 0.08) 88%,
         transparent 95%
       );
   }
@@ -526,9 +528,9 @@
   .vitrine-root .hero-readability-glow {
     background: radial-gradient(
       ellipse 108% 94% at 22% 50%,
-      rgb(24 53 116 / 0.3) 0%,
-      rgb(24 53 116 / 0.12) 42%,
-      rgb(24 53 116 / 0.03) 58%,
+      rgb(14 32 16 / 0.3) 0%,
+      rgb(14 32 16 / 0.12) 42%,
+      rgb(14 32 16 / 0.03) 58%,
       transparent 74%
     );
   }
@@ -537,9 +539,9 @@
     .vitrine-root .hero-readability-glow {
       background: radial-gradient(
         ellipse 118% 102% at 50% 48%,
-        rgb(24 53 116 / 0.16) 0%,
-        rgb(24 53 116 / 0.07) 44%,
-        rgb(24 53 116 / 0.02) 62%,
+        rgb(14 32 16 / 0.16) 0%,
+        rgb(14 32 16 / 0.07) 44%,
+        rgb(14 32 16 / 0.02) 62%,
         transparent 82%
       );
     }
@@ -725,8 +727,8 @@
   border: 1px solid color-mix(in srgb, #35a238 14%, #e3e9e6);
   background: #ecf4e9;
   box-shadow:
-    0 1px 2px rgb(24 53 116 / 0.04),
-    0 12px 36px -10px rgb(24 53 116 / 0.18);
+    0 1px 2px rgb(14 32 16 / 0.04),
+    0 12px 36px -10px rgb(14 32 16 / 0.18);
 }
 
 .vitrine-root .hero-order-card__footer {
@@ -742,7 +744,7 @@
 .vitrine-root .hero-order-card .hero-order-card__address [data-slot="input"] {
   border-color: color-mix(in srgb, #35a238 14%, #e3e9e6);
   background: color-mix(in srgb, var(--color-brand-warm) 18%, white);
-  box-shadow: 0 1px 2px rgb(24 53 116 / 0.04);
+  box-shadow: 0 1px 2px rgb(14 32 16 / 0.04);
 }
 
 .vitrine-root .hero-order-card .hero-order-card__address [data-slot="input"]:focus-visible {
@@ -787,4 +789,29 @@
 
 .vitrine-root .order-embedded-pay-btn:disabled {
   cursor: not-allowed;
+}
+
+/* Accueil particulier — contenu centré sur mobile */
+@media (max-width: 767px) {
+  .vitrine-root.vitrine--mobile-centered .section-eyebrow {
+    @apply w-full justify-center;
+  }
+
+  .vitrine-root.vitrine--mobile-centered .vitrine-footer__columns > div {
+    @apply flex flex-col items-center;
+  }
+
+  .vitrine-root.vitrine--mobile-centered .vitrine-footer__links a {
+    @apply justify-center;
+  }
+
+  .vitrine-root.vitrine--mobile-centered .vitrine-footer__cta-card {
+    @apply items-center text-center;
+  }
+
+  .vitrine-root.vitrine--mobile-centered .vitrine-early-local-links,
+  .vitrine-root.vitrine--mobile-centered .vitrine-early-local-links h2,
+  .vitrine-root.vitrine--mobile-centered .vitrine-early-local-links p {
+    @apply text-center;
+  }
 }

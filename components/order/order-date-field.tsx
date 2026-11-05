@@ -80,7 +80,7 @@ export const OrderDateField = forwardRef<HTMLDivElement, OrderDateFieldProps>(
           <span
             className={cn(
               "flex size-9 shrink-0 items-center justify-center rounded-lg",
-              value ? "bg-primary/12 text-primary" : "bg-brand-navy/[0.06] text-brand-navy/45"
+              value ? "bg-primary/12 text-primary" : "bg-brand-green/[0.06] text-brand-navy/45"
             )}
             aria-hidden
           >

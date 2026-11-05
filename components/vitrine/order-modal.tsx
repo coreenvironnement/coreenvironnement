@@ -59,7 +59,7 @@ export function VitrineOrderModal() {
       <div
         onClick={closeOrder}
         className={cn(
-          "absolute inset-0 bg-brand-navy/55 backdrop-blur-sm transition-opacity duration-300",
+          "absolute inset-0 bg-brand-forest/55 backdrop-blur-sm transition-opacity duration-300",
           open ? "opacity-100" : "opacity-0"
         )}
       />
@@ -68,7 +68,9 @@ export function VitrineOrderModal() {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Commander une benne"
+          aria-label={
+            audience === "particulier" ? "Choisir ma benne" : "Commander une benne"
+          }
           className={cn(
             "order-tunnel-shell relative flex h-[100dvh] max-h-none w-full min-w-0 max-w-[100vw] flex-col overflow-hidden rounded-none border border-primary/15 pb-[env(safe-area-inset-bottom)] shadow-[var(--shadow-vitrine-pop)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
             "sm:h-auto sm:max-h-[92svh] sm:w-full sm:max-w-[540px] sm:rounded-2xl sm:pb-0",
@@ -82,7 +84,9 @@ export function VitrineOrderModal() {
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 pt-0.5">
                 <h2 className="text-[18px] font-bold leading-tight text-brand-navy sm:text-[20px]">
-                  Commander une benne
+                  {audience === "particulier"
+                    ? "Choisir ma benne"
+                    : "Commander une benne"}
                 </h2>
                 {audience === "professionnel" ? (
                   <p className="mt-1 text-[12px] leading-snug text-brand-muted sm:text-[13px]">

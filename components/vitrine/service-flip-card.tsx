@@ -184,13 +184,13 @@ export function ServiceFlipCard({
 
         <div
           id={detailsId}
-          className={`service-flip-face service-flip-back card-vitrine border-brand-navy/10 bg-brand-bg-alt ${mobileStripeClass}`}
+          className={`service-flip-face service-flip-back card-vitrine border-brand-green/12 bg-brand-bg-alt ${mobileStripeClass}`}
           aria-hidden={!flipped}
           {...(!flipped ? { inert: true } : {})}
         >
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-              <p className="vitrine-label text-brand-sky">Détail du service</p>
+              <p className="vitrine-label text-brand-green">Détail du service</p>
               <h3 className="mt-2 text-base leading-snug text-brand-navy">{service.titre}</h3>
               <ul className="mt-4 flex flex-col gap-2.5">
                 {service.points.map((point) => (

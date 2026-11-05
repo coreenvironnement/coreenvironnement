@@ -51,7 +51,7 @@ export function OrderAudienceToggle({
               className={cn(
                 "flex min-h-10 flex-1 items-center justify-center rounded-[0.65rem] px-3 text-[13px] font-semibold transition-all duration-200 sm:min-h-11 sm:text-sm",
                 active
-                  ? "bg-white text-brand-navy shadow-[0_1px_3px_rgb(24_53_116/0.12),0_4px_12px_-4px_rgb(24_53_116/0.15)]"
+                  ? "bg-white text-brand-navy shadow-[0_1px_3px_rgb(14_32_16/0.12),0_4px_12px_-4px_rgb(14_32_16/0.15)]"
                   : "text-brand-muted hover:text-brand-navy"
               )}
             >
@@ -89,7 +89,7 @@ export function OrderAudienceToggle({
               className={cn(
                 "flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-3 text-[13px] font-semibold transition-colors duration-200 sm:text-sm",
                 active
-                  ? "bg-brand-green text-white shadow-[0_1px_2px_rgba(27,65,143,0.12)]"
+                  ? "bg-brand-green text-white shadow-[0_1px_2px_rgba(53,162,56,0.25)]"
                   : "text-[#8A847C] hover:text-brand-navy"
               )}
             >

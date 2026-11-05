@@ -2,19 +2,11 @@
 
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { Star } from "lucide-react"
 import { useEffect, useLayoutEffect, useState } from "react"
 
 import { hero } from "@/lib/cdc/contenu-vitrine"
 import type { SeoVariant } from "@/lib/seo/landing-variants"
-import {
-  SITE_GOOGLE_MAPS_PIN_SRC,
-  SITE_GOOGLE_MAPS_URL,
-  SITE_GOOGLE_RATING,
-  SITE_GOOGLE_REVIEW_COUNT,
-  SITE_PHONE_DISPLAY,
-  SITE_PHONE_HREF,
-} from "@/lib/site"
+import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 import type { OrderAudience } from "@/components/order/order-audience-toggle"
@@ -81,53 +73,6 @@ function heroH1WithPrixHighlight(line: string) {
   )
 }
 
-function HeroGoogleRatingBadge({ className }: { className?: string }) {
-  const ratingLabel = SITE_GOOGLE_RATING.toLocaleString("fr-FR", {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1,
-  })
-
-  return (
-    <a
-      href={SITE_GOOGLE_MAPS_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={cn(
-        "group inline-flex max-w-full items-center gap-2.5 rounded-full border border-white/22 bg-white/[0.1] py-1.5 pl-1.5 pr-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_-14px_rgba(0,0,0,0.45)] backdrop-blur-md transition duration-300 hover:border-white/38 hover:bg-white/[0.14]",
-        className
-      )}
-      aria-label={`Note Google ${ratingLabel} sur 5, ${SITE_GOOGLE_REVIEW_COUNT} avis — voir sur Google Maps`}
-    >
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white p-1.5 shadow-sm">
-        <Image
-          src={SITE_GOOGLE_MAPS_PIN_SRC}
-          alt=""
-          width={28}
-          height={28}
-          className="size-7 object-contain"
-          aria-hidden
-        />
-      </span>
-      <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-        <span className="flex items-center gap-0.5" aria-hidden>
-          {Array.from({ length: 5 }, (_, i) => (
-            <Star
-              key={i}
-              className="size-3.5 shrink-0 fill-amber-400 text-amber-400 sm:size-4"
-            />
-          ))}
-        </span>
-        <span className="text-left text-[13px] font-semibold leading-snug text-white sm:text-[14px]">
-          Note Google {ratingLabel}{" "}
-          <span className="font-medium text-white/88">
-            ({SITE_GOOGLE_REVIEW_COUNT} avis)
-          </span>
-        </span>
-      </span>
-    </a>
-  )
-}
-
 export function VitrineHero({
   seoVariant,
   localPage,
@@ -177,22 +122,19 @@ export function VitrineHero({
           VITRINE_HEADER_TOTAL_OFFSET_CLASS
         )}
       >
-        {localPage ? <LocalBreadcrumbs page={localPage} /> : null}
+        {localPage ? (
+          <div className="max-lg:flex max-lg:justify-center">
+            <LocalBreadcrumbs page={localPage} />
+          </div>
+        ) : null}
         <div className="relative flex flex-col gap-8 max-lg:gap-7 lg:grid lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:items-center lg:gap-12 xl:grid-cols-[440px_minmax(0,1fr)] xl:gap-14">
-          <div className="relative order-1 max-w-[760px] lg:order-none lg:col-start-2 lg:row-start-1 lg:max-w-none lg:pl-2 xl:pl-6">
+          <div className="relative order-1 mx-auto max-w-[760px] max-lg:text-center lg:order-none lg:col-start-2 lg:row-start-1 lg:mx-0 lg:max-w-none lg:text-left lg:pl-2 xl:pl-6">
             <div
               aria-hidden
               className="hero-readability-glow pointer-events-none absolute -inset-x-3 -inset-y-5 rounded-[1.25rem] md:-inset-x-10 md:-inset-y-12 md:rounded-[2rem] lg:hidden"
             />
-            <div
-              className="animate-fade-up hidden md:block"
-              style={{ animationDelay: "60ms" }}
-            >
-              <HeroGoogleRatingBadge />
-            </div>
-
             <h1
-              className="animate-fade-up mt-0 text-[clamp(1.82rem,5.35vw,2.17rem)] leading-[1.1] text-white [text-shadow:0_1px_28px_rgba(24,53,116,0.28),0_2px_56px_rgba(24,53,116,0.14)] md:mt-6 sm:text-[clamp(2.15rem,4.4vw,3.45rem)] sm:leading-[1.08]"
+              className="animate-fade-up mt-0 text-[clamp(1.82rem,5.35vw,2.17rem)] leading-[1.1] text-white [text-shadow:0_1px_28px_rgba(14,32,16,0.28),0_2px_56px_rgba(14,32,16,0.14)] sm:text-[clamp(2.15rem,4.4vw,3.45rem)] sm:leading-[1.08]"
               style={{ animationDelay: "140ms" }}
             >
               <span className="block">{heroH1WithPrixHighlight(seoVariant.h1Line1)}</span>
@@ -202,7 +144,7 @@ export function VitrineHero({
             </h1>
 
             <p
-              className="animate-fade-up mt-6 hidden max-w-[520px] text-[17px] leading-[1.84] text-white/95 [text-shadow:0_1px_22px_rgba(24,53,116,0.22)] lg:block sm:mt-6 sm:max-w-[540px] sm:text-[18px] sm:leading-[1.72]"
+              className="animate-fade-up mt-6 hidden max-w-[520px] text-[17px] leading-[1.84] text-white/95 [text-shadow:0_1px_22px_rgba(14,32,16,0.22)] lg:block sm:mt-6 sm:max-w-[540px] sm:text-[18px] sm:leading-[1.72]"
               style={{ animationDelay: "220ms" }}
             >
               {seoVariant.intro ?? hero.titre2}
@@ -223,18 +165,12 @@ export function VitrineHero({
             style={{ animationDelay: "280ms" }}
           >
             <HeroOrderCard defaultAudience={heroOrderAudience} />
-            <div
-              className="animate-fade-up mt-4 flex justify-center md:hidden"
-              style={{ animationDelay: "340ms" }}
-            >
-              <HeroGoogleRatingBadge className="w-full max-w-full justify-center sm:w-auto sm:justify-start" />
-            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <VitrineHeroReassurance />
+    <VitrineHeroReassurance audience={heroOrderAudience} />
     </>
   )
 }

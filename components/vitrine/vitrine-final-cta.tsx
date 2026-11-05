@@ -59,7 +59,7 @@ export function VitrineFinalCta() {
     <section
       id="commander"
       aria-labelledby="final-cta-title"
-      className="relative scroll-mt-[72px] overflow-hidden bg-[#183574] pb-12 pt-16 sm:pb-16 sm:pt-20 lg:pb-[4.75rem] lg:pt-24"
+      className="relative scroll-mt-[72px] overflow-hidden bg-[#0c1810] pb-12 pt-16 sm:pb-16 sm:pt-20 lg:pb-[4.75rem] lg:pt-24"
     >
       <div
         aria-hidden

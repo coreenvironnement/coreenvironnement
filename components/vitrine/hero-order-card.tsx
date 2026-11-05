@@ -12,8 +12,10 @@ import {
   ORDER_FIELD_SECTION_LABEL,
   type OrderAudience,
 } from "@/components/order/order-audience-toggle"
+import { getEntryPriceTtcParticulier } from "@/lib/seo/pricing-snapshot"
 import { cn } from "@/lib/utils"
 
+import { GoogleRatingBadge } from "./google-rating-badge"
 import { useVitrineOrder } from "./order-context"
 
 type HeroOrderCardProps = {
@@ -40,6 +42,12 @@ export function HeroOrderCard({
   const address = draft.address
   const selectedAddress = draft.selectedAddress
   const isPro = audience === "professionnel"
+
+  const minTtc = getEntryPriceTtcParticulier()
+  const minTtcLabel =
+    Number.isFinite(minTtc) && minTtc > 0
+      ? minTtc.toLocaleString("fr-FR", { maximumFractionDigits: 0 })
+      : null
 
   const handleAudience = (value: OrderAudience) => {
     patchDraft({ audience: value })
@@ -69,78 +77,107 @@ export function HeroOrderCard({
   return (
     <div
       className={cn(
-        "hero-order-card order-tunnel-form relative z-20 flex w-full flex-col gap-5 p-5 sm:gap-5 sm:p-6",
+        "hero-order-card order-tunnel-form relative z-20 flex w-full flex-col gap-5 p-5 max-lg:items-center max-lg:text-center sm:gap-5 sm:p-6 lg:items-stretch lg:text-left",
         className
       )}
       aria-labelledby="hero-order-card-title"
     >
       <h2
         id="hero-order-card-title"
-        className="text-left text-[17px] font-bold leading-snug tracking-[-0.02em] text-brand-navy sm:text-[18px]"
+        className="w-full text-[17px] font-bold leading-snug tracking-[-0.02em] text-brand-navy sm:text-[18px] lg:text-left"
       >
         {isPro
           ? "Votre demande de benne, en ligne"
-          : "Votre tarif, tout de suite en ligne"}
+          : "Trouvez votre benne et consultez son tarif"}
       </h2>
 
-      <OrderAudienceToggle
-        variant="hero"
-        audience={audience}
-        onChange={handleAudience}
-      />
+      {!isPro ? (
+        <GoogleRatingBadge
+          variant="card"
+          className="w-fit max-w-full lg:w-auto lg:self-start"
+        />
+      ) : null}
 
-      <div className="space-y-2">
-        <p className={cn(ORDER_FIELD_SECTION_LABEL, "text-[15px] sm:text-[15px]")}>
-          Adresse de livraison
+      <div className="w-full">
+        <OrderAudienceToggle
+          variant="hero"
+          audience={audience}
+          onChange={handleAudience}
+        />
+      </div>
+
+      <div className="w-full space-y-2">
+        <p
+          className={cn(
+            ORDER_FIELD_SECTION_LABEL,
+            "text-[15px] max-lg:text-center lg:text-left sm:text-[15px]"
+          )}
+        >
+          {isPro ? "Adresse de livraison" : "Où faut-il livrer la benne ?"}
         </p>
         <AddressAutocomplete
           id="hero-order-address"
           className="hero-order-card__address"
           value={address}
           selected={selectedAddress}
-          placeholder="Rechercher une adresse…"
+          placeholder={
+            isPro ? "Rechercher une adresse…" : "Saisissez l’adresse de livraison"
+          }
           onValueChange={(next) => {
             patchDraft({ address: next, selectedAddress: null })
             setAddressError(null)
           }}
           onSelect={handleAddressSelect}
           onClearSelection={() => patchDraft({ selectedAddress: null })}
-          aria-invalid={addressError !== null && !selectedAddress}
-          inputClassName="hero-order-card__address-input h-12 rounded-xl"
+          aria-invalid={addressError !== null}
+          aria-describedby={
+            addressError ? "hero-order-address-error" : "hero-order-address-hint"
+          }
+          inputClassName="hero-order-card__address-input h-12 rounded-xl text-left"
           warmSurface={false}
         />
-        <p className="text-[12px] leading-snug text-brand-muted sm:text-[13px]">
-          {isPro
-            ? "Tarif HT selon adresse et déchet : demande sans paiement en ligne."
-            : "Tarif calculé selon votre adresse et votre déchet."}
-        </p>
+        {addressError ? (
+          <p
+            id="hero-order-address-error"
+            className="text-xs font-medium text-amber-800 max-lg:text-center lg:text-left"
+            role="alert"
+          >
+            {addressError}
+          </p>
+        ) : (
+          <p
+            id="hero-order-address-hint"
+            className="text-[12px] leading-snug text-brand-muted max-lg:text-center lg:text-left sm:text-[13px]"
+          >
+            {isPro
+              ? "Tarif HT selon adresse et déchet : demande sans paiement en ligne."
+              : "Votre adresse permet d’afficher les bennes et tarifs proposés dans votre secteur."}
+          </p>
+        )}
       </div>
-
-      {addressError ? (
-        <p className="-mt-2 text-center text-xs font-medium text-amber-800">{addressError}</p>
-      ) : null}
 
       <button
         type="button"
-        className="hero-order-card__cta group flex min-h-12 w-full items-center justify-between gap-3 rounded-xl bg-brand-navy px-4 py-3 text-left text-[15px] font-semibold leading-snug text-white shadow-[0_8px_24px_-8px_rgb(24_53_116/0.45)] transition-colors hover:bg-[#152d66] sm:text-base"
+        className="hero-order-card__cta group flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-4 py-3 text-[15px] font-semibold leading-snug text-white shadow-[0_8px_24px_-8px_rgb(14_32_16/0.45)] transition-colors hover:bg-brand-green-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2 sm:text-base"
         onClick={continueToModal}
       >
         <span className="min-w-0 flex-1">
-          {isPro ? "Continuer ma demande professionnelle" : "Voir les bennes et tarifs disponibles"}
+          {isPro ? "Continuer ma demande professionnelle" : "Voir les bennes et les tarifs"}
         </span>
-        <span
-          className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-green text-white shadow-sm transition-colors group-hover:bg-[#19752B]"
+        <ChevronRight
+          className="size-5 shrink-0 transition-transform group-hover:translate-x-0.5"
+          strokeWidth={2.25}
           aria-hidden
-        >
-          <ChevronRight className="size-5" strokeWidth={2.25} />
-        </span>
+        />
       </button>
 
       <div className="hero-order-card__footer pt-4 text-center text-[11px] leading-snug text-brand-muted sm:text-xs">
         <p>
           {isPro
             ? "Réponse sous 24 h, Île-de-France, interlocuteur dédié au suivi"
-            : "Dès 330 € HT, commande en 2 minutes, pas besoin d\u2019appeler"}
+            : minTtcLabel
+              ? `Dès ${minTtcLabel} € TTC`
+              : "Le tarif dépend de votre adresse, des déchets et de la benne choisie."}
         </p>
       </div>
     </div>

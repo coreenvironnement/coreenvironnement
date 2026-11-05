@@ -13,6 +13,7 @@
   --color-brand-sky: var(--brand-sky);
   --color-brand-sky-soft: var(--brand-sky-soft);
   --color-brand-navy: var(--brand-navy);
+  --color-brand-forest: var(--brand-forest);
   --color-brand-green: var(--brand-green);
   --color-brand-green-dark: var(--brand-green-dark);
   --color-brand-green-soft: var(--brand-green-soft);
@@ -57,16 +58,16 @@
 
 :root {
   /*
-   * Charte serrée : vert #38a234 (signature) + bleu #1b418f (structure).
-   * --brand-sky / sky-soft : alias visuel ≈ bleu structure (éviter trop de teintes proches).
+   * Charte : vert #35a238 (signature & accents) · texte structure #172033 · bandeaux sombres #0c1810.
    */
-  --brand-green: #38a234;
-  --brand-navy: #1b418f;
-  --brand-sky: #1b418f;
-  --brand-sky-soft: color-mix(in srgb, #1b418f 75%, white);
-  --brand-green-dark: #2d8029;
-  --brand-green-soft: color-mix(in srgb, #38a234 16%, white);
-  --brand-lime: #38a234;
+  --brand-green: #35a238;
+  --brand-navy: #172033;
+  --brand-forest: #0c1810;
+  --brand-sky: #35a238;
+  --brand-sky-soft: color-mix(in srgb, #35a238 75%, white);
+  --brand-green-dark: #19752b;
+  --brand-green-soft: color-mix(in srgb, #35a238 16%, white);
+  --brand-lime: #35a238;
 
   --background: #e9f1ec;
   --foreground: #14231a;
@@ -74,18 +75,18 @@
   --card-foreground: #14231a;
   --popover: #ffffff;
   --popover-foreground: #14231a;
-  --primary: #38a234;
+  --primary: #35a238;
   --primary-foreground: #ffffff;
-  --secondary: color-mix(in srgb, #38a234 10%, #e9f1ec);
-  --secondary-foreground: #1b418f;
+  --secondary: color-mix(in srgb, #35a238 10%, #e9f1ec);
+  --secondary-foreground: #172033;
   --muted: #e8eeea;
   --muted-foreground: #3d5346;
-  --accent: color-mix(in srgb, #38a234 8%, white);
-  --accent-foreground: #1b418f;
+  --accent: color-mix(in srgb, #35a238 8%, white);
+  --accent-foreground: #172033;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: color-mix(in srgb, #1b418f 11%, transparent);
-  --input: color-mix(in srgb, #1b418f 12%, transparent);
-  --ring: #38a234;
+  --border: color-mix(in srgb, #35a238 11%, transparent);
+  --input: color-mix(in srgb, #35a238 12%, transparent);
+  --ring: #35a238;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);

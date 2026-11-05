@@ -23,7 +23,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-const CHART_COLORS = ["#38a234", "#1b418f", "#5a9fd4", "#7bc96f", "#2d6a4f", "#40916c"]
+const CHART_COLORS = ["#35a238", "#19752b", "#19752b", "#7bc96f", "#2d6a4f", "#40916c"]
 
 type Props = {
   tonnages: TonnageChartRow[]
@@ -68,8 +68,8 @@ function PieTooltip({
 
 export function WasteCharts({ tonnages, valorisation, prestataireNom, anneeTaux }: Props) {
   const pieData = [
-    { name: "Valorisation", value: valorisation.tauxValorisationPct, color: "#38a234" },
-    { name: "Élimination", value: valorisation.tauxEliminationPct, color: "#1b418f" },
+    { name: "Valorisation", value: valorisation.tauxValorisationPct, color: "#35a238" },
+    { name: "Élimination", value: valorisation.tauxEliminationPct, color: "#19752b" },
   ]
 
   const hasTonnages = tonnages.some((t) => t.tonnageT > 0)

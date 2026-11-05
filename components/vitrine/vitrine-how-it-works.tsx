@@ -114,7 +114,7 @@ function ProfileToggle({
     <div
       role="tablist"
       aria-label="Profil de commande"
-      className="how-profile-toggle mx-auto inline-flex w-full max-w-[22rem] rounded-[var(--radius-btn)] border border-brand-green/14 bg-brand-warm-field p-1 shadow-[0_1px_2px_rgb(24_53_116/0.04)] sm:max-w-[24rem]"
+      className="how-profile-toggle mx-auto inline-flex w-full max-w-[22rem] rounded-[var(--radius-btn)] border border-brand-green/14 bg-brand-warm-field p-1 shadow-[0_1px_2px_rgb(14_32_16/0.04)] sm:max-w-[24rem]"
     >
       {(
         [
@@ -134,7 +134,7 @@ function ProfileToggle({
             onClick={() => onChange(item.id)}
             className={`how-profile-toggle-btn flex-1 rounded-[0.5rem] px-4 py-2.5 font-[family-name:var(--font-display)] text-sm font-semibold tracking-[-0.01em] transition-all duration-250 ease-out ${
               active
-                ? "bg-brand-navy text-white shadow-[0_2px_8px_-2px_rgba(24,53,116,0.35)]"
+                ? "bg-brand-green text-white shadow-[0_2px_8px_-2px_rgba(53,162,56,0.35)]"
                 : "text-brand-muted hover:text-brand-navy"
             }`}
           >
@@ -217,7 +217,7 @@ function AfterPanel({ description }: { description: string }) {
 
 function ParticulierPanel() {
   return (
-    <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(24_53_116/0.03),0_12px_32px_-8px_rgb(24_53_116/0.1)]">
+    <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(14_32_16/0.03),0_12px_32px_-8px_rgb(14_32_16/0.1)]">
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
         <div className="how-panel-main p-6 sm:p-8 lg:p-9 xl:p-10">
           <h3 className="text-lg leading-snug text-brand-navy sm:text-xl">
@@ -261,7 +261,7 @@ function ProSidePanel() {
             icon={ArrowRight01Icon}
             size={15}
             strokeWidth={VITRINE_ICON_STROKE}
-            className="text-brand-sky transition-transform duration-300 group-hover:translate-x-0.5"
+            className="text-brand-green transition-transform duration-300 group-hover:translate-x-0.5"
             aria-hidden
           />
         </Link>
@@ -272,7 +272,7 @@ function ProSidePanel() {
 
 function ProfessionnelPanel() {
   return (
-    <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(24_53_116/0.03),0_12px_32px_-8px_rgb(24_53_116/0.1)]">
+    <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(14_32_16/0.03),0_12px_32px_-8px_rgb(14_32_16/0.1)]">
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
         <div className="how-panel-main p-6 sm:p-8 lg:p-9 xl:p-10">
           <h3 className="text-lg leading-snug text-brand-navy sm:text-xl">
@@ -282,7 +282,7 @@ function ProfessionnelPanel() {
             {commentCaFonctionne.professionnel.etapesIntro}
           </p>
 
-          <p className="vitrine-label mt-8 text-brand-sky">OUVERTURE DU COMPTE</p>
+          <p className="vitrine-label mt-8 text-brand-green">OUVERTURE DU COMPTE</p>
           <StepsGrid steps={PRO_ACCOUNT_STEPS} className="mt-4" />
 
           <div className="my-7 flex flex-col items-center gap-2 sm:my-8">

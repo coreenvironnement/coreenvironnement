@@ -28,7 +28,7 @@ export function OrderTunnelContinueButton({
         "group flex min-h-12 w-full items-stretch overflow-hidden rounded-xl text-left text-[15px] font-semibold leading-snug shadow-sm transition-colors",
         disabled
           ? "cursor-not-allowed bg-[#E4E7EC] text-[#667085]"
-          : "bg-brand-navy text-white shadow-[0_8px_24px_-8px_rgb(24_53_116/0.35)] hover:bg-[#152d66]",
+          : "bg-brand-green text-white shadow-[0_8px_24px_-8px_rgb(53_162_56/0.35)] hover:bg-brand-green-dark",
         className
       )}
     >

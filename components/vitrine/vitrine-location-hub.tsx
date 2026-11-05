@@ -90,7 +90,7 @@ export function VitrineLocationHub() {
           <div className="mt-10 space-y-10">
             {sections.map(({ departement, featuredCities }) => (
               <div key={departement.slug}>
-                <h3 className="text-sm font-semibold uppercase tracking-[0.1em] text-brand-sky">
+                <h3 className="text-sm font-semibold uppercase tracking-[0.1em] text-brand-green">
                   <Link
                     href={`/location-benne/${departement.slug}`}
                     className="hover:text-brand-green"

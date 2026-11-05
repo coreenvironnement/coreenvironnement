@@ -1,43 +1,74 @@
 "use client"
 
 import { useCallback, useEffect, useRef } from "react"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  MapPinIcon,
-  Timer01Icon,
-  TwentyFourHoursClockIcon,
-} from "@hugeicons/core-free-icons"
+import { ClipboardList, MapPin, Truck } from "lucide-react"
 
+import type { OrderAudience } from "@/components/order/order-audience-toggle"
 import { cn } from "@/lib/utils"
 
-import { VITRINE_ICON_STROKE } from "./icons"
+type ReassuranceItem = {
+  icon: typeof Truck
+  label: string
+  description: string
+}
 
-const REASSURANCE = [
+const REASSURANCE_PARTICULIER: ReassuranceItem[] = [
   {
-    icon: TwentyFourHoursClockIcon,
-    label: "Intervention sous 24h",
-    description: "Vos bennes livrées et collectées au rythme de vos activités",
+    icon: Truck,
+    label: "Livraison possible sous 24 h",
+    description: "Selon votre adresse de livraison et les disponibilités.",
   },
   {
-    icon: Timer01Icon,
-    label: "Confirmation par e-mail",
-    description: "Puis un rappel pour caler la pose et l'enlèvement",
+    icon: ClipboardList,
+    label: "Suivi de commande en ligne",
+    description:
+      "Consultez l’avancement de votre commande depuis votre espace client.",
   },
   {
-    icon: MapPinIcon,
-    label: "Toute l’Île-de-France",
-    description: "Un interlocuteur unique pour l’ensemble de vos sites",
+    icon: MapPin,
+    label: "Livraison en Île-de-France",
+    description:
+      "Livraison et enlèvement à l’adresse de vos travaux ou de votre débarras.",
   },
-] as const
+]
+
+const REASSURANCE_PROFESSIONNEL: ReassuranceItem[] = [
+  {
+    icon: Truck,
+    label: "Livraison possible sous 24 h",
+    description:
+      "Selon vos adresses de livraison et les disponibilités sur vos chantiers.",
+  },
+  {
+    icon: ClipboardList,
+    label: "Suivi de commande en ligne",
+    description:
+      "Consultez l’avancement de vos demandes depuis votre espace client.",
+  },
+  {
+    icon: MapPin,
+    label: "Livraison en Île-de-France",
+    description: "Un interlocuteur unique pour l’ensemble de vos sites.",
+  },
+]
 
 const AUTO_PLAY_MS = 4800
 const RESUME_AFTER_MS = 4000
 
 type VitrineHeroReassuranceProps = {
   className?: string
+  audience?: OrderAudience
 }
 
-export function VitrineHeroReassurance({ className }: VitrineHeroReassuranceProps) {
+export function VitrineHeroReassurance({
+  className,
+  audience = "particulier",
+}: VitrineHeroReassuranceProps) {
+  const reassurance =
+    audience === "professionnel"
+      ? REASSURANCE_PROFESSIONNEL
+      : REASSURANCE_PARTICULIER
+
   const viewportRef = useRef<HTMLDivElement>(null)
   const pauseUntilRef = useRef(0)
   const slideIndexRef = useRef(0)
@@ -54,24 +85,27 @@ export function VitrineHeroReassurance({ className }: VitrineHeroReassuranceProp
     }, durationMs)
   }, [])
 
-  const scrollToSlide = useCallback((index: number, behavior: ScrollBehavior = "smooth") => {
-    const viewport = viewportRef.current
-    if (!viewport) return
+  const scrollToSlide = useCallback(
+    (index: number, behavior: ScrollBehavior = "smooth") => {
+      const viewport = viewportRef.current
+      if (!viewport) return
 
-    const slideCount = REASSURANCE.length
-    const normalizedIndex = ((index % slideCount) + slideCount) % slideCount
-    slideIndexRef.current = normalizedIndex
+      const slideCount = reassurance.length
+      const normalizedIndex = ((index % slideCount) + slideCount) % slideCount
+      slideIndexRef.current = normalizedIndex
 
-    isAutoScrollingRef.current = true
-    viewport.scrollTo({
-      left: normalizedIndex * viewport.clientWidth,
-      behavior,
-    })
+      isAutoScrollingRef.current = true
+      viewport.scrollTo({
+        left: normalizedIndex * viewport.clientWidth,
+        behavior,
+      })
 
-    window.setTimeout(() => {
-      isAutoScrollingRef.current = false
-    }, behavior === "smooth" ? 600 : 50)
-  }, [])
+      window.setTimeout(() => {
+        isAutoScrollingRef.current = false
+      }, behavior === "smooth" ? 600 : 50)
+    },
+    [reassurance.length]
+  )
 
   useEffect(() => {
     const viewport = viewportRef.current
@@ -97,7 +131,7 @@ export function VitrineHeroReassurance({ className }: VitrineHeroReassuranceProp
 
       slideIndexRef.current = Math.min(
         Math.round(viewport.scrollLeft / width),
-        REASSURANCE.length - 1
+        reassurance.length - 1
       )
       pauseAutoPlay()
     }
@@ -119,7 +153,11 @@ export function VitrineHeroReassurance({ className }: VitrineHeroReassuranceProp
       viewport.removeEventListener("scroll", onScroll)
       window.removeEventListener("resize", onResize)
     }
-  }, [pauseAutoPlay, scrollToSlide])
+  }, [pauseAutoPlay, reassurance.length, scrollToSlide])
+
+  const renderIcon = (Icon: typeof Truck) => (
+    <Icon className="size-5 text-white lg:size-6" strokeWidth={1.75} aria-hidden />
+  )
 
   return (
     <aside
@@ -127,47 +165,33 @@ export function VitrineHeroReassurance({ className }: VitrineHeroReassuranceProp
       className={cn("animate-fade-up relative isolate w-full", className)}
       style={{ animationDelay: "380ms" }}
     >
-      {/* Mobile — bandeau navy premium, carrousel horizontal */}
       <div
         ref={viewportRef}
         role="list"
         aria-roledescription="carousel"
-        className="hero-reassurance-carousel relative flex bg-[linear-gradient(180deg,#132a59_0%,#0e1e42_48%,#0b1732_100%)] md:hidden"
+        className="hero-reassurance-carousel relative flex bg-[linear-gradient(180deg,#1a3d1c_0%,#122a14_48%,#0c1810_100%)] md:hidden"
       >
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 z-10 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
         />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-6 bg-gradient-to-b from-transparent to-[#F3F7F5]/[0.06]"
-        />
-
-        {REASSURANCE.map((item) => (
+        {reassurance.map((item, index) => (
           <div
             key={item.label}
             role="listitem"
-            className="hero-reassurance-carousel__slide flex shrink-0 items-center justify-center gap-3 px-5 py-3.5"
+            className={cn(
+              "hero-reassurance-carousel__slide flex shrink-0 items-center justify-center gap-3 px-5 py-4",
+              index > 0 && "border-t border-white/[0.06]"
+            )}
           >
-            <span className="relative flex size-11 shrink-0 items-center justify-center rounded-lg border border-white/[0.1] bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-[2px]">
-              <span
-                aria-hidden
-                className="absolute -right-0.5 -top-0.5 size-1.5 rounded-full border-2 border-[#0b1732] bg-brand-green"
-              />
-              <HugeiconsIcon
-                icon={item.icon}
-                size={20}
-                strokeWidth={VITRINE_ICON_STROKE}
-                className="text-white"
-                aria-hidden
-              />
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-white/[0.1] bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-[2px]">
+              {renderIcon(item.icon)}
             </span>
-
-            <div className="min-w-0 text-left">
+            <div className="min-w-0 text-center">
               <p className="text-[14px] font-semibold leading-snug tracking-[-0.01em] text-white">
                 {item.label}
               </p>
-              <p className="mt-0.5 text-[12px] leading-relaxed text-[#94A3B8]">
+              <p className="mt-0.5 text-[12px] leading-relaxed text-slate-300">
                 {item.description}
               </p>
             </div>
@@ -175,22 +199,17 @@ export function VitrineHeroReassurance({ className }: VitrineHeroReassuranceProp
         ))}
       </div>
 
-      {/* Desktop — extension premium intégrée au hero */}
       <div
         role="list"
-        className="relative hidden bg-[linear-gradient(180deg,#132a59_0%,#0e1e42_48%,#0b1732_100%)] md:block"
+        className="relative hidden bg-[linear-gradient(180deg,#1a3d1c_0%,#122a14_48%,#0c1810_100%)] md:block"
       >
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
         />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent to-[#F3F7F5]/[0.06]"
-        />
 
         <div className="container-x relative grid grid-cols-3 py-7 lg:py-8">
-          {REASSURANCE.map((item, index) => (
+          {reassurance.map((item, index) => (
             <div
               key={item.label}
               role="listitem"
@@ -199,25 +218,14 @@ export function VitrineHeroReassurance({ className }: VitrineHeroReassuranceProp
                 index > 0 && "border-l border-white/[0.06]"
               )}
             >
-              <span className="relative flex size-14 shrink-0 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-[2px] lg:size-[3.75rem] lg:rounded-[0.875rem]">
-                <span
-                  aria-hidden
-                  className="absolute -right-0.5 -top-0.5 size-2 rounded-full border-2 border-[#0b1732] bg-brand-green"
-                />
-                <HugeiconsIcon
-                  icon={item.icon}
-                  size={24}
-                  strokeWidth={VITRINE_ICON_STROKE}
-                  className="text-white"
-                  aria-hidden
-                />
+              <span className="flex size-14 shrink-0 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-[2px] lg:size-[3.75rem] lg:rounded-[0.875rem]">
+                {renderIcon(item.icon)}
               </span>
-
               <div className="min-w-0 pt-0.5">
                 <p className="text-[15px] font-semibold leading-snug tracking-[-0.01em] text-white lg:text-base">
                   {item.label}
                 </p>
-                <p className="mt-1 text-[13px] leading-relaxed text-[#94A3B8] lg:mt-1.5">
+                <p className="mt-1 text-[13px] leading-relaxed text-slate-300 lg:mt-1.5">
                   {item.description}
                 </p>
               </div>

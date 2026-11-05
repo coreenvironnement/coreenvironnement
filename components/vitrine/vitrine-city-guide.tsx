@@ -104,7 +104,7 @@ export function VitrineCityGuide({ page }: { page: LocalPage }) {
               </p>
             </article>
 
-            <aside className="rounded-[var(--radius-card)] bg-brand-navy p-6 text-white sm:p-8">
+            <aside className="rounded-[var(--radius-card)] bg-brand-forest p-6 text-white sm:p-8">
               <p className="text-sm font-semibold uppercase tracking-[0.14em] text-white/70">
                 Les informations à préparer
               </p>

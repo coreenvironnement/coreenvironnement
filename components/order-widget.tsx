@@ -132,7 +132,7 @@ function OrderStepProgress({
         </span>
       </p>
       <div
-        className="mx-auto mt-1 h-[2px] w-full max-w-[200px] overflow-hidden rounded-full bg-brand-navy/12 sm:max-w-[240px]"
+        className="mx-auto mt-1 h-[2px] w-full max-w-[200px] overflow-hidden rounded-full bg-brand-green/12 sm:max-w-[240px]"
         role="progressbar"
         aria-valuenow={currentStepIdx + 1}
         aria-valuemin={1}
@@ -705,7 +705,7 @@ export function OrderWidget({
 
                 <Button
                   type="button"
-                  className="mt-0.5 h-11 w-full rounded-xl border-0 bg-[#2F9632] px-4 text-base font-semibold text-white shadow-lg shadow-[#2F9632]/25 hover:bg-[#19752B]"
+                  className="mt-0.5 h-11 w-full rounded-xl border-0 bg-[#35A238] px-4 text-base font-semibold text-white shadow-lg shadow-[#35A238]/25 hover:bg-[#19752B]"
                   onClick={goToIntentWaste}
                 >
                   <span className="flex w-full items-center justify-between gap-2">
@@ -948,7 +948,7 @@ export function OrderWidget({
                 </Button>
                 <Button
                   type="button"
-                  className="h-11 w-full rounded-xl border-0 bg-[#2F9632] px-3 text-sm font-semibold text-white shadow-lg shadow-[#2F9632]/20 hover:bg-[#19752B] disabled:pointer-events-none disabled:bg-[#D0D5DD] disabled:text-white disabled:opacity-100 disabled:shadow-none sm:flex-1"
+                  className="h-11 w-full rounded-xl border-0 bg-[#35A238] px-3 text-sm font-semibold text-white shadow-lg shadow-[#35A238]/20 hover:bg-[#19752B] disabled:pointer-events-none disabled:bg-[#D0D5DD] disabled:text-white disabled:opacity-100 disabled:shadow-none sm:flex-1"
                   disabled={!selectedPrestationId}
                   onClick={goToInfos}
                 >
@@ -1441,32 +1441,42 @@ export function OrderWidget({
         )}
       </CardContent>
 
-      <CardFooter
-        className={cn(
-          "relative flex flex-col text-center",
-          embedded
-            ? "gap-1 border-t border-primary/12 bg-transparent px-1 pb-0 pt-2 sm:px-2 sm:pt-2.5"
-            : "gap-2 border-t border-primary/5 bg-muted/30 py-4 text-[0.65rem] text-muted-foreground"
-        )}
-      >
-        <span
+      {!(
+        embedded &&
+        audience === "particulier" &&
+        step === "intent" &&
+        intentPhase === "volume"
+      ) ? (
+        <CardFooter
           className={cn(
-            "inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0 leading-tight",
-            embedded ? "text-[11px] text-brand-muted" : ""
+            "relative flex flex-col text-center",
+            embedded
+              ? "gap-1 border-t border-primary/12 bg-transparent px-1 pb-0 pt-2 sm:px-2 sm:pt-2.5"
+              : "gap-2 border-t border-primary/5 bg-muted/30 py-4 text-[0.65rem] text-muted-foreground"
           )}
         >
-          {embedded ? (
-            <Headphones className="size-3.5 shrink-0 text-brand-muted" aria-hidden />
-          ) : null}
-          Besoin d’aide pour votre commande&nbsp;?{" "}
-          <a
-            href={SITE_PHONE_HREF}
-            className="font-semibold text-primary hover:underline"
+          <span
+            className={cn(
+              "inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0 leading-tight",
+              embedded ? "text-[11px] text-brand-muted" : ""
+            )}
           >
-            {SITE_PHONE_DISPLAY}
-          </a>
-        </span>
-      </CardFooter>
+            {embedded ? (
+              <Headphones
+                className="size-3.5 shrink-0 text-brand-muted"
+                aria-hidden
+              />
+            ) : null}
+            Besoin d’aide pour votre commande&nbsp;?{" "}
+            <a
+              href={SITE_PHONE_HREF}
+              className="font-semibold text-primary hover:underline"
+            >
+              {SITE_PHONE_DISPLAY}
+            </a>
+          </span>
+        </CardFooter>
+      ) : null}
     </Card>
   )
 }
@@ -1510,14 +1520,14 @@ function PrestationCard({
       }}
       className={cn(
         "flex w-full min-w-0 cursor-pointer items-center gap-2 overflow-hidden rounded-2xl border-2 p-3 text-left shadow-sm outline-none transition-colors sm:gap-3 sm:p-3.5",
-        "focus-visible:border-brand-navy",
+        "focus-visible:border-brand-green",
         selected
           ? warmSurface
-            ? "border-brand-navy bg-primary/10"
-            : "border-brand-navy bg-gradient-to-br from-accent to-white"
+            ? "border-brand-green bg-primary/10"
+            : "border-brand-green bg-gradient-to-br from-accent to-white"
           : warmSurface
-            ? "border-primary/20 bg-brand-warm-field hover:border-brand-navy/35 hover:bg-primary/[0.06]"
-          : "border-border/80 bg-card/90 hover:border-brand-navy/35"
+            ? "border-primary/20 bg-brand-warm-field hover:border-brand-green/35 hover:bg-primary/[0.06]"
+          : "border-border/80 bg-card/90 hover:border-brand-green/35"
       )}
     >
       <div className="flex h-[58px] w-[64px] shrink-0 items-center justify-center overflow-hidden sm:h-[72px] sm:w-[92px]">
