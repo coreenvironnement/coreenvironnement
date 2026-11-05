@@ -8,8 +8,26 @@ import { OrderWidget } from "@/components/order-widget"
 import { cn } from "@/lib/utils"
 
 import { VITRINE_ICON_STROKE } from "./icons"
+import { getOrderTunnelSteps } from "@/lib/order/tunnel-steps"
+
 import { OrderModalStepper } from "./order-modal-stepper"
 import { useVitrineOrder } from "./order-context"
+
+function orderModalTitle(
+  audience: "particulier" | "professionnel",
+  stepIndex: number
+): string {
+  const stepId = getOrderTunnelSteps(audience)[stepIndex]?.id
+  if (stepId === "infos") {
+    return audience === "particulier"
+      ? "Préparer ma commande"
+      : "Préparer ma demande"
+  }
+  if (stepId === "recap" && audience === "particulier") {
+    return "Vérifier ma commande"
+  }
+  return audience === "particulier" ? "Choisir ma benne" : "Commander une benne"
+}
 
 export function VitrineOrderModal() {
   const { open, closeOrder } = useVitrineOrder()
@@ -68,9 +86,7 @@ export function VitrineOrderModal() {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label={
-            audience === "particulier" ? "Choisir ma benne" : "Commander une benne"
-          }
+          aria-label={orderModalTitle(audience, stepIndex)}
           className={cn(
             "order-tunnel-shell relative flex h-[100dvh] max-h-none w-full min-w-0 max-w-[100vw] flex-col overflow-hidden rounded-none border border-primary/15 pb-[env(safe-area-inset-bottom)] shadow-[var(--shadow-vitrine-pop)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
             "sm:h-auto sm:max-h-[92svh] sm:w-full sm:max-w-[540px] sm:rounded-2xl sm:pb-0",
@@ -84,9 +100,7 @@ export function VitrineOrderModal() {
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 pt-0.5">
                 <h2 className="text-[18px] font-bold leading-tight text-brand-navy sm:text-[20px]">
-                  {audience === "particulier"
-                    ? "Choisir ma benne"
-                    : "Commander une benne"}
+                  {orderModalTitle(audience, stepIndex)}
                 </h2>
                 {audience === "professionnel" ? (
                   <p className="mt-1 text-[12px] leading-snug text-brand-muted sm:text-[13px]">

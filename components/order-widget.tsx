@@ -971,7 +971,9 @@ export function OrderWidget({
               className="space-y-4"
             >
               <div className="space-y-2.5">
-                <p className={ORDER_SECTION_LABEL}>Quand souhaitez-vous la benne&nbsp;?</p>
+                <p className={ORDER_SECTION_LABEL}>
+                  Organisons la livraison de votre benne
+                </p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <p
@@ -1004,8 +1006,9 @@ export function OrderWidget({
                     <p className={ORDER_HELP_TEXT}>
                       <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
                       <span>
-                        Livraison possible à partir de 24 h après votre commande.
-                  </span>
+                        Choisissez la date qui vous convient parmi les disponibilités
+                        proposées, à partir du lendemain.
+                      </span>
                     </p>
                     {deliveryDateError ? (
                       <p className="text-xs font-medium text-amber-800">
@@ -1018,7 +1021,7 @@ export function OrderWidget({
                       id="order-pickup-date-label"
                       className="text-xs font-medium text-muted-foreground"
                     >
-                      Date d’enlèvement (optionnel)
+                      Date d’enlèvement&nbsp;— facultative
                     </p>
                     <OrderDateField
                       id="order-pickup-date"
@@ -1036,6 +1039,12 @@ export function OrderWidget({
                         setAddressError(null)
                       }}
                     />
+                    <p className={ORDER_HELP_TEXT}>
+                      <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
+                      <span>
+                        À compléter si vous connaissez déjà la date souhaitée.
+                      </span>
+                    </p>
                     {pickupDate ? (
                       <button
                         type="button"
@@ -1050,9 +1059,20 @@ export function OrderWidget({
               </div>
 
               <div className="space-y-2.5">
-                <p className={ORDER_SECTION_LABEL}>
-                  {audience === "professionnel" ? "Votre entreprise" : "Vos coordonnées"}
-                </p>
+                <div className="space-y-1">
+                  <p className={ORDER_SECTION_LABEL}>
+                    {audience === "professionnel"
+                      ? "Votre entreprise"
+                      : "Vos coordonnées pour préparer la livraison"}
+                  </p>
+                  <p className={ORDER_HELP_TEXT}>
+                    <span>
+                      {audience === "professionnel"
+                        ? "Ces informations nous permettent de confirmer votre demande et de vous contacter pour organiser la livraison."
+                        : "Ces informations nous permettent de confirmer votre commande et de vous contacter pour organiser la livraison."}
+                    </span>
+                  </p>
+                </div>
                 {audience === "professionnel" ? (
                   <>
                     <div className="space-y-1.5">
@@ -1150,10 +1170,16 @@ export function OrderWidget({
                       orderFieldBg(embedded)
                     )}
                   />
+                  <p className={ORDER_HELP_TEXT}>
+                    <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
+                    <span>
+                      Pour vous joindre si une précision est nécessaire avant la livraison.
+                    </span>
+                  </p>
                 </div>
                 <div className="space-y-1.5">
                   <label htmlFor="order-contact-email" className="text-xs font-semibold text-brand-navy">
-                    {audience === "professionnel" ? "Adresse e-mail" : "Email"}&nbsp;*
+                    Adresse e-mail&nbsp;*
                     </label>
                     <Input
                       id="order-contact-email"
@@ -1169,6 +1195,14 @@ export function OrderWidget({
                       orderFieldBg(embedded)
                     )}
                     />
+                  <p className={ORDER_HELP_TEXT}>
+                    <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
+                    <span>
+                      {audience === "professionnel"
+                        ? "Pour recevoir la confirmation de votre demande."
+                        : "Pour recevoir la confirmation de votre commande."}
+                    </span>
+                  </p>
                   </div>
                 {audience === "professionnel" ? (
                   <div className="space-y-1.5">
@@ -1199,27 +1233,36 @@ export function OrderWidget({
                 </p>
               )}
 
-              <div className="flex flex-col gap-2 pt-0.5 sm:flex-row sm:gap-3">
-                <Button
-                  variant="outline"
-                  type="button"
-                  className={cn(orderOutlineBtn(embedded), "sm:flex-1")}
-                  onClick={() => {
-                    setAddressError(null)
-                    setStep("forfait")
-                  }}
-                >
-                  <ArrowLeft className="mr-2 size-4" />
-                  Retour
-                </Button>
+              <div className="space-y-2 pt-0.5">
+                <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+                  <Button
+                    variant="outline"
+                    type="button"
+                    className={cn(orderOutlineBtn(embedded), "sm:flex-1")}
+                    onClick={() => {
+                      setAddressError(null)
+                      setStep("forfait")
+                    }}
+                  >
+                    <ArrowLeft className="mr-2 size-4" />
+                    Retour
+                  </Button>
                   <Button
                     type="button"
-                  className="h-11 rounded-xl text-base font-semibold shadow-lg sm:flex-1"
-                  onClick={goToPayment}
-                >
-                  Vérifier ma commande
-                  <ChevronRight className="ml-2 size-4" />
-                </Button>
+                    className="h-11 rounded-xl text-base font-semibold shadow-lg sm:flex-1"
+                    onClick={goToPayment}
+                  >
+                    {audience === "professionnel"
+                      ? "Vérifier ma demande"
+                      : "Vérifier ma commande"}
+                    <ChevronRight className="ml-2 size-4" />
+                  </Button>
+                </div>
+                <p className="text-center text-[11px] leading-snug text-brand-muted sm:text-[12px]">
+                  {audience === "professionnel"
+                    ? "Vous pourrez vérifier les détails avant d’envoyer votre demande."
+                    : "Vous pourrez vérifier les détails avant de passer au paiement."}
+                </p>
               </div>
             </motion.div>
           )}
@@ -1233,9 +1276,21 @@ export function OrderWidget({
               transition={t}
               className="space-y-3"
             >
-              <p className={ORDER_SECTION_LABEL}>
-                {audience === "professionnel" ? "Vérifiez votre demande" : "Vérifiez votre commande"}
-              </p>
+              {audience === "particulier" ? (
+                <div className="space-y-1">
+                  <p className={ORDER_SECTION_LABEL}>
+                    Un dernier coup d&apos;œil avant le paiement
+                  </p>
+                  <p className={ORDER_HELP_TEXT}>
+                    <span>
+                      Retrouvez les détails de votre commande et ajustez-les si besoin
+                      avant de continuer.
+                    </span>
+                  </p>
+                </div>
+              ) : (
+                <p className={ORDER_SECTION_LABEL}>Vérifiez votre demande</p>
+              )}
 
               {audience === "professionnel" ? (
                 <section
@@ -1285,14 +1340,14 @@ export function OrderWidget({
               >
                 <div className="mb-1.5 flex items-center justify-between gap-2">
                   <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    {audience === "professionnel" ? "Demande" : "Votre benne"}
+                    {audience === "professionnel" ? "Demande" : "La benne choisie"}
                   </h3>
                   <button
                     type="button"
                     className="text-[11px] font-medium text-primary/70 hover:text-primary hover:underline"
                     onClick={() => setStep("forfait")}
                   >
-                    Modifier
+                    {audience === "particulier" ? "Modifier la benne" : "Modifier"}
                   </button>
                 </div>
                 <p className="font-medium text-brand-navy">{prestation.label}</p>
@@ -1311,7 +1366,9 @@ export function OrderWidget({
               >
                 <div className="mb-1.5 flex items-center justify-between gap-2">
                   <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    Livraison
+                    {audience === "particulier"
+                      ? "Livraison et enlèvement"
+                      : "Livraison"}
                   </h3>
                   <button
                     type="button"
@@ -1326,26 +1383,42 @@ export function OrderWidget({
                 </div>
                 <ul className="space-y-1.5 text-sm">
                   <li>
-                    <span className="text-muted-foreground">Adresse : </span>
+                    <span className="text-muted-foreground">
+                      {audience === "particulier"
+                        ? "Adresse de livraison : "
+                        : "Adresse : "}
+                    </span>
                     <span className="font-medium text-brand-navy">{selectedAddress.label}</span>
                   </li>
                   {family ? (
                     <li>
-                      <span className="text-muted-foreground">Déchets : </span>
+                      <span className="text-muted-foreground">
+                        {audience === "particulier"
+                          ? "Déchets à évacuer : "
+                          : "Déchets : "}
+                      </span>
                       <span className="font-medium text-brand-navy">
                         {FAMILY_LABELS[family].title}
                       </span>
                     </li>
                 ) : null}
                   <li>
-                    <span className="text-muted-foreground">Livraison : </span>
+                    <span className="text-muted-foreground">
+                      {audience === "particulier"
+                        ? "Date de livraison : "
+                        : "Livraison : "}
+                    </span>
                     <span className="font-medium text-brand-navy">
                       {formatOrderDatePicker(deliveryDate)}
                     </span>
                   </li>
                   {pickupDate ? (
                     <li>
-                      <span className="text-muted-foreground">Enlèvement : </span>
+                      <span className="text-muted-foreground">
+                        {audience === "particulier"
+                          ? "Date d’enlèvement : "
+                          : "Enlèvement : "}
+                      </span>
                       <span className="font-medium text-brand-navy">
                         {formatOrderDatePicker(pickupDate)}
                       </span>
@@ -1377,7 +1450,7 @@ export function OrderWidget({
                     className="text-[11px] font-medium text-primary/70 hover:text-primary hover:underline"
                     onClick={() => setStep("infos")}
                   >
-                    Modifier
+                    Modifier mes coordonnées
                   </button>
                 </div>
                 <ul className="space-y-1.5 text-sm">
@@ -1401,7 +1474,7 @@ export function OrderWidget({
                     <div className="flex items-end justify-between gap-3">
                       <div>
                         <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                          À payer
+                          Total de votre commande
                         </p>
                         <p className="mt-1 text-xs text-muted-foreground">
                           dont TVA {fmtHt(breakdown.tva)}
@@ -1416,25 +1489,53 @@ export function OrderWidget({
               </section>
               ) : null}
 
-              <div className="flex flex-col gap-2 pt-0.5 sm:flex-row sm:gap-3">
-                <Button
-                  variant="outline"
-                  type="button"
-                  className={cn(orderOutlineBtn(embedded), "sm:flex-1")}
-                  onClick={() => setStep("infos")}
-                >
-                  <ArrowLeft className="mr-2 size-4" />
-                  Retour
-                </Button>
-                <Button
-                  type="button"
-                  className="h-11 rounded-xl text-base font-semibold shadow-lg sm:flex-1"
-                  onClick={() => setStep("payment")}
-                >
-                  Continuer
-                  <ChevronRight className="ml-2 size-4" />
-                </Button>
-              </div>
+              {audience === "particulier" ? (
+                <div className="space-y-2 pt-0.5">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+                    <Button
+                      variant="outline"
+                      type="button"
+                      className={cn(orderOutlineBtn(embedded), "sm:flex-1")}
+                      onClick={() => setStep("infos")}
+                    >
+                      <ArrowLeft className="mr-2 size-4" />
+                      Revenir à mes informations
+                    </Button>
+                    <Button
+                      type="button"
+                      className="h-11 rounded-xl text-base font-semibold shadow-lg sm:flex-1"
+                      onClick={() => setStep("payment")}
+                    >
+                      Passer au paiement
+                      <ChevronRight className="ml-2 size-4" />
+                    </Button>
+                  </div>
+                  <p className="text-center text-[11px] leading-snug text-brand-muted sm:text-[12px]">
+                    Après confirmation, retrouvez le suivi de votre commande dans votre
+                    espace client.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2 pt-0.5 sm:flex-row sm:gap-3">
+                  <Button
+                    variant="outline"
+                    type="button"
+                    className={cn(orderOutlineBtn(embedded), "sm:flex-1")}
+                    onClick={() => setStep("infos")}
+                  >
+                    <ArrowLeft className="mr-2 size-4" />
+                    Retour
+                  </Button>
+                  <Button
+                    type="button"
+                    className="h-11 rounded-xl text-base font-semibold shadow-lg sm:flex-1"
+                    onClick={() => setStep("payment")}
+                  >
+                    Continuer
+                    <ChevronRight className="ml-2 size-4" />
+                  </Button>
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
