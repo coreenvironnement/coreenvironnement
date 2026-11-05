@@ -326,60 +326,70 @@ export const espaceClient = {
 export const particulierAccueil = {
   parcours: {
     eyebrow: "Comment ça se passe",
-    titre: "On livre la benne, vous remplissez, on évacue pour vous",
+    titre: "Louer une benne pour vos travaux, en 4 étapes",
     intro:
-      "Ce n’est pas seulement une « location » : un chauffeur pose la benne chez vous, vous chargez vos déchets autorisés, puis nous repassons pour l’enlèvement et le traitement en centre agréé.",
+      "Pour une rénovation ou un débarras, une benne permet de rassembler vos déchets sur place et de limiter les allers-retours à la déchetterie. Nous organisons sa livraison, son enlèvement et le traitement des déchets acceptés.",
     etapes: [
       {
         num: "01",
-        titre: "Vous commandez en ligne",
+        titre: "Choisissez votre benne en ligne",
         texte:
-          "Adresse, type de déchet, volume (notre estimateur vous aide), benne et paiement. Le tarif s’affiche avant de valider.",
+          "Indiquez l’adresse de livraison, le type de déchets et le volume de benne. Notre estimateur vous aide à choisir une capacité adaptée. Le tarif s’affiche avant le paiement.",
+        lien: {
+          label: "Choisir le volume de benne adapté à mon projet",
+          href: "/location-benne/volume",
+        },
       },
       {
         num: "02",
-        titre: "Un chauffeur pose la benne",
+        titre: "Recevez la benne sur place",
         texte:
-          "Livraison à l’adresse indiquée. Nous vous rappelons si besoin pour caler la pose et vérifier l’accès.",
+          "Un chauffeur livre la benne à l’adresse indiquée. Nous vous contactons si besoin pour confirmer l’accès et le créneau de pose.",
       },
       {
         num: "03",
-        titre: "Vous remplissez",
+        titre: "Déposez vos déchets dans la benne",
         texte:
-          "Gravats, encombrants ou déchets autorisés pour le forfait choisi — sans dépasser le bord de la benne.",
+          "Chargez uniquement les déchets autorisés pour le forfait choisi, sans dépasser le bord de la benne.",
       },
       {
         num: "04",
-        titre: "On enlève et on traite",
+        titre: "Nous organisons l’enlèvement",
         texte:
-          "Le chauffeur repart avec la benne. CORE ENVIRONNEMENT assure l’évacuation et le traitement : pas de trajet déchetterie pour vous.",
+          "Une fois la benne remplie, nous la récupérons et acheminons les déchets vers un centre de traitement agréé. Vous pouvez indiquer une date d’enlèvement souhaitée lors de la commande (facultatif) ; sinon, demandez le passage lorsque vous êtes prêt.",
       },
     ],
   },
   conseils: {
     eyebrow: "Avant de commander",
-    titre: "Conseils pratiques",
+    titre: "Bien préparer votre location de benne",
     cartes: [
       {
         id: "volume",
-        titre: "Quel volume de benne ?",
+        titre: "Choisir le bon volume",
         texte:
-          "Estimez l’espace occupé (longueur × largeur × hauteur en mètres). Gravats et terre : le poids compte autant que le volume.",
+          "Pour un tas rectangulaire, multipliez la longueur, la largeur et la hauteur, en mètres : vous obtenez une estimation du volume en m³. Avec des gravats ou de la terre, le poids compte aussi dans le choix de la benne.",
         cta: "Utiliser l’estimateur dans la commande",
         ctaHint:
-          "Après l’adresse et le type de déchet, l’outil vous propose une capacité indicative (sans garantie).",
+          "L’estimateur est accessible après avoir renseigné votre adresse et le type de déchets. Le volume proposé reste indicatif.",
+        guideLabel: "Consulter le guide des volumes de benne",
+        guideHref: "/location-benne/volume",
       },
       {
-        id: "voie-publique",
-        titre: "Benne dans la rue ou sur le trottoir ?",
+        id: "emplacement",
+        titre: "Prévoir l’emplacement de la benne",
         texte:
-          "Sur voie publique, une autorisation mairie (AOT) peut être obligatoire. Déposer des déchets sans benne ou en dehors du cadre légal expose à des amendes et des nuisances pour le voisinage.",
+          "Prévoyez un emplacement accessible au camion pour la livraison et l’enlèvement. Pour une pose dans la rue, sur un trottoir ou sur une place de stationnement publique, une autorisation d’occupation du domaine public est nécessaire. Demandez-la à la mairie ou au gestionnaire de la voie avant la livraison.",
+        linkLabel: "Consulter les démarches sur Service Public",
+        linkHref:
+          "https://entreprendre.service-public.gouv.fr/vosdroits/F23509",
       },
       {
-        id: "tri",
-        titre: "Que mettre dans la benne ?",
+        id: "dechets",
+        titre: "Vérifier les déchets acceptés",
         texte:
-          "Respectez le type de déchet choisi à la commande (pas de mélange interdit, pas de produits dangereux). En cas de doute, appelez-nous avant de charger.",
+          "Les déchets déposés doivent correspondre à ceux sélectionnés lors de la commande. Les produits dangereux ne vont pas dans une benne classique et certains mélanges ne sont pas acceptés. En cas de doute sur un déchet, contactez-nous avant de réserver.",
+        contactLabel: "Demander conseil sur mes déchets",
       },
     ],
   },

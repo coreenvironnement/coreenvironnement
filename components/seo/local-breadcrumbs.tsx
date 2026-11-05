@@ -8,8 +8,8 @@ export function LocalBreadcrumbs({ page }: { page: LocalPage }) {
   if (items.length < 2) return null
 
   return (
-    <nav aria-label="Fil d'Ariane" className="relative z-20 pb-2 pt-0.5">
-      <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[12px] text-white/85 sm:text-[13px]">
+    <nav aria-label="Fil d'Ariane" className="relative z-20 pb-2 pt-0.5 max-lg:mx-auto max-lg:w-fit">
+      <ol className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-[12px] text-white/85 max-lg:justify-center lg:justify-start sm:text-[13px]">
         {items.map((item, index) => {
           const last = index === items.length - 1
           return (

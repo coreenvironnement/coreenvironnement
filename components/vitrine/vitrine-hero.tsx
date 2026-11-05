@@ -134,7 +134,7 @@ export function VitrineHero({
               className="hero-readability-glow pointer-events-none absolute -inset-x-3 -inset-y-5 rounded-[1.25rem] md:-inset-x-10 md:-inset-y-12 md:rounded-[2rem] lg:hidden"
             />
             <h1
-              className="animate-fade-up mt-0 text-[clamp(1.82rem,5.35vw,2.17rem)] leading-[1.1] text-white [text-shadow:0_1px_28px_rgba(14,32,16,0.28),0_2px_56px_rgba(14,32,16,0.14)] sm:text-[clamp(2.15rem,4.4vw,3.45rem)] sm:leading-[1.08]"
+              className="animate-fade-up mt-0 max-lg:text-center lg:text-left text-[clamp(1.82rem,5.35vw,2.17rem)] leading-[1.1] text-white [text-shadow:0_1px_28px_rgba(14,32,16,0.28),0_2px_56px_rgba(14,32,16,0.14)] sm:text-[clamp(2.15rem,4.4vw,3.45rem)] sm:leading-[1.08]"
               style={{ animationDelay: "140ms" }}
             >
               <span className="block">{heroH1WithPrixHighlight(seoVariant.h1Line1)}</span>

@@ -69,8 +69,12 @@ function VitrineHomeInner({
   localSeoData?: LocalPage
   hubPage?: boolean
 }) {
+  const particulierHome = !localSeoData && !hubPage
+
   return (
-    <div className="vitrine-root min-h-screen">
+    <div
+      className={`vitrine-root min-h-screen${particulierHome ? " vitrine--mobile-centered" : ""}`}
+    >
       <a
         href="#contenu"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-[10px] focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-brand-navy focus:shadow-md"

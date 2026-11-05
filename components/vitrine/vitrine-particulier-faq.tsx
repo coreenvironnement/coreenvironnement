@@ -24,7 +24,9 @@ export function VitrineParticulierFaq() {
       aria-labelledby="faq-particulier-title"
     >
       <div className="container-x max-w-2xl">
-        <p className="section-eyebrow text-center">FAQ</p>
+        <p className="section-eyebrow mx-auto max-md:w-full max-md:justify-center text-center">
+          FAQ
+        </p>
         <h2
           id="faq-particulier-title"
           className="section-title mt-3 text-center text-brand-navy"
