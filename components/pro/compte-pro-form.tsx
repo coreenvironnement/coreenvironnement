@@ -61,7 +61,7 @@ export function CompteProForm({ defaultEmail, isResubmit, previousNotes }: Props
 
       <p className="text-sm text-muted-foreground">
         Abonnement espace client pro : <strong>{ABONNEMENT_PRO_HT} € HT / mois</strong>{" "}
-        (activation après validation — paiement Stripe à venir).
+        (activation par Stripe après validation de votre dossier).
       </p>
 
       <section className="space-y-4">

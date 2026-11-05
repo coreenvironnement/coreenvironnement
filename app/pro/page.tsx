@@ -1,28 +1,52 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 
-import { ProWaitlistForm } from "@/components/pro/pro-waitlist-form"
+import { CompteProForm } from "@/components/pro/compte-pro-form"
+import { ProAuthPanel } from "@/components/pro/pro-auth-panel"
+import { SubscriptionPanel } from "@/components/pro/subscription-panel"
 import { VitrinePublicShell } from "@/components/vitrine/vitrine-public-shell"
 import { comptePro } from "@/lib/cdc/contenu-vitrine"
+import { statutCompteProLabel } from "@/lib/compte-pro/labels"
+import { formatDateFr } from "@/lib/format/date"
 import { publicPageMetadata } from "@/lib/seo/public-page"
+import { createClient } from "@/lib/supabase/server"
+import { isStripeConfigured } from "@/lib/stripe/server"
 
 export const metadata: Metadata = publicPageMetadata(
-  "Compte professionnel — bientôt disponible",
-  "L'espace professionnel CORE ENVIRONNEMENT arrive bientôt. Laissez les coordonnées de votre entreprise pour être recontacté, sans création de compte ni paiement.",
-  "/pro",
+  "Compte professionnel",
+  comptePro.description,
+  "/pro"
 )
 
-export default function ProPage() {
+type PageProps = {
+  searchParams: Promise<{ subscription?: string }>
+}
+
+export default async function ProPage({ searchParams }: PageProps) {
+  const { subscription: subscriptionParam } = await searchParams
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  let compte = null
+  if (user) {
+    const { data } = await supabase
+      .from("comptes_pro")
+      .select("*")
+      .eq("profile_id", user.id)
+      .maybeSingle()
+    compte = data
+  }
+
+  const stripeConfigured = isStripeConfigured()
+
   return (
     <VitrinePublicShell>
       <section className="bg-brand-bg-alt py-12 sm:py-16 lg:py-20">
         <div className="container-x max-w-3xl space-y-6">
           <div className="pb-2 sm:pb-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <p className="section-eyebrow">Espace professionnel</p>
-              <span className="inline-flex items-center rounded-full border border-brand-green/25 bg-brand-green-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-green-dark">
-                Bientôt disponible
-              </span>
-            </div>
+            <p className="section-eyebrow">Espace professionnel</p>
             <h1 className="mt-4 text-[clamp(1.85rem,4.4vw,3rem)] leading-[1.1] text-brand-navy">
               {comptePro.titre}
             </h1>
@@ -34,16 +58,21 @@ export default function ProPage() {
             </p>
           </div>
 
-          <p className="text-[15px] leading-relaxed text-brand-muted">
-            La connexion, la création de compte, le paiement et l&apos;abonnement ne
-            sont pas encore ouverts. Déposez simplement vos coordonnées : nous vous
-            prévenons à l&apos;ouverture.
-          </p>
+          {subscriptionParam === "success" ? (
+            <p className="rounded-xl border border-brand-green/25 bg-brand-green-soft px-4 py-3 text-sm text-brand-navy">
+              Paiement reçu. Votre abonnement sera activé dans quelques instants après
+              confirmation Stripe.
+            </p>
+          ) : subscriptionParam === "cancelled" ? (
+            <p className="rounded-xl border border-brand-navy/12 bg-muted/30 px-4 py-3 text-sm text-brand-muted">
+              Paiement annulé. Vous pouvez réessayer quand vous le souhaitez.
+            </p>
+          ) : null}
 
           <div className="card-vitrine p-6 sm:p-8">
             <h2 className="text-xl text-brand-navy">{comptePro.reassurance.titre}</h2>
             <p className="mt-1.5 text-sm text-brand-muted">
-              Avantages prévus pour les entreprises partenaires
+              Abonnement espace client : {comptePro.abonnement}
             </p>
             <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-relaxed text-brand-muted">
               {comptePro.reassurance.points.map((point) => (
@@ -53,15 +82,66 @@ export default function ProPage() {
           </div>
 
           <div className="card-vitrine p-6 sm:p-8">
-            <h2 className="text-xl text-brand-navy">Être recontacté</h2>
-            <p className="mt-1.5 text-sm leading-relaxed text-brand-muted">
-              Formulaire entreprise uniquement. Aucun compte n&apos;est créé, aucun
-              paiement n&apos;est demandé.
-            </p>
-            <div className="mt-6">
-              <ProWaitlistForm />
-            </div>
+            {!user ? (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-xl text-brand-navy">Créer ou accéder à votre dossier</h2>
+                  <p className="mt-1.5 text-sm leading-relaxed text-brand-muted">
+                    Créez un accès ou connectez-vous pour déposer votre dossier (KBIS + RIB).
+                    Après validation, activez l&apos;abonnement {comptePro.abonnement}.
+                  </p>
+                </div>
+                <ProAuthPanel />
+              </div>
+            ) : compte?.status === "approved" ? (
+              <SubscriptionPanel
+                subscriptionActive={Boolean(compte.subscription_active)}
+                subscriptionStatus={compte.subscription_status}
+                periodEndLabel={
+                  compte.subscription_current_period_end
+                    ? formatDateFr(compte.subscription_current_period_end)
+                    : null
+                }
+                paymentMode={compte.payment_mode}
+                stripeConfigured={stripeConfigured}
+              />
+            ) : compte?.status === "pending" ? (
+              <div className="text-center">
+                <p className="text-lg font-semibold text-brand-navy">
+                  {statutCompteProLabel("pending")}
+                </p>
+                <p className="mx-auto mt-2 max-w-md text-sm text-brand-muted">
+                  {comptePro.reassurance.footer}
+                </p>
+                <p className="mt-4 text-sm text-brand-muted">
+                  Entreprise : <strong>{compte.raison_sociale}</strong>
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-xl text-brand-navy">Demande de compte professionnel</h2>
+                  <p className="mt-1.5 text-sm text-brand-muted">
+                    Complétez le formulaire ci-dessous. Notre service financier examine
+                    chaque dossier sous 24 h ouvrées.
+                  </p>
+                </div>
+                <CompteProForm
+                  defaultEmail={compte?.contact_email ?? user.email ?? undefined}
+                  isResubmit={compte?.status === "rejected"}
+                  previousNotes={compte?.review_notes}
+                />
+              </div>
+            )}
           </div>
+
+          {user ? (
+            <p className="text-center text-sm text-brand-muted">
+              <Link href="/dashboard" className="text-brand-green underline-offset-2 hover:underline">
+                Retour à l&apos;espace client
+              </Link>
+            </p>
+          ) : null}
         </div>
       </section>
     </VitrinePublicShell>

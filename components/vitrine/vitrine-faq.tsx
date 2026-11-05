@@ -224,7 +224,7 @@ export function VitrineFaq() {
             Tout savoir avant de commander
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-brand-muted sm:text-base">
-            Logistique, tri, tarifs et offre professionnelle (pré-lancement) : les réponses
+            Logistique, tri, tarifs et offre professionnelle : les réponses
             aux questions les plus courantes sur nos prestations en Île-de-France.
           </p>
         </div>

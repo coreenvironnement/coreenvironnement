@@ -14,7 +14,7 @@ export default function PolitiqueConfidentialitePage() {
   return (
     <LegalPageShell
       title="Politique de confidentialité"
-      intro="Cette page décrit comment CORE ENVIRONNEMENT traite vos données personnelles, notamment celles du formulaire de pré-lancement professionnel."
+      intro="Cette page décrit comment CORE ENVIRONNEMENT traite vos données personnelles, notamment celles du formulaire compte professionnel et des commandes en ligne."
       sections={politiqueConfidentialiteSections}
     />
   )

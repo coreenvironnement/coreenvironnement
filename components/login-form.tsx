@@ -162,7 +162,7 @@ export function LoginForm() {
       <p className="mt-6 text-center text-sm text-brand-muted">
         Professionnel ?{" "}
         <Link href="/pro" className="link-digital">
-          Demande d&apos;accès (bientôt disponible)
+          Ouvrir un compte professionnel
         </Link>
         {" · "}
         <Link href="/" className="link-digital">

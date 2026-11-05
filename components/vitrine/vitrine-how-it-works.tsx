@@ -73,14 +73,14 @@ const PARTICULIER_STEPS: Step[] = [
 const PRO_ACCOUNT_STEPS: Step[] = [
   {
     num: "01",
-    label: "LAISSER VOS COORDONNÉES",
-    text: "L'espace professionnel est en pré-lancement. Déposez les coordonnées de votre entreprise sur /pro : aucun compte n'est créé, aucun KBIS n'est demandé.",
+    label: "OUVRIR VOTRE DOSSIER",
+    text: "Sur /pro, créez un accès et déposez KBIS, RIB et les informations de votre entreprise.",
     icon: UserAdd01Icon,
   },
   {
     num: "02",
-    label: "ON VOUS RECONTACTE",
-    text: "Nous vous prévenons dès l'ouverture. La facturation centralisée et le règlement différé arriveront à ce moment-là, sans paiement ni abonnement aujourd'hui.",
+    label: "VALIDATION ET ABONNEMENT",
+    text: "Notre service financier valide votre dossier sous 24 h. Vous activez ensuite l'abonnement espace client (35 € HT / mois) et accédez au suivi de vos chantiers.",
     icon: Timer02Icon,
   },
 ]

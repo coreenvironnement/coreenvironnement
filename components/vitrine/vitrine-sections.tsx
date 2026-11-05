@@ -43,16 +43,13 @@ export function VitrineCompteProTeaser() {
         <div>
           <div className="flex flex-wrap items-center gap-3">
             <p className="section-eyebrow section-eyebrow--inverse text-brand-green">Compte professionnel</p>
-            <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white">
-              Bientôt disponible
-            </span>
           </div>
           <h2 className="mt-3 text-2xl sm:text-3xl">{comptePro.titre}</h2>
           <p className="mt-4 text-sm leading-relaxed text-white/85 sm:text-base">
             {comptePro.description}
           </p>
           <p className="mt-3 text-sm font-medium text-white/90">
-            Abonnement prévu : {comptePro.abonnement}, pas encore ouvert.
+            Abonnement espace client : {comptePro.abonnement}
           </p>
         </div>
         <div className="rounded-[var(--radius-card)] border border-white/10 bg-white/[0.05] p-6">
@@ -72,7 +69,7 @@ export function VitrineCompteProTeaser() {
             ))}
           </ul>
           <Link href="/pro" className="btn btn-accent mt-6 inline-flex">
-            Être recontacté
+            Ouvrir un compte pro
           </Link>
         </div>
       </div>

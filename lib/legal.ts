@@ -237,20 +237,20 @@ export const politiqueConfidentialiteSections = [
   {
     title: "Données collectées",
     paragraphs: [
-      "Via le formulaire de pré-lancement professionnel (/pro), nous collectons uniquement : nom de la société, nom, prénom, e-mail, téléphone, et éventuellement le numéro SIRET (facultatif).",
-      "Aucun KBIS n'est demandé, aucun RIB n'est demandé, aucun compte n'est créé et aucun abonnement n'est souscrit.",
+      "Via le formulaire compte professionnel (/pro), nous collectons les informations entreprise (raison sociale, SIRET, NAF, adresse), les coordonnées de l'interlocuteur, ainsi que les pièces KBIS et RIB transmises en upload.",
+      "Un compte utilisateur est créé pour déposer le dossier ; l'abonnement espace client est souscrit via Stripe après validation du dossier.",
     ],
   },
   {
     title: "Finalités et bases légales",
     paragraphs: [
-      "Ces données servent à traiter votre demande de contact professionnel et à vous recontacter à l'ouverture de l'espace professionnel. La base légale est votre démarche volontaire (demande de contact).",
+      "Ces données servent à l'ouverture et à la gestion de votre compte professionnel, à la facturation et au suivi des prestations. La base légale est l'exécution de mesures précontractuelles et contractuelles, ainsi que nos obligations légales.",
     ],
   },
   {
     title: "Durée de conservation",
     paragraphs: [
-      "Les données de la demande sont conservées le temps nécessaire pour vous recontacter et, le cas échéant, pour répondre aux obligations légales applicables.",
+      "Les données sont conservées pendant la durée de la relation commerciale et conformément aux délais légaux de conservation comptable et réglementaire.",
     ],
   },
   {

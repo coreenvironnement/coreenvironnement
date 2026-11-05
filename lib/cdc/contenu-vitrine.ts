@@ -244,11 +244,11 @@ export const faq = [
     questions: [
       {
         q: "Quelles sont les modalités de paiement ?",
-        r: "Aujourd'hui, la commande en ligne se règle par carte bancaire de façon sécurisée. L'espace professionnel (facturation centralisée, règlement différé) n'est pas encore ouvert : les entreprises peuvent laisser leurs coordonnées sur /pro pour être recontactées au lancement, sans création de compte.",
+        r: "Les particuliers règlent leur commande en ligne par carte bancaire. Les entreprises ouvrent un compte pro sur /pro : après validation du dossier (KBIS, RIB), l'abonnement espace client (35 € HT / mois) s'active via Stripe ; les prestations peuvent être réglées sur facture selon les conditions validées.",
       },
       {
         q: "Comment rejoindre l'offre professionnelle ?",
-        r: "L'espace PRO est en pré-lancement : aucun compte n'est créé pour le moment, et aucun KBIS n'est demandé. Déposez simplement les coordonnées de votre entreprise sur la page /pro ; nous vous prévenons dès l'ouverture.",
+        r: "Créez un accès sur /pro, déposez votre dossier entreprise (KBIS, RIB) et attendez la validation sous 24 h. Une fois le compte approuvé, activez l'abonnement espace client puis accédez au dashboard pour vos chantiers.",
       },
     ],
   },
@@ -302,7 +302,7 @@ export const faq = [
       },
       {
         q: "Pouvez-vous gérer plusieurs chantiers simultanément ?",
-        r: "Oui. Un interlocuteur peut suivre plusieurs adresses. L'espace en ligne pour les piloter soi-même n'est pas encore ouvert.",
+        r: "Oui. Un interlocuteur peut suivre plusieurs adresses depuis l'espace client pro, après ouverture et validation du compte sur /pro.",
       },
     ],
   },

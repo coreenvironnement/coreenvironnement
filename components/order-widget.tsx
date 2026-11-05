@@ -567,16 +567,15 @@ export function OrderWidget({
                 <div className="space-y-4">
                   <div className="order-tunnel-card bg-gradient-to-br from-brand-warm-field via-brand-warm-field to-brand-warm px-4 py-4">
                     <p className="text-[15px] font-semibold text-brand-navy">
-                      Votre espace professionnel arrive bientôt
+                      Compte pro et suivi en ligne
                     </p>
                     <p className="mt-2 text-[13px] leading-relaxed text-brand-navy/80">
-                      Le suivi digital de vos demandes, rotations de bennes et documents
-                      liés à vos déchets sera prochainement disponible depuis votre
-                      espace CORE Environnement.
-                    </p>
-                    <p className="mt-3 text-[13px] leading-relaxed text-brand-navy/75">
-                      Pour le moment, envoyez simplement votre demande. Un membre de
-                      notre équipe vous recontactera pour la confirmer.
+                      Pour le suivi digital de vos chantiers, ouvrez un compte sur{" "}
+                      <a href="/pro" className="font-medium text-brand-green underline-offset-2 hover:underline">
+                        /pro
+                      </a>
+                      . Vous pouvez aussi envoyer une demande ponctuelle ci-dessous : un
+                      membre de l&apos;équipe vous recontactera pour la confirmer.
                     </p>
                   </div>
                   {addressError ? (

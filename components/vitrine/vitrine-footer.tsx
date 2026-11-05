@@ -20,7 +20,7 @@ const NAV_LINKS = [
   { href: "/#conseils", label: "Conseils" },
   { href: "/#faq", label: "FAQ" },
   { href: "/professionnels", label: "Professionnels" },
-  { href: "/pro", label: "Compte pro (bientôt)" },
+  { href: "/pro", label: "Compte pro" },
 ] as const
 
 const TRUST_INDICATORS = [
@@ -98,7 +98,7 @@ export function VitrineFooter() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/pro">Compte professionnel (bientôt)</Link>
+                  <Link href="/pro">Compte professionnel</Link>
                 </li>
               </ul>
             </div>
