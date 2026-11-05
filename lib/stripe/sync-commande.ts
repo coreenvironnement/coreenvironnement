@@ -8,6 +8,7 @@ import {
   notifyCommandeConfirmed,
   notifyCommandeRefunded,
 } from "@/lib/email/notifications"
+import { ensureParticulierClientForCommande } from "@/lib/auth/particulier-client"
 import { priceBreakdownFromHt } from "@/lib/order/prestation-mapping"
 
 function numberOrNull(value: unknown): number | null {
@@ -87,6 +88,10 @@ async function confirmCommandeIfNeeded(
   }
 
   await sendConfirmationEmailsIfClaimed(supabase, commandeId)
+
+  await ensureParticulierClientForCommande(supabase, commandeId, {
+    sendConfirmationEmail: "initial",
+  })
 }
 
 export async function syncCommandeFromCheckoutSession(

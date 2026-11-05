@@ -20,11 +20,14 @@ export function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
+  const [info, setInfo] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [magicLoading, setMagicLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    setInfo(null)
     setLoading(true)
 
     const supabase = createClient()
@@ -53,16 +56,56 @@ export function LoginForm() {
       .eq("id", data.user.id)
       .maybeSingle()
 
+    if (profile?.role === "admin") {
+      setLoading(false)
+      router.push("/admin/commandes")
+      router.refresh()
+      return
+    }
+
+    const { data: chantierLinks } = await supabase
+      .from("chantier_membres")
+      .select("id")
+      .eq("profile_id", data.user.id)
+      .limit(1)
+
     setLoading(false)
-    router.push(profile?.role === "admin" ? "/admin/commandes" : "/dashboard")
+    router.push(chantierLinks?.length ? "/dashboard" : "/mes-commandes")
     router.refresh()
+  }
+
+  async function handleMagicLink() {
+    const trimmed = email.trim()
+    if (!trimmed.includes("@")) {
+      setError("Indiquez une adresse e-mail valide.")
+      return
+    }
+    setError(null)
+    setInfo(null)
+    setMagicLoading(true)
+
+    const supabase = createClient()
+    const next = safeNextPath(searchParams.get("next")) ?? "/mes-commandes"
+    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
+
+    const { error: otpError } = await supabase.auth.signInWithOtp({
+      email: trimmed,
+      options: { emailRedirectTo: redirectTo },
+    })
+
+    setMagicLoading(false)
+    if (otpError) {
+      setError("Impossible d’envoyer le lien. Réessayez ou contactez-nous.")
+      return
+    }
+    setInfo("Un lien de connexion vient de vous être envoyé. Consultez votre boîte e-mail.")
   }
 
   return (
     <div className="card-vitrine p-6 sm:p-8">
       <h2 className="text-lg text-brand-navy">Connexion</h2>
       <p className="mt-1.5 text-sm leading-relaxed text-brand-muted">
-        Accès réservé aux comptes déjà activés.
+        Mot de passe ou lien magique par e-mail.
       </p>
       <form onSubmit={handleSubmit} className="mt-6 space-y-5">
         <div className="space-y-2">
@@ -99,8 +142,21 @@ export function LoginForm() {
             {error}
           </p>
         ) : null}
+        {info ? (
+          <p className="text-sm text-brand-navy" role="status">
+            {info}
+          </p>
+        ) : null}
         <button type="submit" className="btn btn-accent w-full" disabled={loading}>
           {loading ? "Connexion…" : "Se connecter"}
+        </button>
+        <button
+          type="button"
+          className="btn btn-outline w-full"
+          disabled={magicLoading || loading}
+          onClick={() => void handleMagicLink()}
+        >
+          {magicLoading ? "Envoi…" : "Recevoir un lien par e-mail"}
         </button>
       </form>
       <p className="mt-6 text-center text-sm text-brand-muted">

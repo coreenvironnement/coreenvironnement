@@ -4,7 +4,7 @@ import { LoginForm } from "@/components/login-form"
 import { VitrinePublicShell } from "@/components/vitrine/vitrine-public-shell"
 
 export const metadata = {
-  title: "Espace client — bientôt disponible",
+  title: "Connexion · Espace client",
   robots: { index: false, follow: false },
 }
 
@@ -17,16 +17,16 @@ export default function LoginPage() {
             <div className="pt-2 lg:pt-6">
               <p className="section-eyebrow">Espace client</p>
               <h1 className="mt-4 max-w-2xl text-[clamp(1.85rem,4.4vw,3rem)] leading-[1.1] text-brand-navy">
-                Espace client — bientôt disponible
+                Votre espace client
               </h1>
               <p className="mt-5 max-w-xl text-[17px] leading-[1.75] text-brand-muted sm:text-[18px]">
-                Le suivi digital de vos commandes sera bientôt disponible depuis votre
-                espace client.
+                Après une commande particulier, un compte est créé avec votre e-mail.
+                Confirmez-le puis connectez-vous pour retrouver vos commandes.
               </p>
               <p className="mt-4 max-w-xl text-[15px] leading-[1.75] text-brand-muted sm:text-[16px]">
-                En attendant, vous restez informé par e-mail de votre commande et de son
-                état. Un expert CORE Environnement vous contactera également par téléphone
-                pour organiser et confirmer votre livraison.
+                Vous n’avez pas encore de mot de passe ? Utilisez le lien magique par
+                e-mail ci-contre. Les comptes chantier professionnels conservent l’accès
+                dashboard habituel.
               </p>
             </div>
 

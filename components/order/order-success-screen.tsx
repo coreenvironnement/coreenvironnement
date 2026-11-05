@@ -3,10 +3,11 @@
 import type { ReactNode } from "react"
 import { motion, useReducedMotion } from "framer-motion"
 
+import { OrderEmailConfirmBlock } from "@/components/order/order-email-confirm-block"
 import { Button } from "@/components/ui/button"
 import { formatOrderReference } from "@/lib/commande/reference"
 import type { OrderCheckoutInput } from "@/lib/order/checkout-input"
-import { FAMILY_LABELS, prestationById } from "@/lib/prestations"
+import { prestationById } from "@/lib/prestations"
 import { cn } from "@/lib/utils"
 
 function fmtTtcFromCents(cents: number) {
@@ -25,15 +26,6 @@ function formatFrDate(isoDate: string) {
     month: "long",
     year: "numeric",
   })
-}
-
-function benneSummary(prestationId: string) {
-  const prestation = prestationById(prestationId)
-  if (!prestation) return "votre benne"
-  const family = FAMILY_LABELS[prestation.family]?.title
-  return family
-    ? `${prestation.volumeM3} m³, ${family.toLowerCase()}`
-    : `${prestation.volumeM3} m³`
 }
 
 function benneRecapLabel(prestationId: string) {
@@ -127,6 +119,8 @@ export type OrderSuccessScreenProps = {
   commandeId: string
   amountTtcCents: number
   referenceNumero?: string | null
+  contactEmail?: string | null
+  emailConfirmed?: boolean
   onClose: () => void
 }
 
@@ -135,13 +129,14 @@ export function OrderSuccessScreen({
   commandeId,
   amountTtcCents,
   referenceNumero,
+  contactEmail,
+  emailConfirmed = true,
   onClose,
 }: OrderSuccessScreenProps) {
   const reduce = useReducedMotion()
   const deliveryLabel = formatFrDate(input.deliveryDate)
   const pickupLabel = input.pickupDate ? formatFrDate(input.pickupDate) : ""
   const address = input.addressLabel || input.address
-  const volumeType = benneSummary(input.prestationId)
   const reference = formatOrderReference(commandeId, referenceNumero)
 
   const duration = reduce ? 0.35 : 0.55
@@ -217,9 +212,16 @@ export function OrderSuccessScreen({
             Commande confirmée
           </h3>
           <p className="mt-2 text-[13px] leading-relaxed text-brand-navy/80 sm:text-sm">
-            Votre benne de {volumeType} sera livrée le {deliveryLabel} à : {address}
+            Paiement reçu — votre commande est enregistrée. Livraison souhaitée le{" "}
+            {deliveryLabel} à {address}.
           </p>
         </SuccessBlock>
+
+        {!emailConfirmed && contactEmail ? (
+          <SuccessBlock>
+            <OrderEmailConfirmBlock commandeId={commandeId} email={contactEmail} />
+          </SuccessBlock>
+        ) : null}
 
         <SuccessBlock>
           <div className="rounded-xl border border-brand-border/80 bg-brand-bg-alt/80 px-3 py-3 text-left">
@@ -227,13 +229,13 @@ export function OrderSuccessScreen({
               La suite de votre commande
             </p>
             <ul className="mt-2 space-y-1.5 text-[13px] leading-snug text-brand-navy/80">
-              <li>Un e-mail de confirmation vient de vous être envoyé.</li>
+              <li>Un e-mail récapitulatif vous a été envoyé.</li>
               <li>
-                Vous serez tenu informé par e-mail de l’avancement de votre commande.
+                Notre équipe traite votre commande et vous tiendra informé par e-mail.
               </li>
               <li>
-                Un expert CORE Environnement vous recontactera prochainement afin de
-                confirmer avec vous les derniers détails de la livraison.
+                Un conseiller CORE Environnement pourra vous contacter pour valider les
+                derniers détails pratiques de livraison.
               </li>
             </ul>
           </div>

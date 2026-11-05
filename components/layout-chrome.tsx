@@ -14,6 +14,7 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
   const isStandalone =
     pathname === "/" ||
     pathname === "/login" ||
+    pathname === "/mes-commandes" ||
     pathname === "/pro" ||
     pathname === "/maintenance" ||
     pathname.startsWith("/professionnels") ||
