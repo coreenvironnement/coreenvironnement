@@ -504,6 +504,17 @@
     background: rgb(14 32 16 / 0.52);
   }
 
+  .vitrine-root .hero-overlay--desktop-particulier {
+    background:
+      linear-gradient(
+        90deg,
+        rgb(14 32 16 / 0.68) 0%,
+        rgb(14 32 16 / 0.58) 38%,
+        rgb(14 32 16 / 0.48) 58%,
+        rgb(14 32 16 / 0.4) 100%
+      );
+  }
+
   /* Mobile : voile plus léger, couverture ~95 % de l’image */
   .vitrine-root .hero-overlay--mobile {
     background:
@@ -542,6 +553,37 @@
         rgb(14 32 16 / 0.16) 0%,
         rgb(14 32 16 / 0.07) 44%,
         rgb(14 32 16 / 0.02) 62%,
+        transparent 82%
+      );
+    }
+  }
+
+  .vitrine-root .hero-overlay--mobile-particulier {
+    background:
+      linear-gradient(
+        180deg,
+        rgb(14 32 16 / 0.12) 0%,
+        transparent 36%,
+        rgb(14 32 16 / 0.08) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgb(14 32 16 / 0.62) 0%,
+        rgb(14 32 16 / 0.52) 32%,
+        rgb(14 32 16 / 0.38) 55%,
+        rgb(14 32 16 / 0.22) 75%,
+        rgb(14 32 16 / 0.1) 90%,
+        transparent 96%
+      );
+  }
+
+  @media (max-width: 767px) {
+    .vitrine-root:has(.hero-overlay--mobile-particulier) .hero-readability-glow {
+      background: radial-gradient(
+        ellipse 118% 102% at 50% 42%,
+        rgb(14 32 16 / 0.22) 0%,
+        rgb(14 32 16 / 0.1) 44%,
+        rgb(14 32 16 / 0.04) 62%,
         transparent 82%
       );
     }

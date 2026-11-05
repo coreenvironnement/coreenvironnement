@@ -27,8 +27,7 @@ const checks: Array<[string, boolean]> = [
   ],
   [
     "h1 meaux",
-    buildLocalH1(meaux) ===
-      "Location de benne au meilleur prix : livraison rapide 24 h à Meaux",
+    buildLocalH1(meaux) === "Louez une benne pour vos travaux à Meaux",
   ],
   [
     "desc meaux",

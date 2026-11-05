@@ -13,11 +13,14 @@ type GoogleRatingBadgeProps = {
   className?: string
   /** Sur le hero sombre ou sur la carte claire du formulaire. */
   variant?: "hero" | "card"
+  /** Texte court pour la zone de présentation du hero particulier. */
+  compact?: boolean
 }
 
 export function GoogleRatingBadge({
   className,
   variant = "hero",
+  compact = false,
 }: GoogleRatingBadgeProps) {
   const ratingLabel = SITE_GOOGLE_RATING.toLocaleString("fr-FR", {
     minimumFractionDigits: 1,
@@ -51,30 +54,43 @@ export function GoogleRatingBadge({
         />
       </span>
       <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-        <span className="flex items-center gap-0.5" aria-hidden>
-          {Array.from({ length: 5 }, (_, i) => (
-            <Star
-              key={i}
-              className="size-3.5 shrink-0 fill-amber-400 text-amber-400 sm:size-4"
-            />
-          ))}
-        </span>
-        <span
-          className={cn(
-            "text-left text-[13px] font-semibold leading-snug sm:text-[14px]",
-            isCard ? "text-brand-navy" : "text-white"
-          )}
-        >
-          Note Google {ratingLabel}{" "}
+        {compact ? (
           <span
             className={cn(
-              "font-medium",
-              isCard ? "text-brand-muted" : "text-white/88"
+              "text-left text-[13px] font-semibold leading-snug sm:text-[14px]",
+              isCard ? "text-brand-navy" : "text-white"
             )}
           >
-            ({SITE_GOOGLE_REVIEW_COUNT} avis)
+            {ratingLabel}/5 sur Google · {SITE_GOOGLE_REVIEW_COUNT} avis
           </span>
-        </span>
+        ) : (
+          <>
+            <span className="flex items-center gap-0.5" aria-hidden>
+              {Array.from({ length: 5 }, (_, i) => (
+                <Star
+                  key={i}
+                  className="size-3.5 shrink-0 fill-amber-400 text-amber-400 sm:size-4"
+                />
+              ))}
+            </span>
+            <span
+              className={cn(
+                "text-left text-[13px] font-semibold leading-snug sm:text-[14px]",
+                isCard ? "text-brand-navy" : "text-white"
+              )}
+            >
+              Note Google {ratingLabel}{" "}
+              <span
+                className={cn(
+                  "font-medium",
+                  isCard ? "text-brand-muted" : "text-white/88"
+                )}
+              >
+                ({SITE_GOOGLE_REVIEW_COUNT} avis)
+              </span>
+            </span>
+          </>
+        )}
       </span>
     </a>
   )

@@ -15,7 +15,6 @@ import {
 import { getEntryPriceTtcParticulier } from "@/lib/seo/pricing-snapshot"
 import { cn } from "@/lib/utils"
 
-import { GoogleRatingBadge } from "./google-rating-badge"
 import { useVitrineOrder } from "./order-context"
 
 type HeroOrderCardProps = {
@@ -91,13 +90,6 @@ export function HeroOrderCard({
           : "Trouvez votre benne et consultez son tarif"}
       </h2>
 
-      {!isPro ? (
-        <GoogleRatingBadge
-          variant="card"
-          className="w-fit max-w-full lg:w-auto lg:self-start"
-        />
-      ) : null}
-
       <div className="w-full">
         <OrderAudienceToggle
           variant="hero"
@@ -171,7 +163,14 @@ export function HeroOrderCard({
         />
       </button>
 
-      <div className="hero-order-card__footer pt-4 text-center text-[11px] leading-snug text-brand-muted sm:text-xs">
+      <div
+        className={cn(
+          "hero-order-card__footer pt-4 text-center leading-snug",
+          isPro
+            ? "text-[11px] text-brand-muted sm:text-xs"
+            : "text-[15px] font-semibold text-brand-navy sm:text-base"
+        )}
+      >
         <p>
           {isPro
             ? "Réponse sous 24 h, Île-de-France, interlocuteur dédié au suivi"

@@ -65,8 +65,8 @@ export function assertLocalSeoParity() {
     }
 
     if (
-      !variant.h1Line1.includes("Location de benne") ||
-      !variant.h1Line1.includes("24 h")
+      !variant.h1Line1.includes("Louez une benne") ||
+      !variant.h1Line1.includes("travaux")
     ) {
       errors.push(`${slug}: h1 left homepage template`)
     }
