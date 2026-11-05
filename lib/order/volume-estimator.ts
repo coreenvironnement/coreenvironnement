@@ -86,7 +86,10 @@ export type VolumeRecommendation = {
   extraBennesMessage: string | null
 }
 
-/** Bennes supplémentaires au-delà de la première (0 si une seule benne max suffit). */
+/**
+ * Bennes supplémentaires au-delà de la première benne max du catalogue
+ * (0 si le volume avec marge tient dans une benne ; sinon ceil(marge / max) − 1).
+ */
 export function extraBennesNeededForVolume(
   withMarginM3: number,
   maxCatalogVolumeM3: number
