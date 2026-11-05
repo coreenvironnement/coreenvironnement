@@ -9,7 +9,7 @@ import { VitrineOrderModal } from "./order-modal"
 import { VitrineAudienceSwitch } from "./vitrine-audience-switch"
 import { VitrineParticulierConseils } from "./vitrine-particulier-conseils"
 import { VitrineParticulierFaq } from "./vitrine-particulier-faq"
-import { VitrineHowItWorks } from "./vitrine-how-it-works"
+import { VitrineParticulierJourney } from "./vitrine-particulier-journey"
 import { VitrineFinalCta } from "./vitrine-final-cta"
 import { VitrineFooter } from "./vitrine-footer"
 import { VitrineHeader } from "./vitrine-header"
@@ -99,7 +99,7 @@ function VitrineHomeInner({
         {localSeoData?.type === "longtail" ? (
           <VitrineLongtailIntro page={localSeoData} />
         ) : null}
-        <VitrineHowItWorks sectionId="parcours" />
+        <VitrineParticulierJourney />
         <VitrineParticulierConseils />
         <TestimonialsSection vitrine particulierOnly />
         <VitrineParticulierFaq />
