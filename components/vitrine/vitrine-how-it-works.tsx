@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -7,8 +8,10 @@ import {
   ArrowRight01Icon,
   Calendar03Icon,
   ContainerIcon,
+  CreditCardValidationIcon,
   Leaf01Icon,
   Login01Icon,
+  Location01Icon,
   PackageDimensions01Icon,
   Recycle03Icon,
   Tick02Icon,
@@ -16,9 +19,8 @@ import {
   UserAdd01Icon,
 } from "@hugeicons/core-free-icons"
 
-import { commentCaFonctionne, particulierAccueil } from "@/lib/cdc/contenu-vitrine"
+import { commentCaFonctionne } from "@/lib/cdc/contenu-vitrine"
 
-import { CoreScrollJourney } from "./core-scroll-journey"
 import { VITRINE_ICON_STROKE } from "./icons"
 
 type Profile = "particulier" | "professionnel"
@@ -29,9 +31,44 @@ type Step = {
   label: string
   text: string
   icon: StepIcon
+  imageSrc?: string
+  imageAlt?: string
 }
 
-const volumeGuideLink = particulierAccueil.parcours.etapes[0]?.lien
+const PARTICULIER_STEPS: Step[] = [
+  {
+    num: "01",
+    label: "DÉCHETS",
+    text: "Choisissez ce que vous voulez jeter : gravats, bois, encombrants, ou un mélange.",
+    icon: Recycle03Icon,
+    imageSrc: "/vitrine-scroll/benne-vide.png",
+    imageAlt: "Benne vide prête à recevoir vos déchets de chantier",
+  },
+  {
+    num: "02",
+    label: "VOLUME",
+    text: "Sélectionnez le volume de la benne adaptée à vos besoins.",
+    icon: PackageDimensions01Icon,
+    imageSrc: "/vitrine-scroll/benne-vide.png",
+    imageAlt: "Différents volumes de benne disponibles à la location",
+  },
+  {
+    num: "03",
+    label: "DATE & LIEU",
+    text: "Indiquez la date et l'adresse d'intervention en Île-de-France.",
+    icon: Location01Icon,
+    imageSrc: "/vitrine-scroll/chassis-sans-roues.png",
+    imageAlt: "Châssis porteur pour la livraison de benne sur votre adresse",
+  },
+  {
+    num: "04",
+    label: "PAIEMENT",
+    text: "Vous payez par carte. Le prix affiché est le prix à payer.",
+    icon: CreditCardValidationIcon,
+    imageSrc: "/vitrine-scroll/chassis-sans-roues.png",
+    imageAlt: "Prise en charge logistique après validation de votre commande",
+  },
+]
 
 const PRO_ACCOUNT_STEPS: Step[] = [
   {
@@ -120,19 +157,32 @@ function ProfileToggle({
   )
 }
 
-function StepCard({ num, label, text, icon }: Step) {
+function StepCard({ num, label, text, icon, imageSrc, imageAlt }: Step) {
   return (
-    <article className="how-step-card rounded-[0.875rem] border border-brand-green/12 bg-brand-warm-field p-4 sm:p-5">
-      <p className="vitrine-label text-brand-green">{num}</p>
-      <span className="how-step-icon-circle mt-3 inline-flex h-11 w-11 items-center justify-center rounded-full bg-brand-green/[0.08] text-brand-green">
-        <HugeiconsIcon icon={icon} size={20} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />
-      </span>
-      <h4 className="mt-3 font-[family-name:var(--font-display)] text-[13px] font-semibold uppercase tracking-[0.06em] text-brand-navy sm:text-sm">
-        {label}
-      </h4>
-      <p className="mt-2 text-[13.5px] leading-relaxed text-brand-muted sm:text-sm sm:leading-[1.68]">
-        {text}
-      </p>
+    <article className="how-step-card flex h-full flex-col overflow-hidden rounded-[0.875rem] border border-brand-green/12 bg-brand-warm-field">
+      {imageSrc ? (
+        <div className="how-step-card-visual relative aspect-[16/10] w-full border-b border-brand-green/10 bg-gradient-to-b from-[#eef5eb] to-brand-warm-field">
+          <Image
+            src={imageSrc}
+            alt={imageAlt ?? ""}
+            fill
+            className="object-contain object-center p-3 sm:p-4"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 280px"
+          />
+        </div>
+      ) : null}
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        <p className="vitrine-label text-brand-green">{num}</p>
+        <span className="how-step-icon-circle mt-3 inline-flex h-11 w-11 items-center justify-center rounded-full bg-brand-green/[0.08] text-brand-green">
+          <HugeiconsIcon icon={icon} size={20} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />
+        </span>
+        <h4 className="mt-3 font-[family-name:var(--font-display)] text-[13px] font-semibold uppercase tracking-[0.06em] text-brand-navy sm:text-sm">
+          {label}
+        </h4>
+        <p className="mt-2 text-[13.5px] leading-relaxed text-brand-muted sm:text-sm sm:leading-[1.68]">
+          {text}
+        </p>
+      </div>
     </article>
   )
 }
@@ -149,13 +199,9 @@ function StepsGrid({ steps, className = "" }: { steps: Step[]; className?: strin
   )
 }
 
-function AfterPanel({ description, below = false }: { description: string; below?: boolean }) {
+function AfterPanel({ description }: { description: string }) {
   return (
-    <aside
-      className={`how-after-panel flex h-full flex-col border-t border-brand-green/10 p-6 sm:p-8 lg:p-8 xl:p-10 ${
-        below ? "" : "lg:border-t-0 lg:border-l"
-      }`}
-    >
+    <aside className="how-after-panel flex h-full flex-col border-t border-brand-green/10 p-6 sm:p-8 lg:border-t-0 lg:border-l lg:p-8 xl:p-10">
       <div className="flex items-center gap-2.5">
         <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-green/[0.12] text-brand-green">
           <HugeiconsIcon icon={Leaf01Icon} size={18} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />
@@ -196,13 +242,15 @@ function AfterPanel({ description, below = false }: { description: string; below
 function ParticulierPanel() {
   return (
     <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(14_32_16/0.03),0_12px_32px_-8px_rgb(14_32_16/0.1)]">
-      <CoreScrollJourney
-        volumeGuideHref="/location-benne/volume"
-        volumeGuideLabel={
-          volumeGuideLink?.label ?? "Choisir le volume de benne adapté à mon projet"
-        }
-      />
-      <AfterPanel below description={commentCaFonctionne.particulier.suite} />
+      <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
+        <div className="how-panel-main p-6 sm:p-8 lg:p-9 xl:p-10">
+          <h3 className="text-lg leading-snug text-brand-navy sm:text-xl">
+            {commentCaFonctionne.particulier.accroche}
+          </h3>
+          <StepsGrid steps={PARTICULIER_STEPS} className="mt-6 sm:mt-8" />
+        </div>
+        <AfterPanel description={commentCaFonctionne.particulier.suite} />
+      </div>
     </div>
   )
 }
@@ -283,19 +331,11 @@ function ProfessionnelPanel() {
   )
 }
 
-type VitrineHowItWorksProps = {
-  /** Ancre de navigation (`/#parcours` accueil, `#fonctionnement` page pro). */
-  sectionId?: "parcours" | "fonctionnement"
-}
-
-export function VitrineHowItWorks({ sectionId = "fonctionnement" }: VitrineHowItWorksProps) {
+export function VitrineHowItWorks() {
   const [profile, setProfile] = useState<Profile>("particulier")
 
   return (
-    <section
-      id={sectionId}
-      className="bg-[#F3F6FB] pb-16 pt-16 max-sm:pt-[5.75rem] sm:py-20 lg:py-[5.5rem]"
-    >
+    <section id="fonctionnement" className="bg-[#F3F6FB] pb-16 pt-16 max-sm:pt-[5.75rem] sm:py-20 lg:py-[5.5rem]">
       <div className="container-x">
         <div className="mx-auto max-w-3xl text-center">
           <p className="section-eyebrow">Comment ça fonctionne</p>
