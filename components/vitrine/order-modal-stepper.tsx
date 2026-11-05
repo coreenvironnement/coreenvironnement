@@ -16,9 +16,11 @@ export function OrderModalStepper({
 
   return (
     <div
+      className="min-w-0"
       aria-label={`Étape ${stepIndex + 1} sur ${steps.length} : ${steps[stepIndex]?.label}`}
     >
-      <div className="grid grid-cols-5">
+      <div className="-mx-1 overflow-x-auto overscroll-x-contain px-1 sm:mx-0 sm:overflow-visible sm:px-0">
+        <div className="grid w-full min-w-0 grid-cols-5">
         {steps.map((step, index) => {
           const active = index === stepIndex
 
@@ -52,6 +54,7 @@ export function OrderModalStepper({
               <p
                 className={cn(
                   "mt-1 w-full max-w-full text-center text-[8px] leading-[1.15] sm:mt-1.5 sm:text-[11px] sm:leading-tight",
+                  "line-clamp-2 break-words [overflow-wrap:anywhere]",
                   active
                     ? "font-semibold text-brand-navy"
                     : "font-medium text-brand-navy/42"
@@ -62,6 +65,7 @@ export function OrderModalStepper({
             </div>
           )
         })}
+        </div>
       </div>
     </div>
   )

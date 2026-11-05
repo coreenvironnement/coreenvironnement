@@ -270,8 +270,13 @@ export function OrderWidget({
       setAddressError("Indiquez l’adresse de livraison de la benne.")
       return
     }
-    if (!particulierWasteId) {
-      setAddressError("Choisissez ce que vous souhaitez jeter.")
+    if (audience === "particulier") {
+      if (!particulierWasteId) {
+        setAddressError("Choisissez ce que vous souhaitez jeter.")
+        return
+      }
+    } else if (!family) {
+      setAddressError("Choisissez un type de déchet dans la liste.")
       return
     }
     syncDraftFromWidget()
@@ -498,7 +503,7 @@ export function OrderWidget({
       className={cn(
         "relative mx-auto w-full",
         embedded
-          ? "max-w-none overflow-visible border-0 bg-transparent shadow-none ring-0"
+          ? "max-w-none min-w-0 overflow-x-hidden border-0 bg-transparent shadow-none ring-0"
           : "overflow-hidden max-w-xl border-white/70 bg-card/95 shadow-[0_22px_70px_-32px_color-mix(in_srgb,var(--brand-navy)_38%,transparent)] ring-1 ring-primary/15 backdrop-blur-sm"
       )}
     >
@@ -509,7 +514,7 @@ export function OrderWidget({
       <CardContent
         className={cn(
           "relative space-y-3",
-          embedded ? "order-tunnel-form px-0 pb-0 pt-0" : "pt-8"
+          embedded ? "order-tunnel-form min-w-0 px-0 pb-0 pt-0" : "pt-8"
         )}
       >
         {!embedded ? (
@@ -826,17 +831,17 @@ export function OrderWidget({
                     />
                   </div>
                 ) : (
-                  <Button
-                    type="button"
-                    className="mt-0.5 h-11 w-full rounded-xl border-0 bg-[#2F9632] px-4 text-base font-semibold text-white shadow-lg shadow-[#2F9632]/25 hover:bg-[#19752B] disabled:cursor-not-allowed disabled:bg-[#2F9632] disabled:opacity-60 disabled:shadow-md"
-                    onClick={() => goToForfait()}
-                    disabled={!canLeaveIntentWaste}
+                  <div
+                    className={cn(
+                      embedded &&
+                        "sticky bottom-0 z-20 -mx-4 border-t border-primary/10 bg-gradient-to-t from-brand-warm via-brand-warm/95 to-brand-warm/80 px-4 pb-1 pt-3 sm:-mx-6 sm:px-6"
+                    )}
                   >
-                    <span className="flex w-full items-center justify-between gap-2">
-                      <span>Voir les forfaits</span>
-                      <ChevronRight className="size-4 shrink-0" aria-hidden />
-                    </span>
-                  </Button>
+                    <OrderTunnelContinueButton
+                      onClick={goToIntentVolume}
+                      disabled={!canLeaveIntentWaste}
+                    />
+                  </div>
                 )}
               </div>
             </motion.div>
@@ -844,9 +849,8 @@ export function OrderWidget({
 
           {step === "intent" &&
             intentPhase === "volume" &&
-            audience === "particulier" &&
-            particulierWasteId &&
-            family ? (
+            family &&
+            (audience === "particulier" ? particulierWasteId : true) ? (
             <motion.div
               key="intent-volume"
               initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 24 }}
@@ -856,8 +860,11 @@ export function OrderWidget({
             >
               <ParticulierVolumeStep
                 embedded={embedded}
+                audience={audience}
                 family={family}
-                wasteId={particulierWasteId}
+                wasteId={
+                  audience === "particulier" ? particulierWasteId : null
+                }
                 onBackToWaste={() => {
                   setAddressError(null)
                   setIntentPhase("waste")
@@ -874,9 +881,9 @@ export function OrderWidget({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
-              className="space-y-3.5"
+              className="min-w-0 space-y-3.5"
             >
-              <div>
+              <div className="min-w-0">
                 <p className={ORDER_SECTION_LABEL}>
                   {audience === "particulier" ? "Choisissez votre benne" : "Choisissez votre forfait"}
                 </p>
@@ -885,7 +892,7 @@ export function OrderWidget({
                     ? "Prix à payer, TVA incluse."
                     : "Prix H.T. Détail des déchets acceptés par forfait."}
                 </p>
-                {audience === "particulier" && volumeHintM3 ? (
+                {volumeHintM3 ? (
                   <p className="mt-2 rounded-lg border border-primary/12 bg-brand-warm-field/80 px-3 py-2 text-[12px] leading-snug text-brand-navy">
                     Indication volume :{" "}
                     <strong>{volumeHintM3} m³</strong> (estimation ou choix
@@ -902,7 +909,7 @@ export function OrderWidget({
 
               <div
                 className={cn(
-                  "grid gap-3 px-0.5 py-0.5",
+                  "grid min-w-0 gap-3 py-0.5",
                   embedded
                     ? ""
                     : "max-h-[min(60vh,420px)] overflow-y-auto pr-1 sm:max-h-[min(70vh,520px)]"
@@ -914,9 +921,7 @@ export function OrderWidget({
                     prestation={p}
                     selected={selectedPrestationId === p.id}
                     recommended={
-                      audience === "particulier" &&
-                      volumeHintM3 !== null &&
-                      p.volumeM3 === volumeHintM3
+                      volumeHintM3 !== null && p.volumeM3 === volumeHintM3
                     }
                     onSelect={() => setSelectedPrestationId(p.id)}
                     delay={prefersReducedMotion ? 0 : i * 0.04}
@@ -935,9 +940,7 @@ export function OrderWidget({
                   onClick={() => {
                     setAddressError(null)
                     setStep("intent")
-                    setIntentPhase(
-                      audience === "particulier" ? "volume" : "waste"
-                    )
+                    setIntentPhase("volume")
                   }}
                 >
                   <ArrowLeft className="mr-2 size-4" />
@@ -1506,7 +1509,7 @@ function PrestationCard({
         }
       }}
       className={cn(
-        "flex w-full cursor-pointer items-center gap-2.5 overflow-visible rounded-2xl border-2 p-3 text-left shadow-sm outline-none transition-colors sm:gap-3 sm:p-3.5",
+        "flex w-full min-w-0 cursor-pointer items-center gap-2 overflow-hidden rounded-2xl border-2 p-3 text-left shadow-sm outline-none transition-colors sm:gap-3 sm:p-3.5",
         "focus-visible:border-brand-navy",
         selected
           ? warmSurface
@@ -1517,7 +1520,7 @@ function PrestationCard({
           : "border-border/80 bg-card/90 hover:border-brand-navy/35"
       )}
     >
-      <div className="flex h-[58px] w-[72px] shrink-0 items-center justify-center overflow-hidden sm:h-[72px] sm:w-[92px]">
+      <div className="flex h-[58px] w-[64px] shrink-0 items-center justify-center overflow-hidden sm:h-[72px] sm:w-[92px]">
         {visualSrc ? (
           <Image
             src={visualSrc}
@@ -1595,8 +1598,8 @@ function PrestationCard({
         </Dialog>
       </div>
 
-      <span className="w-[5.25rem] shrink-0 self-center text-right sm:w-[5.75rem]">
-        <span className="block text-[15px] font-bold tabular-nums text-primary sm:text-lg">
+      <span className="ml-auto w-[4.75rem] shrink-0 self-center text-right sm:ml-0 sm:w-[5.75rem]">
+        <span className="block text-[14px] font-bold tabular-nums text-primary sm:text-lg">
           {fmtHt(showTtc ? price.ttc : price.ht)}
         </span>
         <span className="block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">

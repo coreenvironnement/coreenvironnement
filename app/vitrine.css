@@ -699,6 +699,8 @@
 
 /* Tunnel commande (modal) — ambiance chaleureuse */
 .order-tunnel-shell {
+  max-width: 100%;
+  min-width: 0;
   background: linear-gradient(
     180deg,
     var(--color-brand-warm) 0%,
