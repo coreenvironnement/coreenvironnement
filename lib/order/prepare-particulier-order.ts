@@ -12,6 +12,7 @@ import {
 } from "@/lib/supabase/service"
 import type { OrderCheckoutInput } from "@/lib/order/checkout-input"
 import {
+  DELIVERY_DATE_INVALID_MESSAGE,
   isValidDeliveryDate,
   isValidPickupDate,
 } from "@/lib/order/delivery-dates"
@@ -67,10 +68,7 @@ export async function prepareParticulierOrder(
   }
 
   if (!isValidDeliveryDate(input.deliveryDate)) {
-    return {
-      error:
-        "La date de livraison doit être au moins 24 h après votre commande (fuseau Europe/Paris).",
-    }
+    return { error: DELIVERY_DATE_INVALID_MESSAGE }
   }
 
   if (

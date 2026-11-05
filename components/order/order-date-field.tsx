@@ -1,6 +1,6 @@
 "use client"
 
-import { forwardRef, useId, useRef } from "react"
+import { forwardRef, useEffect, useId, useRef } from "react"
 import { Calendar, ChevronDown } from "lucide-react"
 
 import { formatOrderDatePicker } from "@/lib/format/date"
@@ -11,6 +11,8 @@ type OrderDateFieldProps = {
   value: string
   min?: string
   onChange: (isoDate: string) => void
+  /** Safari iOS peut ignorer `min` : appelé si l’utilisateur choisit une date antérieure à `min`. */
+  onBeforeMin?: () => void
   placeholder?: string
   warmSurface?: boolean
   invalid?: boolean
@@ -24,6 +26,7 @@ export const OrderDateField = forwardRef<HTMLDivElement, OrderDateFieldProps>(
       value,
       min,
       onChange,
+      onBeforeMin,
       placeholder = "Choisir une date",
       warmSurface = false,
       invalid = false,
@@ -36,15 +39,38 @@ export const OrderDateField = forwardRef<HTMLDivElement, OrderDateFieldProps>(
     const inputRef = useRef<HTMLInputElement>(null)
     const display = value ? formatOrderDatePicker(value) : ""
 
+    useEffect(() => {
+      const input = inputRef.current
+      if (!input) return
+      if (input.value !== value) {
+        input.value = value
+      }
+    }, [value])
+
     const openPicker = () => {
       const input = inputRef.current
       if (!input) return
+      if (min) {
+        input.min = min
+      }
       input.focus({ preventScroll: true })
       try {
         input.showPicker()
       } catch {
         input.click()
       }
+    }
+
+    const handleNativeChange = (next: string) => {
+      if (min && next.length && next < min) {
+        const input = inputRef.current
+        if (input) {
+          input.value = value
+        }
+        onBeforeMin?.()
+        return
+      }
+      onChange(next)
     }
 
     return (
@@ -57,7 +83,7 @@ export const OrderDateField = forwardRef<HTMLDivElement, OrderDateFieldProps>(
           min={min}
           value={value}
           aria-invalid={invalid}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => handleNativeChange(e.target.value)}
           className="pointer-events-none absolute h-px w-px opacity-0"
           tabIndex={-1}
         />

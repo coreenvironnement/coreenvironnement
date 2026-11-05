@@ -71,6 +71,7 @@ import {
 } from "@/lib/order/tunnel-steps"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import {
+  DELIVERY_DATE_INVALID_MESSAGE,
   isValidDeliveryDate,
   isValidPickupDate,
   minDeliveryDateISO,
@@ -358,9 +359,7 @@ export function OrderWidget({
       return
     }
     if (!isValidDeliveryDate(deliveryDate)) {
-      setDeliveryDateError(
-        "La date de livraison doit être au moins 24 h après votre commande (fuseau Europe/Paris)."
-      )
+      setDeliveryDateError(DELIVERY_DATE_INVALID_MESSAGE)
     setAddressError(null)
       requestAnimationFrame(() => {
         scrollToDeliveryDateField()
@@ -1051,7 +1050,14 @@ export function OrderWidget({
                       invalid={deliveryDateError !== null}
                       warmSurface={embedded}
                       placeholder="Choisir la date de livraison"
+                      onBeforeMin={() => {
+                        setDeliveryDateError(DELIVERY_DATE_INVALID_MESSAGE)
+                      }}
                       onChange={(next) => {
+                        if (next.length && !isValidDeliveryDate(next)) {
+                          setDeliveryDateError(DELIVERY_DATE_INVALID_MESSAGE)
+                          return
+                        }
                         setDeliveryDate(next)
                         setDeliveryDateError(null)
                         setAddressError(null)
@@ -1096,6 +1102,18 @@ export function OrderWidget({
                       placeholder="Choisir une date d’enlèvement"
                       optionalHint="Optionnel"
                       onChange={(next) => {
+                        const pickupMin =
+                          deliveryDate.length && isValidDeliveryDate(deliveryDate)
+                            ? deliveryDate
+                            : minDeliveryDateISO()
+                        if (next.length && next < pickupMin) {
+                          setAddressError(
+                            deliveryDate.length && isValidDeliveryDate(deliveryDate)
+                              ? "La date d'enlèvement ne peut pas être antérieure à la date de livraison."
+                              : DELIVERY_DATE_INVALID_MESSAGE
+                          )
+                          return
+                        }
                         setPickupDate(next)
                         setAddressError(null)
                       }}

@@ -5,6 +5,7 @@ import {
   isPostcodeInIdf,
 } from "@/lib/geo/idf"
 import {
+  DELIVERY_DATE_INVALID_MESSAGE,
   isValidDeliveryDate,
   isValidPickupDate,
 } from "@/lib/order/delivery-dates"
@@ -139,10 +140,7 @@ export function prepareProfessionalBenneRequest(
   }
 
   if (!isValidDeliveryDate(input.deliveryDate)) {
-    return {
-      error:
-        "La date de livraison doit être au moins 24 h après votre commande (fuseau Europe/Paris).",
-    }
+    return { error: DELIVERY_DATE_INVALID_MESSAGE }
   }
 
   if (
