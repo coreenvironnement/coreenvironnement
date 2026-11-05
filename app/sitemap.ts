@@ -27,6 +27,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
     },
     {
+      url: `${base}/location-benne/dechets-acceptes`,
+      changeFrequency: "monthly",
+      priority: 0.85,
+      lastModified,
+    },
+    {
       url: `${base}/pro`,
       changeFrequency: "monthly",
       priority: 0.8,

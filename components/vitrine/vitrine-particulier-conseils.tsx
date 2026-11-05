@@ -120,15 +120,14 @@ export function VitrineParticulierConseils() {
                   </p>
                 ) : null}
 
-                {carteId === "dechets" && contactLabel ? (
+                {carteId === "dechets" && guideLabel && guideHref ? (
                   <p className="mt-5">
-                    <a
-                      href={SITE_PHONE_HREF}
+                    <Link
+                      href={guideHref}
                       className="text-[14px] font-medium text-brand-navy underline-offset-2 hover:text-brand-green hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
                     >
-                      {contactLabel}
-                    </a>
-                    <span className="sr-only"> — {SITE_PHONE_DISPLAY}</span>
+                      {guideLabel}
+                    </Link>
                   </p>
                 ) : null}
 

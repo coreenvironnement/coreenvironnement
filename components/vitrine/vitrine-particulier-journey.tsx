@@ -6,22 +6,28 @@ import { particulierAccueil } from "@/lib/cdc/contenu-vitrine"
 const STEP_LINK_CLASS =
   "mt-3 inline-block text-[15px] font-medium text-brand-navy underline underline-offset-2 transition-colors hover:text-brand-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2 max-md:mx-auto max-md:block max-md:w-fit"
 
-const STEP_VISUALS: Record<string, { src: string; alt: string }> = {
+const STEP_VISUALS: Record<
+  string,
+  { src: string; alt: string; imageClass?: string }
+> = {
   "01": {
     src: "/vitrine-scroll/benne-vide.png",
     alt: "Benne vide — choix du volume et du type de déchets en ligne",
   },
   "02": {
-    src: "/vitrine-scroll/chassis-sans-roues.png",
-    alt: "Châssis porteur — livraison de la benne sur votre adresse",
+    src: "/images/parcours-etape-2.png",
+    alt: "Camion déposant une benne vide sur votre adresse",
+    imageClass: "object-contain object-center px-1.5 py-2.5 sm:px-2 sm:py-3",
   },
   "03": {
-    src: "/vitrine-scroll/benne-vide.png",
-    alt: "Benne sur place — dépôt des déchets autorisés",
+    src: "/images/parcours-etape-3.png",
+    alt: "Benne verte remplie de gravats sur place",
+    imageClass: "object-contain object-center px-2 py-1 sm:px-2.5 sm:py-1.5",
   },
   "04": {
-    src: "/vitrine-scroll/chassis-sans-roues.png",
-    alt: "Logistique d'enlèvement — reprise de la benne remplie",
+    src: "/images/parcours-etape-4.png",
+    alt: "Camion porte-benne chargé de gravats — enlèvement",
+    imageClass: "object-contain object-center px-1.5 py-2.5 sm:px-2 sm:py-3",
   },
 }
 
@@ -63,7 +69,10 @@ export function VitrineParticulierJourney() {
                       src={visual.src}
                       alt={visual.alt}
                       fill
-                      className="object-contain object-center p-3"
+                      className={
+                        visual.imageClass ??
+                        "object-contain object-center p-3"
+                      }
                       sizes="(max-width: 768px) 216px, (max-width: 1024px) 50vw, 240px"
                     />
                   </div>

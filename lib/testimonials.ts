@@ -55,14 +55,6 @@ export const testimonials: Testimonial[] = [
     segment: "pro",
   },
   {
-    id: "google-test-l",
-    quote:
-      "J'ai commandé une Benne pour débarrasser le chantier suite à la rénovation de ma maison.\nService impeccable ! la prise en charge est rapide",
-    author: "Test L.",
-    role: "Particulier · Avis Google",
-    segment: "particulier",
-  },
-  {
     id: "google-habib-s",
     quote:
       "Benne louée pour évacuer les gravats d'un petit chantier de démolition. Vraiment pratique de pouvoir tout commander et payer directement depuis son téléphone. RAS",
@@ -83,14 +75,6 @@ export const testimonials: Testimonial[] = [
     quote:
       "Personne très sympathique, sérieuse et professionnelle. Service au top, je recommande vivement !",
     author: "Celina H.",
-    role: "Particulier · Avis Google",
-    segment: "particulier",
-  },
-  {
-    id: "google-raam-d",
-    quote:
-      "Core Environnement est une entreprise sérieuse et professionnelle. La commande de benne se fait très simplement en quelques clics, avec des tarifs clairs : on sait directement ce que l’on va payer. Livraison rapide sous 24h en Île-de-France et surtout un service client humain, disponible et chaleureux. Je recommande sans hésiter !",
-    author: "Raam D.",
     role: "Particulier · Avis Google",
     segment: "particulier",
   },

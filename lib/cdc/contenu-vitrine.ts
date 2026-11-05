@@ -389,7 +389,8 @@ export const particulierAccueil = {
         titre: "Vérifier les déchets acceptés",
         texte:
           "Les déchets déposés doivent correspondre à ceux sélectionnés lors de la commande. Les produits dangereux ne vont pas dans une benne classique et certains mélanges ne sont pas acceptés. En cas de doute sur un déchet, contactez-nous avant de réserver.",
-        contactLabel: "Demander conseil sur mes déchets",
+        guideLabel: "Consulter les déchets acceptés",
+        guideHref: "/location-benne/dechets-acceptes",
       },
     ],
   },

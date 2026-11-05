@@ -35,6 +35,7 @@ function syncHeaderScrollSolid(setScrolled: (v: boolean) => void) {
 function isHeroUnderHeaderRoute(pathname: string | null): boolean {
   if (!pathname) return false
   if (pathname === "/location-benne/volume") return false
+  if (pathname === "/location-benne/dechets-acceptes") return false
   return (
     pathname === "/" ||
     pathname.startsWith("/location-benne") ||
