@@ -3,12 +3,10 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import {
   ArrowRight01Icon,
   Call02Icon,
-  Leaf01Icon,
   Linkedin01Icon,
   Recycle03Icon,
   SecurityCheckIcon,
   SparklesIcon,
-  YoutubeIcon,
 } from "@hugeicons/core-free-icons"
 
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
@@ -36,16 +34,6 @@ const SOCIAL_LINKS = [
     href: "https://www.linkedin.com/company/core-environnement",
     label: "LinkedIn",
     icon: Linkedin01Icon,
-  },
-  {
-    href: "https://www.youtube.com/@coreenvironnement",
-    label: "YouTube",
-    icon: YoutubeIcon,
-  },
-  {
-    href: "/#engagements",
-    label: "Nos engagements environnementaux",
-    icon: Leaf01Icon,
   },
 ] as const
 
