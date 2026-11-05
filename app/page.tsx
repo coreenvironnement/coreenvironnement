@@ -10,9 +10,10 @@ import { getSiteUrl } from "@/lib/seo/site-url"
 
 /** Métadonnées document homepage uniquement (H1 / contenu visuel inchangés). */
 const HOME_PAGE_DOCUMENT_TITLE =
-  "Location de benne en Île-de-France dès 330 € | CORE ENVIRONNEMENT"
+  "Location de benne en Île-de-France | Core Environnement"
 const HOME_PAGE_META_DESCRIPTION =
-  "Dès 330 € HT · tarif selon adresse et déchet · commande en 2 minutes. Livraison rapide sous 24 h en Île-de-France."
+  "Des travaux ou un débarras ? Choisissez une benne adaptée à vos déchets, consultez le tarif selon votre adresse et réservez la livraison en ligne."
+const HOME_PAGE_SITE_NAME = "Core Environnement"
 
 type PageProps = {
   searchParams: Promise<{ order?: string; intent?: string }>
@@ -31,7 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: HOME_PAGE_DOCUMENT_TITLE,
       description: HOME_PAGE_META_DESCRIPTION,
       url: siteUrl,
-      siteName: "CORE ENVIRONNEMENT",
+      siteName: HOME_PAGE_SITE_NAME,
       locale: "fr_FR",
       type: "website",
       images: getShareOpenGraphImages(),
@@ -54,7 +55,7 @@ export default async function HomePage({ searchParams }: PageProps) {
 
   return (
     <>
-      <VitrineJsonLd faqSource="particulier" />
+      <VitrineJsonLd faqSource="particulier" websiteName={HOME_PAGE_SITE_NAME} />
       <VitrineHome orderParam={orderParam} />
     </>
   )

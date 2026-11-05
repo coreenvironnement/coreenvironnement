@@ -143,25 +143,32 @@ function buildLocalBusinessSchema(siteUrl: string, localPage?: LocalPage) {
   }
 }
 
-function buildWebSiteSchema(siteUrl: string) {
+function buildWebSiteSchema(siteUrl: string, websiteName: string) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": `${siteUrl}/#website`,
     url: siteUrl,
-    name: "CORE ENVIRONNEMENT",
+    name: websiteName,
     description: DEFAULT_VARIANT.description,
     inLanguage: "fr-FR",
   }
 }
 
+const DEFAULT_WEBSITE_NAME = "CORE ENVIRONNEMENT"
+
 export function VitrineJsonLd({
   localPage,
   faqSource = "general",
-}: { localPage?: LocalPage; faqSource?: "general" | "particulier" } = {}) {
+  websiteName = DEFAULT_WEBSITE_NAME,
+}: {
+  localPage?: LocalPage
+  faqSource?: "general" | "particulier"
+  websiteName?: string
+} = {}) {
   const siteUrl = getSiteUrl()
   const schemas = [
-    buildWebSiteSchema(siteUrl),
+    buildWebSiteSchema(siteUrl, websiteName),
     buildLocalBusinessSchema(siteUrl, localPage),
     buildFaqSchema(faqSource),
     buildBreadcrumbListSchema(siteUrl, localPage),
