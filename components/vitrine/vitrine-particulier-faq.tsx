@@ -11,10 +11,18 @@ import { VITRINE_ICON_STROKE } from "./icons"
 
 export function VitrineParticulierFaq() {
   const baseId = useId()
-  const [openIndex, setOpenIndex] = useState<number | null>(0)
+  const [openIndices, setOpenIndices] = useState<Set<number>>(() => new Set([0]))
 
   const toggle = useCallback((index: number) => {
-    setOpenIndex((prev) => (prev === index ? null : index))
+    setOpenIndices((prev) => {
+      const next = new Set(prev)
+      if (next.has(index)) {
+        next.delete(index)
+      } else {
+        next.add(index)
+      }
+      return next
+    })
   }, [])
 
   return (
@@ -39,7 +47,7 @@ export function VitrineParticulierFaq() {
 
         <div className="mt-8 overflow-hidden rounded-2xl border border-brand-border/80 bg-white shadow-sm">
           {particulierFaq.map((item, index) => {
-            const isOpen = openIndex === index
+            const isOpen = openIndices.has(index)
             const buttonId = `${baseId}-faq-${index}`
             const panelId = `${baseId}-panel-${index}`
             return (
@@ -86,9 +94,21 @@ export function VitrineParticulierFaq() {
                   )}
                 >
                   <div className="overflow-hidden">
-                    <p className="px-4 pb-4 text-[14px] leading-relaxed text-brand-muted sm:px-5 sm:pb-5">
-                      {item.r}
-                    </p>
+                    <div className="px-4 pb-4 sm:px-5 sm:pb-5">
+                      <p className="text-[14px] leading-relaxed text-brand-muted sm:text-[15px]">
+                        {item.r}
+                      </p>
+                      {"linkLabel" in item && item.linkLabel && "linkHref" in item ? (
+                        <p className="mt-3">
+                          <a
+                            href={item.linkHref}
+                            className="text-[14px] font-medium text-brand-navy underline-offset-2 hover:text-brand-green hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2 sm:text-[15px]"
+                          >
+                            {item.linkLabel}
+                          </a>
+                        </p>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
               </div>

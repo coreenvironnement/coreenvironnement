@@ -393,8 +393,9 @@ export const particulierAccueil = {
       },
     ],
   },
-  faqTitre: "Questions fréquentes",
-  faqIntro: "Les réponses essentielles avant de commander en ligne.",
+  faqTitre: "Vos questions sur la location de benne",
+  faqIntro:
+    "Les informations utiles pour choisir votre benne, préparer la livraison et suivre votre commande.",
   switchPro: {
     label: "Vous gérez des chantiers ou des volumes réguliers ?",
     href: "/professionnels",
@@ -410,36 +411,38 @@ export const particulierAccueil = {
 /** FAQ courte affichée sur l’accueil particulier (pas de jargon pro). */
 export const particulierFaq = [
   {
-    q: "Quels sont vos délais de livraison ?",
-    r: "Livraison possible sous 24 h en Île-de-France selon l’heure de commande et les disponibilités. Un rappel téléphonique peut caler la pose avec le chauffeur.",
+    q: "À partir de quand puis-je recevoir ma benne ?",
+    r: "La livraison est proposée à partir du lendemain de votre commande, selon les disponibilités. Choisissez votre date parmi celles proposées dans le calendrier.",
   },
   {
     q: "Combien coûte une benne pour un particulier ?",
-    r: "Le tarif dépend de l’adresse, du type de déchet et du volume. Le montant TTC s’affiche dans le tunnel avant le paiement (ex. gravats propres 8 m³ dès 396 € TTC).",
+    r: "Le tarif dépend de votre adresse, des déchets et du volume choisi. Renseignez ces informations pour consulter le montant TTC avant le paiement.",
   },
   {
-    q: "Faut-il téléphoner pour commander ?",
-    r: "Non : vous pouvez tout faire en ligne. Le téléphone reste disponible si vous préférez être guidé.",
+    q: "Puis-je commander entièrement en ligne ?",
+    r: "Oui. Le choix de la benne, les informations de livraison et le paiement se font en ligne. Notre équipe reste disponible par téléphone si vous souhaitez être conseillé.",
   },
   {
-    q: "Comment choisir la taille de la benne ?",
-    r: "Dans la commande, après le type de déchet, utilisez l’estimateur de volume ou indiquez la capacité si vous la connaissez déjà. Prévoyez une petite marge.",
+    q: "Comment choisir le volume de ma benne ?",
+    r: "L'estimateur disponible dans la commande vous aide à évaluer votre besoin. La nature des déchets et leur poids comptent également dans le choix de la benne.",
+    linkLabel: "Consulter le guide des volumes",
+    linkHref: "https://core-environnement.fr/location-benne/volume",
   },
   {
     q: "Que se passe-t-il après le paiement ?",
-    r: "Vous recevez un e-mail de confirmation. L’équipe vous rappelle pour confirmer l’accès et l’horaire de pose. Le chauffeur livre, puis repasse pour l’enlèvement une fois la benne remplie.",
+    r: "Vous recevez un e-mail de confirmation. Nous vous contactons si nécessaire pour préparer la livraison. Vous pouvez également suivre l'avancement de votre commande depuis votre espace client.",
   },
   {
-    q: "Quels déchets sont interdits ?",
-    r: "Amiante, produits chimiques, peintures liquides, batteries, gaz, pneus, etc. Ils ne vont pas dans une benne classique. Demandez-nous conseil en cas de doute.",
+    q: "Quels déchets ne vont pas dans une benne classique ?",
+    r: "Une benne classique n'accepte notamment pas l'amiante, les produits chimiques et les peintures liquides. Contactez-nous avant de réserver si vous hésitez sur un déchet.",
   },
   {
-    q: "Dois-je être présent quand le chauffeur arrive ?",
-    r: "Ce n’est pas obligatoire si l’accès est libre, mais un contact joignable par téléphone est recommandé pour guider la pose.",
+    q: "Dois-je être présent lors de la livraison ?",
+    r: "Votre présence n'est pas obligatoire si l'accès est libre. Prévoyez un contact joignable par téléphone pour guider le chauffeur si nécessaire.",
   },
   {
-    q: "Peut-on dépasser le bord de la benne ?",
-    r: "Non : pour la sécurité, le chargement doit rester à ras bord. Un débordement peut entraîner un refus d’enlèvement ou des frais supplémentaires.",
+    q: "Jusqu'où puis-je remplir la benne ?",
+    r: "Remplissez la benne sans dépasser le haut des parois et respectez la limite de poids indiquée. Le chargement doit permettre un transport en sécurité.",
   },
 ] as const
 

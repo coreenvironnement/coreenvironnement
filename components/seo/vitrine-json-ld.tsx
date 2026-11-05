@@ -1,4 +1,4 @@
-import { faq } from "@/lib/cdc/contenu-vitrine"
+import { faq, particulierFaq } from "@/lib/cdc/contenu-vitrine"
 import { buildLocalBreadcrumbs } from "@/lib/seo/breadcrumbs"
 import { DEFAULT_VARIANT } from "@/lib/seo/landing-variants"
 import { buildLocalDescription } from "@/lib/seo/local-copy"
@@ -12,17 +12,34 @@ import {
   SITE_PHONE_HREF,
 } from "@/lib/site"
 
-function buildFaqSchema() {
-  const mainEntity = faq.flatMap((section) =>
-    section.questions.map((item) => ({
-      "@type": "Question" as const,
-      name: item.q,
-      acceptedAnswer: {
-        "@type": "Answer" as const,
-        text: item.r,
-      },
-    }))
-  )
+function faqAnswerText(item: { r: string; linkLabel?: string; linkHref?: string }) {
+  if (item.linkLabel && item.linkHref) {
+    return `${item.r} ${item.linkLabel} : ${item.linkHref}`
+  }
+  return item.r
+}
+
+function buildFaqSchema(source: "general" | "particulier" = "general") {
+  const mainEntity =
+    source === "particulier"
+      ? particulierFaq.map((item) => ({
+          "@type": "Question" as const,
+          name: item.q,
+          acceptedAnswer: {
+            "@type": "Answer" as const,
+            text: faqAnswerText(item),
+          },
+        }))
+      : faq.flatMap((section) =>
+          section.questions.map((item) => ({
+            "@type": "Question" as const,
+            name: item.q,
+            acceptedAnswer: {
+              "@type": "Answer" as const,
+              text: item.r,
+            },
+          }))
+        )
 
   return {
     "@context": "https://schema.org",
@@ -138,12 +155,15 @@ function buildWebSiteSchema(siteUrl: string) {
   }
 }
 
-export function VitrineJsonLd({ localPage }: { localPage?: LocalPage } = {}) {
+export function VitrineJsonLd({
+  localPage,
+  faqSource = "general",
+}: { localPage?: LocalPage; faqSource?: "general" | "particulier" } = {}) {
   const siteUrl = getSiteUrl()
   const schemas = [
     buildWebSiteSchema(siteUrl),
     buildLocalBusinessSchema(siteUrl, localPage),
-    buildFaqSchema(),
+    buildFaqSchema(faqSource),
     buildBreadcrumbListSchema(siteUrl, localPage),
   ].filter((schema): schema is NonNullable<typeof schema> => schema !== null)
 

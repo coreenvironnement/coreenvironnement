@@ -54,7 +54,7 @@ export default async function HomePage({ searchParams }: PageProps) {
 
   return (
     <>
-      <VitrineJsonLd />
+      <VitrineJsonLd faqSource="particulier" />
       <VitrineHome orderParam={orderParam} />
     </>
   )
