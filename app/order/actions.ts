@@ -81,7 +81,7 @@ export async function startOrderCheckout(
             unit_amount: amountTtc,
             product_data: {
               name: prepared.prestation.label,
-              description: `Livraison ${input.deliveryDate} · ${deptLabel ?? prepared.deptCode} · ${input.addressLabel}`.slice(
+              description: `Livraison ${input.deliveryDate}, ${deptLabel ?? prepared.deptCode}, ${input.addressLabel}`.slice(
                 0,
                 500
               ),

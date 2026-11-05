@@ -126,11 +126,10 @@ function OrderStepProgress({
   return (
     <div className="mx-auto mb-2.5 max-w-md text-center" aria-live="polite">
       <p className="text-[0.625rem] font-medium leading-snug text-brand-navy/42">
-        <span>Étape {currentStepIdx + 1} sur {steps.length}</span>
-        <span aria-hidden className="mx-1.5 text-brand-navy/20">
-          ·
+        <span>
+          Étape {currentStepIdx + 1} sur {steps.length} :{" "}
+          <span className="text-brand-navy/58">{current.label}</span>
         </span>
-        <span className="text-brand-navy/58">{current.label}</span>
       </p>
       <div
         className="mx-auto mt-1 h-[2px] w-full max-w-[200px] overflow-hidden rounded-full bg-brand-navy/12 sm:max-w-[240px]"
@@ -1256,18 +1255,18 @@ export function OrderWidget({
                   </div>
                   <ul className="space-y-1.5 text-sm">
                     <li>
-                      <span className="text-muted-foreground">Société · </span>
+                      <span className="text-muted-foreground">Société : </span>
                       <span className="font-medium text-brand-navy">{companyName.trim()}</span>
                     </li>
                     <li>
-                      <span className="text-muted-foreground">Contact · </span>
+                      <span className="text-muted-foreground">Contact : </span>
                       <span className="font-medium text-brand-navy">{proContactName.trim()}</span>
                     </li>
                     <li className="text-brand-navy">{contactPhone}</li>
                     <li className="text-brand-navy">{contactEmail.trim()}</li>
                     {siret.replace(/\s/g, "") ? (
                       <li>
-                        <span className="text-muted-foreground">SIRET · </span>
+                        <span className="text-muted-foreground">SIRET : </span>
                         <span className="font-medium text-brand-navy">{siret.trim()}</span>
                       </li>
                     ) : null}
@@ -1297,7 +1296,7 @@ export function OrderWidget({
                 <p className="mt-1 text-sm text-muted-foreground">
                   {audience === "particulier"
                     ? `${prestation.volumeM3} m³`
-                    : `${systemLabel(prestation.system)} · ${prestation.volumeM3} m³`}
+                    : `${systemLabel(prestation.system)}, ${prestation.volumeM3} m³`}
                 </p>
               </section>
 
@@ -1324,26 +1323,26 @@ export function OrderWidget({
                 </div>
                 <ul className="space-y-1.5 text-sm">
                   <li>
-                    <span className="text-muted-foreground">Adresse · </span>
+                    <span className="text-muted-foreground">Adresse : </span>
                     <span className="font-medium text-brand-navy">{selectedAddress.label}</span>
                   </li>
                   {family ? (
                     <li>
-                      <span className="text-muted-foreground">Déchets · </span>
+                      <span className="text-muted-foreground">Déchets : </span>
                       <span className="font-medium text-brand-navy">
                         {FAMILY_LABELS[family].title}
                       </span>
                     </li>
                 ) : null}
                   <li>
-                    <span className="text-muted-foreground">Livraison · </span>
+                    <span className="text-muted-foreground">Livraison : </span>
                     <span className="font-medium text-brand-navy">
                       {formatOrderDatePicker(deliveryDate)}
                     </span>
                   </li>
                   {pickupDate ? (
                     <li>
-                      <span className="text-muted-foreground">Enlèvement · </span>
+                      <span className="text-muted-foreground">Enlèvement : </span>
                       <span className="font-medium text-brand-navy">
                         {formatOrderDatePicker(pickupDate)}
                       </span>
@@ -1536,7 +1535,7 @@ function PrestationCard({
           <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
             {showTtc
               ? `${prestation.volumeM3} m³`
-              : `${systemLabel(prestation.system)} · ${prestation.volumeM3} m³`}
+              : `${systemLabel(prestation.system)}, ${prestation.volumeM3} m³`}
           </span>
           {recommended ? (
             <span className="rounded-md bg-brand-green/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-green">

@@ -86,7 +86,7 @@ export function VitrineOrderModal() {
                 </h2>
                 {audience === "professionnel" ? (
                   <p className="mt-1 text-[12px] leading-snug text-brand-muted sm:text-[13px]">
-                    Demande professionnelle — sans paiement en ligne
+                    Demande professionnelle, sans paiement en ligne
                   </p>
                 ) : null}
               </div>

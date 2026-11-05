@@ -357,7 +357,7 @@ export function ParticulierVolumeStep({
               onClick={() => setView("known")}
             />
             <ChoiceCard
-              title="Je ne sais pas — estimer"
+              title="Je ne sais pas : estimer"
               description="Calculez un ordre de grandeur à partir des dimensions ou des sacs."
               icon={Sparkles}
               accent
