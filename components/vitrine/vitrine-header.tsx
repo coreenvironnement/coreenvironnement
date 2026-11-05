@@ -58,21 +58,14 @@ const PRO_NAV = [
 
 function AudienceBandeau({ isProPage }: { isProPage: boolean }) {
   return (
-    <div
-      className={cn(
-        "border-b text-center text-[12px] leading-snug sm:text-[13px]",
-        isProPage
-          ? "border-white/10 bg-[#0f2552] text-white/90"
-          : "border-brand-green/20 bg-[#0f2552]/95 text-white/90 backdrop-blur-sm"
-      )}
-    >
+    <div className="border-b border-brand-green/25 bg-[#ECF4E9] text-center text-[12px] leading-snug text-brand-navy/90 sm:text-[13px]">
       <p className="container-x py-2 sm:py-2.5">
         {isProPage ? (
           <>
             Vous êtes un particulier ?{" "}
             <Link
               href="/"
-              className="font-semibold text-brand-green underline-offset-2 hover:underline"
+              className="font-semibold text-brand-green-dark underline-offset-2 hover:text-brand-green hover:underline"
             >
               Accéder à la page particulier
             </Link>
@@ -82,7 +75,7 @@ function AudienceBandeau({ isProPage }: { isProPage: boolean }) {
             Vous êtes un professionnel ?{" "}
             <Link
               href="/professionnels"
-              className="font-semibold text-brand-green underline-offset-2 hover:underline"
+              className="font-semibold text-brand-green-dark underline-offset-2 hover:text-brand-green hover:underline"
             >
               Accéder à la page pro
             </Link>

@@ -1,31 +1,36 @@
 "use client"
 
 import { useCallback, useEffect, useRef } from "react"
-import { ClipboardList, MapPin, Truck } from "lucide-react"
+import {
+  ClipboardText,
+  MapPin,
+  Truck,
+  type Icon as PhosphorIcon,
+} from "@phosphor-icons/react"
 
 import type { OrderAudience } from "@/components/order/order-audience-toggle"
 import { cn } from "@/lib/utils"
 
 type ReassuranceItem = {
-  icon: typeof Truck
+  Icon: PhosphorIcon
   label: string
   description: string
 }
 
 const REASSURANCE_PARTICULIER: ReassuranceItem[] = [
   {
-    icon: Truck,
+    Icon: Truck,
     label: "Livraison possible sous 24 h",
     description: "Selon votre adresse de livraison et les disponibilités.",
   },
   {
-    icon: ClipboardList,
+    Icon: ClipboardText,
     label: "Suivi de commande en ligne",
     description:
       "Consultez l’avancement de votre commande depuis votre espace client.",
   },
   {
-    icon: MapPin,
+    Icon: MapPin,
     label: "Livraison en Île-de-France",
     description:
       "Livraison et enlèvement à l’adresse de vos travaux ou de votre débarras.",
@@ -34,19 +39,19 @@ const REASSURANCE_PARTICULIER: ReassuranceItem[] = [
 
 const REASSURANCE_PROFESSIONNEL: ReassuranceItem[] = [
   {
-    icon: Truck,
+    Icon: Truck,
     label: "Livraison possible sous 24 h",
     description:
       "Selon vos adresses de livraison et les disponibilités sur vos chantiers.",
   },
   {
-    icon: ClipboardList,
+    Icon: ClipboardText,
     label: "Suivi de commande en ligne",
     description:
       "Consultez l’avancement de vos demandes depuis votre espace client.",
   },
   {
-    icon: MapPin,
+    Icon: MapPin,
     label: "Livraison en Île-de-France",
     description: "Un interlocuteur unique pour l’ensemble de vos sites.",
   },
@@ -155,8 +160,8 @@ export function VitrineHeroReassurance({
     }
   }, [pauseAutoPlay, reassurance.length, scrollToSlide])
 
-  const renderIcon = (Icon: typeof Truck) => (
-    <Icon className="size-5 text-white lg:size-6" strokeWidth={1.75} aria-hidden />
+  const renderIcon = (Icon: PhosphorIcon, size: 20 | 24) => (
+    <Icon size={size} weight="regular" className="text-white" aria-hidden />
   )
 
   return (
@@ -185,7 +190,7 @@ export function VitrineHeroReassurance({
             )}
           >
             <span className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-white/[0.1] bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-[2px]">
-              {renderIcon(item.icon)}
+              {renderIcon(item.Icon, 20)}
             </span>
             <div className="min-w-0 text-center">
               <p className="text-[14px] font-semibold leading-snug tracking-[-0.01em] text-white">
@@ -219,7 +224,7 @@ export function VitrineHeroReassurance({
               )}
             >
               <span className="flex size-14 shrink-0 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-[2px] lg:size-[3.75rem] lg:rounded-[0.875rem]">
-                {renderIcon(item.icon)}
+                {renderIcon(item.Icon, 24)}
               </span>
               <div className="min-w-0 pt-0.5">
                 <p className="text-[15px] font-semibold leading-snug tracking-[-0.01em] text-white lg:text-base">
