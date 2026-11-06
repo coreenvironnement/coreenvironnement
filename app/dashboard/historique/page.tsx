@@ -12,6 +12,7 @@ import {
   userHasChantierAccess,
 } from "@/lib/dashboard/chantier-data"
 import { STATUTS_INTERVENTION, TYPES_DOCUMENTS } from "@/lib/cdc/referentiels"
+import { assertProDashboardAccess } from "@/lib/auth/assert-pro-dashboard-access"
 import { createClient } from "@/lib/supabase/server"
 
 export const metadata = {
@@ -41,6 +42,10 @@ export default async function DashboardHistoriquePage({ searchParams }: PageProp
     .single()
 
   const chantiers = await getUserChantiers(supabase, user.id)
+  if (chantiers.length > 0) {
+    await assertProDashboardAccess(supabase, user.id, true)
+  }
+
   const selectedId =
     chantierParam && chantiers.some((c) => c.id === chantierParam)
       ? chantierParam

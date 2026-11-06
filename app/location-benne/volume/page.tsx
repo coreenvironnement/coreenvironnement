@@ -11,6 +11,7 @@ import {
   VOLUME_GUIDE_DESCRIPTION,
   VOLUME_GUIDE_TITLE,
 } from "@/lib/seo/volume-guide-content"
+import { withBrandTitle } from "@/lib/seo/page-title"
 
 export const metadata: Metadata = {
   title: { absolute: VOLUME_GUIDE_TITLE },
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: VOLUME_GUIDE_TITLE,
+    title: withBrandTitle(VOLUME_GUIDE_TITLE),
     description: VOLUME_GUIDE_DESCRIPTION,
     images: getShareTwitterImages(),
   },

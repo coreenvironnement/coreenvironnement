@@ -83,10 +83,10 @@ export function WasteSituationPicker({
               "flex w-full items-start gap-3 rounded-2xl border-2 p-3.5 text-left shadow-sm outline-none transition-colors",
               "focus-visible:border-brand-green focus-visible:ring-2 focus-visible:ring-brand-green/25",
               selected
-                ? "border-brand-green bg-primary/10"
+                ? "border-brand-navy bg-primary/10"
                 : warmSurface
-                  ? "border-primary/20 bg-brand-warm-field hover:border-brand-green/35 hover:bg-primary/[0.06]"
-                  : "border-border/80 bg-card/90 hover:border-brand-green/35"
+                  ? "border-primary/20 bg-brand-warm-field hover:border-brand-navy/35 hover:bg-primary/[0.06]"
+                  : "border-border/80 bg-card/90 hover:border-brand-navy/35"
             )}
           >
             <span

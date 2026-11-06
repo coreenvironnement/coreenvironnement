@@ -19,11 +19,11 @@ export const metadata: Metadata = publicPageMetadata(
 )
 
 type PageProps = {
-  searchParams: Promise<{ subscription?: string }>
+  searchParams: Promise<{ subscription?: string; reason?: string }>
 }
 
 export default async function ProPage({ searchParams }: PageProps) {
-  const { subscription: subscriptionParam } = await searchParams
+  const { subscription: subscriptionParam, reason: reasonParam } = await searchParams
   const supabase = await createClient()
   const {
     data: { user },
@@ -66,6 +66,18 @@ export default async function ProPage({ searchParams }: PageProps) {
           ) : subscriptionParam === "cancelled" ? (
             <p className="rounded-xl border border-brand-navy/12 bg-muted/30 px-4 py-3 text-sm text-brand-muted">
               Paiement annulé. Vous pouvez réessayer quand vous le souhaitez.
+            </p>
+          ) : null}
+
+          {reasonParam === "dashboard_subscription" ? (
+            <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-brand-navy">
+              L&apos;espace chantier (/dashboard) nécessite un compte professionnel validé et un
+              abonnement actif. Activez ou renouvelez votre abonnement ci-dessous.
+            </p>
+          ) : reasonParam === "dashboard_no_compte" ? (
+            <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-brand-navy">
+              Aucun dossier professionnel n&apos;est associé à votre compte alors que vous êtes
+              membre d&apos;un chantier. Complétez votre demande sur cette page ou contactez-nous.
             </p>
           ) : null}
 

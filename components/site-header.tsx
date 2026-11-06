@@ -117,7 +117,7 @@ export function SiteHeader() {
                 <a
                   href={SITE_PHONE_HREF}
                   onClick={() => setMobileOpen(false)}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#35A238] py-3 text-sm font-semibold text-white shadow-md hover:bg-[#19752B]"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#38a234] py-3 text-sm font-semibold text-white shadow-md"
                 >
                   <Phone className="size-4 shrink-0" aria-hidden />
                   {SITE_PHONE_DISPLAY}

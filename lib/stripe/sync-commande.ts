@@ -9,6 +9,7 @@ import {
   notifyCommandeRefunded,
 } from "@/lib/email/notifications"
 import { ensureParticulierClientForCommande } from "@/lib/auth/particulier-client"
+import { ensureProClientForCommande } from "@/lib/auth/pro-client"
 import { priceBreakdownFromHt } from "@/lib/order/prestation-mapping"
 
 function numberOrNull(value: unknown): number | null {
@@ -73,6 +74,12 @@ async function confirmCommandeIfNeeded(
   commandeId: string,
   extraUpdate: Record<string, string>
 ) {
+  const { data: row } = await supabase
+    .from("commandes")
+    .select("audience")
+    .eq("id", commandeId)
+    .maybeSingle()
+
   const { error } = await supabase
     .from("commandes")
     .update({
@@ -89,9 +96,20 @@ async function confirmCommandeIfNeeded(
 
   await sendConfirmationEmailsIfClaimed(supabase, commandeId)
 
-  await ensureParticulierClientForCommande(supabase, commandeId, {
-    sendConfirmationEmail: "initial",
-  })
+  const audience =
+    row && typeof (row as { audience?: string }).audience === "string"
+      ? (row as { audience: string }).audience
+      : null
+
+  if (audience === "professionnel") {
+    await ensureProClientForCommande(supabase, commandeId, {
+      sendConfirmationEmail: "initial",
+    })
+  } else {
+    await ensureParticulierClientForCommande(supabase, commandeId, {
+      sendConfirmationEmail: "initial",
+    })
+  }
 }
 
 export async function syncCommandeFromCheckoutSession(
@@ -129,7 +147,8 @@ export async function syncCommandeFromPaymentIntent(
   supabase: SupabaseClient,
   intent: Stripe.PaymentIntent
 ) {
-  if (intent.metadata?.order_type !== "benne_particulier") return
+  const orderType = intent.metadata?.order_type
+  if (orderType !== "benne_particulier" && orderType !== "benne_professionnel") return
   const commandeId = intent.metadata?.commande_id
   if (!commandeId) return
   if (intent.status !== "succeeded") return

@@ -4,12 +4,9 @@ import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 
+import { getPostLoginDestination } from "@/app/auth/post-login-actions"
 import { createClient } from "@/lib/supabase/client"
-
-function safeNextPath(raw: string | null): string | null {
-  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return null
-  return raw
-}
+import { safeNextPath } from "@/lib/auth/post-login-path"
 
 const fieldClass =
   "h-12 w-full rounded-[10px] border border-brand-border bg-white px-3.5 text-[15px] text-brand-text shadow-[var(--shadow-vitrine-soft)] outline-none transition-colors placeholder:text-brand-muted/70 focus-visible:border-brand-green focus-visible:ring-3 focus-visible:ring-brand-green/20"
@@ -42,35 +39,10 @@ export function LoginForm() {
       return
     }
 
-    const next = safeNextPath(searchParams.get("next"))
-    if (next) {
-      setLoading(false)
-      router.push(next)
-      router.refresh()
-      return
-    }
-
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", data.user.id)
-      .maybeSingle()
-
-    if (profile?.role === "admin") {
-      setLoading(false)
-      router.push("/admin/commandes")
-      router.refresh()
-      return
-    }
-
-    const { data: chantierLinks } = await supabase
-      .from("chantier_membres")
-      .select("id")
-      .eq("profile_id", data.user.id)
-      .limit(1)
-
+    const rawNext = searchParams.get("next")
     setLoading(false)
-    router.push(chantierLinks?.length ? "/dashboard" : "/mes-commandes")
+    const destination = await getPostLoginDestination(rawNext)
+    router.push(destination)
     router.refresh()
   }
 

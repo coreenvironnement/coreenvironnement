@@ -143,6 +143,35 @@ export async function submitProfessionalBenneRequest(
   } = await authSupabase.auth.getUser()
   const linkedClientId = authUserIdForProContactEmail(authUser, prepared.contactEmail)
 
+  if (authUser) {
+    const { data: compte } = await authSupabase
+      .from("comptes_pro")
+      .select("status, payment_mode")
+      .eq("profile_id", authUser.id)
+      .maybeSingle()
+
+    if (compte) {
+      if (compte.status !== "approved") {
+        return {
+          error:
+            "Votre compte professionnel n’est pas encore validé. Vous recevrez un accès complet après validation.",
+        }
+      }
+      if (compte.payment_mode === "cb_required") {
+        return {
+          error:
+            "Votre entreprise est en paiement par carte : utilisez l’étape paiement du tunnel (connecté) pour finaliser la commande.",
+        }
+      }
+      if (compte.payment_mode !== "invoice") {
+        return {
+          error:
+            "Mode de paiement non défini pour votre compte. Contactez CORE Environnement ou complétez votre dossier sur /pro.",
+        }
+      }
+    }
+  }
+
   const created = await createProCommandeFromRequest(input, prepared, {
     clientId: linkedClientId,
   })

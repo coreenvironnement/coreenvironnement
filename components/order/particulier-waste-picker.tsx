@@ -38,13 +38,13 @@ export function ParticulierWastePicker({
                 : "border-[#E4E7EC] hover:border-brand-green/35"
             )}
           >
-            <div className="relative aspect-[4/3] w-full bg-[#F2F4F7] lg:aspect-[16/10]">
+            <div className="relative aspect-[4/3] w-full bg-[#F2F4F7]">
               <Image
                 src={option.imageSrc}
                 alt=""
                 fill
-                className="object-cover object-center"
-                sizes="(max-width: 1023px) 44vw, 350px"
+                className="object-cover"
+                sizes="(max-width: 540px) 44vw, 220px"
               />
               <span
                 className={cn(

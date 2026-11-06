@@ -11,5 +11,7 @@ export type OrderCheckoutInput = {
   pickupDate?: string
   contactEmail: string
   contactName?: string
+  /** Raison sociale (tunnel professionnel, paiement CB). */
+  companyName?: string
   contactPhone?: string
 }

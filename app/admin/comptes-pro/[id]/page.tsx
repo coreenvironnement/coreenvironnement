@@ -17,11 +17,86 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  createServiceClient,
+  getSupabaseServiceConfigError,
+} from "@/lib/supabase/service"
+
+export const dynamic = "force-dynamic"
+
 const textareaClass =
   "w-full min-h-24 rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
 
 type PageProps = {
   params: Promise<{ id: string }>
+}
+
+type CompteProDetail = {
+  profile_id: string
+  raison_sociale: string
+  status: string
+  payment_mode: string | null
+  siret: string | null
+  code_naf: string | null
+  adresse_siege: string | null
+  contact_nom: string | null
+  contact_fonction: string | null
+  contact_email: string
+  contact_telephone: string | null
+  kbis_storage_path: string | null
+  rib_storage_path: string | null
+  subscription_active: boolean | null
+  subscription_status: string | null
+  review_notes: string | null
+  reviewed_at: string | null
+  profiles?: { email: string; full_name: string | null } | null
+}
+
+async function loadCompteProDetail(
+  id: string,
+  userSupabase: Awaited<ReturnType<typeof requireAdmin>>["supabase"]
+): Promise<CompteProDetail | null> {
+  if (!getSupabaseServiceConfigError()) {
+    const svc = createServiceClient()
+    const { data, error } = await svc
+      .from("comptes_pro")
+      .select(
+        `
+        *,
+        profiles(email, full_name)
+      `
+      )
+      .eq("id", id)
+      .maybeSingle()
+    if (!error && data) {
+      return data as CompteProDetail
+    }
+  }
+
+  const { data: row, error: rowError } = await userSupabase
+    .from("comptes_pro")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle()
+
+  if (rowError || !row) {
+    return null
+  }
+
+  const base = row as CompteProDetail
+  const profileId =
+    typeof base.profile_id === "string" ? base.profile_id : null
+  if (!profileId) {
+    return { ...base, profiles: null }
+  }
+
+  const { data: profile } = await userSupabase
+    .from("profiles")
+    .select("email, full_name")
+    .eq("id", profileId)
+    .maybeSingle()
+
+  return { ...base, profiles: profile ?? null }
 }
 
 export async function generateMetadata({ params }: PageProps) {
@@ -31,7 +106,7 @@ export async function generateMetadata({ params }: PageProps) {
     .from("comptes_pro")
     .select("raison_sociale")
     .eq("id", id)
-    .single()
+    .maybeSingle()
   return { title: data?.raison_sociale ? `${data.raison_sociale} · Compte pro` : "Compte pro" }
 }
 
@@ -39,20 +114,11 @@ export default async function AdminCompteProDetailPage({ params }: PageProps) {
   const { id } = await params
   const { supabase } = await requireAdmin()
 
-  const { data: compte } = await supabase
-    .from("comptes_pro")
-    .select(
-      `
-      *,
-      profiles(email, full_name)
-    `
-    )
-    .eq("id", id)
-    .single()
+  const compte = await loadCompteProDetail(id, supabase)
 
   if (!compte) notFound()
 
-  const profile = compte.profiles as unknown as { email: string; full_name: string | null } | null
+  const profile = compte.profiles as { email: string; full_name: string | null } | null
   const reviewBound = reviewComptePro.bind(null, id)
 
   return (

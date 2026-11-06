@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import {
   ArrowLeft,
@@ -54,6 +55,7 @@ import {
 import { prestationIdForFamilyVolume } from "@/lib/order/volume-estimator"
 import { formatOrderDatePicker } from "@/lib/format/date"
 import { submitProfessionalBenneRequest } from "@/app/order/actions"
+import { createClient } from "@/lib/supabase/client"
 import {
   type BenneFamily,
   type BenneSystem,
@@ -217,6 +219,12 @@ export function OrderWidget({
   const [proRequestSent, setProRequestSent] = useState(false)
   const [proClientEmailSent, setProClientEmailSent] = useState(false)
   const [proReference, setProReference] = useState<string | null>(null)
+  const [proCompte, setProCompte] = useState<{
+    status: string
+    payment_mode: string | null
+  } | null>(null)
+  const [proCompteLoading, setProCompteLoading] = useState(false)
+  const [proSessionUserId, setProSessionUserId] = useState<string | null>(null)
   const [isSubmittingPro, startProSubmit] = useTransition()
   const prestation = useMemo(
     () => (selectedPrestationId ? prestationById(selectedPrestationId) : null),
@@ -467,12 +475,67 @@ export function OrderWidget({
   }, [audience, onAudienceChange])
 
   useEffect(() => {
+    if (audience !== "professionnel") {
+      setProCompte(null)
+      setProCompteLoading(false)
+      setProSessionUserId(null)
+      return
+    }
+
+    let cancelled = false
+    const supabase = createClient()
+
+    const loadProCompte = () => {
+      if (cancelled) return
+      setProCompteLoading(true)
+      void supabase.auth.getUser().then(({ data: { user } }) => {
+        if (cancelled) return
+        if (!user) {
+          setProCompte(null)
+          setProSessionUserId(null)
+          setProCompteLoading(false)
+          return
+        }
+        setProSessionUserId(user.id)
+        void supabase
+          .from("comptes_pro")
+          .select("status, payment_mode")
+          .eq("profile_id", user.id)
+          .maybeSingle()
+          .then(({ data }) => {
+            if (cancelled) return
+            setProCompte(
+              data
+                ? { status: data.status, payment_mode: data.payment_mode }
+                : null
+            )
+            setProCompteLoading(false)
+          })
+      })
+    }
+
+    loadProCompte()
+    const { data: sub } = supabase.auth.onAuthStateChange(() => {
+      loadProCompte()
+    })
+
+    return () => {
+      cancelled = true
+      sub.subscription.unsubscribe()
+    }
+  }, [audience])
+
+  useEffect(() => {
     if (!embedded) return
     if (open && !modalWasOpen.current) {
       applyDraft(draft)
       setStep("intent")
       setIntentPhase(resolveIntentPhase())
       setAddressError(null)
+      setDraftCommandeId(null)
+      setProRequestSent(false)
+      setProReference(null)
+      setProClientEmailSent(false)
     }
     modalWasOpen.current = open
   }, [open, embedded, intentStart, draft, resolveIntentPhase])
@@ -533,7 +596,12 @@ export function OrderWidget({
         {step === "payment" && prestation && selectedAddress ? (
           <div className="space-y-4">
               {audience === "professionnel" ? (
-                proRequestSent ? (
+                proCompteLoading ? (
+                  <div className="order-tunnel-card flex min-h-[140px] flex-col items-center justify-center gap-2 px-4 py-6 text-center">
+                    <Loader2 className="size-8 animate-spin text-brand-green" aria-hidden />
+                    <p className="text-sm text-brand-navy">Vérification de votre compte…</p>
+                  </div>
+                ) : proRequestSent ? (
                   <div className="order-tunnel-card space-y-4 px-4 py-5 text-center">
                     <h3 className="text-[18px] font-semibold leading-tight text-brand-navy sm:text-[20px]">
                       Demande envoyée
@@ -562,6 +630,59 @@ export function OrderWidget({
                       </Button>
                     ) : null}
                   </div>
+                ) : proCompte?.status === "approved" &&
+                  proCompte.payment_mode === "cb_required" ? (
+                  proSessionUserId ? (
+                    <EmbeddedCheckout
+                      existingCommandeId={draftCommandeId ?? undefined}
+                      deliveryDate={deliveryDate}
+                      onCommandeId={setDraftCommandeId}
+                      onBack={() => setStep("recap")}
+                      onClose={onClose}
+                      input={{
+                        audience: "professionnel",
+                        address: selectedAddress.label,
+                        lat: selectedAddress.lat,
+                        lng: selectedAddress.lng,
+                        addressLabel: selectedAddress.label,
+                        postcode: selectedAddress.postcode,
+                        departementCode: selectedAddress.departementCode,
+                        prestationId: prestation.id,
+                        deliveryDate,
+                        pickupDate: pickupDate || undefined,
+                        contactEmail: contactEmail.trim(),
+                        companyName: companyName.trim(),
+                        contactName: proContactName.trim() || undefined,
+                        contactPhone: contactPhone.trim() || undefined,
+                      }}
+                    />
+                  ) : (
+                    <div className="order-tunnel-card space-y-3 px-4 py-5 text-center">
+                      <p className="text-sm font-medium text-brand-navy">
+                        Connectez-vous pour payer par carte
+                      </p>
+                      <p className="text-[13px] leading-relaxed text-brand-navy/80">
+                        Votre entreprise est en paiement par carte. Connectez-vous avec le
+                        compte associé à votre dossier professionnel, puis reprenez la
+                        commande.
+                      </p>
+                      <Link
+                        href="/login"
+                        className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-primary px-4 text-base font-semibold text-primary-foreground shadow-lg hover:bg-primary/90"
+                      >
+                        Se connecter
+                      </Link>
+                      <Button
+                        variant="outline"
+                        type="button"
+                        className={cn(orderOutlineBtn(embedded), "h-10 w-full")}
+                        onClick={() => setStep("recap")}
+                      >
+                        <ArrowLeft className="mr-2 size-4" />
+                        Retour
+                      </Button>
+                    </div>
+                  )
                 ) : (
                 <div className="space-y-4">
                   <div className="order-tunnel-card bg-gradient-to-br from-brand-warm-field via-brand-warm-field to-brand-warm px-4 py-4">

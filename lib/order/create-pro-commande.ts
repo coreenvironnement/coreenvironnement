@@ -10,7 +10,11 @@ import {
 export async function createProCommandeFromRequest(
   input: ProfessionalBenneRequestInput,
   prepared: PreparedProfessionalBenneRequest,
-  options?: { clientId?: string | null }
+  options?: {
+    clientId?: string | null
+    paymentStatus?: "waived" | "pending"
+    statut?: "confirmee" | "brouillon"
+  }
 ): Promise<{ error: string } | { commandeId: string }> {
   const supabaseConfigError = getSupabaseServiceConfigError()
   if (supabaseConfigError) {
@@ -48,13 +52,16 @@ export async function createProCommandeFromRequest(
 
   const contactNom = `${prepared.contactName} (${prepared.companyName})`
 
+  const paymentStatus = options?.paymentStatus ?? "waived"
+  const statut = options?.statut ?? "confirmee"
+
   const { data: commande, error: insertError } = await supabase
     .from("commandes")
     .insert({
       adresse_complete: prepared.address,
       type_dechet_id: dechetType.id,
-      statut: "confirmee",
-      payment_status: "waived",
+      statut,
+      payment_status: paymentStatus,
       audience: "professionnel",
       prestation_id: prestation.id,
       prestation_label: prepared.prestationLabel,

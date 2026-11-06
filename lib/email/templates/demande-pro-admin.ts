@@ -56,9 +56,7 @@ export function buildDemandeProAdminEmail(data: PreparedProfessionalBenneRequest
       ? `Enlèvement : ${formatDateFr(data.pickupDate)}`
       : "Enlèvement : Non renseigné",
     "",
-    data.commandeId
-      ? `Commande enregistrée : ${data.commandeId} (audience professionnel, paiement sur facture).`
-      : "",
+    "Aucun compte professionnel ni paiement n'a été créé.",
   ]
     .filter(Boolean)
     .join("\n")

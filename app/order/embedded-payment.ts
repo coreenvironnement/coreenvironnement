@@ -4,7 +4,9 @@ import type Stripe from "stripe"
 
 import type { OrderCheckoutInput } from "@/lib/order/checkout-input"
 import { prepareParticulierOrder } from "@/lib/order/prepare-particulier-order"
+import { prepareProOrderForEmbeddedPayment } from "@/lib/order/prepare-pro-order"
 import { getStripe, isStripePaymentConfigured } from "@/lib/stripe/server"
+import { createClient } from "@/lib/supabase/server"
 import { createServiceClient } from "@/lib/supabase/service"
 
 export type EmbeddedPaymentInput = OrderCheckoutInput & {
@@ -33,7 +35,26 @@ export async function initOrderEmbeddedPayment(
     return { error: "Paiement en ligne temporairement indisponible. Contactez-nous par téléphone." }
   }
 
-  const prepared = await prepareParticulierOrder(input)
+  let prepared:
+    | Awaited<ReturnType<typeof prepareParticulierOrder>>
+    | Awaited<ReturnType<typeof prepareProOrderForEmbeddedPayment>>
+
+  if (input.audience === "professionnel") {
+    const authSupabase = await createClient()
+    const {
+      data: { user },
+    } = await authSupabase.auth.getUser()
+    if (!user) {
+      return {
+        error:
+          "Connectez-vous avec votre compte professionnel validé pour payer par carte.",
+      }
+    }
+    prepared = await prepareProOrderForEmbeddedPayment(input, user.id)
+  } else {
+    prepared = await prepareParticulierOrder(input)
+  }
+
   if ("error" in prepared) {
     return prepared
   }
@@ -57,7 +78,8 @@ export async function initOrderEmbeddedPayment(
 
   const metadata = {
     commande_id: prepared.commandeId,
-    order_type: "benne_particulier",
+    order_type:
+      input.audience === "professionnel" ? "benne_professionnel" : "benne_particulier",
   }
 
   let intent: Stripe.PaymentIntent | null = null

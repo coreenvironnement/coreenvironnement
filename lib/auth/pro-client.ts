@@ -79,7 +79,9 @@ export async function ensureProClientForCommande(
     return null
   }
 
-  if (commande.payment_status !== "waived" || commande.statut === "annulee") {
+  const paidOrInvoice =
+    commande.payment_status === "waived" || commande.payment_status === "paid"
+  if (!paidOrInvoice || commande.statut === "annulee") {
     return null
   }
 
