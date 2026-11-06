@@ -73,7 +73,7 @@ function VitrineHomeInner({
 
   return (
     <div
-      className={`vitrine-root min-h-screen${particulierHome ? " vitrine--mobile-centered" : ""}`}
+      className={`vitrine-root min-h-screen${particulierHome ? " vitrine--mobile-centered vitrine--particulier-home-desktop-centered" : ""}`}
     >
       <a
         href="#contenu"

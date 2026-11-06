@@ -81,6 +81,45 @@
     @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10;
   }
 
+  /* Accueil particulier — desktop : contenu lisible centré (hors hero plein écran) */
+  @media (min-width: 1024px) {
+    .vitrine-root.vitrine--particulier-home-desktop-centered .vitrine-early-local-links .container-x {
+      @apply mx-auto max-w-5xl text-center;
+    }
+
+    .vitrine-root.vitrine--particulier-home-desktop-centered .vitrine-early-local-links .container-x ul {
+      @apply justify-center;
+    }
+
+    .vitrine-root.vitrine--particulier-home-desktop-centered .vitrine-early-local-links .container-x p {
+      @apply mx-auto text-center;
+    }
+
+    .vitrine-root.vitrine--particulier-home-desktop-centered #parcours .container-x > div:first-child {
+      @apply mx-auto max-w-3xl text-center;
+    }
+
+    .vitrine-root.vitrine--particulier-home-desktop-centered #parcours .section-eyebrow {
+      @apply justify-center;
+    }
+
+    .vitrine-root.vitrine--particulier-home-desktop-centered #parcours ol > li {
+      @apply text-center;
+    }
+
+    .vitrine-root.vitrine--particulier-home-desktop-centered #parcours .parcours-step-visual {
+      @apply mx-auto;
+    }
+
+    .vitrine-root.vitrine--particulier-home-desktop-centered #parcours ol a[href] {
+      @apply mx-auto block w-fit;
+    }
+
+    .vitrine-root.vitrine--particulier-home-desktop-centered #temoignages .container-x {
+      @apply max-w-5xl;
+    }
+  }
+
   .vitrine-root .section-eyebrow {
     @apply inline-flex items-center gap-2.5 font-[family-name:var(--font-body)] text-xs font-medium uppercase tracking-[0.18em] text-[#35A238];
   }
@@ -512,29 +551,14 @@
       0 10px 28px -8px rgb(14 32 16 / 0.09);
   }
 
-  /* Hero — overlays plein écran pour la lisibilité du texte */
+  /* Hero — un seul voile plein cadre (au-dessus de l’image, sous le contenu z-10) */
   .vitrine-root .hero-overlay {
     @apply pointer-events-none absolute inset-0;
+    z-index: 1;
   }
 
-  .vitrine-root .hero-overlay--desktop {
-    /* Voile uniforme en largeur — lisibilité carte + texte + nav transparente */
-    background: rgb(14 32 16 / 0.52);
-  }
-
-  .vitrine-root .hero-overlay--desktop-particulier {
-    background:
-      linear-gradient(
-        90deg,
-        rgb(14 32 16 / 0.68) 0%,
-        rgb(14 32 16 / 0.58) 38%,
-        rgb(14 32 16 / 0.48) 58%,
-        rgb(14 32 16 / 0.4) 100%
-      );
-  }
-
-  /* Mobile : voile plus léger, couverture ~95 % de l’image */
-  .vitrine-root .hero-overlay--mobile {
+  /* Pro / local SEO : mobile + desktop en une couche responsive */
+  .vitrine-root .hero-overlay--standard {
     background:
       linear-gradient(
         180deg,
@@ -547,10 +571,49 @@
         rgb(14 32 16 / 0.58) 0%,
         rgb(14 32 16 / 0.48) 28%,
         rgb(14 32 16 / 0.34) 52%,
-        rgb(14 32 16 / 0.20) 72%,
-        rgb(14 32 16 / 0.08) 88%,
-        transparent 95%
+        rgb(14 32 16 / 0.2) 72%,
+        rgb(14 32 16 / 0.12) 88%,
+        rgb(14 32 16 / 0.06) 100%
       );
+  }
+
+  @media (min-width: 768px) {
+    .vitrine-root .hero-overlay--standard {
+      /* Voile uniforme — lisibilité carte + texte + nav transparente */
+      background: rgb(14 32 16 / 0.52);
+    }
+  }
+
+  .vitrine-root .hero-overlay--particulier {
+    background:
+      linear-gradient(
+        180deg,
+        rgb(14 32 16 / 0.12) 0%,
+        transparent 36%,
+        rgb(14 32 16 / 0.08) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgb(14 32 16 / 0.62) 0%,
+        rgb(14 32 16 / 0.52) 32%,
+        rgb(14 32 16 / 0.38) 55%,
+        rgb(14 32 16 / 0.22) 75%,
+        rgb(14 32 16 / 0.12) 90%,
+        rgb(14 32 16 / 0.06) 100%
+      );
+  }
+
+  @media (min-width: 768px) {
+    .vitrine-root .hero-overlay--particulier {
+      background:
+        linear-gradient(
+          90deg,
+          rgb(14 32 16 / 0.68) 0%,
+          rgb(14 32 16 / 0.58) 38%,
+          rgb(14 32 16 / 0.48) 58%,
+          rgb(14 32 16 / 0.4) 100%
+        );
+    }
   }
 
   /* Hero — voile localisé sur la zone de lecture, discret */
@@ -576,27 +639,8 @@
     }
   }
 
-  .vitrine-root .hero-overlay--mobile-particulier {
-    background:
-      linear-gradient(
-        180deg,
-        rgb(14 32 16 / 0.12) 0%,
-        transparent 36%,
-        rgb(14 32 16 / 0.08) 100%
-      ),
-      linear-gradient(
-        90deg,
-        rgb(14 32 16 / 0.62) 0%,
-        rgb(14 32 16 / 0.52) 32%,
-        rgb(14 32 16 / 0.38) 55%,
-        rgb(14 32 16 / 0.22) 75%,
-        rgb(14 32 16 / 0.1) 90%,
-        transparent 96%
-      );
-  }
-
   @media (max-width: 767px) {
-    .vitrine-root:has(.hero-overlay--mobile-particulier) .hero-readability-glow {
+    .vitrine-root:has(.hero-overlay--particulier) .hero-readability-glow {
       background: radial-gradient(
         ellipse 118% 102% at 50% 42%,
         rgb(14 32 16 / 0.22) 0%,

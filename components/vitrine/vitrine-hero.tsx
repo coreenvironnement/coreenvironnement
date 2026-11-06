@@ -93,46 +93,39 @@ export function VitrineHero({
       id="accueil"
       className="relative z-10 flex min-h-[100svh] flex-col justify-center overflow-hidden bg-transparent"
     >
-      <div className={cn(backdropLayerClass, "md:hidden")}>
-        <div className="hero-bg-frame hero-bg-frame--mobile relative h-full w-full">
-          <Image
-            src="/images/hero-paris-truck-mobile.png"
-            alt={hero.imageAlt}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
-        </div>
-        <div
-          aria-hidden="true"
-          className={cn(
-            "hero-overlay hero-overlay--mobile",
-            isParticulier && "hero-overlay--mobile-particulier"
-          )}
-        />
-      </div>
-      <div className={cn(backdropLayerClass, "hidden md:block")}>
-        <div className="hero-bg-frame hero-bg-frame--desktop relative h-full w-full">
-          <Image
-            src="/images/hero-paris-truck-desktop.png"
-            alt={hero.imageAlt}
-            fill
-            priority
-            sizes="100vw"
+      <div className={backdropLayerClass}>
+        <div className="relative h-full min-h-0 w-full">
+          <div className="hero-bg-frame hero-bg-frame--mobile relative h-full w-full md:hidden">
+            <Image
+              src="/images/hero-paris-truck-mobile.png"
+              alt={hero.imageAlt}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-center"
+            />
+          </div>
+          <div className="hero-bg-frame hero-bg-frame--desktop relative hidden h-full w-full md:block">
+            <Image
+              src="/images/hero-paris-truck-desktop.png"
+              alt={hero.imageAlt}
+              fill
+              priority
+              sizes="100vw"
+              className={cn(
+                "object-cover",
+                isParticulier ? "object-[62%_center]" : "object-[55%_center]"
+              )}
+            />
+          </div>
+          <div
+            aria-hidden="true"
             className={cn(
-              "object-cover",
-              isParticulier ? "object-[62%_center]" : "object-[55%_center]"
+              "hero-overlay",
+              isParticulier ? "hero-overlay--particulier" : "hero-overlay--standard"
             )}
           />
         </div>
-        <div
-          aria-hidden="true"
-          className={cn(
-            "hero-overlay hero-overlay--desktop",
-            isParticulier && "hero-overlay--desktop-particulier"
-          )}
-        />
       </div>
 
       <div
