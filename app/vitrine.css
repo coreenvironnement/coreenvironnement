@@ -91,10 +91,6 @@
       @apply justify-center;
     }
 
-    .vitrine-root.vitrine--particulier-home-desktop-centered .vitrine-early-local-links .container-x p {
-      @apply mx-auto text-center;
-    }
-
     .vitrine-root.vitrine--particulier-home-desktop-centered #parcours .container-x > div:first-child {
       @apply mx-auto max-w-3xl text-center;
     }

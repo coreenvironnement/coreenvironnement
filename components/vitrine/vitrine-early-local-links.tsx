@@ -31,7 +31,7 @@ export function VitrineEarlyLocalLinks(props: VitrineEarlyLocalLinksProps) {
             Retrouvez les informations utiles pour louer une benne dans votre
             commune.
           </p>
-          <ul className="mt-3 flex flex-wrap justify-center gap-2 max-md:justify-center md:justify-start">
+          <ul className="mt-3 flex flex-wrap justify-center gap-2 max-md:justify-center md:max-lg:justify-start lg:justify-center">
             {HOME_EARLY_LOCAL_SECTOR_LINKS.map(({ href, label }) => (
               <li key={href}>
                 <Link href={href} className={pillLinkClass}>
@@ -40,7 +40,7 @@ export function VitrineEarlyLocalLinks(props: VitrineEarlyLocalLinksProps) {
               </li>
             ))}
           </ul>
-          <p className="mt-3 max-md:text-center md:text-left">
+          <p className="mt-3 max-md:text-center md:max-lg:text-left lg:text-center">
             <Link
               href={HOME_EARLY_ALL_COMMUNES_LINK.href}
               className="inline-flex min-h-11 items-center text-sm font-semibold text-brand-green underline-offset-4 transition-colors hover:text-brand-navy hover:underline"
@@ -48,7 +48,7 @@ export function VitrineEarlyLocalLinks(props: VitrineEarlyLocalLinksProps) {
               {HOME_EARLY_ALL_COMMUNES_LINK.label}
             </Link>
           </p>
-          <p className="mt-4 border-t border-brand-border/60 pt-3 text-sm text-brand-muted max-md:text-center md:text-left">
+          <p className="mt-4 border-t border-brand-border/60 pt-3 text-sm text-brand-muted max-md:text-center md:max-lg:text-left lg:text-center">
             Vous hésitez sur la taille de la benne ?{" "}
             <Link
               href={HOME_EARLY_VOLUME_GUIDE_LINK.href}

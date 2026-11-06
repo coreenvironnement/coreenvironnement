@@ -13,7 +13,7 @@ export function particulierTestimonialSource(t: Testimonial): string {
 function StarRatingParticulier() {
   return (
     <div
-      className="mb-2.5 flex items-center justify-start gap-0.5"
+      className="mb-2.5 flex items-center justify-center gap-0.5"
       role="img"
       aria-label="5 sur 5 étoiles"
     >
@@ -40,16 +40,16 @@ export function TestimonialCardParticulierVitrine({
   return (
     <article
       className={cn(
-        "flex flex-col rounded-2xl border border-brand-green/14 bg-brand-warm-field p-4 text-left shadow-[var(--shadow-vitrine-soft)] sm:p-5",
+        "flex flex-col items-center rounded-2xl border border-brand-green/14 bg-brand-warm-field p-4 text-center shadow-[var(--shadow-vitrine-soft)] sm:p-5",
         mobileCarousel ? "w-full" : "w-full sm:min-w-0"
       )}
       style={{ animationDelay: `${i * 40}ms` }}
     >
       <StarRatingParticulier />
-      <blockquote className="flex-1 text-left text-sm leading-relaxed text-brand-text sm:text-[0.95rem]">
+      <blockquote className="flex-1 text-balance text-sm leading-relaxed text-brand-text sm:text-[0.95rem]">
         «&nbsp;{t.quote}&nbsp;»
       </blockquote>
-      <footer className="mt-5 border-t border-brand-border pt-4 text-left">
+      <footer className="mt-5 w-full border-t border-brand-border pt-4 text-center">
         <p className="font-semibold text-brand-navy font-[family-name:var(--font-display)]">
           {t.author}
         </p>
