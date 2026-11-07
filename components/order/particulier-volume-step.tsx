@@ -28,6 +28,7 @@ import { benneImageForVolume } from "@/lib/commande/benne-visual"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
+import { VolumeEstimatorMeasureLottie } from "@/components/order/volume-estimator-measure-lottie"
 
 type View =
   | "choice"
@@ -397,7 +398,7 @@ export function ParticulierVolumeStep({
   const [width, setWidth] = useState("")
   const [height, setHeight] = useState("")
   const [bagCount, setBagCount] = useState("")
-  const [litersPerBag, setLitersPerBag] = useState("100")
+  const [litersPerBag, setLitersPerBag] = useState("1000")
   const [result, setResult] = useState<VolumeRecommendation | null>(null)
   const [knownPick, setKnownPick] = useState<number | null>(null)
   const [choiceHighlight, setChoiceHighlight] = useState<"known" | "estimate" | null>(
@@ -409,7 +410,7 @@ export function ParticulierVolumeStep({
     setWidth("")
     setHeight("")
     setBagCount("")
-    setLitersPerBag("100")
+    setLitersPerBag("1000")
     setResult(null)
   }
 
@@ -618,21 +619,30 @@ export function ParticulierVolumeStep({
             animate={{ opacity: 1, y: 0 }}
             className="space-y-4"
           >
+            <VolumeEstimatorMeasureLottie mode={estimatorMode} />
             {estimatorMode !== "bags" ? (
-              <div className="grid grid-cols-3 gap-2">
-                <DimField label="Long. (m)" value={length} onChange={setLength} />
-                <DimField label="Larg. (m)" value={width} onChange={setWidth} />
+              <div className="grid grid-cols-3 gap-2 [&_label]:min-w-0">
+                <DimField label="Longueur (m)" value={length} onChange={setLength} />
+                <DimField label="Largeur (m)" value={width} onChange={setWidth} />
                 <DimField
-                  label={estimatorMode === "irregular" ? "H. moy." : "Haut. (m)"}
+                  label={
+                    estimatorMode === "irregular"
+                      ? "Hauteur moy. (m)"
+                      : "Hauteur (m)"
+                  }
                   value={height}
                   onChange={setHeight}
                 />
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-2">
-                <DimField label="Nombre de sacs" value={bagCount} onChange={setBagCount} />
+              <div className="grid grid-cols-2 gap-2 [&_label]:min-w-0">
                 <DimField
-                  label="Litres / sac"
+                  label="Nombre de sacs"
+                  value={bagCount}
+                  onChange={setBagCount}
+                />
+                <DimField
+                  label="Volume par sac (L)"
                   value={litersPerBag}
                   onChange={setLitersPerBag}
                 />
