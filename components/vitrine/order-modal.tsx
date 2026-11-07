@@ -125,7 +125,7 @@ export function VitrineOrderModal() {
 
           <div
             ref={scrollContainerRef}
-            className="order-tunnel-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain px-4 pb-3 pt-0.5 sm:px-6 sm:pb-4 sm:pt-1"
+            className="order-tunnel-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain px-4 pb-3 pt-1 sm:px-6 sm:pb-4 sm:pt-1.5"
           >
             <OrderWidget
               variant="embedded"

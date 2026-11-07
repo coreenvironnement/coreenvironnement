@@ -705,7 +705,7 @@ export function OrderWidget({
       className={cn(
         "relative mx-auto w-full",
         embedded
-          ? "order-tunnel-embedded-card max-w-none min-w-0 gap-0 overflow-x-hidden border-0 bg-transparent py-0 shadow-none ring-0"
+          ? "order-tunnel-embedded-card max-w-none min-w-0 gap-0 overflow-visible border-0 bg-transparent py-0 shadow-none ring-0"
           : "overflow-hidden max-w-xl border-white/70 bg-card/95 shadow-[0_22px_70px_-32px_color-mix(in_srgb,var(--brand-navy)_38%,transparent)] ring-1 ring-primary/15 backdrop-blur-sm"
       )}
     >
