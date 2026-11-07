@@ -10,6 +10,8 @@ import {
 } from "lottie-react"
 import { useReducedMotion } from "framer-motion"
 
+const PARCOURS_LOTTIE_LOOP_COUNT = 3
+
 type ParcoursLottieStepCardProps = {
   num: string
   titre: string
@@ -69,12 +71,15 @@ export function ParcoursLottieStepCard({
             <Lottie
               src={animationSrc}
               autoplay={false}
-              loop={!reduceMotion}
+              loop={reduceMotion ? false : PARCOURS_LOTTIE_LOOP_COUNT}
               lottieRef={lottieRef}
               className="h-full w-full max-h-[min(240px,52vw)] max-w-[min(100%,420px)]"
               subscriptions={{
                 [LottieSubscription.ready]: () => {
                   if (reduceMotion) holdLastFrame()
+                },
+                [LottieSubscription.complete]: () => {
+                  if (!reduceMotion) holdLastFrame()
                 },
               }}
             />

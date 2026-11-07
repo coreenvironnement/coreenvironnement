@@ -35,15 +35,12 @@ export function HeroFormulaireLivraisonLottie() {
         <Lottie
           src={HERO_FORMULAIRE_LIVRAISON_LOTTIE_SRC}
           autoplay={false}
-          loop={false}
+          loop={!reduceMotion}
           lottieRef={lottieRef}
           className="hero-order-card__lottie"
           subscriptions={{
             [LottieSubscription.ready]: () => {
               if (reduceMotion) holdLastFrame()
-            },
-            [LottieSubscription.complete]: () => {
-              holdLastFrame()
             },
           }}
         />
