@@ -88,6 +88,7 @@ function VitrineHomeInner({
 
       <main id="contenu" className="relative">
         <VitrineHero seoVariant={seoVariant} localPage={localSeoData} />
+        {particulierHome ? <VitrineParticulierJourney /> : null}
         {hubPage ? <VitrineEarlyLocalLinks mode="hub" /> : null}
         {!hubPage && !localSeoData ? <VitrineEarlyLocalLinks mode="home" /> : null}
         {localSeoData ? (
@@ -100,7 +101,7 @@ function VitrineHomeInner({
         {localSeoData?.type === "longtail" ? (
           <VitrineLongtailIntro page={localSeoData} />
         ) : null}
-        <VitrineParticulierJourney />
+        {!particulierHome ? <VitrineParticulierJourney /> : null}
         <VitrineParticulierConseils />
         <TestimonialsSection vitrine particulierOnly />
         <VitrineParticulierFaq />
