@@ -1,0 +1,157 @@
+Refais la section « Bien préparer votre location de benne » de core-environnement.fr à partir du pack joint. Le résultat doit suivre au plus près les maquettes ordinateur et mobile et utiliser les vrais fichiers fournis. L’objectif est d’aider un particulier à choisir sa benne et à préparer la livraison en comprenant immédiatement les trois points utiles : le volume, l’accès du camion et les déchets acceptés.
+
+1. RÉFÉRENCES ET FICHIERS À UTILISER
+
+Décompresse le pack. Examine d’abord :
+• reference/maquette-ordinateur.png et reference/maquette-mobile.png : références de composition.
+• APERCU-ANIME.html : aperçu autonome du rendu responsive et des trois animations.
+• integration/section.html et integration/section.css : structure et valeurs de mise en page utilisables, à adapter au framework du projet.
+• animations/01-volume.json : deux bennes de tailles différentes apparaissent avec un léger décalage.
+• animations/02-acces.json : le camion arrive doucement, puis un repère de longueur se dessine sous lui.
+• animations/03-dechets.json : les trois groupes de matériaux apparaissent successivement et restent séparés.
+• posters/01-volume.svg, 02-acces.svg et 03-dechets.svg : états statiques pour l’attente, les erreurs et la préférence de réduction des animations.
+• assets/ : visuels détourés PNG sources et WebP optimisés.
+• integration/animations.js : exemple de déclenchement et de nettoyage à adapter au cycle de vie du projet.
+
+Ces Lottie sont des animations 2D composées de visuels au rendu 3D, intégrés dans les JSON. Ce ne sont pas des modèles 3D ni des dessins entièrement vectoriels. Utilise lottie-web avec son rendu SVG. Les trois JSON sont autonomes : ils n’ont pas besoin de liens d’images distants. Le lecteur local et sa licence MIT sont inclus. Les visuels de référence ne doivent jamais devenir une capture aplatie de toute la section.
+
+Conserve les illustrations fournies. Ne les remplace pas par des emojis, des pictogrammes génériques ou de nouveaux dessins. Le camion de l’animation se déplace légèrement ; ne prétends pas que cette animation montre une opération technique de dépose à l’échelle.
+
+2. TEXTE EXACT DE LA SECTION
+
+Surtitre : AVANT DE COMMANDER
+Titre H2 : Bien préparer votre location de benne
+Introduction : Trois repères simples pour choisir et préparer la livraison.
+
+CARTE 1
+Repère : 01 · LE VOLUME
+Titre H3 : Quelle taille choisir ?
+Texte : Estimez le volume de vos déchets pour choisir une benne adaptée.
+Note : Une estimation pour vous guider.
+Bouton : Estimer mon volume
+Illustration : animations/01-volume.json
+
+CARTE 2
+Repère : 02 · L’ACCÈS
+Titre H3 : Le camion peut-il passer ?
+Illustration : animations/02-acces.json
+Libellé au-dessus des chiffres : Espace à prévoir
+Trois repères côte à côte :
+3 m / de large
+4 m / de haut
+10 à 12 m / pour la pose
+Encart secondaire : Dans la rue ? Une autorisation est nécessaire.
+Lien dans cet encart : Voir les démarches
+Destination : https://entreprendre.service-public.gouv.fr/vosdroits/F23509
+
+Les dimensions sont les repères approximatifs fournis par CORE pour préparer l’accès ; elles ne garantissent pas à elles seules la faisabilité de toute livraison. N’ajoute pas de seuils techniques ou de promesse de validation automatique. Ne duplique pas sous l’illustration un paragraphe qui répète les trois mesures. Les chiffres et leurs libellés doivent être du vrai texte HTML visible immédiatement, jamais uniquement des pixels ou des calques Lottie.
+
+CARTE 3
+Repère : 03 · LES DÉCHETS
+Titre H3 : Que mettre dans la benne ?
+Texte : Gravats, bois, cartons… Vérifiez ce que votre benne peut recevoir avant de la remplir.
+Bouton : Vérifier mes déchets
+Destination existante : /location-benne/dechets-acceptes
+Illustration : animations/03-dechets.json
+
+Les trois tas sont des exemples de catégories. Ne mets pas de coche verte sous chaque tas : cela laisserait penser qu’ils sont toujours acceptés ensemble. Ne présente pas le plâtre, les isolants ou la terre comme acceptés dans toutes les bennes. Les règles dépendent de l’offre choisie.
+
+BANDEAU D’AIDE SOUS LES CARTES
+Titre : Un doute sur la taille, l’accès ou vos déchets ?
+Texte : Notre équipe vous aide à faire le bon choix.
+Action : Parler à un conseiller
+Réutilise le contact déjà configuré dans le site. Lors de la préparation du pack, le site affichait le 07 53 70 57 27 ; vérifie sa configuration actuelle dans le projet. Utilise un lien téléphonique si c’est le canal réellement proposé. N’ajoute pas un accès WhatsApp sans vérifier qu’il existe.
+
+3. COMPOSITION ORDINATEUR
+
+La section actuelle occupe mal sa largeur : remplace la grande carte isolée au-dessus de deux cartes étroites par une seule rangée de trois cartes équilibrées.
+
+• Conteneur centré, largeur maximale 1 200 px.
+• Fond céladon très clair #F0F6EF.
+• Padding de section : environ 64 px en haut, 56 px en bas et 24 px sur les côtés.
+• En-tête centré ; espace de 36 px avant les cartes.
+• Grille desktop à partir de 1 024 px : colonnes minmax(0,1fr) minmax(0,1.16fr) minmax(0,1fr), avec un écart de 22 px.
+• La carte accès est légèrement plus large pour préserver la lisibilité des trois dimensions.
+• Cartes blanches, bordure #D7E7D5 de 1 px, rayon 22 px, padding 26 px, ombre très légère.
+• Aligne le haut et le bas des cartes par la grille et flex ; évite une hauteur fixe qui couperait les textes au zoom.
+• Garde les illustrations dans une zone maîtrisée, sans les étirer. Préserve les proportions des compositions 800 × 400, et 800 × 300 pour les déchets.
+• Dans la carte volume : titre et texte en haut, bennes au centre, note et bouton en bas.
+• Dans la carte accès : titre, camion, repères, puis encart discret sur la pose dans la rue.
+• Dans la carte déchets : titre et texte en haut, trois matériaux au centre, bouton secondaire en bas.
+• Bouton principal limité à la largeur de sa carte. Ne recrée pas une longue barre verte sur toute la section.
+• Bandeau d’aide à 24 px sous la grille : icône discrète à gauche, texte au centre, lien à droite. Ce bandeau ne doit pas devenir un second énorme bloc commercial.
+
+4. COMPOSITION MOBILE ET TABLETTE
+
+La version mobile est une vraie composition adaptée, pas la grille desktop réduite.
+
+• Jusqu’à 1 023 px : les cartes se suivent verticalement, dans l’ordre volume → accès → déchets.
+• Sur tablette, limite les cartes à environ 620 px de large et centre-les.
+• Sous 600 px : padding extérieur 18 px, padding intérieur des cartes 20 px, écart 14 px.
+• En-tête aligné à gauche. H2 29 px environ, interligne 1,15. H3 22 px. Corps 15 px avec interligne 1,6.
+• Dans la première carte, place les bennes en petit à droite du titre, puis le texte sur toute la largeur ; bouton pleine largeur et note sous le bouton. Si la largeur ou la taille de texte ne le permet pas, replie l’illustration sur une ligne séparée au lieu de serrer le texte.
+• Dans la deuxième carte, conserve le camion visible et les trois chiffres sur une rangée lisible : 3 m / 4 m / 10 à 12 m. Prévois davantage de largeur pour le troisième repère. Ne coupe pas les unités.
+• Dans la troisième carte, garde les matériaux bien séparés et le bouton pleine largeur.
+• Le bandeau d’aide se replie proprement avec le lien sous le texte.
+• Aucun défilement horizontal, carrousel obligatoire ou accordéon qui cacherait les trois informations essentielles.
+• Les zones tactiles principales font au moins 44 px de haut ; les boutons fournis font 48 px.
+
+5. COULEURS, TYPOGRAPHIE ET FINITIONS
+
+Utilise Manrope déjà présente dans le projet si disponible. Sinon charge une seule famille correctement, sans multiplier les téléchargements ; les fichiers fournis servent à l’aperçu autonome.
+Titres bleu nuit #152A3B, corps #3B4751. Le vert de marque reste #35A238 dans les illustrations et les accents. Pour les textes verts et les boutons à texte blanc, le CSS fourni utilise un vert plus sombre #267B29 afin de conserver un contraste lisible. Garde des contours nets, des ombres sobres et des blancs propres.
+Évite le gris trop clair, les grands espaces vides inutiles, les fonds colorés multipliés, les illustrations surdimensionnées, le texte tout en capitales hors des petits repères et les badges commerciaux ajoutés.
+Les textes visibles sont ceux fournis ci-dessus. N’ajoute pas de jargon DIB/DND/AOT dans cette section, de statistiques, de prix ou de promesses de disponibilité.
+
+6. ANIMATIONS ET ACCESSIBILITÉ
+
+• Charge le lecteur une seule fois ; réutilise celui du projet s’il existe déjà et est compatible.
+• Charge chaque JSON à proximité de sa zone visible ou quand sa carte entre à l’écran.
+• Joue chaque animation une seule fois à son apparition, puis garde l’état final. loop:false.
+• Les fichiers font 150 images à 60 i/s : la composition dure 2,5 secondes, mouvement doux puis repos.
+• Pas de répétition permanente, de rebond, de flash ni de lecture relancée à chaque petit mouvement de scroll.
+• Conserve les posters SVG pendant le chargement. En cas d’échec du lecteur ou du JSON, garde le visuel statique ; le contenu et les actions doivent rester utilisables.
+• Respecte prefers-reduced-motion : affiche directement le poster. Il n’est alors pas nécessaire de charger les JSON.
+• Les illustrations sont décoratives : aria-hidden=true et alt="". Le titre, les mesures et le sens restent dans le HTML.
+• Réserve l’espace des illustrations pour éviter le déplacement des boutons pendant le chargement.
+• Prévois le nettoyage des instances, observers et écouteurs lors des changements de route ou du démontage du composant.
+• Sur la page réelle, utilise les fichiers JSON séparés ; ne colle pas les données de l’aperçu autonome dans le bundle initial.
+
+7. BRANCHEMENT DES ACTIONS ET PARCOURS EXISTANT
+
+« Estimer mon volume » doit ouvrir l’estimateur déjà présent sur le site. Identifie son composant et son point d’entrée réels dans le code. Le HTML fourni contient un bouton à raccorder, pas un nouveau calculateur. Dans integration/animations.js, fournis la fonction openEstimator adaptée au projet ; ne livre jamais le bouton avec le gestionnaire de démonstration ou le console.error de secours.
+
+Si l’estimateur exige d’abord l’adresse et le type de déchets, ouvre le parcours existant au bon endroit, avec une indication courte si nécessaire. Réutilise les informations déjà saisies. Ne vide pas le formulaire, ne recrée pas un second estimateur et ne saute pas une étape requise.
+
+Préserve les règles actuelles : l’estimation est indicative et la commande porte sur une benne à la fois. Ne transforme pas une estimation de plusieurs bennes en panier multiple automatique.
+
+Le lien « Voir les démarches » ouvre la source officielle dans un nouvel onglet avec rel approprié et un libellé accessible l’indiquant. « Vérifier mes déchets » mène au guide existant, et ne fait pas perdre les informations déjà renseignées dans une commande en cours.
+
+8. PAGES UTILES : RÉUTILISER CE QUI EXISTE
+
+Les pages suivantes étaient accessibles lors de la préparation de ce pack :
+• /location-benne/volume — « Quel volume de benne choisir ? »
+• /location-benne/dechets-acceptes — « Quels déchets peut-on mettre dans une benne ? »
+
+Conserve leurs URL et cherche les composants correspondants avant de proposer des doublons. La tâche principale est le remplacement de la section et le raccordement correct de ses actions.
+
+Si un enrichissement des guides est prévu ensuite :
+• Volumes : repères concrets, longueur × largeur × hauteur, distinction entre volume et poids, accès au même estimateur. Utiliser uniquement les capacités et offres réellement disponibles. Aucun nombre de sacs ou prix inventé.
+• Déchets : exemples visuels par catégorie, règles de l’offre, matériaux à garder à part, lien de retour vers la commande. Pas de promesse d’acceptation universelle des mélanges.
+
+Une seule nouvelle page peut être pertinente : « Préparer la livraison de votre benne ». Avant de la créer, vérifie les pages et routes existantes ; si un guide équivalent existe, enrichis-le.
+Proposition d’URL seulement si nécessaire : /location-benne/preparer-livraison.
+Plan utile pour cette page :
+1. Le passage du camion : repères approximatifs 3 m de large et 4 m de haut, rue étroite, porche ou obstacle à signaler.
+2. La place de dépose : espace dégagé de 10 à 12 m à prévoir, surface et configuration à confirmer avec CORE si besoin.
+3. Dans une propriété ou sur la voie publique : qui contacter et lien vers les démarches officielles, sans inventer un délai ou un tarif de mairie.
+4. Avant l’arrivée : rendre l’accès libre et prévoir un contact joignable selon les consignes existantes de CORE.
+5. En cas de doute : contacter l’équipe avant de réserver. Une photo aide à expliquer la situation mais ne vaut pas validation automatique.
+
+Ce guide complémentaire n’est pas nécessaire pour lire les dimensions sur l’accueil. S’il est créé, relie-le depuis la FAQ et un petit lien contextuel « Préparer la livraison », sans ajouter une quatrième carte à cette section. Ne crée pas une page SEO différente pour chaque mesure, type de déchet ou question.
+
+9. CONTRÔLES AVANT LIVRAISON
+
+Vérifie réellement à 320, 375, 390, 768, 1 024 et 1 440 px, ainsi qu’avec le texte agrandi : pas de texte coupé, pas de débordement horizontal, pas de chiffre masqué, boutons lisibles et actions fonctionnelles. Compare les captures ordinateur et mobile aux références jointes. Teste le déclenchement unique des animations, le maintien de la dernière image, la réduction des animations et le repli statique en cas d’erreur.
+
+Vérifie particulièrement le raccordement de l’estimateur, les deux destinations des liens, le contact existant et la conservation des données du formulaire. Ne modifie pas d’autres sections ni les règles métier pour cette refonte. Termine avec les fichiers modifiés, les contrôles réalisés et les éventuels points métier restant à confirmer dans le projet.

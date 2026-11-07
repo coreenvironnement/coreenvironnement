@@ -15,6 +15,7 @@ import {
   signupSourceForType,
   type SignupAccountType,
 } from "@/lib/auth/signup-type"
+import { finalizeSignupProfile } from "@/app/auth/signup-actions"
 import { safeNextPath } from "@/lib/auth/post-login-path"
 import { createClient } from "@/lib/supabase/client"
 
@@ -89,11 +90,20 @@ export function SignupForm() {
     setLoading(false)
 
     if (signUpError) {
-      setError(signUpError.message || "Impossible de créer le compte.")
+      const msg = signUpError.message ?? ""
+      if (/already|registered|exists/i.test(msg)) {
+        setError(null)
+        setInfo(
+          "Un compte existe déjà pour cet e-mail (par exemple après une commande). Utilisez « Mot de passe oublié ? » sur la page de connexion pour choisir votre mot de passe."
+        )
+        return
+      }
+      setError("Impossible de créer le compte. Vérifiez vos informations.")
       return
     }
 
     if (data.session) {
+      await finalizeSignupProfile(accountType)
       router.push(next)
       router.refresh()
       return

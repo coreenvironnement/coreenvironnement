@@ -165,6 +165,7 @@ type OrderWidgetProps = {
   onClose?: () => void
   scrollContainerRef?: React.RefObject<HTMLElement | null>
   onVolumeIntentChoiceActive?: (active: boolean) => void
+  onVolumeEstimatorAppearanceActive?: (active: boolean) => void
 }
 
 export function OrderWidget({
@@ -177,6 +178,7 @@ export function OrderWidget({
   onClose,
   scrollContainerRef,
   onVolumeIntentChoiceActive,
+  onVolumeEstimatorAppearanceActive,
 }: OrderWidgetProps) {
   const embedded = variant === "embedded"
   const { draft, patchDraft, resolveIntentPhase, intentStart } = useVitrineOrder()
@@ -547,9 +549,24 @@ export function OrderWidget({
     !volumeEstimateOnly &&
     volumeStepView === "choice"
 
+  const volumeEstimatorAppearanceActive =
+    embedded &&
+    open &&
+    step === "intent" &&
+    intentPhase === "volume" &&
+    audience === "particulier" &&
+    volumeStepView === "estimator-mode"
+
+  const volumeModalContentFit =
+    volumeIntentChoiceActive || volumeEstimatorAppearanceActive
+
   useEffect(() => {
     onVolumeIntentChoiceActive?.(volumeIntentChoiceActive)
   }, [volumeIntentChoiceActive, onVolumeIntentChoiceActive])
+
+  useEffect(() => {
+    onVolumeEstimatorAppearanceActive?.(volumeEstimatorAppearanceActive)
+  }, [volumeEstimatorAppearanceActive, onVolumeEstimatorAppearanceActive])
 
   useEffect(() => {
     onAudienceChange?.(audience)
@@ -1145,7 +1162,7 @@ export function OrderWidget({
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
               className={cn(
-                embedded && !volumeIntentChoiceActive && "order-tunnel-step--fill"
+                embedded && !volumeModalContentFit && "order-tunnel-step--fill"
               )}
             >
               <ParticulierVolumeStep

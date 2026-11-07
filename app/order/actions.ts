@@ -51,7 +51,11 @@ export async function startOrderCheckout(
     return { error: "Paiement en ligne temporairement indisponible. Contactez-nous par téléphone." }
   }
 
-  const prepared = await prepareParticulierOrder(input)
+  const authSupabase = await createClient()
+  const {
+    data: { user },
+  } = await authSupabase.auth.getUser()
+  const prepared = await prepareParticulierOrder(input, user?.id ?? null)
   if ("error" in prepared) {
     return prepared
   }
@@ -180,9 +184,7 @@ export async function submitProfessionalBenneRequest(
   }
 
   const serviceSupabase = createServiceClient()
-  await ensureProClientForCommande(serviceSupabase, created.commandeId, {
-    sendConfirmationEmail: "initial",
-  })
+  await ensureProClientForCommande(serviceSupabase, created.commandeId)
 
   const preparedWithCommande = {
     ...prepared,

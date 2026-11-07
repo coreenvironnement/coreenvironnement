@@ -25,7 +25,8 @@ const VOLUME_BREADCRUMBS = [
 ] as const
 
 const BODY_CLASS = "mt-3 text-base leading-relaxed text-brand-muted"
-const H3_CLASS = "mt-8 text-lg font-semibold text-brand-navy"
+const H3_CLASS = "vitrine-h3 mt-8"
+const H2_CLASS = "vitrine-h2 text-balance"
 const CALLOUT_CLASS =
   "mt-4 rounded-xl border border-brand-green/12 bg-brand-warm px-4 py-3 text-sm leading-relaxed text-brand-muted"
 const SECONDARY_LINK_CLASS =
@@ -77,10 +78,8 @@ export function VitrineVolumeGuide() {
           <article className="border-b border-brand-border bg-brand-bg py-12 sm:py-16">
             <div className="container-x mx-auto max-w-3xl">
               <p className="section-eyebrow">Guide pratique</p>
-              <h1 className="mt-3 font-[family-name:var(--font-display)] text-3xl font-semibold text-brand-navy sm:text-4xl">
-                Quel volume de benne choisir ?
-              </h1>
-              <p className="mt-4 text-base leading-relaxed text-brand-muted sm:text-lg">
+              <h1 className="vitrine-h1 text-balance">Quel volume de benne choisir ?</h1>
+              <p className="vitrine-section-intro">
                 {VOLUME_GUIDE_INTRO}
               </p>
 
@@ -98,7 +97,7 @@ export function VitrineVolumeGuide() {
               </nav>
 
               <section id="volume-et-poids" className="mt-10 scroll-mt-28">
-                <h2 className="text-xl font-semibold text-brand-navy">
+                <h2 className={H2_CLASS}>
                   Volume et poids : quelle différence ?
                 </h2>
                 <GuideParagraph>
@@ -117,7 +116,7 @@ export function VitrineVolumeGuide() {
               </section>
 
               <section id="estimer-volume" className="mt-10 scroll-mt-28">
-                <h2 className="text-xl font-semibold text-brand-navy">
+                <h2 className={H2_CLASS}>
                   Comment estimer votre volume de déchets ?
                 </h2>
 
@@ -169,7 +168,7 @@ export function VitrineVolumeGuide() {
               </section>
 
               <section id="choisir-dechets" className="mt-10 scroll-mt-28">
-                <h2 className="text-xl font-semibold text-brand-navy">
+                <h2 className={H2_CLASS}>
                   Quelle benne choisir selon vos déchets ?
                 </h2>
 
@@ -210,7 +209,7 @@ export function VitrineVolumeGuide() {
               </section>
 
               <section id="exemples-tarifs" className="mt-10 scroll-mt-28">
-                <h2 className="text-xl font-semibold text-brand-navy">
+                <h2 className={H2_CLASS}>
                   Exemples de volumes et de tarifs
                 </h2>
                 <GuideParagraph>
@@ -256,7 +255,7 @@ export function VitrineVolumeGuide() {
               </section>
 
               <section id="consulter-offres" className="mt-10 scroll-mt-28">
-                <h2 className="text-xl font-semibold text-brand-navy">
+                <h2 className={H2_CLASS}>
                   Consultez les bennes et les tarifs pour votre projet
                 </h2>
                 <GuideParagraph>

@@ -1,0 +1,9 @@
+Vérification locale dans Chromium
+
+• Lecture réelle des trois fichiers Lottie avec lottie-web 5.13.0 : aucune erreur JavaScript.
+• Rendu responsive vérifié à 320, 375, 390, 768, 1 024 et 1 440 px : aucun débordement horizontal, dimensions lisibles.
+• Les trois animations s’arrêtent à l’image 149 sur 150 et conservent leur état final.
+• Préférence de réduction des animations : aucun lecteur initialisé, posters visibles.
+• L’aperçu et les images intégrées fonctionnent sans accès Internet.
+
+Le raccordement à l’estimateur et la validation dans le projet réel restent le travail de l’agent qui intègre la section ; le pack ne modifie pas le site en ligne.

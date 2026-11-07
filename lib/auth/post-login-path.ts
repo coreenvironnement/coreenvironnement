@@ -9,7 +9,7 @@ export function safeNextPath(raw: string | null): string | null {
 }
 
 /**
- * Cible après authentification (mot de passe ou session OAuth/magic link).
+ * Cible après authentification (mot de passe ou session OAuth).
  * Aligné avec le garde-fou serveur `assertProDashboardAccess`.
  */
 export async function getPostLoginRedirectPath(

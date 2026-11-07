@@ -160,10 +160,7 @@ export function VitrineHero({
 
             <h1
               className={cn(
-                "animate-fade-up mt-0 text-white [text-shadow:0_1px_28px_rgba(14,32,16,0.32),0_2px_56px_rgba(14,32,16,0.16)]",
-                isParticulier
-                  ? "max-lg:text-center lg:text-left text-[clamp(1.65rem,4.85vw,2rem)] leading-[1.12] sm:text-[clamp(1.95rem,3.8vw,3.1rem)] sm:leading-[1.1]"
-                  : "max-lg:text-center lg:text-left text-[clamp(1.82rem,5.35vw,2.17rem)] leading-[1.1] sm:text-[clamp(2.15rem,4.4vw,3.45rem)] sm:leading-[1.08]"
+                "vitrine-h1 vitrine-h1--on-dark animate-fade-up mt-0 max-lg:text-center lg:text-left [text-shadow:0_1px_28px_rgba(14,32,16,0.32),0_2px_56px_rgba(14,32,16,0.16)]"
               )}
               style={{ animationDelay: "140ms" }}
             >
@@ -175,7 +172,7 @@ export function VitrineHero({
 
             <p
               className={cn(
-                "animate-fade-up mt-4 max-w-[540px] text-[16px] leading-[1.72] text-white/95 [text-shadow:0_1px_22px_rgba(14,32,16,0.24)] sm:mt-5 sm:text-[17px] sm:leading-[1.78] lg:mt-6 lg:max-w-[520px] lg:text-[18px]",
+                "vitrine-section-intro vitrine-section-intro--on-dark animate-fade-up mt-4 max-w-[540px] text-white/95 [text-shadow:0_1px_22px_rgba(14,32,16,0.24)] sm:mt-5 lg:mt-6 lg:max-w-[520px]",
                 isParticulier ? "max-lg:mx-auto lg:mx-0" : "max-lg:mx-auto lg:mx-0"
               )}
               style={{ animationDelay: "220ms" }}

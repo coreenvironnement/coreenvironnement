@@ -248,7 +248,7 @@ function ParticulierPanel() {
     <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(14_32_16/0.03),0_12px_32px_-8px_rgb(14_32_16/0.1)]">
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
         <div className="how-panel-main p-6 sm:p-8 lg:p-9 xl:p-10">
-          <h3 className="text-lg leading-snug text-brand-navy sm:text-xl">
+          <h3 className="vitrine-h3">
             {commentCaFonctionne.particulier.accroche}
           </h3>
           <StepsGrid steps={PARTICULIER_STEPS} className="mt-6 sm:mt-8" />
@@ -320,7 +320,7 @@ function ProfessionnelPanel({ professionnelsPageLayout = false }: { professionne
     <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(14_32_16/0.03),0_12px_32px_-8px_rgb(14_32_16/0.1)]">
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
         <div className="how-panel-main p-6 sm:p-8 lg:p-9 xl:p-10">
-          <h3 className="text-lg leading-snug text-brand-navy sm:text-xl">
+          <h3 className="vitrine-h3">
             {commentCaFonctionne.professionnel.accroche}
           </h3>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-brand-muted sm:text-[15px]">
@@ -381,7 +381,7 @@ export function VitrineHowItWorks({
       <div className="container-x">
         <div className="mx-auto max-w-3xl text-center">
           <p className="section-eyebrow">Comment ça fonctionne</p>
-          <h2 className="section-title mt-3">
+          <h2 className="section-title">
             {professionnelsPageLayout ? (
               sectionTitle
             ) : (
@@ -391,7 +391,7 @@ export function VitrineHowItWorks({
               </>
             )}
           </h2>
-          <p className="mt-4 text-sm leading-relaxed text-brand-muted sm:text-base">
+          <p className="vitrine-section-intro">
             {sectionIntro}
           </p>
           <div className="mt-8 sm:mt-9">

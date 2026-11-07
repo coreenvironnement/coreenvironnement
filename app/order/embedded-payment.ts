@@ -52,7 +52,11 @@ export async function initOrderEmbeddedPayment(
     }
     prepared = await prepareProOrderForEmbeddedPayment(input, user.id)
   } else {
-    prepared = await prepareParticulierOrder(input)
+    const authSupabase = await createClient()
+    const {
+      data: { user },
+    } = await authSupabase.auth.getUser()
+    prepared = await prepareParticulierOrder(input, user?.id ?? null)
   }
 
   if ("error" in prepared) {

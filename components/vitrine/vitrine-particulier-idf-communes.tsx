@@ -23,7 +23,7 @@ export function VitrineParticulierIdfCommunes() {
         >
           Votre benne en Île-de-France
         </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-brand-muted sm:text-[15px]">
+        <p className="vitrine-section-intro mx-auto max-w-2xl">
           Retrouvez les informations utiles pour louer une benne dans votre
           commune.
         </p>

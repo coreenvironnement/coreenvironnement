@@ -23,7 +23,7 @@ export function VitrineLongtailIntro({ page }: { page: LocalPage }) {
         <div className="mx-auto max-w-3xl">
           <h2
             id="longtail-intro-title"
-            className="font-[family-name:var(--font-display)] text-xl font-semibold text-brand-navy sm:text-2xl"
+            className="section-title text-balance"
           >
             {buildLongtailTitle(page)}
           </h2>

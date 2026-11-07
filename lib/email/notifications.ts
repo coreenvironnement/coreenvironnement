@@ -21,6 +21,10 @@ import {
   type CompteProReviewData,
 } from "@/lib/email/templates/compte-pro-review"
 import {
+  buildPasswordSetupEmail,
+  type PasswordSetupEmailData,
+} from "@/lib/email/templates/password-setup"
+import {
   buildProWaitlistEmail,
   type ProWaitlistData,
 } from "@/lib/email/templates/pro-waitlist"
@@ -30,6 +34,14 @@ import type { PreparedProfessionalBenneRequest } from "@/lib/order/pro-request"
 
 export async function notifyCommandeConfirmed(data: CommandeConfirmationData) {
   const template = buildCommandeConfirmationEmail(data)
+  return sendEmail({
+    to: data.contactEmail,
+    ...template,
+  })
+}
+
+export async function notifyPasswordSetup(data: PasswordSetupEmailData) {
+  const template = buildPasswordSetupEmail(data)
   return sendEmail({
     to: data.contactEmail,
     ...template,

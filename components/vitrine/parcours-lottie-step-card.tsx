@@ -98,7 +98,7 @@ export function ParcoursLottieStepCard({
         >
           {num}
         </span>
-        <h3 className="font-[family-name:var(--font-body)] text-[15px] font-semibold leading-snug tracking-[-0.01em] text-brand-navy sm:text-base">
+        <h3 className="vitrine-h3">
           {titre}
         </h3>
       </div>

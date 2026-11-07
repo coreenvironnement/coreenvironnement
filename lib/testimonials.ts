@@ -55,26 +55,17 @@ export const testimonials: Testimonial[] = [
     segment: "pro",
   },
   {
-    id: "google-habib-s",
-    quote:
-      "Benne louée pour évacuer les gravats d'un petit chantier de démolition. Vraiment pratique de pouvoir tout commander et payer directement depuis son téléphone. RAS",
-    author: "Habib S.",
-    role: "Particulier · Avis Google",
-    segment: "particulier",
-  },
-  {
-    id: "google-touria-h",
-    quote:
-      "Au top. Troisième chantier avec la location de benne, ça se passe super bien.",
-    author: "Touria H.",
-    role: "Particulier · Avis Google",
-    segment: "particulier",
-  },
-  {
     id: "google-celina-h",
     quote:
       "Personne très sympathique, sérieuse et professionnelle. Service au top, je recommande vivement !",
     author: "Celina H.",
+    role: "Particulier · Avis Google",
+    segment: "particulier",
+  },
+  {
+    id: "google-michel-doralus",
+    quote: "Super expérience. Je recommande fortement !!",
+    author: "Michel Doralus",
     role: "Particulier · Avis Google",
     segment: "particulier",
   },
@@ -87,9 +78,10 @@ export const testimonials: Testimonial[] = [
     segment: "particulier",
   },
   {
-    id: "google-michel-doralus",
-    quote: "Super expérience. Je recommande fortement !!",
-    author: "Michel Doralus",
+    id: "google-touria-h",
+    quote:
+      "Au top. Troisième chantier avec la location de benne, ça se passe super bien.",
+    author: "Touria H.",
     role: "Particulier · Avis Google",
     segment: "particulier",
   },
@@ -98,6 +90,14 @@ export const testimonials: Testimonial[] = [
     quote:
       "Très satisfaite des services de CORE ENVIRONNEMENT ! Entreprise sérieuse, professionnelle et réactive. Le service de location de bennes est au top, avec un travail efficace et des prestations de qualité. Équipe sympathique et à l'écoute des besoins du client. Je recommande vivement cette entreprise pour son sérieux et son professionnalisme !",
     author: "inès loulou",
+    role: "Particulier · Avis Google",
+    segment: "particulier",
+  },
+  {
+    id: "google-habib-s",
+    quote:
+      "Benne louée pour évacuer les gravats d'un petit chantier de démolition. Vraiment pratique de pouvoir tout commander et payer directement depuis son téléphone. RAS",
+    author: "Habib S.",
     role: "Particulier · Avis Google",
     segment: "particulier",
   },

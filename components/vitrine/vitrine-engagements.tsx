@@ -205,8 +205,8 @@ function EngagementStep({
           </p>
           <h3
             className={cn(
-              "mt-2 text-lg leading-snug transition-colors duration-300 sm:text-[1.125rem]",
-              isActive ? "text-brand-navy" : "text-brand-navy/72"
+              "vitrine-h3 mt-2 transition-colors duration-300",
+              isActive ? "text-[#152a3b]" : "text-[#152a3b]/72"
             )}
           >
             {item.titre}
@@ -271,10 +271,10 @@ export function VitrineEngagements() {
         <div className="lg:grid lg:grid-cols-[minmax(0,2.5fr)_minmax(0,4fr)] lg:items-start lg:gap-12 xl:gap-16">
           <header className="flex flex-col items-center text-center lg:sticky lg:top-28 lg:self-start lg:items-start lg:text-left">
             <p className="section-eyebrow">Nos engagements</p>
-            <h2 className="section-title mt-3 max-w-[18rem]">
+            <h2 className="section-title max-w-[18rem]">
               Réactivité, transparence et conformité
             </h2>
-            <p className="mt-4 max-w-[30rem] text-sm leading-relaxed text-brand-muted sm:mt-5 sm:text-[15px] sm:leading-[1.72]">
+            <p className="vitrine-section-intro max-w-[30rem] sm:mt-5">
               De la première dépose jusqu&apos;au recyclage final, CORE ENVIRONNEMENT coordonne
               chaque étape pour une gestion des déchets simple, transparente et conforme.
             </p>

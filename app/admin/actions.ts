@@ -7,6 +7,7 @@ import { redirect } from "next/navigation"
 import type Stripe from "stripe"
 
 import { requireAdmin } from "@/lib/auth/require-admin"
+import { syncProfileClientKind } from "@/lib/auth/sync-profile-client-kind"
 import { sendCommandeCancellationIfClaimed } from "@/lib/commande/cancellation-email"
 import {
   canCreateInterventionFromCommande,
@@ -481,7 +482,7 @@ export async function reviewComptePro(compteId: string, formData: FormData): Pro
 
   const { data: compteBefore } = await supabase
     .from("comptes_pro")
-    .select("status, contact_email, contact_nom, raison_sociale")
+    .select("status, contact_email, contact_nom, raison_sociale, profile_id")
     .eq("id", compteId)
     .single()
 
@@ -499,6 +500,10 @@ export async function reviewComptePro(compteId: string, formData: FormData): Pro
 
   if (error) {
     return
+  }
+
+  if (decision === "approve" && compteBefore?.profile_id) {
+    await syncProfileClientKind(supabase, compteBefore.profile_id, "professionnel")
   }
 
   if (

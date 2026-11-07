@@ -67,16 +67,13 @@ export function VitrineCityGuide({ page }: { page: LocalPage }) {
       <div className="container-x">
         <div className="mx-auto max-w-5xl">
           <p className="section-eyebrow">Bien préparer votre location</p>
-          <h2
-            id="city-guide-title"
-            className="mt-3 max-w-3xl font-[family-name:var(--font-display)] text-2xl font-semibold leading-tight text-brand-navy sm:text-3xl"
-          >
+          <h2 id="city-guide-title" className="section-title max-w-3xl text-balance">
             Location de benne à {city} : préparer votre projet
           </h2>
 
           <div className="mt-8 grid gap-5 lg:grid-cols-[1.25fr_0.75fr]">
             <article className="rounded-[var(--radius-card)] border border-brand-border bg-brand-bg-alt p-6 sm:p-8">
-              <h3 className="text-xl font-semibold text-brand-navy sm:text-2xl">
+              <h3 className="vitrine-h3">
                 Location de benne pour particuliers à {city}
               </h3>
               <p className="mt-4 leading-relaxed text-brand-muted">{variant.intro}</p>
@@ -136,7 +133,7 @@ export function VitrineCityGuide({ page }: { page: LocalPage }) {
                   aria-hidden
                 />
                 <div>
-                  <h3 className="text-lg font-semibold text-brand-navy">
+                  <h3 className="vitrine-h3">
                     À savoir avant l’installation d’une benne à {city}
                   </h3>
                   <p className="mt-3 text-sm font-medium leading-relaxed text-brand-navy">

@@ -102,13 +102,9 @@ async function confirmCommandeIfNeeded(
       : null
 
   if (audience === "professionnel") {
-    await ensureProClientForCommande(supabase, commandeId, {
-      sendConfirmationEmail: "initial",
-    })
+    await ensureProClientForCommande(supabase, commandeId)
   } else {
-    await ensureParticulierClientForCommande(supabase, commandeId, {
-      sendConfirmationEmail: "initial",
-    })
+    await ensureParticulierClientForCommande(supabase, commandeId)
   }
 }
 

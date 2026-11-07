@@ -263,10 +263,10 @@ export function TestimonialsSection({
           <p className={cn(vitrine ? "section-eyebrow" : "text-xs font-semibold uppercase tracking-[0.22em] text-primary")}>
             {sectionEyebrow}
           </p>
-          <h2 className={cn("mt-2 text-balance sm:text-3xl", vitrine ? "section-title mt-3" : "text-2xl font-bold tracking-tight text-brand-navy")}>
+          <h2 className={cn("text-balance", vitrine ? "section-title" : "mt-2 text-2xl font-bold tracking-tight text-brand-navy sm:text-3xl")}>
             {sectionTitle}
           </h2>
-          <p className={cn("mt-3 text-sm sm:text-base", vitrine ? "text-brand-muted" : "text-muted-foreground")}>
+          <p className={cn(vitrine ? "vitrine-section-intro" : "mt-3 text-sm sm:text-base text-muted-foreground")}>
             {sectionIntro}
           </p>
         </div>

@@ -122,6 +122,8 @@ export type OrderSuccessScreenProps = {
   referenceNumero?: string | null
   contactEmail?: string | null
   emailConfirmed?: boolean
+  needsPasswordSetup?: boolean
+  passwordSetupEmailSent?: boolean
   onClose: () => void
 }
 
@@ -132,6 +134,8 @@ export function OrderSuccessScreen({
   referenceNumero,
   contactEmail,
   emailConfirmed = true,
+  needsPasswordSetup = false,
+  passwordSetupEmailSent = false,
   onClose,
 }: OrderSuccessScreenProps) {
   const reduce = useReducedMotion()
@@ -218,9 +222,13 @@ export function OrderSuccessScreen({
           </p>
         </SuccessBlock>
 
-        {!emailConfirmed && contactEmail ? (
+        {contactEmail && (needsPasswordSetup || !emailConfirmed) ? (
           <SuccessBlock>
-            <OrderEmailConfirmBlock commandeId={commandeId} email={contactEmail} />
+            <OrderEmailConfirmBlock
+              email={contactEmail}
+              needsPasswordSetup={needsPasswordSetup}
+              passwordSetupEmailSent={passwordSetupEmailSent}
+            />
           </SuccessBlock>
         ) : null}
 

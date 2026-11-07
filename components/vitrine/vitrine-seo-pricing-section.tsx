@@ -28,13 +28,10 @@ export function VitrineSeoPricingSection({
       <div className="container-x">
         <div className="mx-auto max-w-5xl">
           <p className="section-eyebrow">Tarifs indicatifs</p>
-          <h2
-            id="seo-pricing-title"
-            className="mt-3 font-[family-name:var(--font-display)] text-2xl font-semibold text-brand-navy sm:text-3xl"
-          >
+          <h2 id="seo-pricing-title" className="section-title text-balance">
             Location de benne en Île-de-France : à partir de {entryHt} € HT
           </h2>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-brand-muted">
+          <p className="vitrine-section-intro max-w-3xl">
             Le point d’entrée du catalogue est la benne 8 m³ gravats propres :{" "}
             {entryHt} € HT, soit {entryTtc} € TTC pour un particulier.{" "}
             {PRICING_DISCLAIMER}
@@ -70,7 +67,7 @@ export function VitrineSeoPricingSection({
             </table>
           </div>
 
-          <h3 className="mt-10 text-lg font-semibold text-brand-navy">
+          <h3 className="vitrine-h3 mt-10">
             Quelle benne pour quel déchet ?
           </h3>
           <ul className="mt-4 space-y-3">

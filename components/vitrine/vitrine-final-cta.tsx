@@ -88,15 +88,12 @@ export function VitrineFinalCta() {
         >
           <p className="section-eyebrow section-eyebrow--inverse">{content.eyebrow}</p>
 
-          <h2
-            id="final-cta-title"
-            className="mt-5 text-[clamp(1.95rem,4.2vw,3rem)] font-bold leading-[1.11] tracking-[-0.034em] text-white"
-          >
+          <h2 id="final-cta-title" className="section-title vitrine-h2--on-dark text-white">
             {content.titre}
             <span className="block">{content.titreSuite}</span>
           </h2>
 
-          <p className="mt-5 max-w-[33rem] text-[15.5px] leading-[1.7] text-white/68 sm:mt-6 sm:text-[16.5px]">
+          <p className="vitrine-section-intro vitrine-section-intro--on-dark mx-auto max-w-[33rem]">
             {content.description}
           </p>
 

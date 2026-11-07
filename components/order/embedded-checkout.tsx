@@ -58,6 +58,8 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
   const [finalizing, setFinalizing] = useState(false)
   const [orderNumero, setOrderNumero] = useState<string | null>(null)
   const [emailConfirmed, setEmailConfirmed] = useState(true)
+  const [needsPasswordSetup, setNeedsPasswordSetup] = useState(false)
+  const [passwordSetupEmailSent, setPasswordSetupEmailSent] = useState(false)
   const [contactEmail, setContactEmail] = useState<string | null>(null)
   const [retryKey, setRetryKey] = useState(0)
 
@@ -91,6 +93,8 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
           void getCommandePaymentStatus(result.commandeId).then((status) => {
             if (!("error" in status)) {
               setEmailConfirmed(status.emailConfirmed)
+              setNeedsPasswordSetup(status.needsPasswordSetup)
+              setPasswordSetupEmailSent(status.passwordSetupEmailSent)
               setContactEmail(status.contactEmail)
             }
             setServerConfirmed(true)
@@ -137,6 +141,8 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
       if (!("error" in result) && result.paid) {
         setOrderNumero(result.numero)
         setEmailConfirmed(result.emailConfirmed)
+        setNeedsPasswordSetup(result.needsPasswordSetup)
+        setPasswordSetupEmailSent(result.passwordSetupEmailSent)
         setContactEmail(result.contactEmail)
         setServerConfirmed(true)
         return
@@ -198,6 +204,8 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
             referenceNumero={orderNumero}
             contactEmail={contactEmail ?? props.input.contactEmail}
             emailConfirmed={emailConfirmed}
+            needsPasswordSetup={needsPasswordSetup}
+            passwordSetupEmailSent={passwordSetupEmailSent}
             onClose={props.onClose ?? props.onBack}
           />
         ) : (

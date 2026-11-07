@@ -239,10 +239,10 @@ export function VitrineFaq({ professionnelsPage = false }: VitrineFaqProps = {})
       <div className="container-x">
         <div className="mx-auto max-w-2xl text-center">
           <p className="section-eyebrow">Questions fréquentes</p>
-          <h2 id={`${baseId}-title`} className="section-title mt-3">
+          <h2 id={`${baseId}-title`} className="section-title">
             Tout savoir avant de commander
           </h2>
-          <p className="mt-4 text-sm leading-relaxed text-brand-muted sm:text-base">
+          <p className="vitrine-section-intro">
             Logistique, tri, tarifs et offre professionnelle : les réponses
             aux questions les plus courantes sur nos prestations en Île-de-France.
           </p>

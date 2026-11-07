@@ -6,6 +6,7 @@ import { ChevronRight } from "lucide-react"
 import { particulierAccueil } from "@/lib/cdc/contenu-vitrine"
 
 import { useVitrineOrder } from "./order-context"
+import { VitrineSectionHeader } from "./vitrine-section-header"
 
 export function VitrineParticulierPourquoi() {
   const { pourquoi } = particulierAccueil
@@ -18,17 +19,12 @@ export function VitrineParticulierPourquoi() {
       aria-labelledby="pourquoi-core-title"
     >
       <div className="container-x">
-        <div className="pourquoi-core__header mx-auto max-w-3xl text-center">
-          <p className="section-eyebrow mx-auto w-fit justify-center">
-            {pourquoi.eyebrow}
-          </p>
-          <h2
-            id="pourquoi-core-title"
-            className="section-title mt-3 text-balance text-brand-navy"
-          >
-            {pourquoi.titre}
-          </h2>
-        </div>
+        <VitrineSectionHeader
+          className="pourquoi-core__header mx-auto max-w-3xl"
+          eyebrow={pourquoi.eyebrow}
+          title={pourquoi.titre}
+          titleId="pourquoi-core-title"
+        />
 
         <ul className="pourquoi-core__grid mx-auto mt-10 list-none space-y-4 p-0 sm:mt-12 lg:mt-14 lg:grid lg:max-w-5xl lg:grid-cols-3 lg:gap-5 lg:space-y-0 xl:gap-6">
           {pourquoi.cartes.map((carte) => (

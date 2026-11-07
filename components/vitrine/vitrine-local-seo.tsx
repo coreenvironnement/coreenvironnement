@@ -33,7 +33,7 @@ export function VitrineLocalSeo({ seoVariant }: VitrineLocalSeoProps) {
           <div className="mb-10">
             <h2
               id="zones-intervention-title"
-              className="font-[family-name:var(--font-display)] text-xl font-semibold text-brand-navy sm:text-2xl"
+              className="section-title text-balance"
             >
               Villes desservies
             </h2>
@@ -62,7 +62,7 @@ export function VitrineLocalSeo({ seoVariant }: VitrineLocalSeoProps) {
             className={
               showCityGrid
                 ? "text-sm font-semibold uppercase tracking-[0.14em] text-brand-green"
-                : "font-[family-name:var(--font-display)] text-xl font-semibold text-brand-navy sm:text-2xl"
+                : "section-title text-balance"
             }
             id={showCityGrid ? undefined : "zones-intervention-title"}
           >

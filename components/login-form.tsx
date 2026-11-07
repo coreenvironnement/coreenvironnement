@@ -28,9 +28,15 @@ export function LoginForm() {
   const [error, setError] = useState<string | null>(null)
   const [info, setInfo] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [magicLoading, setMagicLoading] = useState(false)
+  const [resetLoading, setResetLoading] = useState(false)
 
   const nextRaw = searchParams.get("next")
+
+  async function finishLogin() {
+    const destination = await getPostLoginDestination(nextRaw)
+    router.push(destination)
+    router.refresh()
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -51,36 +57,33 @@ export function LoginForm() {
     }
 
     setLoading(false)
-    const destination = await getPostLoginDestination(nextRaw)
-    router.push(destination)
-    router.refresh()
+    await finishLogin()
   }
 
-  async function handleMagicLink() {
+  async function handleForgotPassword() {
     const trimmed = email.trim()
     if (!trimmed.includes("@")) {
-      setError("Indiquez une adresse e-mail valide.")
+      setError("Indiquez votre adresse e-mail pour recevoir le lien de réinitialisation.")
       return
     }
     setError(null)
     setInfo(null)
-    setMagicLoading(true)
+    setResetLoading(true)
 
     const supabase = createClient()
-    const next = safeNextPath(nextRaw) ?? "/espace/commandes"
-    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
-
-    const { error: otpError } = await supabase.auth.signInWithOtp({
-      email: trimmed,
-      options: { emailRedirectTo: redirectTo },
+    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent("/reinitialiser-mot-de-passe")}`
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(trimmed, {
+      redirectTo,
     })
 
-    setMagicLoading(false)
-    if (otpError) {
-      setError("Impossible d’envoyer le lien. Réessayez ou contactez-nous.")
+    setResetLoading(false)
+    if (resetError) {
+      setError("Impossible d’envoyer l’e-mail. Réessayez ou contactez-nous.")
       return
     }
-    setInfo("Lien envoyé. Consultez votre e-mail.")
+    setInfo(
+      "Si un compte existe pour cette adresse, vous recevrez un e-mail avec un lien pour choisir un nouveau mot de passe."
+    )
   }
 
   return (
@@ -106,9 +109,19 @@ export function LoginForm() {
           />
         </div>
         <div className="space-y-2">
-          <label htmlFor="password" className="text-sm font-medium text-brand-navy">
-            Mot de passe
-          </label>
+          <div className="flex items-center justify-between gap-2">
+            <label htmlFor="password" className="text-sm font-medium text-brand-navy">
+              Mot de passe
+            </label>
+            <button
+              type="button"
+              className="text-sm font-medium text-[#35A238] hover:underline disabled:opacity-60"
+              disabled={resetLoading || loading}
+              onClick={() => void handleForgotPassword()}
+            >
+              {resetLoading ? "Envoi…" : "Mot de passe oublié ?"}
+            </button>
+          </div>
           <PasswordInput
             id="password"
             autoComplete="current-password"
@@ -131,19 +144,12 @@ export function LoginForm() {
         <button
           type="submit"
           className="btn btn-accent min-h-12 w-full rounded-xl text-[15px] font-semibold"
-          disabled={loading}
+          disabled={loading || resetLoading}
         >
           {loading ? "Connexion…" : "Se connecter"}
         </button>
-        <button
-          type="button"
-          className="btn btn-outline min-h-12 w-full rounded-xl text-[15px] font-medium"
-          disabled={magicLoading || loading}
-          onClick={() => void handleMagicLink()}
-        >
-          {magicLoading ? "Envoi…" : "Lien magique par e-mail"}
-        </button>
       </form>
+
       <p className="mt-5 text-center text-sm text-brand-muted">
         Pas encore de compte ?{" "}
         <Link

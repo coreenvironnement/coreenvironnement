@@ -1,12 +1,16 @@
 import type { SupabaseClient, User } from "@supabase/supabase-js"
 
-import { getAppUrl } from "@/lib/email/config"
-import { sendParticulierEmailConfirmation } from "@/lib/email/particulier-auth"
+import {
+  sendPasswordSetupEmailIfNeeded,
+  userNeedsPasswordSetup,
+} from "@/lib/auth/password-setup"
+import { syncProfileClientKind } from "@/lib/auth/sync-profile-client-kind"
 
 export type ParticulierClientLinkResult = {
   userId: string | null
   emailConfirmed: boolean
-  confirmationEmailSent: boolean
+  needsPasswordSetup: boolean
+  passwordSetupEmailSent: boolean
 }
 
 function normalizeEmail(email: string) {
@@ -49,7 +53,7 @@ async function createParticulierAuthUser(
   const normalized = normalizeEmail(email)
   const { data, error } = await supabase.auth.admin.createUser({
     email: normalized,
-    email_confirm: false,
+    email_confirm: true,
     user_metadata: {
       full_name: contactNom?.trim() || null,
       signup_source: "particulier_order",
@@ -84,36 +88,15 @@ async function syncProfileFromOrder(
   }
 }
 
-export async function sendParticulierConfirmationForEmail(
-  supabase: SupabaseClient,
-  email: string
-) {
-  const redirectTo = `${getAppUrl()}/auth/callback?next=${encodeURIComponent("/mes-commandes")}`
-  const { data, error } = await supabase.auth.admin.generateLink({
-    type: "magiclink",
-    email: normalizeEmail(email),
-    options: { redirectTo },
-  })
-
-  if (error || !data?.properties?.action_link) {
-    console.error("[particulier-client] generateLink:", error?.message ?? "lien absent")
-    return { sent: false as const, error: "Impossible de générer le lien de confirmation." }
-  }
-
-  return sendParticulierEmailConfirmation({
-    to: email,
-    actionLink: data.properties.action_link,
-  })
-}
-
 /**
  * Lie une commande particulier payée à un compte auth (création ou rattachement).
+ * Le compte est créé avec `email_confirm: true` ; l’e-mail CORE de commande
+ * (notifyCommandeConfirmed) invite à se connecter sur /login par mot de passe.
  * Idempotent : safe à rappeler depuis le webhook ou le polling post-paiement.
  */
 export async function ensureParticulierClientForCommande(
   supabase: SupabaseClient,
-  commandeId: string,
-  options?: { sendConfirmationEmail?: "initial" | false }
+  commandeId: string
 ): Promise<ParticulierClientLinkResult | null> {
   const { data: commande, error } = await supabase
     .from("commandes")
@@ -146,7 +129,6 @@ export async function ensureParticulierClientForCommande(
     typeof commande.contact_telephone === "string" ? commande.contact_telephone : null
 
   let user: User | null = null
-  let createdUser = false
 
   if (commande.client_id) {
     const { data: byId, error: userError } = await supabase.auth.admin.getUserById(
@@ -164,11 +146,27 @@ export async function ensureParticulierClientForCommande(
 
   if (!user) {
     user = await createParticulierAuthUser(supabase, email, contactNom)
-    createdUser = Boolean(user)
+  }
+
+  if (user?.id && !isAuthEmailConfirmed(user)) {
+    const { data: confirmed, error: confirmError } = await supabase.auth.admin.updateUserById(
+      user.id,
+      { email_confirm: true }
+    )
+    if (confirmError) {
+      console.error("[particulier-client] email_confirm:", confirmError.message)
+    } else if (confirmed.user) {
+      user = confirmed.user
+    }
   }
 
   if (!user?.id) {
-    return { userId: null, emailConfirmed: false, confirmationEmailSent: false }
+    return {
+      userId: null,
+      emailConfirmed: false,
+      needsPasswordSetup: false,
+      passwordSetupEmailSent: false,
+    }
   }
 
   if (commande.client_id !== user.id) {
@@ -184,22 +182,14 @@ export async function ensureParticulierClientForCommande(
   }
 
   await syncProfileFromOrder(supabase, user.id, contactNom, contactPhone)
+  await syncProfileClientKind(supabase, user.id, "particulier")
 
-  const emailConfirmed = isAuthEmailConfirmed(user)
-  let confirmationEmailSent = false
-
-  if (
-    options?.sendConfirmationEmail === "initial" &&
-    createdUser &&
-    !emailConfirmed
-  ) {
-    const sendResult = await sendParticulierConfirmationForEmail(supabase, email)
-    confirmationEmailSent = sendResult.sent
-  }
+  const setup = await sendPasswordSetupEmailIfNeeded(supabase, user)
 
   return {
     userId: user.id,
-    emailConfirmed,
-    confirmationEmailSent,
+    emailConfirmed: isAuthEmailConfirmed(user),
+    needsPasswordSetup: setup.needsPasswordSetup || userNeedsPasswordSetup(user),
+    passwordSetupEmailSent: setup.sent,
   }
 }

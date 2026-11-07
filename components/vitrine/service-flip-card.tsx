@@ -159,7 +159,7 @@ export function ServiceFlipCard({
           >
             <ServiceCardIcon index={index} />
           </span>
-          <h3 className="mt-3.5 shrink-0 text-base leading-snug text-brand-navy sm:mt-4 sm:text-[17px]">
+          <h3 className="vitrine-h3 mt-3.5 shrink-0 sm:mt-4">
             {service.titre}
           </h3>
           <p className="mt-3 shrink-0 text-sm leading-relaxed text-brand-muted">
@@ -191,7 +191,7 @@ export function ServiceFlipCard({
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
               <p className="vitrine-label text-brand-green">Détail du service</p>
-              <h3 className="mt-2 text-base leading-snug text-brand-navy">{service.titre}</h3>
+              <h3 className="vitrine-h3 mt-2">{service.titre}</h3>
               <ul className="mt-4 flex flex-col gap-2.5">
                 {service.points.map((point) => (
                   <CheckItem key={point}>{point}</CheckItem>

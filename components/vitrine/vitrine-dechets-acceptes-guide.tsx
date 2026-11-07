@@ -29,7 +29,8 @@ const BREADCRUMBS = [
 ] as const
 
 const BODY_CLASS = "mt-3 text-base leading-relaxed text-brand-muted"
-const H3_CLASS = "mt-8 text-lg font-semibold text-brand-navy"
+const H3_CLASS = "vitrine-h3 mt-8"
+const H2_CLASS = "vitrine-h2 text-balance"
 const CALLOUT_CLASS =
   "mt-4 rounded-xl border border-brand-green/12 bg-brand-warm px-4 py-3 text-sm leading-relaxed text-brand-muted"
 const SECONDARY_LINK_CLASS =
@@ -81,12 +82,10 @@ export function VitrineDechetsAcceptesGuide() {
           <article className="border-b border-brand-border bg-brand-bg py-12 sm:py-16">
             <div className="container-x mx-auto max-w-3xl">
               <p className="section-eyebrow">Guide pratique</p>
-              <h1 className="mt-3 font-[family-name:var(--font-display)] text-3xl font-semibold text-brand-navy sm:text-4xl">
+              <h1 className="vitrine-h1 text-balance">
                 Quels déchets peut-on mettre dans une benne ?
               </h1>
-              <p className="mt-4 text-base leading-relaxed text-brand-muted sm:text-lg">
-                {DECHETS_ACCEPTES_GUIDE_INTRO}
-              </p>
+              <p className="vitrine-section-intro">{DECHETS_ACCEPTES_GUIDE_INTRO}</p>
 
               <GuideCallout>{DECHETS_ACCEPTES_GUIDE_CALLOUT}</GuideCallout>
 
@@ -107,7 +106,7 @@ export function VitrineDechetsAcceptesGuide() {
               </nav>
 
               <section id="identifier-dechets" className="mt-10 scroll-mt-28">
-                <h2 className="text-xl font-semibold text-brand-navy">
+                <h2 className={H2_CLASS}>
                   Quels déchets correspondent à votre projet ?
                 </h2>
                 <GuideParagraph>
@@ -185,7 +184,7 @@ export function VitrineDechetsAcceptesGuide() {
               </section>
 
               <section id="collecte-specifique" className="mt-10 scroll-mt-28">
-                <h2 className="text-xl font-semibold text-brand-navy">
+                <h2 className={H2_CLASS}>
                   Quels déchets nécessitent une collecte spécifique ?
                 </h2>
                 <GuideParagraph>
@@ -240,7 +239,7 @@ export function VitrineDechetsAcceptesGuide() {
               </section>
 
               <section id="preparer-chargement" className="mt-10 scroll-mt-28">
-                <h2 className="text-xl font-semibold text-brand-navy">
+                <h2 className={H2_CLASS}>
                   Comment préparer le chargement de votre benne ?
                 </h2>
 
@@ -268,7 +267,7 @@ export function VitrineDechetsAcceptesGuide() {
               </section>
 
               <section id="conseil-dechets" className="mt-10 scroll-mt-28">
-                <h2 className="text-xl font-semibold text-brand-navy">
+                <h2 className={H2_CLASS}>
                   Un doute sur vos déchets ? Parlons de votre projet.
                 </h2>
                 <GuideParagraph>

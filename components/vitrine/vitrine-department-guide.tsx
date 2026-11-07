@@ -37,11 +37,11 @@ export function VitrineDepartmentGuide({ page }: { page: LocalPage }) {
           <p className="section-eyebrow">Commander dans le {page.departementCode}</p>
           <h2
             id="department-guide-title"
-            className="mt-3 max-w-3xl font-[family-name:var(--font-display)] text-2xl font-semibold leading-tight text-brand-navy sm:text-3xl"
+            className="section-title max-w-3xl text-balance"
           >
             Location de benne en {page.departementNom} ({page.departementCode})
           </h2>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-brand-muted">
+          <p className="vitrine-section-intro max-w-3xl">
             {copy.lead}
           </p>
 
@@ -55,7 +55,7 @@ export function VitrineDepartmentGuide({ page }: { page: LocalPage }) {
                 key={card.title}
                 className="rounded-[var(--radius-card)] border border-brand-border bg-brand-bg-alt p-5 sm:p-6"
               >
-                <h3 className="text-lg font-semibold text-brand-navy">{card.title}</h3>
+                <h3 className="vitrine-h3">{card.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-brand-muted">{card.body}</p>
               </li>
             ))}

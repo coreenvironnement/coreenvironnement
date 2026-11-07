@@ -1,0 +1,31 @@
+CORE ENVIRONNEMENT — BIEN PRÉPARER SA LOCATION
+
+Le pack contient :
+• 3 animations Lottie JSON autonomes, avec images WebP intégrées.
+• 3 posters SVG autonomes reprenant exactement leur état final.
+• Les visuels détourés sources PNG et leurs versions WebP.
+• APERCU-ANIME.html, un aperçu autonome à ouvrir dans un navigateur.
+• Les deux maquettes de référence dans reference/.
+• PROMPT-AGENT.txt : consigne détaillée, textes, disposition, actions et recommandations de pages.
+• integration/ : HTML, CSS, exemple JavaScript, lecteur lottie-web 5.13.0 et licence MIT.
+
+Les animations sont des compositions 2D à partir d’illustrations au rendu 3D, et non des modèles 3D ou des Lottie entièrement vectoriels. Le camion arrive doucement, puis un repère de longueur apparaît : il ne s’agit pas d’une simulation technique de dépose.
+
+Les fichiers font environ 134, 214 et 347 ko avant compression HTTP. Le lecteur fait environ 168 ko avant compression. Chaque animation est prévue pour une seule lecture, avec arrêt à la fin. Les visuels restent disponibles en version statique.
+
+L’aperçu inclut un bouton pour rejouer les animations. Les liens déchets et démarches sont réels. Le bouton d’estimation de l’aperçu présente seulement le rendu ; l’agent doit le connecter à l’estimateur existant du site. Le fichier APERCU-ANIME.html sert à examiner le rendu, et ne remplace pas une intégration au projet.
+
+À transmettre à ton agent : ce ZIP et le texte de PROMPT-AGENT.txt. Les références visuelles et les animations sont déjà dans le ZIP ; il n’a pas besoin de les recréer.
+
+Pages : les guides /location-benne/volume et /location-benne/dechets-acceptes existent déjà ; conserver leurs URL. Un guide « Préparer la livraison de votre benne » peut être ajouté après recherche d’un contenu équivalent. Le détail et le plan sont dans le prompt.
+
+Sources consultées le 7 novembre 2026 :
+https://core-environnement.fr/
+https://core-environnement.fr/location-benne/volume
+https://core-environnement.fr/location-benne/dechets-acceptes
+https://entreprendre.service-public.gouv.fr/vosdroits/F23509
+https://github.com/airbnb/lottie-web
+https://lottiefiles.github.io/lottie-docs/layers/
+
+Lecteur Lottie : MIT, voir integration/LICENSE-lottie-web.txt.
+Manrope : SIL Open Font License, voir integration/OFL-Manrope.txt si les fontes sont incluses.

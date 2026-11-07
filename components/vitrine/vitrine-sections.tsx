@@ -16,8 +16,8 @@ export function VitrineServices() {
       <div className="container-x">
         <div className="mx-auto max-w-2xl text-center">
           <p className="section-eyebrow">Nos services</p>
-          <h2 className="section-title mt-3">Une solution pour chaque besoin</h2>
-          <p className="mt-4 text-sm leading-relaxed text-brand-muted sm:text-base">
+          <h2 className="section-title">Une solution pour chaque besoin</h2>
+          <p className="vitrine-section-intro">
             {servicesSection.intro}
           </p>
         </div>
@@ -42,9 +42,9 @@ export function VitrineCompteProTeaser() {
       <div className="container-x grid gap-8 lg:grid-cols-2 lg:items-center">
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <p className="section-eyebrow section-eyebrow--inverse text-brand-green">Compte professionnel</p>
+            <p className="section-eyebrow section-eyebrow--inverse">Compte professionnel</p>
           </div>
-          <h2 className="mt-3 text-2xl sm:text-3xl">{comptePro.titre}</h2>
+          <h2 className="section-title vitrine-h2--on-dark text-white">{comptePro.titre}</h2>
           <p className="mt-4 text-sm leading-relaxed text-white/85 sm:text-base">
             {comptePro.description}
           </p>
@@ -53,7 +53,7 @@ export function VitrineCompteProTeaser() {
           </p>
         </div>
         <div className="rounded-[var(--radius-card)] border border-white/10 bg-white/[0.05] p-6">
-          <h3>{comptePro.reassurance.titre}</h3>
+          <h3 className="vitrine-h3 vitrine-h3--on-dark">{comptePro.reassurance.titre}</h3>
           <ul className="mt-4 space-y-3">
             {comptePro.reassurance.points.map((point) => (
               <li key={point} className="flex gap-2 text-sm text-white/88">

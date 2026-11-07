@@ -16,7 +16,10 @@ import type { VitrineNavContext } from "@/app/vitrine/nav-context-actions"
 
 function buildAccountLinks(ctx: VitrineNavContext): AccountLink[] {
   if (!ctx.isLoggedIn) {
-    return [{ label: "Connexion", href: "/login?next=/espace" }]
+    return [
+      { label: "Connexion", href: "/login?next=/espace/commandes" },
+      { label: "Créer un compte", href: "/inscription?next=/espace/commandes" },
+    ]
   }
   if (ctx.isAdmin) {
     return [{ label: "Administration", href: "/admin" }]
@@ -90,12 +93,35 @@ export function VitrineAccountLinks({
   if (!links) {
     return (
       <Link
-        href="/login?next=/espace"
+        href="/login?next=/espace/commandes"
         className={cn("btn btn-sm", solid ? "btn-ghost-sky" : "btn-ghost-light")}
       >
         <HugeiconsIcon icon={UserIcon} size={16} strokeWidth={VITRINE_ICON_STROKE} />
         Connexion
       </Link>
+    )
+  }
+
+  if (links.length > 1) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link
+          href={links[0]!.href}
+          className={cn("btn btn-sm", solid ? "btn-ghost-sky" : "btn-ghost-light")}
+        >
+          <HugeiconsIcon icon={UserIcon} size={16} strokeWidth={VITRINE_ICON_STROKE} />
+          {links[0]!.label}
+        </Link>
+        <Link
+          href={links[1]!.href}
+          className={cn(
+            "btn btn-sm hidden xl:inline-flex",
+            solid ? "btn-ghost-sky" : "btn-ghost-light"
+          )}
+        >
+          {links[1]!.label}
+        </Link>
+      </div>
     )
   }
 

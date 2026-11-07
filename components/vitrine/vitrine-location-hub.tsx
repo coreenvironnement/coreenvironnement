@@ -15,7 +15,7 @@ export function VitrineLocationHub() {
         <div className="container-x max-w-3xl">
           <h2
             id="hub-intro-title"
-            className="font-[family-name:var(--font-display)] text-xl font-semibold text-brand-navy sm:text-2xl"
+            className="section-title text-balance"
           >
             Où commander une benne en Île-de-France ?
           </h2>
@@ -46,7 +46,7 @@ export function VitrineLocationHub() {
         <div className="container-x">
           <h2
             id="hub-depts-title"
-            className="font-[family-name:var(--font-display)] text-xl font-semibold text-brand-navy sm:text-2xl"
+            className="section-title text-balance"
           >
             Départements desservis
           </h2>
@@ -79,7 +79,7 @@ export function VitrineLocationHub() {
         <div className="container-x">
           <h2
             id="hub-cities-title"
-            className="font-[family-name:var(--font-display)] text-xl font-semibold text-brand-navy sm:text-2xl"
+            className="section-title text-balance"
           >
             Villes principales par département
           </h2>

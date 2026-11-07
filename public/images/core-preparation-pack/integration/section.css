@@ -1,0 +1,105 @@
+/* Scoped styles: these selectors do not affect the rest of the site. */
+.cp-section, .cp-section * { box-sizing: border-box; }
+.cp-section {
+  --cp-ink:#152A3B; --cp-green:#35A238; --cp-action:#267B29;
+  --cp-body:#3B4751; --cp-line:#D7E7D5; --cp-bg:#F0F6EF;
+  background:var(--cp-bg); color:var(--cp-ink);
+  font-family:Manrope,Arial,sans-serif; padding:64px 24px 56px;
+}
+.cp-section .cp-wrap { max-width:1200px; margin:0 auto; }
+.cp-section .cp-header { text-align:center; margin-bottom:36px; }
+.cp-section .cp-eyebrow { display:inline-block; margin:0 0 16px; padding:7px 16px; border-radius:999px; background:#DDEED8; color:#246A23; font-size:12px; font-weight:800; letter-spacing:.08em; }
+.cp-section h2 { margin:0; font-size:clamp(28px,3.1vw,44px); line-height:1.14; letter-spacing:-.045em; font-weight:800; }
+.cp-section .cp-intro { margin:14px 0 0; color:var(--cp-body); font-size:17px; line-height:1.6; }
+.cp-section .cp-grid { display:grid; grid-template-columns:1fr 1.16fr 1fr; gap:22px; align-items:stretch; }
+.cp-section .cp-card { min-width:0; padding:26px; background:#fff; border:1px solid var(--cp-line); border-radius:22px; box-shadow:0 8px 20px rgba(21,42,59,.055); display:flex; flex-direction:column; }
+.cp-section .cp-category { margin:0 0 18px; color:#28782A; font-size:12px; line-height:1.5; font-weight:800; letter-spacing:.065em; }
+.cp-section h3 { margin:0; font-size:24px; line-height:1.22; font-weight:800; letter-spacing:-.035em; }
+.cp-section .cp-copy { margin:12px 0 0; color:var(--cp-body); font-size:15px; line-height:1.65; }
+.cp-section .cp-art { position:relative; margin:18px 0 14px; width:100%; aspect-ratio:2; flex:none; overflow:hidden; }
+.cp-section .cp-art--waste { aspect-ratio:2.66; margin-top:auto; margin-bottom:auto; }
+.cp-section .cp-art img, .cp-section .cp-lottie { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; }
+.cp-section .cp-art svg { display:block; width:100%; height:100%; }
+.cp-section .cp-lottie { visibility:hidden; }
+.cp-section .cp-art.is-ready .cp-lottie { visibility:visible; }
+.cp-section .cp-art.is-ready .cp-poster { visibility:hidden; }
+.cp-section .cp-volume .cp-art { margin-top:auto; }
+.cp-section .cp-note { margin:0 0 18px; color:#53616D; font-size:12px; line-height:1.5; font-style:italic; text-align:center; }
+.cp-section .cp-button { display:flex; justify-content:center; align-items:center; gap:10px; min-height:48px; width:100%; padding:12px 14px; border:1px solid var(--cp-action); border-radius:12px; background:var(--cp-action); color:#fff; text-decoration:none; cursor:pointer; font:800 15px/1.4 Manrope,Arial,sans-serif; text-align:center; }
+.cp-section .cp-button:hover { background:#1F6822; }
+.cp-section .cp-button--outline { color:var(--cp-action); background:transparent; margin-top:24px; }
+.cp-section .cp-button--outline:hover { background:#F0F6EF; }
+.cp-section .cp-button svg, .cp-section .cp-link svg { width:19px; height:19px; flex:none; }
+.cp-section .cp-space { display:flex; align-items:center; gap:12px; color:#52606C; font-size:12px; line-height:1.5; text-align:center; margin:0 0 12px; }
+.cp-section .cp-space::before,.cp-section .cp-space::after { content:''; flex:1; height:1px; background:var(--cp-line); }
+.cp-section .cp-dimensions { display:grid; grid-template-columns:1fr 1fr 1.45fr; margin:0 0 24px; }
+.cp-section .cp-dimensions>div { text-align:center; padding:0 6px; }
+.cp-section .cp-dimensions>div+div { border-left:1px solid var(--cp-line); }
+.cp-section .cp-dimensions dt { margin:0; font-size:clamp(20px,1.9vw,27px); line-height:1.2; font-weight:800; letter-spacing:-.045em; white-space:nowrap; }
+.cp-section .cp-dimensions dd { margin:5px 0 0; color:var(--cp-body); font-size:12px; line-height:1.4; }
+.cp-section .cp-street { margin-top:auto; padding:13px; border-radius:14px; background:#F7F2E8; display:flex; align-items:center; gap:12px; }
+.cp-section .cp-street>svg { width:24px; height:32px; flex:none; color:#48545E; }
+.cp-section .cp-street p { margin:0 0 5px; font-size:12px; font-weight:700; line-height:1.55; }
+.cp-section .cp-link { display:inline-flex; align-items:center; gap:7px; color:var(--cp-action); text-decoration:underline; text-underline-offset:4px; font-size:13px; line-height:1.6; font-weight:800; }
+.cp-section .cp-help { display:flex; align-items:center; gap:20px; margin-top:24px; padding:22px 26px; border:1px solid var(--cp-line); border-radius:20px; background:rgba(255,255,255,.8); box-shadow:0 5px 14px rgba(21,42,59,.035); }
+.cp-section .cp-help>svg { width:38px; height:38px; color:var(--cp-action); flex:none; }
+.cp-section .cp-help-copy { padding-left:20px; border-left:1px solid var(--cp-line); }
+.cp-section .cp-help strong { display:block; font-size:18px; line-height:1.4; letter-spacing:-.025em; }
+.cp-section .cp-help p { margin:4px 0 0; color:var(--cp-body); font-size:14px; line-height:1.5; }
+.cp-section .cp-help .cp-link { margin-left:auto; white-space:nowrap; }
+.cp-section :is(a,button):focus-visible { outline:3px solid #152A3B; outline-offset:4px; }
+@media (max-width:1023px) {
+  .cp-section { padding:44px 20px; }
+  .cp-section .cp-grid { grid-template-columns:1fr; max-width:620px; margin:0 auto; gap:16px; }
+  .cp-section .cp-card { padding:24px; }
+  .cp-section .cp-art { max-width:440px; margin:14px auto; }
+  .cp-section .cp-art--waste { max-width:440px; margin:20px auto; }
+  .cp-section .cp-help { max-width:620px; margin:20px auto 0; flex-wrap:wrap; }
+  .cp-section .cp-help .cp-link { margin-left:58px; }
+  .cp-section .cp-dimensions dt { font-size:27px; }
+  .cp-section .cp-dimensions dd { font-size:13px; }
+}
+@media (max-width:599px) {
+  .cp-section { padding:32px 18px; }
+  .cp-section .cp-header { text-align:left; margin-bottom:24px; }
+  .cp-section .cp-eyebrow { padding:0; background:none; font-size:10px; letter-spacing:.075em; margin-bottom:14px; }
+  .cp-section h2 { font-size:29px; line-height:1.15; }
+  .cp-section .cp-intro { font-size:15px; line-height:1.65; margin-top:12px; }
+  .cp-section .cp-grid { gap:14px; }
+  .cp-section .cp-card { padding:20px; border-radius:20px; }
+  .cp-section .cp-category { font-size:11px; margin-bottom:14px; }
+  .cp-section h3 { font-size:22px; line-height:1.2; }
+  .cp-section .cp-copy { font-size:15px; line-height:1.6; }
+  .cp-section .cp-volume { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:10px; }
+  .cp-section .cp-volume .cp-category { grid-column:1/-1; }
+  .cp-section .cp-volume h3 { grid-column:1; grid-row:2; }
+  .cp-section .cp-volume .cp-copy { grid-column:1/-1; grid-row:3; margin-top:16px; }
+  .cp-section .cp-volume .cp-art { grid-column:2; grid-row:2; width:100%; aspect-ratio:2; margin:0; align-self:center; overflow:visible; }
+  .cp-section .cp-volume .cp-note { grid-column:1/-1; grid-row:5; margin:10px 0 0; font-size:11px; text-align:left; }
+  .cp-section .cp-volume .cp-button { grid-column:1/-1; grid-row:4; margin-top:18px; }
+  .cp-section .cp-access .cp-art { margin:8px 0 10px; }
+  .cp-section .cp-space { font-size:11px; margin-bottom:12px; }
+  .cp-section .cp-dimensions { margin-bottom:20px; }
+  .cp-section .cp-dimensions dt { font-size:23px; }
+  .cp-section .cp-dimensions dd { font-size:12px; }
+  .cp-section .cp-street { padding:12px; gap:10px; }
+  .cp-section .cp-street p { font-size:12px; }
+  .cp-section .cp-street .cp-link { font-size:12px; min-height:32px; }
+  .cp-section .cp-art--waste { margin:20px 0 8px; }
+  .cp-section .cp-button--outline { margin-top:14px; }
+  .cp-section .cp-help { gap:12px; padding:18px; display:grid; grid-template-columns:32px 1fr; }
+  .cp-section .cp-help>svg { width:30px; height:30px; align-self:start; }
+  .cp-section .cp-help-copy { padding-left:12px; }
+  .cp-section .cp-help strong { font-size:15px; line-height:1.35; }
+  .cp-section .cp-help p { font-size:12px; }
+  .cp-section .cp-help .cp-link { grid-column:2; margin-left:12px; white-space:normal; min-height:36px; font-size:13px; }
+}
+@media (max-width:359px) {
+  .cp-section { padding-left:14px; padding-right:14px; }
+  .cp-section .cp-card { padding:17px; }
+  .cp-section .cp-dimensions dt { font-size:21px; }
+  .cp-section .cp-dimensions dd { font-size:11px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .cp-section *, .cp-section *::before, .cp-section *::after { animation:none!important; transition:none!important; }
+}

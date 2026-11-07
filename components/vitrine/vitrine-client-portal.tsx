@@ -605,12 +605,12 @@ export function VitrineClientPortal() {
           >
             <p className="section-eyebrow section-eyebrow--inverse">{content.eyebrow}</p>
 
-            <h2 className="mt-5 text-[clamp(1.8rem,3.5vw,2.7rem)] font-bold leading-[1.13] tracking-[-0.032em]">
+            <h2 className="section-title vitrine-h2--on-dark text-white">
               {content.titre}
               <span className="block">{content.titreSuite}</span>
             </h2>
 
-            <p className="mt-5 max-w-[31rem] text-[15.5px] leading-[1.7] text-white/68 sm:mt-6 sm:text-[16.5px]">
+            <p className="vitrine-section-intro vitrine-section-intro--on-dark max-w-[31rem]">
               {content.description}
             </p>
 

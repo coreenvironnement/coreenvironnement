@@ -101,7 +101,7 @@ export const commentCaFonctionne = {
       "Paiement : Réglez votre forfait via notre interface de paiement 100% sécurisée.",
     ],
     suite:
-      "Dès la validation, vous recevez un e-mail de confirmation. Un expert déchets vous rappelle immédiatement pour valider les conditions d'accès et l'horaire de pose et s'occupe de tout le suivi nécessaire jusqu'au recyclage final des déchets",
+      "Dès la validation, vous recevez un e-mail de confirmation et, si besoin, un message pour choisir votre mot de passe d’espace client. Vous pouvez aussi créer un compte avant de commander pour suivre vos bennes en ligne. Un expert déchets vous recontacte pour valider l’accès et le créneau de pose.",
   },
   professionnel: {
     titre: "Vous êtes un professionnel",
@@ -389,7 +389,7 @@ export const particulierAccueil = {
     ],
   },
   conseils: {
-    eyebrow: "Avant de commander",
+    eyebrow: "AVANT DE COMMANDER",
     titre: "Bien préparer votre location de benne",
     intro:
       "Trois repères simples pour choisir et préparer la livraison.",
@@ -403,12 +403,11 @@ export const particulierAccueil = {
           "Estimez le volume de vos déchets pour choisir une benne adaptée.",
         note: "Une estimation pour vous guider.",
         cta: "Estimer mon volume",
-        imageFile: "Trois bennes vertes en perspective-3.png",
       },
       {
         id: "acces",
         num: "02",
-        label: "L'ACCÈS",
+        label: "L\u2019ACCÈS",
         titre: "Le camion peut-il passer ?",
         specsTitre: "Espace à prévoir",
         specs: [
@@ -430,11 +429,6 @@ export const particulierAccueil = {
           "Gravats, bois, cartons… Vérifiez ce que votre benne peut recevoir avant de la remplir.",
         cta: "Vérifier mes déchets",
         guideHref: "/location-benne/dechets-acceptes",
-        wasteImageFiles: [
-          "Tas de gravats de rénovation résidentielle-3_5.webp",
-          "Tas de bois de rénovation résidentielle-2_4.webp",
-          "Grand tas de déchets de rénovation-4_2.webp",
-        ],
       },
     ],
     conseiller: {

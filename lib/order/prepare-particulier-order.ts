@@ -29,7 +29,8 @@ export type PreparedParticulierOrder = {
 }
 
 export async function prepareParticulierOrder(
-  input: OrderCheckoutInput & { existingCommandeId?: string }
+  input: OrderCheckoutInput & { existingCommandeId?: string },
+  loggedInClientId?: string | null
 ): Promise<{ error: string } | PreparedParticulierOrder> {
   if (input.audience === "professionnel") {
     return {
@@ -148,19 +149,21 @@ export async function prepareParticulierOrder(
         existing.prestation_id === prestation.id
 
       if (sameDraft) {
-        await supabase
-          .from("commandes")
-          .update({
-            adresse_complete: address,
-            date_livraison: input.deliveryDate,
-            date_enlevement: input.pickupDate?.length ? input.pickupDate : null,
-            contact_nom: input.contactName?.trim() || null,
-            contact_telephone: phone,
-            departement_code: deptCode,
-            price_ht: prestation.priceHt,
-            audience: "particulier",
-          })
-          .eq("id", existing.id)
+        const draftPatch: Record<string, unknown> = {
+          adresse_complete: address,
+          date_livraison: input.deliveryDate,
+          date_enlevement: input.pickupDate?.length ? input.pickupDate : null,
+          contact_nom: input.contactName?.trim() || null,
+          contact_telephone: phone,
+          departement_code: deptCode,
+          price_ht: prestation.priceHt,
+          audience: "particulier",
+        }
+        if (loggedInClientId) {
+          draftPatch.client_id = loggedInClientId
+        }
+
+        await supabase.from("commandes").update(draftPatch).eq("id", existing.id)
 
         return {
           commandeId: existing.id,
@@ -213,6 +216,7 @@ export async function prepareParticulierOrder(
       contact_email: email,
       contact_nom: input.contactName?.trim() || null,
       contact_telephone: phone,
+      client_id: loggedInClientId ?? null,
     })
     .select("id")
     .single()

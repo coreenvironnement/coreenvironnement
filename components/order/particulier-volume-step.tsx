@@ -147,7 +147,7 @@ function EstimatorModeOptionCard({
           src={volumeEstimatorImageSrc(imageFile)}
           alt={imageAlt}
           fill
-          className="object-contain p-0.5 sm:object-cover sm:p-0"
+          className="object-contain p-0.5 sm:object-cover sm:p-0 lg:object-contain"
           sizes="(max-width: 640px) 100px, 200px"
         />
       </div>
@@ -491,7 +491,7 @@ export function ParticulierVolumeStep({
       : view === "known"
         ? "Choisissez votre volume"
         : view === "estimator-mode"
-          ? "À quoi ressemble vos déchets ?"
+          ? "À quoi ressemblent vos déchets ?"
           : view === "estimator-form"
             ? estimatorMode === "bags"
               ? "Combien de sacs ?"

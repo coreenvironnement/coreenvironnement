@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 
 import { CoreFaqLottie } from "./core-faq-lottie"
 import { VITRINE_ICON_STROKE } from "./icons"
+import { VitrineSectionHeader } from "./vitrine-section-header"
 
 export function VitrineParticulierFaq() {
   const baseId = useId()
@@ -35,20 +36,14 @@ export function VitrineParticulierFaq() {
       <div className="container-x relative max-w-2xl lg:mx-auto lg:max-w-[900px]">
         <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_5rem] lg:items-start lg:gap-x-6">
           <div className="min-w-0 lg:col-start-1">
-            <div className="flex min-h-14 items-center justify-center md:min-h-0 md:block lg:flex lg:justify-center">
-              <p className="section-eyebrow mx-auto max-md:w-full max-md:justify-center text-center">
-                FAQ
-              </p>
-            </div>
-            <h2
-              id="faq-particulier-title"
-              className="section-title mt-3 text-center text-brand-navy lg:text-balance lg:overflow-visible"
-            >
-              {particulierAccueil.faqTitre}
-            </h2>
-            <p className="mx-auto mt-3 max-w-lg text-center text-sm text-brand-muted sm:text-base lg:max-w-[620px]">
-              {particulierAccueil.faqIntro}
-            </p>
+            <VitrineSectionHeader
+              eyebrow="FAQ"
+              title={particulierAccueil.faqTitre}
+              titleId="faq-particulier-title"
+              intro={particulierAccueil.faqIntro}
+              titleClassName="lg:overflow-visible"
+              className="max-md:[&_.section-eyebrow]:mx-auto"
+            />
           </div>
           <CoreFaqLottie className="lg:static lg:col-start-2 lg:row-start-1 lg:justify-self-end lg:self-start lg:z-auto" />
         </div>

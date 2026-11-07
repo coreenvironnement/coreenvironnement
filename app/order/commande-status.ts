@@ -9,6 +9,8 @@ export type CommandePaymentStatus = {
   statut: string | null
   numero: string | null
   emailConfirmed: boolean
+  needsPasswordSetup: boolean
+  passwordSetupEmailSent: boolean
   contactEmail: string | null
 }
 
@@ -43,12 +45,14 @@ export async function getCommandePaymentStatus(
       typeof data.contact_email === "string" ? data.contact_email.trim() : null
 
     let emailConfirmed = false
+    let needsPasswordSetup = false
+    let passwordSetupEmailSent = false
 
     if (paid) {
-      const link = await ensureParticulierClientForCommande(supabase, id, {
-        sendConfirmationEmail: false,
-      })
+      const link = await ensureParticulierClientForCommande(supabase, id)
       emailConfirmed = link?.emailConfirmed ?? false
+      needsPasswordSetup = link?.needsPasswordSetup ?? false
+      passwordSetupEmailSent = link?.passwordSetupEmailSent ?? false
     }
 
     return {
@@ -57,6 +61,8 @@ export async function getCommandePaymentStatus(
       statut,
       numero: null,
       emailConfirmed,
+      needsPasswordSetup,
+      passwordSetupEmailSent,
       contactEmail,
     }
   } catch {

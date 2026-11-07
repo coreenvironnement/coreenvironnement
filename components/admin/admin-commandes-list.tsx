@@ -119,6 +119,9 @@ export function AdminCommandesList({ commandes }: { commandes: AdminCommandeList
                   <p className="mt-0.5 text-sm font-medium text-brand-navy">
                     {c.contact_nom ?? audienceCommandeLabel(c.audience)}
                   </p>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    {audienceCommandeLabel(c.audience)}
+                  </p>
                 </div>
                 <NouvelleBadge dateCreation={c.date_creation} />
               </div>
@@ -189,6 +192,9 @@ export function AdminCommandesList({ commandes }: { commandes: AdminCommandeList
                   <td className="px-3 py-3">
                     <p className="font-medium text-brand-navy">
                       {c.contact_nom ?? audienceCommandeLabel(c.audience)}
+                    </p>
+                    <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                      {audienceCommandeLabel(c.audience)}
                     </p>
                     <ContactLinks email={c.contact_email} telephone={c.contact_telephone} />
                     <p className="mt-0.5 max-w-[240px] truncate text-xs text-muted-foreground">

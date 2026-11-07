@@ -3,9 +3,13 @@ import type { SupabaseClient, User } from "@supabase/supabase-js"
 import {
   findAuthUserIdByEmail,
   isAuthEmailConfirmed,
-  sendParticulierConfirmationForEmail,
   type ParticulierClientLinkResult,
 } from "@/lib/auth/particulier-client"
+import {
+  sendPasswordSetupEmailIfNeeded,
+  userNeedsPasswordSetup,
+} from "@/lib/auth/password-setup"
+import { syncProfileClientKind } from "@/lib/auth/sync-profile-client-kind"
 
 function normalizeEmail(email: string) {
   return email.trim().toLowerCase()
@@ -19,7 +23,7 @@ async function createProOrderAuthUser(
   const normalized = normalizeEmail(email)
   const { data, error } = await supabase.auth.admin.createUser({
     email: normalized,
-    email_confirm: false,
+    email_confirm: true,
     user_metadata: {
       full_name: contactNom?.trim() || null,
       signup_source: "pro_order",
@@ -59,8 +63,7 @@ async function syncProfileFromOrder(
  */
 export async function ensureProClientForCommande(
   supabase: SupabaseClient,
-  commandeId: string,
-  options?: { sendConfirmationEmail?: "initial" | false }
+  commandeId: string
 ): Promise<ParticulierClientLinkResult | null> {
   const { data: commande, error } = await supabase
     .from("commandes")
@@ -95,7 +98,6 @@ export async function ensureProClientForCommande(
     typeof commande.contact_telephone === "string" ? commande.contact_telephone : null
 
   let user: User | null = null
-  let createdUser = false
 
   if (commande.client_id) {
     const { data: byId, error: userError } = await supabase.auth.admin.getUserById(
@@ -113,11 +115,15 @@ export async function ensureProClientForCommande(
 
   if (!user) {
     user = await createProOrderAuthUser(supabase, email, contactNom)
-    createdUser = Boolean(user)
   }
 
   if (!user?.id) {
-    return { userId: null, emailConfirmed: false, confirmationEmailSent: false }
+    return {
+      userId: null,
+      emailConfirmed: false,
+      needsPasswordSetup: false,
+      passwordSetupEmailSent: false,
+    }
   }
 
   if (commande.client_id !== user.id) {
@@ -133,23 +139,15 @@ export async function ensureProClientForCommande(
   }
 
   await syncProfileFromOrder(supabase, user.id, contactNom, contactPhone)
+  await syncProfileClientKind(supabase, user.id, "professionnel")
 
-  const emailConfirmed = isAuthEmailConfirmed(user)
-  let confirmationEmailSent = false
-
-  if (
-    options?.sendConfirmationEmail === "initial" &&
-    createdUser &&
-    !emailConfirmed
-  ) {
-    const sendResult = await sendParticulierConfirmationForEmail(supabase, email)
-    confirmationEmailSent = sendResult.sent
-  }
+  const setup = await sendPasswordSetupEmailIfNeeded(supabase, user)
 
   return {
     userId: user.id,
-    emailConfirmed,
-    confirmationEmailSent,
+    emailConfirmed: isAuthEmailConfirmed(user),
+    needsPasswordSetup: setup.needsPasswordSetup || userNeedsPasswordSetup(user),
+    passwordSetupEmailSent: setup.sent,
   }
 }
 
