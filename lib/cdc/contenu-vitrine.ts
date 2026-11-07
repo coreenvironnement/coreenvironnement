@@ -369,9 +369,9 @@ export const particulierAccueil = {
         titre: "Choisir le bon volume",
         texte:
           "Pour un tas rectangulaire, multipliez la longueur, la largeur et la hauteur, en mètres : vous obtenez une estimation du volume en m³. Avec des gravats ou de la terre, le poids compte aussi dans le choix de la benne.",
-        cta: "Utiliser l’estimateur dans la commande",
+        cta: "Estimer mon volume",
         ctaHint:
-          "L’estimateur est accessible après avoir renseigné votre adresse et le type de déchets. Le volume proposé reste indicatif.",
+          "L’estimation ne demande pas votre adresse. À la fin, vous pourrez commander la benne adaptée en renseignant le lieu de livraison.",
         guideLabel: "Consulter le guide des volumes de benne",
         guideHref: "/location-benne/volume",
       },

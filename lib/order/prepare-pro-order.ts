@@ -194,6 +194,7 @@ export async function prepareProOrderForEmbeddedPayment(
             contact_telephone: phone,
             departement_code: deptCode,
             price_ht: prestation.priceHt,
+            audience: "professionnel",
           })
           .eq("id", existing.id)
 

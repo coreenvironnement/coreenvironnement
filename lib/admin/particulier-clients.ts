@@ -15,7 +15,7 @@ export async function loadParticulierClients(
   const { data: commandes } = await supabase
     .from("commandes")
     .select("id, client_id, contact_email, contact_nom, date_creation, audience")
-    .or("audience.is.null,audience.neq.professionnel")
+    .eq("audience", "particulier")
     .order("date_creation", { ascending: false })
 
   const map = new Map<string, ParticulierClientRow>()

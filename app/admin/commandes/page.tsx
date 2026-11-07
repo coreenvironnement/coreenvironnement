@@ -12,13 +12,14 @@ import {
   parseCommandeVue,
   type CommandeVue,
 } from "@/lib/commande/labels"
+import { matchesCommandeAudience, type CommandeAudienceFilter } from "@/lib/commande/audience"
 import { cn } from "@/lib/utils"
 
 export const metadata = {
   title: "Commandes · Admin",
 }
 
-type AudienceFilter = "all" | "particulier" | "professionnel"
+type AudienceFilter = CommandeAudienceFilter
 
 type PageProps = {
   searchParams: Promise<{ q?: string; vue?: string; audience?: string }>
@@ -41,12 +42,6 @@ function commandesHref(vue: CommandeVue, q: string, audience: AudienceFilter) {
 
 function audienceHref(audience: AudienceFilter, vue: CommandeVue, q: string) {
   return commandesHref(vue, q, audience)
-}
-
-function matchesAudience(audience: string | null, filter: AudienceFilter): boolean {
-  if (filter === "all") return true
-  if (filter === "professionnel") return audience === "professionnel"
-  return audience !== "professionnel"
 }
 
 const AUDIENCE_PILLS: { id: AudienceFilter; label: string }[] = [
@@ -85,7 +80,12 @@ export default async function AdminCommandesPage({ searchParams }: PageProps) {
     .order("date_creation", { ascending: false })
 
   const rows = (commandes ?? []) as unknown as AdminCommandeListItem[]
-  const byAudience = rows.filter((c) => matchesAudience(c.audience, audience))
+  const byAudience = rows.filter((c) =>
+    matchesCommandeAudience(
+      c.audience === "particulier" || c.audience === "professionnel" ? c.audience : null,
+      audience
+    )
+  )
   const aTraiter = byAudience.filter((c) => isCommandeATraiter(c.statut, c.payment_status)).length
   const counts = Object.fromEntries(
     COMMANDES_VUES.map((item) => [

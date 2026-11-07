@@ -12,7 +12,7 @@ import { particulierAccueil } from "@/lib/cdc/contenu-vitrine"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 
 import { VITRINE_ICON_STROKE } from "./icons"
-import { useVitrineOrder } from "./order-context"
+import { VitrineVolumeEstimator } from "./vitrine-volume-estimator"
 
 const CARD_ICONS: Record<string, typeof PackageDimensions01Icon> = {
   volume: PackageDimensions01Icon,
@@ -24,7 +24,6 @@ const CARD_ICONS: Record<string, typeof PackageDimensions01Icon> = {
 
 export function VitrineParticulierConseils() {
   const { conseils } = particulierAccueil
-  const { openOrder } = useVitrineOrder()
 
   return (
     <section
@@ -63,7 +62,11 @@ export function VitrineParticulierConseils() {
             return (
               <article
                 key={carte.id}
-                className="flex h-full flex-col rounded-2xl border border-brand-green/14 bg-white p-5 shadow-[var(--shadow-vitrine-soft)] max-md:items-center max-md:text-center sm:p-6 md:items-start md:text-left"
+                className={
+                  carte.id === "volume"
+                    ? "flex h-full flex-col rounded-2xl border border-brand-green/14 bg-white p-5 shadow-[var(--shadow-vitrine-soft)] max-md:items-center max-md:text-center sm:p-6 md:col-span-3 md:items-start md:text-left"
+                    : "flex h-full flex-col rounded-2xl border border-brand-green/14 bg-white p-5 shadow-[var(--shadow-vitrine-soft)] max-md:items-center max-md:text-center sm:p-6 md:items-start md:text-left"
+                }
               >
                 <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand-green/8 text-brand-navy max-md:mx-auto md:mx-0">
                   <HugeiconsIcon
@@ -81,14 +84,8 @@ export function VitrineParticulierConseils() {
                 </p>
 
                 {carte.id === "volume" && "cta" in carte ? (
-                  <div className="mt-5 space-y-3">
-                    <button
-                      type="button"
-                      onClick={() => openOrder({ intentStart: "waste" })}
-                      className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-brand-green px-4 py-2.5 text-center text-[14px] font-semibold text-white transition-colors hover:bg-brand-green-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2"
-                    >
-                      {carte.cta}
-                    </button>
+                  <div className="mt-5 space-y-3 md:col-span-1">
+                    <VitrineVolumeEstimator />
                     {"ctaHint" in carte && carte.ctaHint ? (
                       <p className="text-[12px] leading-snug text-brand-muted">
                         {carte.ctaHint}

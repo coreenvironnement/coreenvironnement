@@ -49,6 +49,7 @@ Checklist pour valider le flux bout en bout (sans automatisation). À exécuter 
 - Client : `/admin` redirige vers `/espace/commandes`.
 - Mobile : bottom nav + cartes commandes ; filtres **Particuliers / Pro**.
 - `/admin/clients/particuliers` : liste agrégée ; fiche commande : changement de statut (select).
+- **Audience B2C/B2B** : commande tunnel particulier → onglet **Particuliers** uniquement ; pro → **Professionnels** uniquement. Appliquer **`016_commandes_audience_backfill.sql`** sur les bases avec commandes `audience` NULL (sinon visibles seulement dans **Toutes**).
 
 ## 8. Factures, reçus et sièges pro
 

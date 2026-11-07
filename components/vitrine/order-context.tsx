@@ -11,19 +11,30 @@ import {
 
 import type { OrderAudience } from "@/components/order/order-audience-toggle"
 import type { AddressGeocodeHit } from "@/lib/geo/ban-api"
+import type { ParticulierWasteOptionId } from "@/lib/order/particulier-waste-options"
+import type { BenneFamily } from "@/lib/prestations"
 
-export type OrderIntentStart = "location" | "waste" | "auto"
+export type OrderIntentStart = "location" | "waste" | "auto" | "estimator"
 
 export type OrderDraft = {
   audience: OrderAudience
   address: string
   selectedAddress: AddressGeocodeHit | null
+  /** Prérempli depuis l’estimateur vitrine (évite de redemander le déchet). */
+  particulierWasteId?: ParticulierWasteOptionId | null
+  family?: BenneFamily | null
+  volumeHintM3?: number | null
+  volumeHintOrigin?: "estimated" | "chosen" | "unknown"
 }
 
 const defaultDraft = (): OrderDraft => ({
   audience: "particulier",
   address: "",
   selectedAddress: null,
+  particulierWasteId: null,
+  family: null,
+  volumeHintM3: null,
+  volumeHintOrigin: "unknown",
 })
 
 type OpenOrderOptions = {
@@ -37,12 +48,19 @@ type OrderContextValue = {
   patchDraft: (patch: Partial<OrderDraft>) => void
   openOrder: (options?: OpenOrderOptions) => void
   closeOrder: () => void
-  resolveIntentPhase: () => "location" | "waste"
+  resolveIntentPhase: () => "location" | "waste" | "volume"
 }
 
 const OrderContext = createContext<OrderContextValue | null>(null)
 
-function resolvePhase(intentStart: OrderIntentStart, draft: OrderDraft): "location" | "waste" {
+function resolvePhase(
+  intentStart: OrderIntentStart,
+  draft: OrderDraft
+): "location" | "waste" | "volume" {
+  if (intentStart === "estimator") {
+    if (!draft.selectedAddress) return "location"
+    return draft.particulierWasteId ? "volume" : "waste"
+  }
   if (intentStart === "waste") return "waste"
   if (intentStart === "location") return "location"
   return draft.selectedAddress ? "waste" : "location"

@@ -321,6 +321,8 @@ export type ParticulierVolumeStepProps = {
   wasteId?: ParticulierWasteOptionId | null
   audience?: OrderAudience
   embedded?: boolean
+  /** Adresse non encore renseignée : libellé CTA orienté commande. */
+  addressPending?: boolean
   onBackToWaste: () => void
   onContinue: (
     volumeM3: number | null,
@@ -333,6 +335,7 @@ export function ParticulierVolumeStep({
   wasteId = null,
   audience = "particulier",
   embedded,
+  addressPending = false,
   onBackToWaste,
   onContinue,
 }: ParticulierVolumeStepProps) {
@@ -693,7 +696,11 @@ export function ParticulierVolumeStep({
                 onContinue(result.recommendedVolumeM3, "estimated")
               }
             >
-              {isPro ? "Voir les forfaits adaptés" : "Voir les bennes adaptées"}
+              {addressPending
+                ? "Je souhaite commander cette benne"
+                : isPro
+                  ? "Voir les forfaits adaptés"
+                  : "Voir les bennes adaptées"}
             </OrderTunnelContinueButton>
           </motion.div>
         ) : null}
@@ -710,9 +717,11 @@ export function ParticulierVolumeStep({
             disabled={knownPick === null}
             onClick={() => onContinue(knownPick, "chosen")}
           >
-            {isPro
-              ? "Continuer vers le choix de forfait"
-              : "Continuer vers le choix de benne"}
+            {addressPending
+              ? "Je souhaite commander cette benne"
+              : isPro
+                ? "Continuer vers le choix de forfait"
+                : "Continuer vers le choix de benne"}
           </OrderTunnelContinueButton>
         </div>
       ) : null}

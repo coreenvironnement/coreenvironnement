@@ -32,7 +32,7 @@ export default async function EspaceCommandesPage() {
 
   const list = (commandes ?? []) as CommandeSnapshotRow[]
   const professionnel = list.filter((c) => c.audience === "professionnel")
-  const particulier = list.filter((c) => c.audience !== "professionnel")
+  const particulier = list.filter((c) => c.audience === "particulier")
 
   const { data: comptePro } = await supabase
     .from("comptes_pro")

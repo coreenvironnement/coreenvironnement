@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState, useTransition } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
@@ -104,6 +104,8 @@ type Audience = OrderAudience
 
 type IntentPhase = "location" | "waste" | "volume"
 
+type AfterLocationTarget = "waste" | "volume" | "forfait"
+
 function fmtHt(n: number) {
   return new Intl.NumberFormat("fr-FR", {
     style: "currency",
@@ -174,6 +176,8 @@ export function OrderWidget({
 
   const [step, setStep] = useState<OrderTunnelStepId>("intent")
   const [intentPhase, setIntentPhase] = useState<IntentPhase>("location")
+  const [afterLocationTarget, setAfterLocationTarget] =
+    useState<AfterLocationTarget>("waste")
   const [audience, setAudience] = useState<Audience>("particulier")
   const [address, setAddress] = useState("")
   const [selectedAddress, setSelectedAddress] = useState<AddressGeocodeHit | null>(
@@ -209,6 +213,19 @@ export function OrderWidget({
   const [contactPhone, setContactPhone] = useState("")
   const [contactEmail, setContactEmail] = useState("")
   const [draftCommandeId, setDraftCommandeId] = useState<string | null>(null)
+
+  const handleAudienceChange = useCallback(
+    (next: Audience) => {
+      if (next === audience) return
+      setDraftCommandeId(null)
+      if (step === "payment") {
+        setStep("recap")
+      }
+      setAudience(next)
+    },
+    [audience, step]
+  )
+
   const [proRequestSent, setProRequestSent] = useState(false)
   const [proClientEmailSent, setProClientEmailSent] = useState(false)
   const [proReference, setProReference] = useState<string | null>(null)
@@ -252,9 +269,29 @@ export function OrderWidget({
     setAudience(source.audience)
     setAddress(source.address)
     setSelectedAddress(source.selectedAddress)
+    if (source.particulierWasteId) {
+      setParticulierWasteId(source.particulierWasteId)
+      const mapped = particulierWasteOptionById(source.particulierWasteId)
+      if (mapped) setFamily(mapped.family)
+    } else if (source.family) {
+      setFamily(source.family)
+    }
+    if (source.volumeHintM3 != null && source.volumeHintM3 > 0) {
+      setVolumeHintM3(source.volumeHintM3)
+      setVolumeHintOrigin(source.volumeHintOrigin ?? "unknown")
+      const fam =
+        source.family ??
+        (source.particulierWasteId
+          ? particulierWasteOptionById(source.particulierWasteId)?.family
+          : null)
+      if (fam) {
+        const pid = prestationIdForFamilyVolume(fam, source.volumeHintM3)
+        if (pid) setSelectedPrestationId(pid)
+      }
+    }
   }
 
-  const goToIntentWaste = () => {
+  const advanceFromLocation = () => {
     setAddressError(null)
     if (!address.trim().length) {
       setAddressError("Indiquez l’adresse de livraison de la benne.")
@@ -267,17 +304,26 @@ export function OrderWidget({
       return
     }
     syncDraftFromWidget()
+
+    const resume = afterLocationTarget
+    setAfterLocationTarget("waste")
+
+    if (resume === "forfait" && canLeaveIntentWaste) {
+      setStep("forfait")
+      scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
+      return
+    }
+    if (canLeaveIntentWaste) {
+      setIntentPhase("volume")
+      scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
+      return
+    }
     setIntentPhase("waste")
     scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
   }
 
   const goToIntentVolume = () => {
     setAddressError(null)
-    if (!zoneOk) {
-      setIntentPhase("location")
-      setAddressError("Indiquez l’adresse de livraison de la benne.")
-      return
-    }
     if (audience === "particulier") {
       if (!particulierWasteId) {
         setAddressError("Choisissez ce que vous souhaitez jeter.")
@@ -297,11 +343,6 @@ export function OrderWidget({
     volumeOrigin?: "estimated" | "chosen"
   ) => {
     setAddressError(null)
-    if (!zoneOk) {
-      setIntentPhase("location")
-      setAddressError("Indiquez l’adresse de livraison de la benne.")
-      return
-    }
     if (audience === "particulier") {
       if (!particulierWasteId) {
         setAddressError("Choisissez ce que vous souhaitez jeter.")
@@ -316,6 +357,15 @@ export function OrderWidget({
       setVolumeHintOrigin(volumeOrigin ?? "unknown")
       const pid = prestationIdForFamilyVolume(family, preselectVolumeM3)
       if (pid) setSelectedPrestationId(pid)
+    }
+    if (!zoneOk) {
+      setAfterLocationTarget("forfait")
+      setIntentPhase("location")
+      setAddressError(
+        "Indiquez l’adresse de livraison pour poursuivre votre commande."
+      )
+      scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
+      return
     }
     syncDraftFromWidget()
     setStep("forfait")
@@ -522,13 +572,31 @@ export function OrderWidget({
     if (!embedded) return
     if (open && !modalWasOpen.current) {
       applyDraft(draft)
-      setStep("intent")
-      setIntentPhase(resolveIntentPhase())
       setAddressError(null)
       setDraftCommandeId(null)
       setProRequestSent(false)
       setProReference(null)
       setProClientEmailSent(false)
+      setAfterLocationTarget("waste")
+
+      if (
+        intentStart === "estimator" &&
+        draft.volumeHintM3 != null &&
+        draft.particulierWasteId
+      ) {
+        if (draft.selectedAddress) {
+          setStep("forfait")
+          setIntentPhase("volume")
+        } else {
+          setStep("intent")
+          setAfterLocationTarget("forfait")
+          setIntentPhase("location")
+        }
+      } else {
+        setStep("intent")
+        const phase = resolveIntentPhase()
+        setIntentPhase(phase === "volume" ? "volume" : phase)
+      }
     }
     modalWasOpen.current = open
   }, [open, embedded, intentStart, draft, resolveIntentPhase])
@@ -767,7 +835,7 @@ export function OrderWidget({
               >
                 <OrderAudienceToggle
                   audience={audience}
-                  onChange={setAudience}
+                  onChange={handleAudienceChange}
                   subdued={embedded}
                 />
 
@@ -829,7 +897,7 @@ export function OrderWidget({
                 <Button
                   type="button"
                   className="mt-0.5 h-11 w-full rounded-xl border-0 bg-[#35A238] px-4 text-base font-semibold text-white shadow-lg shadow-[#35A238]/25 hover:bg-[#19752B]"
-                  onClick={goToIntentWaste}
+                  onClick={advanceFromLocation}
                 >
                   <span className="flex w-full items-center justify-between gap-2">
                     <span>Continuer</span>
@@ -988,6 +1056,7 @@ export function OrderWidget({
                 wasteId={
                   audience === "particulier" ? particulierWasteId : null
                 }
+                addressPending={!zoneOk}
                 onBackToWaste={() => {
                   setAddressError(null)
                   setIntentPhase("waste")

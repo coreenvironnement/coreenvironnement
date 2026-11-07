@@ -116,12 +116,19 @@ export async function prepareParticulierOrder(
     const { data: existing } = await supabase
       .from("commandes")
       .select(
-        "id, payment_status, statut, contact_email, prestation_id, price_ht, stripe_payment_intent_id"
+        "id, payment_status, statut, contact_email, prestation_id, price_ht, stripe_payment_intent_id, audience"
       )
       .eq("id", input.existingCommandeId)
       .maybeSingle()
 
     if (existing) {
+      if (existing.audience === "professionnel") {
+        return {
+          error:
+            "Cette commande est liée au parcours professionnel. Reprenez une commande particulier.",
+        }
+      }
+
       if (existing.payment_status === "paid") {
         return {
           commandeId: existing.id,
@@ -151,6 +158,7 @@ export async function prepareParticulierOrder(
             contact_telephone: phone,
             departement_code: deptCode,
             price_ht: prestation.priceHt,
+            audience: "particulier",
           })
           .eq("id", existing.id)
 
@@ -194,7 +202,7 @@ export async function prepareParticulierOrder(
       type_dechet_id: dechetType.id,
       statut: "brouillon",
       payment_status: "pending",
-      audience: input.audience,
+      audience: "particulier",
       prestation_id: prestation.id,
       prestation_label: prestation.label,
       volume_m3: prestation.volumeM3,

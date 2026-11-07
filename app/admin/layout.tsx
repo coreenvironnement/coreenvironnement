@@ -20,6 +20,7 @@ export default async function AdminLayout({
     .select("*", { count: "exact", head: true })
     .eq("statut", "confirmee")
     .eq("payment_status", "paid")
+    .eq("audience", "particulier")
 
   const userLabel = profile.full_name ?? profile.email ?? "Administrateur"
 
