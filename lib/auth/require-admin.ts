@@ -19,7 +19,7 @@ export async function requireAdmin() {
     .single()
 
   if (profile?.role !== "admin") {
-    redirect("/dashboard")
+    redirect("/espace/commandes")
   }
 
   return { supabase, user, profile }

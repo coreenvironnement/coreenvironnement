@@ -42,6 +42,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { CheckoutReassuranceBanner } from "@/components/order/checkout-reassurance-banner"
 import { EmbeddedCheckout } from "@/components/order/embedded-checkout"
 import { OrderDateField } from "@/components/order/order-date-field"
 import { OrderTunnelContinueButton } from "@/components/order/order-tunnel-continue-button"
@@ -78,6 +79,7 @@ import {
   isValidPickupDate,
   minDeliveryDateISO,
 } from "@/lib/order/delivery-dates"
+import { BENNE_VISUAL_BY_VOLUME } from "@/lib/commande/benne-visual"
 import { cn } from "@/lib/utils"
 
 export { ORDER_TUNNEL_STEPS } from "@/lib/order/tunnel-steps"
@@ -96,15 +98,6 @@ function orderFieldBg(embedded: boolean) {
 
 function orderOutlineBtn(embedded: boolean) {
   return embedded ? "order-tunnel-outline-btn h-11 rounded-xl" : "h-11 rounded-xl"
-}
-
-/** Visuels forfait — mapping par volume (données métier inchangées). */
-const BENNE_VISUAL_BY_VOLUME: Record<number, string> = {
-  8: "/images/benne-8m3.png",
-  10: "/images/benne-10m3.png",
-  15: "/images/benne-15m3.png",
-  20: "/images/benne-20m3.png",
-  30: "/images/benne-30m3.png",
 }
 
 type Audience = OrderAudience
@@ -703,6 +696,7 @@ export function OrderWidget({
                       {addressError}
                     </p>
                   ) : null}
+                  <CheckoutReassuranceBanner variant="professionnel" />
                   <Button
                     type="button"
                     className="h-11 w-full rounded-xl text-base font-semibold shadow-lg"

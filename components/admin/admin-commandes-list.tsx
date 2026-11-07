@@ -111,7 +111,7 @@ export function AdminCommandesList({ commandes }: { commandes: AdminCommandeList
           return (
             <li
               key={c.id}
-              className="rounded-xl border border-brand-navy/12 bg-background p-4 shadow-sm"
+              className="rounded-xl border border-[#35A238]/20 bg-white p-4 shadow-sm"
             >
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
@@ -158,7 +158,7 @@ export function AdminCommandesList({ commandes }: { commandes: AdminCommandeList
         })}
       </ul>
 
-      <div className="hidden overflow-x-auto rounded-xl border border-brand-navy/12 bg-background shadow-sm lg:block">
+      <div className="hidden overflow-x-auto rounded-xl border border-[#35A238]/20 bg-white shadow-sm lg:block">
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-border/60 bg-muted/30 text-muted-foreground">

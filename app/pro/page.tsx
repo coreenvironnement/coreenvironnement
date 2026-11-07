@@ -1,16 +1,11 @@
 import type { Metadata } from "next"
-import Link from "next/link"
+import { redirect } from "next/navigation"
 
-import { CompteProForm } from "@/components/pro/compte-pro-form"
 import { ProAuthPanel } from "@/components/pro/pro-auth-panel"
-import { SubscriptionPanel } from "@/components/pro/subscription-panel"
 import { VitrinePublicShell } from "@/components/vitrine/vitrine-public-shell"
 import { comptePro } from "@/lib/cdc/contenu-vitrine"
-import { statutCompteProLabel } from "@/lib/compte-pro/labels"
-import { formatDateFr } from "@/lib/format/date"
 import { publicPageMetadata } from "@/lib/seo/public-page"
 import { createClient } from "@/lib/supabase/server"
-import { isStripeConfigured } from "@/lib/stripe/server"
 
 export const metadata: Metadata = publicPageMetadata(
   "Compte professionnel",
@@ -29,17 +24,13 @@ export default async function ProPage({ searchParams }: PageProps) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  let compte = null
   if (user) {
-    const { data } = await supabase
-      .from("comptes_pro")
-      .select("*")
-      .eq("profile_id", user.id)
-      .maybeSingle()
-    compte = data
+    const q = new URLSearchParams()
+    if (subscriptionParam) q.set("subscription", subscriptionParam)
+    if (reasonParam) q.set("reason", reasonParam)
+    const suffix = q.toString() ? `?${q.toString()}` : ""
+    redirect(`/espace/compte${suffix}`)
   }
-
-  const stripeConfigured = isStripeConfigured()
 
   return (
     <VitrinePublicShell>
@@ -53,38 +44,12 @@ export default async function ProPage({ searchParams }: PageProps) {
             <p className="mt-5 max-w-2xl text-[17px] leading-[1.75] text-brand-muted sm:text-[18px]">
               {comptePro.sousTitre}
             </p>
-            <p className="mt-4 max-w-2xl text-[15px] leading-[1.75] text-brand-muted sm:text-[16px]">
-              {comptePro.description}
-            </p>
           </div>
-
-          {subscriptionParam === "success" ? (
-            <p className="rounded-xl border border-brand-green/25 bg-brand-green-soft px-4 py-3 text-sm text-brand-navy">
-              Paiement reçu. Votre abonnement sera activé dans quelques instants après
-              confirmation Stripe.
-            </p>
-          ) : subscriptionParam === "cancelled" ? (
-            <p className="rounded-xl border border-brand-navy/12 bg-muted/30 px-4 py-3 text-sm text-brand-muted">
-              Paiement annulé. Vous pouvez réessayer quand vous le souhaitez.
-            </p>
-          ) : null}
-
-          {reasonParam === "dashboard_subscription" ? (
-            <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-brand-navy">
-              L&apos;espace chantier (/dashboard) nécessite un compte professionnel validé et un
-              abonnement actif. Activez ou renouvelez votre abonnement ci-dessous.
-            </p>
-          ) : reasonParam === "dashboard_no_compte" ? (
-            <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-brand-navy">
-              Aucun dossier professionnel n&apos;est associé à votre compte alors que vous êtes
-              membre d&apos;un chantier. Complétez votre demande sur cette page ou contactez-nous.
-            </p>
-          ) : null}
 
           <div className="card-vitrine p-6 sm:p-8">
             <h2 className="text-xl text-brand-navy">{comptePro.reassurance.titre}</h2>
             <p className="mt-1.5 text-sm text-brand-muted">
-              Abonnement espace client : {comptePro.abonnement}
+              Abonnement : {comptePro.abonnement}
             </p>
             <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-relaxed text-brand-muted">
               {comptePro.reassurance.points.map((point) => (
@@ -94,66 +59,17 @@ export default async function ProPage({ searchParams }: PageProps) {
           </div>
 
           <div className="card-vitrine p-6 sm:p-8">
-            {!user ? (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-xl text-brand-navy">Créer ou accéder à votre dossier</h2>
-                  <p className="mt-1.5 text-sm leading-relaxed text-brand-muted">
-                    Créez un accès ou connectez-vous pour déposer votre dossier (KBIS + RIB).
-                    Après validation, activez l&apos;abonnement {comptePro.abonnement}.
-                  </p>
-                </div>
-                <ProAuthPanel />
-              </div>
-            ) : compte?.status === "approved" ? (
-              <SubscriptionPanel
-                subscriptionActive={Boolean(compte.subscription_active)}
-                subscriptionStatus={compte.subscription_status}
-                periodEndLabel={
-                  compte.subscription_current_period_end
-                    ? formatDateFr(compte.subscription_current_period_end)
-                    : null
-                }
-                paymentMode={compte.payment_mode}
-                stripeConfigured={stripeConfigured}
-              />
-            ) : compte?.status === "pending" ? (
-              <div className="text-center">
-                <p className="text-lg font-semibold text-brand-navy">
-                  {statutCompteProLabel("pending")}
-                </p>
-                <p className="mx-auto mt-2 max-w-md text-sm text-brand-muted">
-                  {comptePro.reassurance.footer}
-                </p>
-                <p className="mt-4 text-sm text-brand-muted">
-                  Entreprise : <strong>{compte.raison_sociale}</strong>
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-xl text-brand-navy">Créer ou accéder à votre dossier</h2>
+                <p className="mt-1.5 text-sm leading-relaxed text-brand-muted">
+                  Connectez-vous pour gérer votre dossier et votre abonnement dans un seul espace
+                  applicatif.
                 </p>
               </div>
-            ) : (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-xl text-brand-navy">Demande de compte professionnel</h2>
-                  <p className="mt-1.5 text-sm text-brand-muted">
-                    Complétez le formulaire ci-dessous. Notre service financier examine
-                    chaque dossier sous 24 h ouvrées.
-                  </p>
-                </div>
-                <CompteProForm
-                  defaultEmail={compte?.contact_email ?? user.email ?? undefined}
-                  isResubmit={compte?.status === "rejected"}
-                  previousNotes={compte?.review_notes}
-                />
-              </div>
-            )}
+              <ProAuthPanel />
+            </div>
           </div>
-
-          {user ? (
-            <p className="text-center text-sm text-brand-muted">
-              <Link href="/dashboard" className="text-brand-green underline-offset-2 hover:underline">
-                Retour à l&apos;espace client
-              </Link>
-            </p>
-          ) : null}
         </div>
       </section>
     </VitrinePublicShell>

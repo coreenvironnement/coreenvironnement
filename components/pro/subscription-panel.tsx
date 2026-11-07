@@ -75,8 +75,8 @@ export function SubscriptionPanel({
       <div className="flex flex-wrap gap-2">
         {subscriptionActive ? (
           <>
-            <Link href="/dashboard">
-              <Button>Accéder à mon espace client</Button>
+            <Link href="/espace/chantier">
+              <Button className="bg-[#35A238] hover:bg-[#2d8a30]">Suivi chantier</Button>
             </Link>
             {stripeConfigured ? (
               <Button
@@ -110,8 +110,8 @@ export function SubscriptionPanel({
             Activer l&apos;abonnement ({ABONNEMENT_PRO_HT} € HT / mois)
           </Button>
         ) : (
-          <Link href="/dashboard">
-            <Button variant="secondary">Accéder à l&apos;espace client</Button>
+          <Link href="/espace/chantier">
+            <Button variant="secondary">Suivi chantier</Button>
           </Link>
         )}
       </div>

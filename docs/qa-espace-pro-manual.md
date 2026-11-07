@@ -36,3 +36,23 @@ Checklist pour valider le flux bout en bout (sans automatisation). À exécuter 
 ## 5. Régression rapide particulier
 
 - Parcours **particulier** du tunnel : étape paiement et webhook inchangés (`order_type` `benne_particulier`).
+
+## 6. Mon espace `/espace` (mobile ~390px)
+
+- **Particulier** : `/espace/commandes` — cartes avec visuel benne, fil de statut, badge « Synchronisé il y a X s » (refresh ~30 s).
+- **Pro** : onglets Commandes / Suivi chantier / Documents / Factures / Entreprise ; couleurs `#ECF4E9` / `#35A238`.
+- **Connexion** : header → **Mon espace** → `/espace/commandes`.
+
+## 7. Back-office admin (SaaS)
+
+- Compte **admin** : `/espace` redirige vers `/admin/commandes` ; lien vitrine **Administration**.
+- Client : `/admin` redirige vers `/espace/commandes`.
+- Mobile : bottom nav + cartes commandes ; filtres **Particuliers / Pro**.
+- `/admin/clients/particuliers` : liste agrégée ; fiche commande : changement de statut (select).
+
+## 8. Factures, reçus et sièges pro
+
+- Appliquer la migration **`015_compte_pro_seats.sql`** sur Supabase avant test sièges.
+- **Factures** : commande `paid` + Stripe → bouton **Reçu** ouvre l’URL Stripe ; `waived` = texte sur facture.
+- Abonnement actif : **Portail Stripe** sur `/espace/factures`.
+- **Entreprise** : inviter e-mail → **Activer** siège → vérifier quantité abonnement Stripe (1 + sièges actifs).

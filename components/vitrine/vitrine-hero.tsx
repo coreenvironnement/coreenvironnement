@@ -93,8 +93,8 @@ export function VitrineHero({
       id="accueil"
       className="relative z-10 flex min-h-[100svh] flex-col justify-center overflow-hidden bg-transparent"
     >
-      <div className={backdropLayerClass}>
-        <div className="relative h-full min-h-0 w-full">
+        <div className={backdropLayerClass}>
+        <div className="relative h-full min-h-0 w-full overflow-hidden">
           <div className="hero-bg-frame hero-bg-frame--mobile relative h-full w-full md:hidden">
             <Image
               src="/images/hero-paris-truck-mobile.png"
@@ -102,7 +102,14 @@ export function VitrineHero({
               fill
               priority
               sizes="100vw"
-              className="object-cover object-center"
+              className="z-0 object-cover object-center"
+            />
+            <div
+              aria-hidden="true"
+              className={cn(
+                "hero-overlay",
+                isParticulier ? "hero-overlay--particulier" : "hero-overlay--standard"
+              )}
             />
           </div>
           <div className="hero-bg-frame hero-bg-frame--desktop relative hidden h-full w-full md:block">
@@ -113,18 +120,18 @@ export function VitrineHero({
               priority
               sizes="100vw"
               className={cn(
-                "object-cover",
+                "z-0 object-cover",
                 isParticulier ? "object-[62%_center]" : "object-[55%_center]"
               )}
             />
+            <div
+              aria-hidden="true"
+              className={cn(
+                "hero-overlay",
+                isParticulier ? "hero-overlay--particulier" : "hero-overlay--standard"
+              )}
+            />
           </div>
-          <div
-            aria-hidden="true"
-            className={cn(
-              "hero-overlay",
-              isParticulier ? "hero-overlay--particulier" : "hero-overlay--standard"
-            )}
-          />
         </div>
       </div>
 
@@ -155,13 +162,6 @@ export function VitrineHero({
                 : "max-w-[760px] lg:order-none lg:col-start-2 lg:row-start-1 lg:max-w-none lg:pl-2 xl:pl-6"
             )}
           >
-            <div
-              aria-hidden
-              className={cn(
-                "hero-readability-glow pointer-events-none absolute -inset-x-3 -inset-y-5 rounded-[1.25rem] md:-inset-x-10 md:-inset-y-12 md:rounded-[2rem]",
-                !isParticulier && "lg:hidden"
-              )}
-            />
             <h1
               className={cn(
                 "animate-fade-up mt-0 text-white [text-shadow:0_1px_28px_rgba(14,32,16,0.32),0_2px_56px_rgba(14,32,16,0.16)]",

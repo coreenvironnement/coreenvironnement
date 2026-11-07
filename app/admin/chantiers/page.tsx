@@ -27,7 +27,7 @@ export default async function AdminChantiersPage() {
     .order("nom")
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-6xl space-y-8">
       <div>
         <h2 className="text-xl font-bold text-brand-navy">Chantiers</h2>
         <p className="text-sm text-muted-foreground">

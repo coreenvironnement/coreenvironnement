@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { Menu, Phone } from "lucide-react"
 
+import { SiteAccountLinks } from "@/components/client-account-links"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -21,7 +22,6 @@ const nav = [
   { href: "/", label: "Accueil" },
   { href: "/#commande", label: "Commander" },
   { href: "/#temoignages", label: "Avis clients" },
-  { href: "/dashboard", label: "Espace client" },
 ] as const
 
 function NavLinks({
@@ -48,6 +48,7 @@ function NavLinks({
           {item.label}
         </Link>
       ))}
+      <SiteAccountLinks onItemClick={onItemClick} />
     </nav>
   )
 }
@@ -122,13 +123,6 @@ export function SiteHeader() {
                   <Phone className="size-4 shrink-0" aria-hidden />
                   {SITE_PHONE_DISPLAY}
                 </a>
-                <Link
-                  href="/pro"
-                  onClick={() => setMobileOpen(false)}
-                  className="text-center text-sm font-medium text-brand-navy/80 underline-offset-4 hover:underline"
-                >
-                  Espace Pro
-                </Link>
               </div>
             </SheetContent>
           </Sheet>

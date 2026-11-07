@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react"
 
 import { createInterventionFromCommande, updateCommandeStatut } from "@/app/admin/actions"
 import { AdminCommandeOps } from "@/components/admin/admin-commande-ops"
+import { AdminCommandeStatutSelect } from "@/components/admin/admin-commande-statut-select"
 import { requireAdmin } from "@/lib/auth/require-admin"
 import { canCreateInterventionFromCommande } from "@/lib/commande/intervention-from-commande"
 import {
@@ -13,7 +14,6 @@ import {
   isCommandeNouvelle,
   paymentStatusBadgeClass,
   paymentStatusLabel,
-  STATUTS_COMMANDE,
   statutCommandeBadgeClass,
   statutCommandeLabel,
 } from "@/lib/commande/labels"
@@ -390,26 +390,7 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={updateBound} className="flex flex-wrap items-end gap-4">
-            <div className="space-y-2">
-              <label htmlFor="statut" className="text-sm font-medium">
-                Statut commande
-              </label>
-              <select
-                id="statut"
-                name="statut"
-                defaultValue={commande.statut}
-                className="h-9 w-full min-w-[200px] rounded-lg border border-input bg-transparent px-2 text-sm"
-              >
-                {STATUTS_COMMANDE.map((s) => (
-                  <option key={s.code} value={s.code}>
-                    {s.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <Button type="submit">Enregistrer</Button>
-          </form>
+          <AdminCommandeStatutSelect commandeId={id} currentStatut={commande.statut} />
         </CardContent>
       </Card>
     </div>

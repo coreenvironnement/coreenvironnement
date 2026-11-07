@@ -1,5 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js"
 
+import { evaluateDashboardAccess } from "@/lib/auth/client-nav-context"
+
 /** Paramètre `next` ou défaut : chemin relatif sûr ou null. */
 export function safeNextPath(raw: string | null): string | null {
   if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return null
@@ -17,7 +19,7 @@ export async function getPostLoginRedirectPath(
 ): Promise<string> {
   const next = safeNextPath(nextRaw)
   if (next) {
-    if (next.startsWith("/dashboard")) {
+    if (next.startsWith("/dashboard") || next.startsWith("/espace/chantier")) {
       const gate = await evaluateDashboardAccess(supabase, userId)
       if (!gate.ok) return gate.redirectTo
     }
@@ -41,28 +43,9 @@ export async function getPostLoginRedirectPath(
     .limit(1)
 
   if (!chantierLinks?.length) {
-    return "/mes-commandes"
+    return "/espace/commandes"
   }
 
   const gate = await evaluateDashboardAccess(supabase, userId)
-  return gate.ok ? "/dashboard" : gate.redirectTo
-}
-
-async function evaluateDashboardAccess(
-  supabase: SupabaseClient,
-  userId: string
-): Promise<{ ok: true } | { ok: false; redirectTo: string }> {
-  const { data: compte } = await supabase
-    .from("comptes_pro")
-    .select("status, subscription_active")
-    .eq("profile_id", userId)
-    .maybeSingle()
-
-  if (!compte) {
-    return { ok: true }
-  }
-  if (compte.status !== "approved" || !compte.subscription_active) {
-    return { ok: false, redirectTo: "/pro?reason=dashboard_subscription" }
-  }
-  return { ok: true }
+  return gate.ok ? "/espace/chantier" : gate.redirectTo
 }

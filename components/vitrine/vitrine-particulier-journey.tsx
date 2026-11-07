@@ -41,8 +41,8 @@ export function VitrineParticulierJourney() {
       aria-labelledby="parcours-title"
     >
       <div className="container-x">
-        <div className="mx-auto max-w-3xl max-md:text-center md:mx-0 md:text-left">
-          <p className="section-eyebrow max-md:w-full max-md:justify-center">{parcours.eyebrow}</p>
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="section-eyebrow mx-auto w-fit justify-center">{parcours.eyebrow}</p>
           <h2
             id="parcours-title"
             className="section-title mt-3 text-balance text-brand-navy"

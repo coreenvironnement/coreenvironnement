@@ -14,6 +14,7 @@ import { getCommandePaymentStatus } from "@/app/order/commande-status"
 import { initOrderEmbeddedPayment } from "@/app/order/embedded-payment"
 import type { OrderCheckoutInput } from "@/lib/order/checkout-input"
 import { Button } from "@/components/ui/button"
+import { CheckoutReassuranceBanner } from "@/components/order/checkout-reassurance-banner"
 import {
   OrderConfirmingState,
   OrderSuccessScreen,
@@ -216,6 +217,7 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
             billingEmail={props.input.contactEmail}
             billingName={props.input.contactName}
             billingPhone={props.input.contactPhone}
+            reassuranceVariant={props.input.audience}
             onBack={props.onBack}
             onSuccess={() => setSuccess(true)}
           />
@@ -277,6 +279,7 @@ function CheckoutFields({
   billingEmail,
   billingName,
   billingPhone,
+  reassuranceVariant,
   onBack,
   onSuccess,
 }: {
@@ -284,6 +287,7 @@ function CheckoutFields({
   billingEmail?: string
   billingName?: string
   billingPhone?: string
+  reassuranceVariant: "particulier" | "professionnel"
   onBack: () => void
   onSuccess: () => void
 }) {
@@ -472,6 +476,8 @@ function CheckoutFields({
       {error ? (
         <p className="text-center text-xs font-medium text-amber-800">{error}</p>
       ) : null}
+
+      <CheckoutReassuranceBanner variant={reassuranceVariant} />
 
       <div className="flex flex-col gap-2 pt-0.5 sm:flex-row sm:justify-between">
         <Button

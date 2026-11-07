@@ -32,7 +32,7 @@ export async function assertProDashboardAccess(
   }
 
   if (compte.status !== "approved" || !compte.subscription_active) {
-    redirect(`/pro?${REASON_PARAM}=dashboard_subscription`)
+    redirect(`/espace/compte?${REASON_PARAM}=dashboard_subscription`)
   }
 
   return { hasComptePro: true }

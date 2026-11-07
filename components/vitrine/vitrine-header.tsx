@@ -8,9 +8,9 @@ import {
   ArrowUpRight01Icon,
   Cancel01Icon,
   Menu01Icon,
-  UserIcon,
 } from "@hugeicons/core-free-icons"
 
+import { VitrineAccountLinks } from "@/components/client-account-links"
 import { cn } from "@/lib/utils"
 
 import { VITRINE_ICON_STROKE } from "./icons"
@@ -199,16 +199,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
           </nav>
 
           <div className="hidden lg:flex">
-            <Link
-              href="/dashboard"
-              className={cn(
-                "btn btn-sm",
-                solid ? "btn-ghost-sky" : "btn-ghost-light"
-              )}
-            >
-              <HugeiconsIcon icon={UserIcon} size={16} strokeWidth={VITRINE_ICON_STROKE} />
-              Espace client
-            </Link>
+            <VitrineAccountLinks solid={solid} variant="desktop" />
           </div>
 
           <div className="flex items-center gap-2 lg:hidden">
@@ -269,13 +260,12 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
               isProPage
                 ? { label: "Particulier", href: "/" }
                 : { label: "Professionnels", href: "/professionnels" },
-              { label: "Espace client", href: "/dashboard" },
             ].map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="group flex items-center justify-between border-b border-white/10 py-[15px] text-[21px] text-white/90 hover:text-white"
+                className="group flex min-h-11 items-center justify-between border-b border-white/10 py-[15px] text-[21px] text-white/90 hover:text-white"
               >
                 {link.label}
                 <HugeiconsIcon
@@ -286,6 +276,11 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
                 />
               </Link>
             ))}
+            <VitrineAccountLinks
+              solid={solid}
+              variant="mobile"
+              onLinkClick={() => setMenuOpen(false)}
+            />
           </nav>
         </div>
       </div>

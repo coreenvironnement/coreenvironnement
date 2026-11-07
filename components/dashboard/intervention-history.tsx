@@ -95,22 +95,24 @@ export function DashboardSubNav({
   return (
     <nav className="flex flex-wrap gap-2 border-b border-border/60 pb-4">
       <Link
-        href={`/dashboard?chantier=${chantierId}`}
+        href={`/espace/chantier?chantier=${chantierId}`}
+        scroll={false}
         className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
           active === "overview"
-            ? "bg-brand-green text-white"
-            : "text-muted-foreground hover:bg-muted/60 hover:text-brand-navy"
+            ? "bg-[#35A238] text-white"
+            : "text-muted-foreground hover:bg-[#ECF4E9] hover:text-brand-navy"
         }`}
         aria-current={active === "overview" ? "page" : undefined}
       >
         Statistiques
       </Link>
       <Link
-        href={`/dashboard/historique?chantier=${chantierId}`}
+        href={`/espace/chantier/historique?chantier=${chantierId}`}
+        scroll={false}
         className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
           active === "historique"
-            ? "bg-brand-green text-white"
-            : "text-muted-foreground hover:bg-muted/60 hover:text-brand-navy"
+            ? "bg-[#35A238] text-white"
+            : "text-muted-foreground hover:bg-[#ECF4E9] hover:text-brand-navy"
         }`}
         aria-current={active === "historique" ? "page" : undefined}
       >

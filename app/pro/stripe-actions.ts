@@ -4,6 +4,7 @@ import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
 import { ABONNEMENT_PRO_HT } from "@/lib/cdc/referentiels"
+import { subscriptionQuantityForCompte } from "@/lib/compte-pro/seats"
 import { createClient } from "@/lib/supabase/server"
 import {
   getAppOrigin,
@@ -69,6 +70,7 @@ export async function startProSubscription(): Promise<{ error: string } | never>
   }
 
   const priceId = await getProMonthlyPriceId(stripe)
+  const quantity = await subscriptionQuantityForCompte(supabase, compte.id)
 
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
@@ -77,11 +79,11 @@ export async function startProSubscription(): Promise<{ error: string } | never>
     line_items: [
       {
         price: priceId,
-        quantity: 1,
+        quantity,
       },
     ],
-    success_url: `${origin}/pro?subscription=success`,
-    cancel_url: `${origin}/pro?subscription=cancelled`,
+    success_url: `${origin}/espace/compte?subscription=success`,
+    cancel_url: `${origin}/espace/compte?subscription=cancelled`,
     metadata: {
       compte_pro_id: compte.id,
       profile_id: user.id,
@@ -131,7 +133,7 @@ export async function openBillingPortal(): Promise<{ error: string } | never> {
 
   const session = await stripe.billingPortal.sessions.create({
     customer: compte.stripe_customer_id,
-    return_url: `${origin}/pro`,
+    return_url: `${origin}/espace/factures`,
   })
 
   redirect(session.url)

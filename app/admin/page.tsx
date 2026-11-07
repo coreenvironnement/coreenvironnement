@@ -43,7 +43,7 @@ export default async function AdminHomePage() {
     .limit(5)
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-6xl space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-brand-navy">Vue d&apos;ensemble</h2>

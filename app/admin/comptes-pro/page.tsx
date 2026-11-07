@@ -23,7 +23,7 @@ export default async function AdminComptesProPage() {
   const pendingCount = comptes?.filter((c) => c.status === "pending").length ?? 0
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-6xl space-y-6">
       <div>
         <h2 className="text-xl font-bold text-brand-navy">Comptes professionnels</h2>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -33,6 +33,10 @@ export default async function AdminComptesProPage() {
           ) : (
             "aucune demande en attente"
           )}
+          {" · "}
+          <Link href="/admin/commandes?audience=professionnel" className="text-[#35A238] hover:underline">
+            Commandes pro
+          </Link>
         </p>
       </div>
 
