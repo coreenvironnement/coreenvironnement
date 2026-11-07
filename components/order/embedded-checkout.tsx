@@ -14,7 +14,10 @@ import { getCommandePaymentStatus } from "@/app/order/commande-status"
 import { initOrderEmbeddedPayment } from "@/app/order/embedded-payment"
 import type { OrderCheckoutInput } from "@/lib/order/checkout-input"
 import { Button } from "@/components/ui/button"
-import { CheckoutReassuranceBanner } from "@/components/order/checkout-reassurance-banner"
+import {
+  CheckoutParticulierTrackingNote,
+  CheckoutReassuranceBanner,
+} from "@/components/order/checkout-reassurance-banner"
 import {
   OrderConfirmingState,
   OrderSuccessScreen,
@@ -477,9 +480,17 @@ function CheckoutFields({
         <p className="text-center text-xs font-medium text-amber-800">{error}</p>
       ) : null}
 
-      <CheckoutReassuranceBanner variant={reassuranceVariant} />
+      {reassuranceVariant === "professionnel" ? (
+        <CheckoutReassuranceBanner variant="professionnel" />
+      ) : null}
 
-      <div className="flex flex-col gap-2 pt-0.5 sm:flex-row sm:justify-between">
+      <div
+        className={cn(
+          "flex flex-col gap-2 pt-0.5 sm:flex-row sm:justify-between",
+          reassuranceVariant === "particulier" &&
+            "max-md:sticky max-md:bottom-0 max-md:z-20 max-md:-mx-1 max-md:border-t max-md:border-primary/10 max-md:bg-gradient-to-t max-md:from-brand-warm max-md:via-brand-warm/98 max-md:to-brand-warm/85 max-md:px-1 max-md:pb-[max(0.5rem,env(safe-area-inset-bottom))] max-md:pt-2.5"
+        )}
+      >
         <Button
           variant="outline"
           type="button"
@@ -498,6 +509,10 @@ function CheckoutFields({
           {busy ? "Finalisation en cours…" : "Finaliser ma commande"}
         </Button>
       </div>
+
+      {reassuranceVariant === "particulier" ? (
+        <CheckoutParticulierTrackingNote className="mt-1 max-md:mt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] max-md:pb-[max(6.5rem,calc(5.75rem+env(safe-area-inset-bottom,0px)))]" />
+      ) : null}
     </div>
   )
 }

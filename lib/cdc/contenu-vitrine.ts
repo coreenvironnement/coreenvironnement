@@ -326,37 +326,38 @@ export const espaceClient = {
 export const particulierAccueil = {
   parcours: {
     eyebrow: "Comment ça se passe",
-    titre: "Louer une benne pour vos travaux, en 4 étapes",
+    titre: "Louer une benne en 4 étapes",
     intro:
-      "Pour une rénovation ou un débarras, une benne permet de rassembler vos déchets sur place et de limiter les allers-retours à la déchetterie. Nous organisons sa livraison, son enlèvement et le traitement des déchets acceptés.",
+      "Pour vos travaux ou un débarras, une benne sur place vous évite des allers-retours à la déchetterie.",
+    cta: "Voir les bennes et les tarifs",
     etapes: [
       {
         num: "01",
-        titre: "Choisissez votre benne en ligne",
+        titre: "Choisissez votre benne",
         texte:
-          "Indiquez l’adresse de livraison, le type de déchets et le volume de benne. Notre estimateur vous aide à choisir une capacité adaptée. Le tarif s’affiche avant le paiement.",
+          "Indiquez votre adresse, le type de déchets et le volume. Vous voyez le prix avant de payer.",
         lien: {
-          label: "Choisir le volume de benne adapté à mon projet",
+          label: "Quel volume de benne choisir ?",
           href: "/location-benne/volume",
         },
       },
       {
         num: "02",
-        titre: "Recevez la benne sur place",
+        titre: "On vous livre la benne",
         texte:
-          "Un chauffeur livre la benne à l’adresse indiquée. Nous vous contactons si besoin pour confirmer l’accès et le créneau de pose.",
+          "Le chauffeur la dépose à l’adresse indiquée. On vous contacte si besoin pour vérifier l’accès du camion.",
       },
       {
         num: "03",
-        titre: "Déposez vos déchets dans la benne",
+        titre: "Remplissez la benne",
         texte:
-          "Chargez uniquement les déchets autorisés pour le forfait choisi, sans dépasser le bord de la benne.",
+          "Déposez les déchets prévus dans votre forfait, sans dépasser le bord de la benne.",
       },
       {
         num: "04",
-        titre: "Nous organisons l’enlèvement",
+        titre: "On récupère la benne",
         texte:
-          "Une fois la benne remplie, nous la récupérons et acheminons les déchets vers un centre de traitement agréé. Vous pouvez indiquer une date d’enlèvement souhaitée lors de la commande (facultatif) ; sinon, demandez le passage lorsque vous êtes prêt.",
+          "Demandez le retrait quand vous avez fini. Vos déchets sont ensuite traités en centre agréé.",
       },
     ],
   },

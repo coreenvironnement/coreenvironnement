@@ -17,6 +17,7 @@ import { getDefaultSeoVariant, type SeoVariant } from "@/lib/seo/landing-variant
 import type { LocalPage } from "@/lib/seo/local-copy"
 import { localPageToSeoVariant } from "@/lib/seo/local-pages"
 
+import { FloatingHelpBubble } from "./floating-help-bubble"
 import { VitrineHero } from "./vitrine-hero"
 import { VitrineCityGuide } from "./vitrine-city-guide"
 import { VitrineDepartmentGuide } from "./vitrine-department-guide"
@@ -112,6 +113,7 @@ function VitrineHomeInner({
 
       <VitrineFooter />
       <VitrineOrderModal />
+      {particulierHome ? <FloatingHelpBubble /> : null}
     </div>
   )
 }

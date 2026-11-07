@@ -1,10 +1,15 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
+import { ChevronRight } from "lucide-react"
 
 import { particulierAccueil } from "@/lib/cdc/contenu-vitrine"
 
+import { useVitrineOrder } from "./order-context"
+
 const STEP_LINK_CLASS =
-  "mt-3 inline-block text-[15px] font-medium text-brand-navy underline underline-offset-2 transition-colors hover:text-brand-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2 max-md:mx-auto max-md:block max-md:w-fit"
+  "mt-3 inline-block text-left text-[15px] font-medium text-brand-navy underline underline-offset-2 transition-colors hover:text-brand-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
 
 const STEP_VISUALS: Record<
   string,
@@ -33,6 +38,7 @@ const STEP_VISUALS: Record<
 
 export function VitrineParticulierJourney() {
   const { parcours } = particulierAccueil
+  const { openOrder } = useVitrineOrder()
 
   return (
     <section
@@ -42,7 +48,9 @@ export function VitrineParticulierJourney() {
     >
       <div className="container-x">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="section-eyebrow mx-auto w-fit justify-center">{parcours.eyebrow}</p>
+          <p className="section-eyebrow mx-auto w-fit justify-center">
+            {parcours.eyebrow}
+          </p>
           <h2
             id="parcours-title"
             className="section-title mt-3 text-balance text-brand-navy"
@@ -54,7 +62,7 @@ export function VitrineParticulierJourney() {
           </p>
         </div>
 
-        <ol className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-x-8 md:gap-y-10 lg:mt-12 lg:grid-cols-4 lg:gap-6">
+        <ol className="parcours-steps mt-10 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-x-8 md:gap-y-10 lg:mt-12 lg:grid-cols-4 lg:gap-6">
           {parcours.etapes.map((step) => {
             const lien =
               "lien" in step && step.lien
@@ -62,42 +70,63 @@ export function VitrineParticulierJourney() {
                 : null
             const visual = STEP_VISUALS[step.num]
             return (
-              <li key={step.num} className="min-w-0 max-md:text-center">
+              <li
+                key={step.num}
+                className="parcours-step min-w-0 max-md:flex max-md:items-start max-md:gap-3.5"
+              >
                 {visual ? (
-                  <div className="parcours-step-visual relative mx-auto aspect-[4/3] w-full max-w-[15rem] overflow-hidden rounded-xl border border-brand-green/12 bg-gradient-to-b from-[#eef5eb] to-brand-bg md:mx-0 max-md:max-w-[13.5rem]">
+                  <div className="parcours-step-visual relative shrink-0 overflow-hidden rounded-xl border border-brand-green/12 bg-gradient-to-b from-[#eef5eb] to-brand-bg max-md:aspect-square max-md:h-[4.75rem] max-md:w-[5.5rem] md:mx-0 md:aspect-[4/3] md:w-full md:max-w-[15rem] lg:mx-0">
                     <Image
                       src={visual.src}
                       alt={visual.alt}
                       fill
                       className={
                         visual.imageClass ??
-                        "object-contain object-center p-3"
+                        "object-contain object-center p-3 max-md:p-1.5"
                       }
-                      sizes="(max-width: 768px) 216px, (max-width: 1024px) 50vw, 240px"
+                      sizes="(max-width: 768px) 88px, (max-width: 1024px) 50vw, 240px"
                     />
                   </div>
                 ) : null}
-                <p
-                  className={`text-[13px] font-bold tabular-nums tracking-wide text-brand-green ${visual ? "mt-4" : ""}`}
-                  aria-hidden
-                >
-                  {step.num}
-                </p>
-                <h3 className="mt-2 text-[17px] font-semibold leading-snug text-brand-navy sm:text-lg">
-                  {step.titre}
-                </h3>
-                <p className="mt-3 text-[16px] leading-relaxed text-brand-muted">
-                  {step.texte}
-                </p>
-                {lien ? (
-                  <Link href={lien.href} className={STEP_LINK_CLASS}>
-                    {lien.label}
-                  </Link>
-                ) : null}
+                <div className="parcours-step-body min-w-0 flex-1 md:mt-0">
+                  <h3 className="mt-0 text-[17px] font-semibold leading-snug text-brand-navy max-md:text-left md:mt-4 sm:text-lg">
+                    <span className="text-brand-green tabular-nums">
+                      {step.num}
+                    </span>
+                    <span className="text-brand-green" aria-hidden>
+                      {" "}
+                      ·{" "}
+                    </span>
+                    {step.titre}
+                  </h3>
+                  <p className="mt-2 text-[16px] leading-relaxed text-brand-muted max-md:text-left">
+                    {step.texte}
+                  </p>
+                  {lien ? (
+                    <Link href={lien.href} className={STEP_LINK_CLASS}>
+                      {lien.label}
+                    </Link>
+                  ) : null}
+                </div>
               </li>
             )
           })}
         </ol>
+
+        <div className="parcours-cta mt-10 lg:mt-12">
+          <button
+            type="button"
+            onClick={() => openOrder({ intentStart: "waste" })}
+            className="group flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#35A238] px-4 py-3 font-[family-name:var(--font-body)] text-[15px] font-semibold leading-snug text-white shadow-[0_8px_24px_-8px_rgb(14_32_16/0.45)] transition-colors hover:bg-brand-green-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2 sm:text-base md:mx-auto md:max-w-sm lg:max-w-md"
+          >
+            <span className="min-w-0 flex-1 text-center">{parcours.cta}</span>
+            <ChevronRight
+              className="size-5 shrink-0 transition-transform group-hover:translate-x-0.5"
+              strokeWidth={2.25}
+              aria-hidden
+            />
+          </button>
+        </div>
       </div>
     </section>
   )

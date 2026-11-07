@@ -57,23 +57,6 @@ type VitrineHeroProps = {
   heroOrderAudience?: OrderAudience
 }
 
-function HeroPhoneBlock({ className }: { className?: string }) {
-  return (
-    <div className={cn("animate-fade-up space-y-1.5", className)} style={{ animationDelay: "340ms" }}>
-      <p className="text-[15px] leading-snug text-white/92 [text-shadow:0_1px_18px_rgba(14,32,16,0.22)] sm:text-base">
-        Un conseil pour choisir votre benne ?
-      </p>
-      <a
-        href={SITE_PHONE_HREF}
-        aria-label={`Appeler Core Environnement au ${SITE_PHONE_DISPLAY}`}
-        className="inline-flex text-[17px] font-semibold text-white underline decoration-white/45 underline-offset-[5px] transition hover:decoration-white/75 sm:text-lg"
-      >
-        {SITE_PHONE_DISPLAY}
-      </a>
-    </div>
-  )
-}
-
 export function VitrineHero({
   seoVariant,
   localPage,
@@ -162,6 +145,19 @@ export function VitrineHero({
                 : "max-w-[760px] lg:order-none lg:col-start-2 lg:row-start-1 lg:max-w-none lg:pl-2 xl:pl-6"
             )}
           >
+            {isParticulier ? (
+              <div
+                className="animate-fade-up mb-4 max-lg:flex max-lg:justify-center sm:mb-5 lg:mb-5 lg:block"
+                style={{ animationDelay: "80ms" }}
+              >
+                <GoogleRatingBadge
+                  variant="hero"
+                  compact
+                  className="lg:self-start"
+                />
+              </div>
+            ) : null}
+
             <h1
               className={cn(
                 "animate-fade-up mt-0 text-white [text-shadow:0_1px_28px_rgba(14,32,16,0.32),0_2px_56px_rgba(14,32,16,0.16)]",
@@ -187,22 +183,7 @@ export function VitrineHero({
               {introText}
             </p>
 
-            {isParticulier ? (
-              <div
-                className="animate-fade-up mt-5 max-lg:flex max-lg:justify-center sm:mt-6 lg:mt-7 lg:block"
-                style={{ animationDelay: "280ms" }}
-              >
-                <GoogleRatingBadge
-                  variant="hero"
-                  compact
-                  className="lg:self-start"
-                />
-              </div>
-            ) : null}
-
-            {isParticulier ? (
-              <HeroPhoneBlock className="mt-7 hidden lg:block" />
-            ) : (
+            {!isParticulier ? (
               <a
                 href={SITE_PHONE_HREF}
                 aria-label={`Appeler Core Environnement au ${SITE_PHONE_DISPLAY}`}
@@ -211,7 +192,7 @@ export function VitrineHero({
               >
                 {SITE_PHONE_DISPLAY}
               </a>
-            )}
+            ) : null}
           </div>
 
           <div
@@ -226,9 +207,6 @@ export function VitrineHero({
             <HeroOrderCard defaultAudience={heroOrderAudience} />
           </div>
 
-          {isParticulier ? (
-            <HeroPhoneBlock className="order-3 mx-auto max-lg:mt-2 max-lg:text-center lg:hidden" />
-          ) : null}
         </div>
       </div>
     </section>
