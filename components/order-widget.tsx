@@ -46,6 +46,7 @@ import { Input } from "@/components/ui/input"
 import { CheckoutReassuranceBanner } from "@/components/order/checkout-reassurance-banner"
 import { EmbeddedCheckout } from "@/components/order/embedded-checkout"
 import { OrderDateField } from "@/components/order/order-date-field"
+import { GravatsPropres8WasteDialog } from "@/components/order/gravats-propres-8-waste-dialog"
 import { OrderTunnelContinueButton } from "@/components/order/order-tunnel-continue-button"
 import { ParticulierVolumeStep } from "@/components/order/particulier-volume-step"
 import { ParticulierWastePicker } from "@/components/order/particulier-waste-picker"
@@ -1983,53 +1984,56 @@ function PrestationCard({
   const surcharge = priceBreakdownFromHt(prestation.surchargePerTonHt)
   const wasteSubtitle = prestationWasteSubtitle(prestation.label)
 
-  const wastesDialog = (
-    <Dialog>
-      <DialogTrigger
-        render={
-          <Button
-            type="button"
-            variant="ghost"
-            size="xs"
-            className="mt-1.5 h-auto min-h-7 px-0 py-0.5 text-left text-xs font-medium text-brand-navy underline-offset-2 hover:underline"
-            onClick={(e: React.MouseEvent) => e.stopPropagation()}
-            onKeyDown={(e: React.KeyboardEvent) => e.stopPropagation()}
-          />
-        }
-      >
-        <Info className="mr-1 size-3.5 shrink-0 opacity-70" />
-        {showTtc
-          ? "Voir les déchets acceptés et interdits"
-          : "Déchets acceptés / exclus"}
-      </DialogTrigger>
-      <DialogContent
-        overlayClassName="z-[80]"
-        className="z-[80] max-h-[min(80vh,480px)] overflow-y-auto sm:max-w-md"
-        onClick={(e) => e.stopPropagation()}
-        onPointerDown={(e) => e.stopPropagation()}
-      >
-        <DialogHeader>
-          <DialogTitle className="text-brand-navy">
-            {prestation.label}
-          </DialogTitle>
-          <div className="space-y-3 pt-2 text-left text-sm">
-            <div>
-              <p className="font-medium text-primary">Acceptés</p>
-              <p className="text-muted-foreground">
-                {prestation.acceptedSummary}
-              </p>
+  const wastesDialog =
+    prestation.id === "gp-ch-8" ? (
+      <GravatsPropres8WasteDialog showTtc={showTtc} />
+    ) : (
+      <Dialog>
+        <DialogTrigger
+          render={
+            <Button
+              type="button"
+              variant="ghost"
+              size="xs"
+              className="mt-1.5 h-auto min-h-7 px-0 py-0.5 text-left text-xs font-medium text-brand-navy underline-offset-2 hover:underline"
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+              onKeyDown={(e: React.KeyboardEvent) => e.stopPropagation()}
+            />
+          }
+        >
+          <Info className="mr-1 size-3.5 shrink-0 opacity-70" />
+          {showTtc
+            ? "Voir les déchets acceptés et interdits"
+            : "Déchets acceptés / exclus"}
+        </DialogTrigger>
+        <DialogContent
+          overlayClassName="z-[80]"
+          className="z-[80] max-h-[min(80vh,480px)] overflow-y-auto sm:max-w-md"
+          onClick={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+        >
+          <DialogHeader>
+            <DialogTitle className="text-brand-navy">
+              {prestation.label}
+            </DialogTitle>
+            <div className="space-y-3 pt-2 text-left text-sm">
+              <div>
+                <p className="font-medium text-primary">Acceptés</p>
+                <p className="text-muted-foreground">
+                  {prestation.acceptedSummary}
+                </p>
+              </div>
+              <div>
+                <p className="font-medium text-rose-800">Exclus</p>
+                <p className="text-muted-foreground">
+                  {prestation.excludedSummary}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="font-medium text-rose-800">Exclus</p>
-              <p className="text-muted-foreground">
-                {prestation.excludedSummary}
-              </p>
-            </div>
-          </div>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
-  )
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    )
 
   const selectionIndicator = (
     <span
