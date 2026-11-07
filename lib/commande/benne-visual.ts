@@ -2,14 +2,14 @@ import { prestationById } from "@/lib/prestations"
 
 /** Visuels forfait — mapping par volume (aligné tunnel). */
 export const BENNE_VISUAL_BY_VOLUME: Record<number, string> = {
-  8: "/images/benne-8m3.png",
-  10: "/images/benne-10m3.png",
-  15: "/images/benne-15m3.png",
-  20: "/images/benne-20m3.png",
-  30: "/images/benne-30m3.png",
+  8: "/images/core-benne-8m3.webp",
+  10: "/images/core-benne-10m3.webp",
+  15: "/images/core-benne-15m3.webp",
+  20: "/images/core-benne-20m3.webp",
+  30: "/images/core-benne-30m3.webp",
 }
 
-const DEFAULT_BENNE_IMAGE = "/images/benne-10m3.png"
+const DEFAULT_BENNE_IMAGE = "/images/core-benne-10m3.webp"
 
 export function benneImageForVolume(volumeM3: number | null | undefined): string {
   if (volumeM3 == null || Number.isNaN(volumeM3)) {
