@@ -1,0 +1,36 @@
+CORE ENVIRONNEMENT — ANIMATION FAQ
+
+core-faq-lottie.json : animation vectorielle, 160 × 160, fond transparent.
+core-faq-statique.svg : image fixe pour le chargement et la réduction des animations.
+apercu-core-faq.gif : aperçu animé sur fond clair, à ne pas utiliser comme fichier du site.
+
+Durée : 3 secondes, dont environ 1,6 seconde de mouvement puis une pause.
+Couleurs : vert #35A238, bleu nuit #192236, vert pâle #F0F7EC.
+Aucune image incorporée, aucune police externe, aucun son.
+
+À TRANSMETTRE À L’AGENT
+
+Intègre core-faq-lottie.json comme décoration en haut à droite de la section FAQ,
+sous le header. Garde le texte et les accordéons existants.
+
+Taille du conteneur : 48 × 48 px sur mobile ; 80 × 80 px sur ordinateur.
+Sur mobile, réserve une ligne d’environ 56 px au-dessus du titre pour accueillir
+le label FAQ centré et le Lottie à droite. Garde au moins 16 px de marge au bord.
+Sur ordinateur, place-le dans le coin supérieur droit du conteneur de la section,
+avec 24 px de marge. Conserve un titre centré et son espace de lecture.
+Le visuel ne doit jamais couvrir un texte ni agrandir la largeur de la page.
+
+Avec lottie-web : renderer 'svg', loop false, autoplay false.
+Utilise le lecteur déjà présent dans le projet ; si nécessaire, installe lottie-web.
+Lance play() une seule fois quand le visuel entre dans la fenêtre, puis conserve
+la dernière image. Un IntersectionObserver avec threshold: 0.4 convient.
+Déconnecte l’observateur après la première lecture. Détruis le lecteur au démontage.
+
+Si prefers-reduced-motion vaut reduce, affiche core-faq-statique.svg directement.
+Affiche aussi ce SVG si le chargement du lecteur échoue. Réserve toujours la taille
+du conteneur pour éviter les décalages de mise en page.
+Le conteneur est décoratif : aria-hidden=true et pointer-events:none.
+L’animation ne doit pas être cliquable ni recevoir le focus clavier.
+
+Vérifie le résultat à 320, 390, 768 et 1440 px de largeur : pas de chevauchement,
+pas de défilement horizontal et FAQ parfaitement lisible.

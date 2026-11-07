@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+  <title>Questions et réponses Core Environnement</title>
+  <ellipse cx="80" cy="142" rx="44" ry="3.5" fill="#192236" opacity=".05"/>
+  <path d="M45 32L109 32C122.25 32 133 42.75 133 56L133 91C133 104.25 122.25 115 109 115L67 115L44 131L44 115C31.1 114.5 21 104.1 21 91L21 56C21 42.75 31.75 32 45 32Z" fill="#F0F7EC" stroke="#35A238" stroke-width="4.8" stroke-linejoin="round"/>
+  <path d="M63 63C63 54.4 70.1 49 79 49C88.5 49 95 54.7 95 63.2C95 70 91 72.9 85.2 76.5C81.2 79 79 81.2 79 86" fill="none" stroke="#192236" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="79" cy="98" r="3.6" fill="#192236"/>
+  <circle cx="121" cy="115" r="24" fill="#35A238" stroke="white" stroke-width="4.8"/>
+  <path d="M111 115L118 122L132 108" fill="none" stroke="white" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

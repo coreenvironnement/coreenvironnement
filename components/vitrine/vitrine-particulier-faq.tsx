@@ -7,6 +7,7 @@ import { ArrowDown01Icon } from "@hugeicons/core-free-icons"
 import { particulierAccueil, particulierFaq } from "@/lib/cdc/contenu-vitrine"
 import { cn } from "@/lib/utils"
 
+import { CoreFaqLottie } from "./core-faq-lottie"
 import { VITRINE_ICON_STROKE } from "./icons"
 
 export function VitrineParticulierFaq() {
@@ -31,10 +32,13 @@ export function VitrineParticulierFaq() {
       className="border-t border-brand-border/80 bg-brand-bg py-12 sm:py-16"
       aria-labelledby="faq-particulier-title"
     >
-      <div className="container-x max-w-2xl">
-        <p className="section-eyebrow mx-auto max-md:w-full max-md:justify-center text-center">
-          FAQ
-        </p>
+      <div className="container-x relative max-w-2xl">
+        <CoreFaqLottie />
+        <div className="flex min-h-14 items-center justify-center md:min-h-0 md:block">
+          <p className="section-eyebrow mx-auto max-md:w-full max-md:justify-center text-center">
+            FAQ
+          </p>
+        </div>
         <h2
           id="faq-particulier-title"
           className="section-title mt-3 text-center text-brand-navy"
