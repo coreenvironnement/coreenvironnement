@@ -12,9 +12,12 @@ function isHeroAddressElement(el: EventTarget | null): boolean {
   return Boolean(el.closest(".hero-order-card__address"))
 }
 
+const CONSEILS_SECTION_ID = "conseils"
+
 export function FloatingHelpBubble() {
   const [open, setOpen] = useState(false)
   const [hiddenForAddress, setHiddenForAddress] = useState(false)
+  const [visibleFromConseils, setVisibleFromConseils] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const cardId = useId()
   const titleId = `${cardId}-title`
@@ -47,6 +50,34 @@ export function FloatingHelpBubble() {
   }, [])
 
   useEffect(() => {
+    const anchor = document.getElementById(CONSEILS_SECTION_ID)
+    if (!anchor) return
+
+    const syncVisibility = (entry: IntersectionObserverEntry) => {
+      const top = entry.boundingClientRect.top
+      setVisibleFromConseils(entry.isIntersecting || top < 0)
+    }
+
+    const syncFromAnchor = () => {
+      const { top, bottom } = anchor.getBoundingClientRect()
+      const inView = top < window.innerHeight && bottom > 0
+      setVisibleFromConseils(inView || top < 0)
+    }
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry) syncVisibility(entry)
+      },
+      { threshold: [0, 0.01] }
+    )
+
+    io.observe(anchor)
+    syncFromAnchor()
+
+    return () => io.disconnect()
+  }, [])
+
+  useEffect(() => {
     if (!open) return
 
     const onPointerDown = (event: MouseEvent) => {
@@ -69,15 +100,18 @@ export function FloatingHelpBubble() {
     }
   }, [open, close])
 
+  const hidden = hiddenForAddress || !visibleFromConseils
+
   return (
     <div
       ref={rootRef}
       className={cn(
         "pointer-events-none fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-3 z-30 sm:left-4",
         "max-md:bottom-[max(1rem,env(safe-area-inset-bottom))]",
-        hiddenForAddress && "invisible opacity-0"
+        "transition-opacity duration-300",
+        hidden && "invisible opacity-0"
       )}
-      aria-hidden={hiddenForAddress}
+      aria-hidden={hidden}
     >
       <div className="pointer-events-auto relative flex flex-col items-start gap-2">
         {open ? (
