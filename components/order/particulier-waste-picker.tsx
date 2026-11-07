@@ -29,6 +29,7 @@ export function ParticulierWastePicker({
             type="button"
             role="radio"
             aria-checked={selected}
+            data-waste-id={option.id}
             onClick={() => onChange(option.id)}
             className={cn(
               "order-tunnel-waste-card flex flex-col overflow-hidden rounded-xl border bg-white text-left shadow-sm outline-none transition-[border-color,box-shadow]",
@@ -58,7 +59,7 @@ export function ParticulierWastePicker({
                 ) : null}
               </span>
             </div>
-            <div className="order-tunnel-waste-card__body flex flex-1 flex-col gap-1 px-2.5 pb-3 pt-2.5 sm:px-3 sm:pb-3.5 sm:pt-3">
+            <div className="order-tunnel-waste-card__body flex flex-col gap-1 px-2.5 pb-3 pt-2.5 sm:px-3 sm:pb-3.5 sm:pt-3">
               <span className="text-[13px] font-bold leading-snug text-brand-navy sm:text-[14px]">
                 {option.title}
               </span>

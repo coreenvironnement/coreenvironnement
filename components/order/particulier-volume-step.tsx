@@ -117,7 +117,7 @@ function EstimatorModeOptionCard({
       aria-checked={selected}
       onClick={onClick}
       className={cn(
-        "flex w-full items-center gap-2.5 overflow-hidden rounded-xl border-2 bg-white text-left shadow-sm outline-none transition-[border-color,box-shadow]",
+        "order-tunnel-estimator-card flex w-full items-center gap-2.5 overflow-hidden rounded-xl border-2 bg-white text-left shadow-sm outline-none transition-[border-color,box-shadow]",
         "p-2.5 focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2",
         "sm:flex-col sm:items-stretch sm:p-0",
         selected
@@ -134,7 +134,7 @@ function EstimatorModeOptionCard({
           sizes="(max-width: 640px) 100px, 200px"
         />
       </div>
-      <span className="flex min-w-0 flex-1 items-center gap-2 sm:block sm:px-3 sm:pb-3 sm:pt-2.5">
+      <span className="order-tunnel-estimator-card__body flex min-w-0 flex-1 items-center gap-2 sm:block sm:px-3 sm:pb-3 sm:pt-2.5">
         <span className="min-w-0 flex-1">
           <span className="block text-[13px] font-semibold leading-snug text-brand-navy sm:text-[14px]">
             {label}
@@ -183,7 +183,7 @@ function KnownVolumeCard({
       aria-pressed={selected}
       onClick={onSelect}
       className={cn(
-        "relative isolate min-h-[5.25rem] overflow-hidden rounded-xl border-2 px-3 py-4 text-center shadow-sm transition-[border-color,box-shadow]",
+        "order-tunnel-known-volume-card relative isolate min-h-[5.25rem] overflow-hidden rounded-xl border-2 px-3 py-4 text-center shadow-sm transition-[border-color,box-shadow]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2",
         selected
           ? "border-brand-green bg-primary/10 ring-1 ring-brand-green/20"
@@ -499,7 +499,12 @@ export function ParticulierVolumeStep({
               : ""
 
   return (
-    <div className="space-y-4">
+    <div className={cn(!embedded && "space-y-4")}>
+      <div
+        className={cn(
+          embedded ? "order-tunnel-step__stack space-y-4" : "space-y-4"
+        )}
+      >
       <div className="flex items-start gap-2.5">
         <button
           type="button"
@@ -570,7 +575,10 @@ export function ParticulierVolumeStep({
               Capacités disponibles pour votre type de déchet :
             </p>
             <div
-              className="grid grid-cols-2 gap-2.5 sm:gap-3"
+              className={cn(
+                "grid grid-cols-2 gap-2.5 sm:gap-3",
+                embedded && "order-tunnel-known-volume-grid"
+              )}
               role="group"
               aria-label="Volumes de benne disponibles"
             >
@@ -591,7 +599,10 @@ export function ParticulierVolumeStep({
             key="est-mode"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col gap-2 sm:grid sm:grid-cols-3 sm:gap-3"
+            className={cn(
+              "flex flex-col gap-2 sm:grid sm:grid-cols-3 sm:gap-3",
+              embedded && "order-tunnel-estimator-grid"
+            )}
             role="radiogroup"
             aria-label="Méthode d'estimation du volume"
           >
@@ -759,6 +770,7 @@ export function ParticulierVolumeStep({
           </a>
         </p>
       ) : null}
+      </div>
     </div>
   )
 }

@@ -1126,6 +1126,7 @@ export function OrderWidget({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
+              className={cn(embedded && "order-tunnel-step--fill")}
             >
               <ParticulierVolumeStep
                 embedded={embedded}
@@ -1157,8 +1158,18 @@ export function OrderWidget({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
-              className="min-w-0 space-y-3.5"
+              className={cn(
+                "min-w-0",
+                embedded ? "order-tunnel-step--fill" : "space-y-3.5"
+              )}
             >
+              <div
+                className={cn(
+                  embedded
+                    ? "order-tunnel-step__stack flex min-h-0 flex-1 flex-col gap-3"
+                    : "min-w-0 space-y-3.5"
+                )}
+              >
               <div className="min-w-0">
                 <p className={ORDER_SECTION_LABEL}>
                   {audience === "particulier" ? "Choisissez votre benne" : "Choisissez votre forfait"}
@@ -1288,6 +1299,7 @@ export function OrderWidget({
                     coordonnées.
                   </p>
                 ) : null}
+              </div>
               </div>
             </motion.div>
           )}

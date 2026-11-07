@@ -1081,21 +1081,62 @@
   }
 
   .order-tunnel-waste-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     min-height: 0;
   }
 
   .order-tunnel-waste-card__media {
     aspect-ratio: auto;
-    flex-shrink: 0;
-    height: clamp(4.25rem, min(13.5cqh, 11.5vmin), 6.75rem);
+    flex: 0 0 65%;
+    min-height: 0;
+    width: 100%;
+  }
+
+  .order-tunnel-waste-card__media img {
+    object-fit: cover;
+    object-position: center 42%;
+  }
+
+  .order-tunnel-waste-card[data-waste-id="meubles_encombrants"]
+    .order-tunnel-waste-card__media
+    img {
+    object-position: center 38%;
+  }
+
+  .order-tunnel-waste-card[data-waste-id="dechets_jardin"]
+    .order-tunnel-waste-card__media
+    img {
+    object-position: center 36%;
+  }
+
+  .order-tunnel-waste-card[data-waste-id="travaux_melange"]
+    .order-tunnel-waste-card__media
+    img {
+    object-position: center 45%;
+  }
+
+  .order-tunnel-waste-card[data-waste-id="terre_cailloux"]
+    .order-tunnel-waste-card__media
+    img {
+    object-position: center 48%;
+  }
+
+  .order-tunnel-waste-card[data-waste-id="bois"] .order-tunnel-waste-card__media img {
+    object-position: center 40%;
   }
 
   .order-tunnel-waste-card__body {
-    flex: 1 1 auto;
-    gap: 0.2rem;
-    padding: clamp(0.35rem, min(1.1cqh, 1vmin), 0.55rem)
+    flex: 0 0 35%;
+    flex-shrink: 0;
+    justify-content: center;
+    gap: 0.15rem;
+    min-height: 0;
+    overflow: hidden;
+    padding: clamp(0.3rem, min(0.95cqh, 0.85vmin), 0.5rem)
       clamp(0.5rem, 1.2cqw, 0.75rem);
-    padding-bottom: clamp(0.4rem, min(1.2cqh, 1vmin), 0.65rem);
+    padding-bottom: clamp(0.35rem, min(1cqh, 0.9vmin), 0.55rem);
   }
 
   .order-tunnel-waste-card__body span:first-child {
@@ -1108,21 +1149,88 @@
   }
 
   .order-tunnel-forfait-list {
-    gap: clamp(0.5rem, min(1.4cqh, 1.2vmin), 0.75rem);
+    flex: 1 1 auto;
+    align-content: start;
+    gap: clamp(0.375rem, min(1.1cqh, 0.95vmin), 0.625rem);
+    min-height: 0;
+    overflow: hidden;
   }
 
   .order-tunnel-prestation-card {
-    padding: clamp(0.625rem, min(1.4cqh, 1.2vmin), 0.75rem);
+    align-items: stretch;
+    min-height: 0;
+    padding: clamp(0.45rem, min(1.1cqh, 0.95vmin), 0.625rem);
   }
 
   .order-tunnel-prestation-card .order-tunnel-prestation-card__visual {
-    height: clamp(2.75rem, min(8cqh, 7vmin), 3.5rem);
-    width: clamp(3rem, min(9cqh, 8vmin), 4.25rem);
+    align-self: stretch;
+    aspect-ratio: 4 / 3;
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 3rem;
+    width: clamp(3.75rem, min(10cqw, 9cqh), 5rem);
   }
 
-  .order-tunnel-estimator-card__media {
+  .order-tunnel-prestation-card .order-tunnel-prestation-card__visual img {
+    object-fit: contain;
+    object-position: center center;
+  }
+
+  .order-tunnel-estimator-grid {
+    flex: 1 1 auto;
+    align-content: stretch;
+    min-height: 0;
+  }
+
+  .order-tunnel-estimator-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .order-tunnel-estimator-card .order-tunnel-estimator-card__media {
     aspect-ratio: auto;
-    height: clamp(4rem, min(12cqh, 10vmin), 5.5rem);
+    flex: 0 0 65%;
+    height: auto;
+    min-height: 0;
+    width: 100%;
+  }
+
+  .order-tunnel-estimator-card .order-tunnel-estimator-card__media img {
+    object-fit: cover;
+    object-position: center 45%;
+  }
+
+  .order-tunnel-estimator-card .order-tunnel-estimator-card__body {
+    flex: 0 0 35%;
+    flex-shrink: 0;
+    justify-content: center;
+    min-height: 0;
+    overflow: hidden;
+    padding: clamp(0.3rem, min(0.95cqh, 0.85vmin), 0.5rem)
+      clamp(0.5rem, 1.2cqw, 0.75rem);
+    padding-bottom: clamp(0.35rem, min(1cqh, 0.9vmin), 0.55rem);
+  }
+
+  .order-tunnel-known-volume-grid {
+    flex: 1 1 auto;
+    gap: clamp(0.375rem, min(1.1cqh, 0.95vmin), 0.625rem);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    min-height: 0;
+  }
+
+  .order-tunnel-known-volume-card {
+    justify-content: center;
+    min-height: clamp(3.25rem, min(12cqh, 10vmin), 4.5rem);
+    padding-block: clamp(0.35rem, min(1.2cqh, 1vmin), 0.6rem);
+    padding-inline: 0.5rem;
+  }
+
+  .order-tunnel-known-volume-card img {
+    object-fit: contain;
+    object-position: center bottom;
   }
 
   .order-tunnel-step-nav {
