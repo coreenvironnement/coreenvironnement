@@ -21,9 +21,14 @@ export const HOME_EARLY_ALL_COMMUNES_LINK: SeoLink = {
   label: "Voir toutes les communes desservies",
 }
 
+export const HOME_EARLY_VOLUME_ESTIMATE_LINK: SeoLink = {
+  href: "/#conseils",
+  label: "Estimer mon volume",
+}
+
 export const HOME_EARLY_VOLUME_GUIDE_LINK: SeoLink = {
   href: "/location-benne/volume",
-  label: "Consulter le guide des volumes",
+  label: "Voir le guide des volumes",
 }
 
 /** Liste plate — hub /location-benne (filtre « toutes les communes » côté UI). */

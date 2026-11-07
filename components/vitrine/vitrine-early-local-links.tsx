@@ -5,6 +5,7 @@ import {
   HOME_EARLY_ALL_COMMUNES_LINK,
   HOME_EARLY_LOCAL_LINKS,
   HOME_EARLY_LOCAL_SECTOR_LINKS,
+  HOME_EARLY_VOLUME_ESTIMATE_LINK,
   HOME_EARLY_VOLUME_GUIDE_LINK,
 } from "@/lib/seo/early-local-links"
 import type { LocalPage } from "@/lib/seo/local-copy"
@@ -48,15 +49,25 @@ export function VitrineEarlyLocalLinks(props: VitrineEarlyLocalLinksProps) {
               {HOME_EARLY_ALL_COMMUNES_LINK.label}
             </Link>
           </p>
-          <p className="mt-4 border-t border-brand-border/60 pt-3 text-sm text-brand-muted max-md:text-center md:max-lg:text-left lg:text-center">
-            Vous hésitez sur la taille de la benne ?{" "}
-            <Link
-              href={HOME_EARLY_VOLUME_GUIDE_LINK.href}
-              className="font-medium text-brand-navy underline-offset-4 transition-colors hover:text-brand-green hover:underline"
-            >
-              {HOME_EARLY_VOLUME_GUIDE_LINK.label}
-            </Link>
-          </p>
+          <div className="mt-4 border-t border-brand-border/60 pt-4 max-md:text-center md:max-lg:text-left lg:text-center">
+            <h3 className="font-[family-name:var(--font-display)] text-base font-semibold text-brand-navy sm:text-lg">
+              Quelle taille de benne vous faut-il ?
+            </h3>
+            <div className="mt-3 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center md:max-lg:justify-start lg:justify-center">
+              <Link
+                href={HOME_EARLY_VOLUME_ESTIMATE_LINK.href}
+                className="btn btn-accent inline-flex min-h-11 w-full sm:w-auto"
+              >
+                {HOME_EARLY_VOLUME_ESTIMATE_LINK.label}
+              </Link>
+              <Link
+                href={HOME_EARLY_VOLUME_GUIDE_LINK.href}
+                className="inline-flex min-h-11 items-center text-sm font-semibold text-brand-navy underline-offset-4 transition-colors hover:text-brand-green hover:underline"
+              >
+                {HOME_EARLY_VOLUME_GUIDE_LINK.label}
+              </Link>
+            </div>
+          </div>
         </div>
       </nav>
     )

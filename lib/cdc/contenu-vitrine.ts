@@ -372,7 +372,7 @@ export const particulierAccueil = {
         cta: "Estimer mon volume",
         ctaHint:
           "L’estimation ne demande pas votre adresse. À la fin, vous pourrez commander la benne adaptée en renseignant le lieu de livraison.",
-        guideLabel: "Consulter le guide des volumes de benne",
+        guideLabel: "Voir le guide des volumes",
         guideHref: "/location-benne/volume",
       },
       {
@@ -426,7 +426,7 @@ export const particulierFaq = [
   {
     q: "Comment choisir le volume de ma benne ?",
     r: "L'estimateur disponible dans la commande vous aide à évaluer votre besoin. La nature des déchets et leur poids comptent également dans le choix de la benne.",
-    linkLabel: "Consulter le guide des volumes",
+    linkLabel: "Voir le guide des volumes",
     linkHref: "https://core-environnement.fr/location-benne/volume",
   },
   {

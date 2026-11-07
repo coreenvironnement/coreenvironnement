@@ -48,6 +48,17 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     images: getShareTwitterImages(),
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      {
+        url: "/images/faviconcore-environnement.png",
+        type: "image/png",
+      },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/images/faviconcore-environnement.png",
+  },
 };
 
 export default function RootLayout({
