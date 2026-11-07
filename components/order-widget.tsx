@@ -67,6 +67,7 @@ import {
   systemLabel,
 } from "@/lib/prestations"
 import { priceBreakdownFromHt } from "@/lib/order/prestation-mapping"
+import type { ProReorderSeed } from "@/lib/espace/pro-reorder-prefill"
 import {
   ORDER_TUNNEL_STEPS,
   getOrderTunnelSteps,
@@ -152,6 +153,8 @@ function OrderStepProgress({
 type OrderWidgetProps = {
   variant?: "default" | "embedded"
   open?: boolean
+  entryMode?: "default" | "pro-reorder"
+  proReorderSeed?: ProReorderSeed | null
   onStepIndexChange?: (index: number) => void
   onAudienceChange?: (audience: Audience) => void
   onClose?: () => void
@@ -161,6 +164,8 @@ type OrderWidgetProps = {
 export function OrderWidget({
   variant = "default",
   open = true,
+  entryMode = "default",
+  proReorderSeed = null,
   onStepIndexChange,
   onAudienceChange,
   onClose,
@@ -169,6 +174,7 @@ export function OrderWidget({
   const embedded = variant === "embedded"
   const { draft, patchDraft, resolveIntentPhase, intentStart } = useVitrineOrder()
   const modalWasOpen = useRef(false)
+  const proReorderBootstrapped = useRef(false)
   const prefersReducedMotion = useReducedMotion()
   const t = prefersReducedMotion
     ? { duration: 0.01 }
@@ -569,7 +575,42 @@ export function OrderWidget({
   }, [audience])
 
   useEffect(() => {
+    if (entryMode !== "pro-reorder" || !proReorderSeed || !embedded || !open) return
+    const prestation = prestationById(proReorderSeed.prestationId)
+    if (!prestation) return
+
+    setAudience("professionnel")
+    setAddress(proReorderSeed.addressLabel)
+    setCompanyName(proReorderSeed.companyName)
+    setProContactName(proReorderSeed.proContactName)
+    setContactPhone(proReorderSeed.contactPhone)
+    setContactEmail(proReorderSeed.contactEmail)
+    setSiret(proReorderSeed.siret ?? "")
+    setSelectedPrestationId(proReorderSeed.prestationId)
+    setFamily(prestation.family)
+    if (proReorderSeed.deliveryDate) setDeliveryDate(proReorderSeed.deliveryDate)
+    if (proReorderSeed.pickupDate) setPickupDate(proReorderSeed.pickupDate)
+
+    if (draft.selectedAddress) {
+      setSelectedAddress(draft.selectedAddress)
+      setStep("recap")
+      proReorderBootstrapped.current = true
+    } else if (!proReorderBootstrapped.current) {
+      setStep("intent")
+      setIntentPhase("location")
+      setAfterLocationTarget("waste")
+    }
+  }, [
+    entryMode,
+    proReorderSeed,
+    embedded,
+    open,
+    draft.selectedAddress,
+  ])
+
+  useEffect(() => {
     if (!embedded) return
+    if (entryMode === "pro-reorder") return
     if (open && !modalWasOpen.current) {
       applyDraft(draft)
       setAddressError(null)

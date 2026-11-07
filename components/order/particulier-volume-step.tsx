@@ -54,21 +54,21 @@ const ESTIMATOR_MODE_OPTIONS: ReadonlyArray<{
   {
     id: "regular",
     label: "Tas régulier",
-    hint: "Longueur × largeur × hauteur (m)",
+    hint: "",
     imageFile: "Tas rectangulaire de gravats de chantier-2.png",
     imageAlt: "Tas rectangulaire de gravats de chantier",
   },
   {
     id: "irregular",
     label: "Tas irrégulier",
-    hint: "L × l × hauteur moyenne estimée",
+    hint: "",
     imageFile: "Tas de gravats de chantier-1.png",
     imageAlt: "Tas irrégulier de gravats de chantier",
   },
   {
     id: "bags",
     label: "Sac big bag",
-    hint: "Nombre × capacité (100 L = 0,1 m³)",
+    hint: "",
     imageFile: "Big bag rempli de gravats-3.png",
     imageAlt: "Big bag rempli de gravats",
   },
@@ -139,9 +139,11 @@ function EstimatorModeOptionCard({
           <span className="block text-[13px] font-semibold leading-snug text-brand-navy sm:text-[14px]">
             {label}
           </span>
-          <span className="mt-0.5 block text-[11px] leading-snug text-brand-muted sm:text-[12px]">
-            {hint}
-          </span>
+          {hint ? (
+            <span className="mt-0.5 block text-[11px] leading-snug text-brand-muted sm:text-[12px]">
+              {hint}
+            </span>
+          ) : null}
         </span>
         <EstimatorModeSelectionIndicator
           selected={selected}
@@ -323,6 +325,8 @@ export type ParticulierVolumeStepProps = {
   embedded?: boolean
   /** Adresse non encore renseignée : libellé CTA orienté commande. */
   addressPending?: boolean
+  /** Parcours vitrine « Estimer mon volume » : pas d’étape connaître / estimer. */
+  estimateOnly?: boolean
   onBackToWaste: () => void
   onContinue: (
     volumeM3: number | null,
@@ -336,12 +340,13 @@ export function ParticulierVolumeStep({
   audience = "particulier",
   embedded,
   addressPending = false,
+  estimateOnly = false,
   onBackToWaste,
   onContinue,
 }: ParticulierVolumeStepProps) {
   const isPro = audience === "professionnel"
   const volumes = useMemo(() => availableVolumesForFamily(family), [family])
-  const [view, setView] = useState<View>("choice")
+  const [view, setView] = useState<View>(estimateOnly ? "estimator-mode" : "choice")
   const [estimatorMode, setEstimatorMode] = useState<EstimatorMode>("regular")
   const [length, setLength] = useState("")
   const [width, setWidth] = useState("")
@@ -412,9 +417,23 @@ export function ParticulierVolumeStep({
       setKnownPick(null)
       return
     }
-    if (view === "estimator-mode" || view === "result") {
+    if (view === "result" && estimateOnly) {
+      resetEstimatorInputs()
+      setView("estimator-mode")
+      return
+    }
+    if (view === "estimator-mode") {
+      if (estimateOnly) {
+        onBackToWaste()
+        return
+      }
       resetEstimatorInputs()
       setView("choice")
+      return
+    }
+    if (view === "result") {
+      resetEstimatorInputs()
+      setView(estimateOnly ? "estimator-mode" : "choice")
       return
     }
     if (view === "estimator-form") {
@@ -427,17 +446,15 @@ export function ParticulierVolumeStep({
     view === "choice"
       ? "Quel volume de déchets souhaitez-vous évacuer ?"
       : view === "known"
-        ? "Je connais le volume dont j’ai besoin"
+        ? "Choisissez votre volume"
         : view === "estimator-mode"
-          ? "Comment estimer votre volume ?"
+          ? "À quoi ressemble vos déchets ?"
           : view === "estimator-form"
             ? estimatorMode === "bags"
-              ? "Sacs ou contenants"
-              : estimatorMode === "irregular"
-                ? "Tas irrégulier (m³)"
-                : "Tas régulier (m³)"
+              ? "Combien de sacs ?"
+              : "Vos mesures (en mètres)"
             : view === "result"
-              ? "Estimation indicative"
+              ? "Votre volume"
               : ""
 
   return (
@@ -455,18 +472,16 @@ export function ParticulierVolumeStep({
           <h3 className="text-[17px] font-bold leading-snug text-brand-navy sm:text-[18px]">
             {title}
           </h3>
-          {view === "choice" ? (
+          {view === "choice" && !estimateOnly ? (
             <p className="mt-1 text-[12px] leading-snug text-brand-muted sm:text-[13px]">
-              Choisissez un volume si vous le connaissez, ou utilisez
-              l&apos;estimateur pour vous aider à l&apos;évaluer.
+              Vous connaissez le volume ou vous préférez estimer ?
             </p>
           ) : null}
         </div>
       </div>
 
-      <VolumeDisclaimer
-        className={view === "estimator-mode" ? "max-sm:hidden" : undefined}
-      />
+      {!estimateOnly && view === "known" ? <VolumeDisclaimer /> : null}
+      {view === "result" ? <VolumeDisclaimer /> : null}
 
       <AnimatePresence mode="wait">
         {view === "choice" ? (
@@ -572,36 +587,24 @@ export function ParticulierVolumeStep({
             className="space-y-4"
           >
             {estimatorMode !== "bags" ? (
-              <>
-                <p className="text-[12px] leading-snug text-brand-muted">
-                  {estimatorMode === "irregular"
-                    ? "Mesurez la longueur et la largeur max du tas, puis estimez une hauteur moyenne."
-                    : "Exprimez chaque dimension en mètres. Ex. 3 × 2 × 1 = 6 m³."}
-                </p>
-                <div className="grid grid-cols-3 gap-2">
-                  <DimField label="Long. (m)" value={length} onChange={setLength} />
-                  <DimField label="Larg. (m)" value={width} onChange={setWidth} />
-                  <DimField
-                    label={estimatorMode === "irregular" ? "H. moy." : "Haut. (m)"}
-                    value={height}
-                    onChange={setHeight}
-                  />
-                </div>
-              </>
+              <div className="grid grid-cols-3 gap-2">
+                <DimField label="Long. (m)" value={length} onChange={setLength} />
+                <DimField label="Larg. (m)" value={width} onChange={setWidth} />
+                <DimField
+                  label={estimatorMode === "irregular" ? "H. moy." : "Haut. (m)"}
+                  value={height}
+                  onChange={setHeight}
+                />
+              </div>
             ) : (
-              <>
-                <p className="text-[12px] leading-snug text-brand-muted">
-                  1 000 litres = 1 m³. Ex. 20 sacs de 100 L ≈ 2 m³.
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  <DimField label="Nombre de sacs" value={bagCount} onChange={setBagCount} />
-                  <DimField
-                    label="Litres / sac"
-                    value={litersPerBag}
-                    onChange={setLitersPerBag}
-                  />
-                </div>
-              </>
+              <div className="grid grid-cols-2 gap-2">
+                <DimField label="Nombre de sacs" value={bagCount} onChange={setBagCount} />
+                <DimField
+                  label="Litres / sac"
+                  value={litersPerBag}
+                  onChange={setLitersPerBag}
+                />
+              </div>
             )}
 
             <label className="block space-y-2">

@@ -43,15 +43,18 @@ export default async function EspaceCommandesPage() {
   const proPending =
     professionnel.length > 0 && comptePro && comptePro.status !== "approved"
 
+  const hasProProfile = Boolean(comptePro) || professionnel.length > 0
+  const nouvelleHref = hasProProfile ? "/espace/commandes/nouvelle" : "/"
+
   return (
     <div className="mx-auto max-w-6xl space-y-8 pb-2">
       <EspacePageHeader
         title="Commandes"
         meta={`${list.length} commande${list.length === 1 ? "" : "s"}`}
         action={
-          <Link href="/">
+          <Link href={nouvelleHref}>
             <Button size="sm" className="bg-[#35A238] hover:bg-[#2d8a30]">
-              Nouvelle commande
+              {hasProProfile ? "Nouvelle benne" : "Nouvelle commande"}
             </Button>
           </Link>
         }

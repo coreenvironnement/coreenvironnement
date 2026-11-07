@@ -13,7 +13,11 @@ import type { BenneFamily } from "@/lib/prestations"
 
 import { useVitrineOrder } from "./order-context"
 
-export function VitrineVolumeEstimator() {
+export function VitrineVolumeEstimator({
+  compactTop = false,
+}: {
+  compactTop?: boolean
+}) {
   const { openOrder, patchDraft } = useVitrineOrder()
   const [particulierWasteId, setParticulierWasteId] =
     useState<ParticulierWasteOptionId | null>(null)
@@ -42,11 +46,12 @@ export function VitrineVolumeEstimator() {
 
   if (family && particulierWasteId) {
     return (
-      <div className="mt-5 text-left">
+      <div className={compactTop ? "text-left" : "mt-5 text-left"}>
         <ParticulierVolumeStep
           family={family}
           wasteId={particulierWasteId}
           addressPending
+          estimateOnly
           onBackToWaste={() => setFamily(null)}
           onContinue={handleContinueOrder}
         />
@@ -55,11 +60,14 @@ export function VitrineVolumeEstimator() {
   }
 
   return (
-    <div className="mt-5 space-y-3 text-left">
-      <p className="text-[12px] leading-snug text-brand-muted">
-        Choisissez votre type de déchet, puis estimez le volume sans
-        renseigner d&apos;adresse.
-      </p>
+    <div
+      className={
+        compactTop ? "space-y-3 text-left" : "mt-5 space-y-3 text-left"
+      }
+    >
+      <h3 className="text-[16px] font-semibold leading-snug text-brand-navy sm:text-[17px]">
+        Quel type de déchets souhaitez-vous évacuer ?
+      </h3>
       <ParticulierWastePicker
         value={particulierWasteId}
         onChange={(id) => {

@@ -5,7 +5,9 @@ import { DashboardShell } from "@/components/dashboard/dashboard-shell"
 import { DashboardSubNav } from "@/components/dashboard/intervention-history"
 import { PrestataireAlert } from "@/components/dashboard/prestataire-alert"
 import { WasteCharts } from "@/components/dashboard/waste-charts"
+import { ChantierRotationRequest } from "@/components/espace/chantier-rotation-request"
 import { evaluateDashboardAccess } from "@/lib/auth/client-nav-context"
+import { loadChantierRotationContext } from "@/lib/chantier/rotation-context"
 import {
   getUserChantiers,
   loadChantierDashboard,
@@ -48,11 +50,13 @@ export default async function EspaceChantierPage({ searchParams }: PageProps) {
         : undefined
 
   let dashboardData = null
+  let rotationContext = null
   if (selectedId && gate.ok) {
     const allowed = await userHasChantierAccess(supabase, user.id, selectedId)
     if (!allowed) notFound()
     dashboardData = await loadChantierDashboard(supabase, selectedId)
     if (!dashboardData) notFound()
+    rotationContext = await loadChantierRotationContext(supabase, selectedId)
   }
 
   return (
@@ -79,6 +83,9 @@ export default async function EspaceChantierPage({ searchParams }: PageProps) {
             prestataireNom={dashboardData.chantier.prestataireNom}
             isAdmin={profile?.role === "admin"}
           />
+          {rotationContext ? (
+            <ChantierRotationRequest chantierId={selectedId} context={rotationContext} />
+          ) : null}
           <WasteCharts
             tonnages={dashboardData.tonnages}
             valorisation={dashboardData.valorisation}

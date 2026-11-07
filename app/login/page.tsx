@@ -11,26 +11,24 @@ export const metadata = {
 export default function LoginPage() {
   return (
     <VitrinePublicShell>
-      <section className="bg-brand-bg-alt py-12 sm:py-16 lg:py-20">
+      <section className="bg-[#ECF4E9] py-10 sm:py-14 lg:py-20">
         <div className="container-x">
-          <div className="mx-auto grid max-w-5xl items-start gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
-            <div className="pt-2 lg:pt-6">
+          <div className="mx-auto grid max-w-5xl items-start gap-8 lg:grid-cols-[1fr_1fr] lg:gap-14">
+            <div className="hidden pt-2 lg:block lg:pt-6">
               <p className="section-eyebrow">Espace client</p>
-              <h1 className="mt-4 max-w-2xl text-[clamp(1.85rem,4.4vw,3rem)] leading-[1.1] text-brand-navy">
-                Votre espace client
+              <h1 className="mt-4 max-w-xl text-[clamp(1.85rem,3.2vw,2.75rem)] font-semibold leading-[1.12] text-brand-navy">
+                Connectez-vous en toute simplicité
               </h1>
-              <p className="mt-5 max-w-xl text-[17px] leading-[1.75] text-brand-muted sm:text-[18px]">
-                Après une commande particulier, un compte est créé avec votre e-mail.
-                Confirmez-le puis connectez-vous pour retrouver vos commandes.
-              </p>
-              <p className="mt-4 max-w-xl text-[15px] leading-[1.75] text-brand-muted sm:text-[16px]">
-                Vous n’avez pas encore de mot de passe ? Utilisez le lien magique par
-                e-mail ci-contre. Les comptes chantier professionnels conservent l’accès
-                dashboard habituel.
+              <p className="mt-4 max-w-md text-[16px] leading-relaxed text-brand-muted">
+                Mot de passe ou lien par e-mail. Vous êtes redirigé vers l’espace adapté à
+                votre compte.
               </p>
             </div>
 
-            <div className="w-full">
+            <div className="w-full max-lg:mx-auto max-lg:max-w-md">
+              <p className="mb-4 text-center text-sm font-medium text-brand-muted lg:hidden">
+                Espace client CORE
+              </p>
               <Suspense
                 fallback={<p className="text-sm text-brand-muted">Chargement…</p>}
               >

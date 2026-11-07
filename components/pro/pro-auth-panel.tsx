@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { PasswordInput } from "@/components/ui/password-input"
 import { createClient } from "@/lib/supabase/client"
 
 export function ProAuthPanel() {
@@ -113,13 +114,13 @@ export function ProAuthPanel() {
           <label htmlFor="auth_password" className="text-sm font-medium">
             Mot de passe
           </label>
-          <Input
+          <PasswordInput
             id="auth_password"
-            type="password"
             required
             minLength={8}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            className="w-full"
           />
         </div>
 

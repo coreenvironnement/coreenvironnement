@@ -366,30 +366,26 @@ export const particulierAccueil = {
     cartes: [
       {
         id: "volume",
-        titre: "Choisir le bon volume",
+        titre: "Quelle taille de benne vous faut-il ?",
         texte:
-          "Pour un tas rectangulaire, multipliez la longueur, la largeur et la hauteur, en mètres : vous obtenez une estimation du volume en m³. Avec des gravats ou de la terre, le poids compte aussi dans le choix de la benne.",
+          "Estimez en quelques clics le volume adapté à vos déchets.",
         cta: "Estimer mon volume",
-        ctaHint:
-          "L’estimation ne demande pas votre adresse. À la fin, vous pourrez commander la benne adaptée en renseignant le lieu de livraison.",
-        guideLabel: "Voir le guide des volumes",
-        guideHref: "/location-benne/volume",
       },
       {
         id: "emplacement",
-        titre: "Prévoir l’emplacement de la benne",
+        titre: "Où poser la benne ?",
         texte:
-          "Prévoyez un emplacement accessible au camion pour la livraison et l’enlèvement. Pour une pose dans la rue, sur un trottoir ou sur une place de stationnement publique, une autorisation d’occupation du domaine public est nécessaire. Demandez-la à la mairie ou au gestionnaire de la voie avant la livraison.",
-        linkLabel: "Consulter les démarches sur Service Public",
+          "Prévoyez un accès pour le camion pour la livraison et l’enlèvement. En cas de pose sur la voie publique, une autorisation d’occupation est requise auprès de la mairie ou du gestionnaire de la voirie.",
+        linkLabel: "Voir les démarches sur Service Public",
         linkHref:
           "https://entreprendre.service-public.gouv.fr/vosdroits/F23509",
       },
       {
         id: "dechets",
-        titre: "Vérifier les déchets acceptés",
+        titre: "Quels déchets sont acceptés ?",
         texte:
-          "Les déchets déposés doivent correspondre à ceux sélectionnés lors de la commande. Les produits dangereux ne vont pas dans une benne classique et certains mélanges ne sont pas acceptés. En cas de doute sur un déchet, contactez-nous avant de réserver.",
-        guideLabel: "Consulter les déchets acceptés",
+          "Vérifiez les déchets autorisés avant de remplir la benne. Les produits dangereux et certains mélanges ne sont pas acceptés.",
+        guideLabel: "Voir les déchets acceptés",
         guideHref: "/location-benne/dechets-acceptes",
       },
     ],

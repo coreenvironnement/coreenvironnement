@@ -11,6 +11,10 @@ import {
   updateInterventionStatut,
   upsertStatsDechet,
 } from "@/app/admin/actions"
+import {
+  ChantierRotationQueue,
+  type AdminRotationDemandeRow,
+} from "@/components/admin/chantier-rotation-queue"
 import { DocumentUploadRow } from "@/components/admin/document-upload-row"
 import { requireAdmin } from "@/lib/auth/require-admin"
 import { loadChantierDashboard } from "@/lib/dashboard/chantier-data"
@@ -159,6 +163,32 @@ export default async function AdminChantierDetailPage({
       profilesById[p.id] = { email: p.email, full_name: p.full_name }
     }
   }
+
+  const { data: rotationDemandesRaw } = await supabase
+    .from("demandes_rotation")
+    .select(
+      `
+      id, souhaite_le, statut, commentaire_client,
+      profiles(email),
+      types_contenants(label),
+      dechets_types(nom)
+    `
+    )
+    .eq("chantier_id", id)
+    .order("created_at", { ascending: false })
+
+  const rotationDemandes: AdminRotationDemandeRow[] = (rotationDemandesRaw ?? []).map(
+    (row) => ({
+      id: row.id,
+      souhaiteLe: row.souhaite_le,
+      statut: row.statut,
+      commentaire: row.commentaire_client,
+      contenantLabel:
+        (row.types_contenants as unknown as { label: string } | null)?.label ?? null,
+      dechetNom: (row.dechets_types as unknown as { nom: string } | null)?.nom ?? null,
+      profileEmail: (row.profiles as unknown as { email: string } | null)?.email ?? null,
+    })
+  )
 
   const { data: interventions } = await supabase
     .from("interventions")
@@ -490,6 +520,8 @@ export default async function AdminChantierDetailPage({
           ) : null}
         </CardContent>
       </Card>
+
+      <ChantierRotationQueue chantierId={id} demandes={rotationDemandes} />
 
       {/* Interventions */}
       <Card>

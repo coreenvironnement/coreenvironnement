@@ -866,3 +866,158 @@ export async function cancelAndRefundCommande(commandeId: string): Promise<void>
   revalidateCommande(commandeId)
   redirect(`/admin/commandes/${commandeId}?ok=refund_pending`)
 }
+
+function calendarDateParisFromIso(iso: string): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Paris",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(iso))
+}
+
+function formatRotationWishParis(iso: string): string {
+  return new Intl.DateTimeFormat("fr-FR", {
+    timeZone: "Europe/Paris",
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(new Date(iso))
+}
+
+export async function acceptRotationDemande(
+  demandeId: string,
+  chantierId: string
+): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+
+  const { data: demande, error: demandeError } = await supabase
+    .from("demandes_rotation")
+    .select(
+      "id, chantier_id, statut, souhaite_le, contenant_id, dechet_type_id, commentaire_client"
+    )
+    .eq("id", demandeId)
+    .eq("chantier_id", chantierId)
+    .maybeSingle()
+
+  if (demandeError || !demande) {
+    redirect(
+      `/admin/chantiers/${chantierId}?error=${encodeURIComponent("Demande introuvable.")}`
+    )
+  }
+
+  if (demande.statut !== "en_attente") {
+    redirect(
+      `/admin/chantiers/${chantierId}?error=${encodeURIComponent("Cette demande a déjà été traitée.")}`
+    )
+  }
+
+  const { data: typeRotation } = await supabase
+    .from("types_intervention")
+    .select("id")
+    .eq("code", "rotation")
+    .maybeSingle()
+
+  if (!typeRotation?.id) {
+    redirect(
+      `/admin/chantiers/${chantierId}?error=${encodeURIComponent("Type rotation absent du référentiel.")}`
+    )
+  }
+
+  const today = new Date().toISOString().slice(0, 10)
+  const wishLabel = formatRotationWishParis(demande.souhaite_le)
+  const commentaire = [
+    demande.commentaire_client,
+    `Demande client : rotation souhaitée le ${wishLabel} (Europe/Paris).`,
+  ]
+    .filter(Boolean)
+    .join(" — ")
+
+  const { data: intervention, error: interventionError } = await supabase
+    .from("interventions")
+    .insert({
+      chantier_id: chantierId,
+      type_intervention_id: typeRotation.id,
+      contenant_id: demande.contenant_id,
+      dechet_type_id: demande.dechet_type_id,
+      statut: "en_cours_programmation",
+      date_demande: today,
+      date_souhaitee: calendarDateParisFromIso(demande.souhaite_le),
+      commentaire,
+      created_by: user.id,
+    })
+    .select("id")
+    .single()
+
+  if (interventionError || !intervention) {
+    redirect(
+      `/admin/chantiers/${chantierId}?error=${encodeURIComponent(interventionError?.message ?? "Impossible de créer l'intervention.")}`
+    )
+  }
+
+  const { error: updateError } = await supabase
+    .from("demandes_rotation")
+    .update({
+      statut: "prise_en_charge",
+      intervention_id: intervention.id,
+      reviewed_by: user.id,
+      reviewed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", demandeId)
+
+  if (updateError) {
+    redirect(
+      `/admin/chantiers/${chantierId}?error=${encodeURIComponent(updateError.message)}`
+    )
+  }
+
+  revalidateAdmin(chantierId)
+  revalidatePath("/espace/chantier")
+  redirect(`/admin/chantiers/${chantierId}`)
+}
+
+export async function rejectRotationDemande(
+  demandeId: string,
+  chantierId: string
+): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+
+  const { data: demande, error: demandeError } = await supabase
+    .from("demandes_rotation")
+    .select("id, statut")
+    .eq("id", demandeId)
+    .eq("chantier_id", chantierId)
+    .maybeSingle()
+
+  if (demandeError || !demande) {
+    redirect(
+      `/admin/chantiers/${chantierId}?error=${encodeURIComponent("Demande introuvable.")}`
+    )
+  }
+
+  if (demande.statut !== "en_attente") {
+    redirect(
+      `/admin/chantiers/${chantierId}?error=${encodeURIComponent("Cette demande a déjà été traitée.")}`
+    )
+  }
+
+  const { error: updateError } = await supabase
+    .from("demandes_rotation")
+    .update({
+      statut: "refusee",
+      reviewed_by: user.id,
+      reviewed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", demandeId)
+
+  if (updateError) {
+    redirect(
+      `/admin/chantiers/${chantierId}?error=${encodeURIComponent(updateError.message)}`
+    )
+  }
+
+  revalidateAdmin(chantierId)
+  revalidatePath("/espace/chantier")
+  redirect(`/admin/chantiers/${chantierId}`)
+}

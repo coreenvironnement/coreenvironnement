@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
@@ -22,8 +23,82 @@ const CARD_ICONS: Record<string, typeof PackageDimensions01Icon> = {
   tri: Recycle03Icon,
 }
 
+const cardShellClass =
+  "flex h-full flex-col rounded-2xl border border-brand-green/14 bg-white p-5 text-left shadow-[var(--shadow-vitrine-soft)] sm:p-6"
+
+const cardLinkClass =
+  "text-[14px] font-medium text-brand-navy underline-offset-2 hover:text-brand-green hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
+
+function ConseilCardHeader({
+  icon: Icon,
+  titre,
+}: {
+  icon: typeof PackageDimensions01Icon
+  titre: string
+}) {
+  return (
+    <>
+      <div className="flex items-start gap-3 md:hidden">
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand-green/8 text-brand-navy">
+          <HugeiconsIcon
+            icon={Icon}
+            size={22}
+            strokeWidth={VITRINE_ICON_STROKE}
+            aria-hidden
+          />
+        </span>
+        <h3 className="min-w-0 flex-1 pt-2 text-[16px] font-semibold text-brand-navy">
+          {titre}
+        </h3>
+      </div>
+      <span className="hidden size-11 shrink-0 items-center justify-center rounded-xl bg-brand-green/8 text-brand-navy md:flex">
+        <HugeiconsIcon
+          icon={Icon}
+          size={22}
+          strokeWidth={VITRINE_ICON_STROKE}
+          aria-hidden
+        />
+      </span>
+      <h3 className="mt-4 hidden text-[16px] font-semibold text-brand-navy sm:text-[17px] md:block">
+        {titre}
+      </h3>
+    </>
+  )
+}
+
+function VolumeConseilActions({
+  cta,
+  expanded,
+  onExpand,
+}: {
+  cta: string
+  expanded: boolean
+  onExpand: () => void
+}) {
+  if (!expanded) {
+    return (
+      <div className="mt-5 w-full">
+        <button
+          type="button"
+          onClick={onExpand}
+          className="btn btn-accent flex min-h-12 w-full items-center justify-center font-bold"
+        >
+          {cta}
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className={expanded ? "w-full" : "mt-5 w-full"}>
+      <VitrineVolumeEstimator compactTop />
+    </div>
+  )
+}
+
 export function VitrineParticulierConseils() {
   const { conseils } = particulierAccueil
+  const [volumeExpanded, setVolumeExpanded] = useState(false)
 
   return (
     <section
@@ -41,7 +116,7 @@ export function VitrineParticulierConseils() {
           </h2>
         </div>
 
-        <div className="mx-auto mt-10 grid max-w-5xl gap-6 md:grid-cols-3 md:gap-5 lg:gap-6">
+        <div className="mx-auto mt-10 flex max-w-5xl flex-col gap-6 md:grid md:grid-cols-3 md:gap-5 lg:gap-6">
           {conseils.cartes.map((carte) => {
             const carteId = carte.id as string
             const extras = carte as Record<string, unknown>
@@ -57,49 +132,41 @@ export function VitrineParticulierConseils() {
               typeof extras.contactLabel === "string"
                 ? extras.contactLabel
                 : null
+            const cta = typeof extras.cta === "string" ? extras.cta : null
 
             const Icon = CARD_ICONS[carte.id] ?? PackageDimensions01Icon
+            const isVolume = carte.id === "volume"
+            const showVolumeShell = isVolume && !volumeExpanded
+
             return (
               <article
                 key={carte.id}
                 className={
-                  carte.id === "volume"
-                    ? "flex h-full flex-col rounded-2xl border border-brand-green/14 bg-white p-5 shadow-[var(--shadow-vitrine-soft)] max-md:items-center max-md:text-center sm:p-6 md:col-span-3 md:items-start md:text-left"
-                    : "flex h-full flex-col rounded-2xl border border-brand-green/14 bg-white p-5 shadow-[var(--shadow-vitrine-soft)] max-md:items-center max-md:text-center sm:p-6 md:items-start md:text-left"
+                  isVolume ? `${cardShellClass} md:col-span-3` : cardShellClass
                 }
               >
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand-green/8 text-brand-navy max-md:mx-auto md:mx-0">
-                  <HugeiconsIcon
-                    icon={Icon}
-                    size={22}
-                    strokeWidth={VITRINE_ICON_STROKE}
-                    aria-hidden
-                  />
-                </span>
-                <h3 className="mt-4 text-[16px] font-semibold text-brand-navy sm:text-[17px]">
-                  {carte.titre}
-                </h3>
-                <p className="mt-2 flex-1 text-[14px] leading-relaxed text-brand-muted">
-                  {carte.texte}
-                </p>
+                {showVolumeShell ? (
+                  <>
+                    <ConseilCardHeader icon={Icon} titre={carte.titre} />
+                    <p className="mt-2 flex-1 text-[14px] leading-relaxed text-brand-muted">
+                      {carte.texte}
+                    </p>
+                  </>
+                ) : isVolume ? null : (
+                  <>
+                    <ConseilCardHeader icon={Icon} titre={carte.titre} />
+                    <p className="mt-2 flex-1 text-[14px] leading-relaxed text-brand-muted">
+                      {carte.texte}
+                    </p>
+                  </>
+                )}
 
-                {carte.id === "volume" && "cta" in carte ? (
-                  <div className="mt-5 space-y-3 md:col-span-1">
-                    <VitrineVolumeEstimator />
-                    {"ctaHint" in carte && carte.ctaHint ? (
-                      <p className="text-[12px] leading-snug text-brand-muted">
-                        {carte.ctaHint}
-                      </p>
-                    ) : null}
-                    {guideLabel && guideHref ? (
-                      <Link
-                        href={guideHref}
-                        className="block text-[14px] font-medium text-brand-navy underline-offset-2 hover:text-brand-green hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
-                      >
-                        {guideLabel}
-                      </Link>
-                    ) : null}
-                  </div>
+                {isVolume && cta ? (
+                  <VolumeConseilActions
+                    cta={cta}
+                    expanded={volumeExpanded}
+                    onExpand={() => setVolumeExpanded(true)}
+                  />
                 ) : null}
 
                 {(carteId === "emplacement" || carteId === "voie-publique") &&
@@ -110,7 +177,7 @@ export function VitrineParticulierConseils() {
                       href={linkHref}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[14px] font-medium text-brand-navy underline-offset-2 hover:text-brand-green hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
+                      className={cardLinkClass}
                     >
                       {linkLabel}
                     </a>
@@ -119,10 +186,7 @@ export function VitrineParticulierConseils() {
 
                 {carteId === "dechets" && guideLabel && guideHref ? (
                   <p className="mt-5">
-                    <Link
-                      href={guideHref}
-                      className="text-[14px] font-medium text-brand-navy underline-offset-2 hover:text-brand-green hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
-                    >
+                    <Link href={guideHref} className={cardLinkClass}>
                       {guideLabel}
                     </Link>
                   </p>
@@ -130,10 +194,7 @@ export function VitrineParticulierConseils() {
 
                 {carteId === "tri" && !contactLabel ? (
                   <p className="mt-5">
-                    <a
-                      href={SITE_PHONE_HREF}
-                      className="text-[14px] font-medium text-brand-navy underline-offset-2 hover:text-brand-green hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
-                    >
+                    <a href={SITE_PHONE_HREF} className={cardLinkClass}>
                       Nous appeler en cas de doute
                     </a>
                     <span className="sr-only"> — {SITE_PHONE_DISPLAY}</span>
