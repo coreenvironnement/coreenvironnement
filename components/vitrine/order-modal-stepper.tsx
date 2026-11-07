@@ -18,7 +18,7 @@ export function OrderModalStepper({
 
   return (
     <div
-      className="min-w-0"
+      className="order-tunnel-stepper min-w-0"
       aria-label={`Étape ${stepIndex + 1} sur ${steps.length} : ${current?.label}`}
     >
       <div className="md:hidden">
@@ -65,7 +65,7 @@ export function OrderModalStepper({
                   ) : null}
                   <span
                     className={cn(
-                      "relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-[13px] font-semibold tabular-nums transition-colors duration-300",
+                      "order-tunnel-stepper__node relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-[13px] font-semibold tabular-nums transition-colors duration-300",
                       active
                         ? "bg-brand-green text-white shadow-sm shadow-brand-green/25"
                         : "bg-brand-warm-muted text-brand-navy/45"
@@ -77,7 +77,7 @@ export function OrderModalStepper({
                 </div>
                 <p
                   className={cn(
-                    "mt-1.5 w-full max-w-full text-center text-[11px] leading-tight",
+                    "order-tunnel-stepper__label mt-1.5 w-full max-w-full text-center text-[11px] leading-tight",
                     "line-clamp-2 break-words [overflow-wrap:anywhere]",
                     active
                       ? "font-semibold text-brand-navy"

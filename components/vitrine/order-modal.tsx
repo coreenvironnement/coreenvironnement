@@ -82,21 +82,21 @@ export function VitrineOrderModal() {
         )}
       />
 
-      <div className="absolute inset-0 flex h-[100dvh] w-full max-w-[100vw] items-stretch justify-center overflow-x-hidden sm:h-full sm:items-center sm:p-6">
+      <div className="absolute inset-0 flex h-[100dvh] w-full max-w-[100vw] items-stretch justify-center overflow-x-hidden lg:h-full lg:items-center lg:p-6">
         <div
           role="dialog"
           aria-modal="true"
           aria-label={orderModalTitle(audience, stepIndex)}
           className={cn(
             "order-tunnel-shell relative flex h-[100dvh] max-h-none w-full min-w-0 max-w-[100vw] flex-col overflow-hidden rounded-none border border-primary/15 pb-[env(safe-area-inset-bottom)] shadow-[var(--shadow-vitrine-pop)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
-            "sm:h-auto sm:max-h-[92svh] sm:w-full sm:max-w-[540px] sm:rounded-2xl sm:pb-0 lg:max-w-[1120px]",
+            "lg:h-auto lg:max-h-[min(92svh,100dvh)] lg:w-full lg:max-w-[min(72rem,94vw)] lg:rounded-2xl lg:pb-0",
             open
-              ? "translate-y-0 opacity-100 sm:scale-100"
-              : "translate-y-8 opacity-0 sm:translate-y-4 sm:scale-[0.97]"
+              ? "translate-y-0 opacity-100 lg:scale-100"
+              : "translate-y-8 opacity-0 lg:translate-y-4 lg:scale-[0.97]"
           )}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="order-tunnel-header shrink-0 border-b px-4 pb-3 pt-3.5 sm:px-6 sm:pb-4 sm:pt-5">
+          <div className="order-tunnel-header shrink-0 border-b px-4 pb-3 pt-3.5 sm:px-6 sm:pb-4 sm:pt-5 lg:pb-2.5 lg:pt-3">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 pt-0.5">
                 <h2 className="text-[18px] font-bold leading-tight text-brand-navy sm:text-[20px]">
@@ -119,13 +119,13 @@ export function VitrineOrderModal() {
             </div>
           </div>
 
-          <div className="min-w-0 shrink-0 px-4 py-2.5 sm:px-6 sm:py-3">
+          <div className="order-tunnel-stepper-wrap min-w-0 shrink-0 px-4 py-2.5 sm:px-6 sm:py-3">
             <OrderModalStepper stepIndex={stepIndex} audience={audience} />
           </div>
 
           <div
             ref={scrollContainerRef}
-            className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain px-4 pb-3 pt-0.5 sm:px-6 sm:pb-4 sm:pt-1"
+            className="order-tunnel-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain px-4 pb-3 pt-0.5 sm:px-6 sm:pb-4 sm:pt-1"
           >
             <OrderWidget
               variant="embedded"

@@ -93,6 +93,7 @@ const ORDER_HELP_TEXT =
   "flex items-start gap-1.5 text-[11px] leading-snug text-brand-muted sm:text-[12px]"
 
 const ORDER_TUNNEL_CARD = "order-tunnel-card"
+const ORDER_TUNNEL_STEP_NAV = "order-tunnel-step-nav"
 
 function orderFieldBg(embedded: boolean) {
   return embedded ? "bg-brand-warm-field text-brand-navy" : "bg-white"
@@ -704,7 +705,7 @@ export function OrderWidget({
       className={cn(
         "relative mx-auto w-full",
         embedded
-          ? "max-w-none min-w-0 overflow-x-hidden border-0 bg-transparent shadow-none ring-0"
+          ? "order-tunnel-embedded-card max-w-none min-w-0 gap-0 overflow-x-hidden border-0 bg-transparent py-0 shadow-none ring-0"
           : "overflow-hidden max-w-xl border-white/70 bg-card/95 shadow-[0_22px_70px_-32px_color-mix(in_srgb,var(--brand-navy)_38%,transparent)] ring-1 ring-primary/15 backdrop-blur-sm"
       )}
     >
@@ -715,7 +716,9 @@ export function OrderWidget({
       <CardContent
         className={cn(
           "relative space-y-3",
-          embedded ? "order-tunnel-form min-w-0 px-0 pb-0 pt-0" : "pt-8"
+          embedded
+            ? "order-tunnel-form order-tunnel-embedded-body min-w-0 px-0 pb-0 pt-0"
+            : "pt-8"
         )}
       >
         {!embedded ? (
@@ -970,16 +973,18 @@ export function OrderWidget({
                   </p>
                 ) : null}
 
-                <Button
-                  type="button"
-                  className="mt-0.5 h-11 w-full rounded-xl border-0 bg-[#35A238] px-4 text-base font-semibold text-white shadow-lg shadow-[#35A238]/25 hover:bg-[#19752B]"
-                  onClick={advanceFromLocation}
-                >
-                  <span className="flex w-full items-center justify-between gap-2">
-                    <span>Continuer</span>
-                    <ChevronRight className="size-4 shrink-0" aria-hidden />
-                  </span>
-                </Button>
+                <div className={cn(embedded && ORDER_TUNNEL_STEP_NAV)}>
+                  <Button
+                    type="button"
+                    className="mt-0.5 h-11 w-full rounded-xl border-0 bg-[#35A238] px-4 text-base font-semibold text-white shadow-lg shadow-[#35A238]/25 hover:bg-[#19752B]"
+                    onClick={advanceFromLocation}
+                  >
+                    <span className="flex w-full items-center justify-between gap-2">
+                      <span>Continuer</span>
+                      <ChevronRight className="size-4 shrink-0" aria-hidden />
+                    </span>
+                  </Button>
+                </div>
               </div>
             </motion.div>
           )}
@@ -991,11 +996,15 @@ export function OrderWidget({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
-              className={cn(embedded ? "" : "space-y-4")}
+              className={cn(
+                embedded ? "order-tunnel-step--fill" : "space-y-4"
+              )}
             >
               <div
                 className={cn(
-                  embedded ? "space-y-4 sm:space-y-5" : "space-y-4"
+                  embedded
+                    ? "order-tunnel-step__stack space-y-4 sm:space-y-5"
+                    : "space-y-4"
                 )}
               >
                 {audience === "particulier" ? (
@@ -1097,31 +1106,12 @@ export function OrderWidget({
                   </p>
                 ) : null}
 
-                {audience === "particulier" ? (
-                  <div
-                    className={cn(
-                      embedded &&
-                        "sticky bottom-0 z-20 -mx-4 border-t border-primary/10 bg-gradient-to-t from-brand-warm via-brand-warm/95 to-brand-warm/80 px-4 pb-1 pt-3 sm:-mx-6 sm:px-6"
-                    )}
-                  >
-                    <OrderTunnelContinueButton
-                      onClick={goToIntentVolume}
-                      disabled={!canLeaveIntentWaste}
-                    />
-                  </div>
-                ) : (
-                  <div
-                    className={cn(
-                      embedded &&
-                        "sticky bottom-0 z-20 -mx-4 border-t border-primary/10 bg-gradient-to-t from-brand-warm via-brand-warm/95 to-brand-warm/80 px-4 pb-1 pt-3 sm:-mx-6 sm:px-6"
-                    )}
-                  >
-                    <OrderTunnelContinueButton
-                      onClick={goToIntentVolume}
-                      disabled={!canLeaveIntentWaste}
-                    />
-                  </div>
-                )}
+                <div className={cn(embedded && ORDER_TUNNEL_STEP_NAV)}>
+                  <OrderTunnelContinueButton
+                    onClick={goToIntentVolume}
+                    disabled={!canLeaveIntentWaste}
+                  />
+                </div>
               </div>
             </motion.div>
           )}
@@ -1235,7 +1225,7 @@ export function OrderWidget({
                 className={cn(
                   "grid min-w-0 gap-3 py-0.5",
                   embedded
-                    ? ""
+                    ? "order-tunnel-forfait-list"
                     : "max-h-[min(60vh,420px)] overflow-y-auto pr-1 sm:max-h-[min(70vh,520px)]"
                 )}
               >
@@ -1256,7 +1246,12 @@ export function OrderWidget({
                 ))}
               </div>
 
-              <div className="space-y-2 pt-0.5">
+              <div
+                className={cn(
+                  "space-y-2 pt-0.5",
+                  embedded && ORDER_TUNNEL_STEP_NAV
+                )}
+              >
                 <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                   <Button
                     variant="outline"
@@ -1907,7 +1902,7 @@ export function OrderWidget({
           className={cn(
             "relative flex flex-col text-center",
             embedded
-              ? "gap-1 border-t border-primary/12 bg-transparent px-1 pb-0 pt-2 sm:px-2 sm:pt-2.5"
+              ? "order-tunnel-help-footer gap-1 border-t border-primary/12 bg-transparent px-1 pb-0 pt-2 sm:px-2 sm:pt-2.5"
               : "gap-2 border-t border-primary/5 bg-muted/30 py-4 text-[0.65rem] text-muted-foreground"
           )}
         >
@@ -2052,7 +2047,7 @@ function PrestationCard({
         }
       }}
       className={cn(
-        "flex w-full min-w-0 cursor-pointer gap-2.5 overflow-hidden rounded-2xl border-2 p-3 text-left shadow-sm outline-none transition-[border-color,box-shadow,background-color] sm:gap-3 sm:p-3.5",
+        "order-tunnel-prestation-card flex w-full min-w-0 cursor-pointer gap-2.5 overflow-hidden rounded-2xl border-2 p-3 text-left shadow-sm outline-none transition-[border-color,box-shadow,background-color] sm:gap-3 sm:p-3.5",
         "focus-visible:border-brand-green focus-visible:ring-2 focus-visible:ring-brand-green/25",
         selected
           ? warmSurface
@@ -2063,7 +2058,7 @@ function PrestationCard({
             : "border-border/80 bg-card/90 hover:border-brand-green/35"
       )}
     >
-      <div className="flex h-[52px] w-[56px] shrink-0 items-center justify-center overflow-hidden sm:h-[68px] sm:w-[80px]">
+      <div className="order-tunnel-prestation-card__visual flex h-[52px] w-[56px] shrink-0 items-center justify-center overflow-hidden sm:h-[68px] sm:w-[80px]">
         {visualSrc ? (
           <Image
             src={visualSrc}

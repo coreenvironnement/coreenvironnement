@@ -125,7 +125,7 @@ function EstimatorModeOptionCard({
           : "border-primary/12 hover:border-brand-green/35 sm:border-primary/12"
       )}
     >
-      <div className="relative h-20 w-[100px] shrink-0 overflow-hidden rounded-lg bg-[#F2F4F7] sm:aspect-[4/3] sm:h-auto sm:w-full sm:rounded-none">
+      <div className="order-tunnel-estimator-card__media relative h-20 w-[100px] shrink-0 overflow-hidden rounded-lg bg-[#F2F4F7] sm:aspect-[4/3] sm:h-auto sm:w-full sm:rounded-none">
         <Image
           src={volumeEstimatorImageSrc(imageFile)}
           alt={imageAlt}
@@ -732,8 +732,7 @@ export function ParticulierVolumeStep({
       {view === "known" ? (
         <div
           className={cn(
-            embedded &&
-              "sticky bottom-0 z-20 -mx-4 border-t border-primary/10 bg-gradient-to-t from-brand-warm via-brand-warm/95 to-brand-warm/80 px-4 pb-1 pt-3 sm:-mx-6 sm:px-6"
+            embedded && "order-tunnel-step-nav"
           )}
         >
           <OrderTunnelContinueButton
