@@ -10,6 +10,7 @@ import { VitrineAudienceSwitch } from "./vitrine-audience-switch"
 import { VitrineParticulierConseils } from "./vitrine-particulier-conseils"
 import { VitrineParticulierFaq } from "./vitrine-particulier-faq"
 import { VitrineParticulierJourney } from "./vitrine-particulier-journey"
+import { VitrineParticulierPourquoi } from "./vitrine-particulier-pourquoi"
 import { VitrineFinalCta } from "./vitrine-final-cta"
 import { VitrineFooter } from "./vitrine-footer"
 import { VitrineHeader } from "./vitrine-header"
@@ -89,6 +90,7 @@ function VitrineHomeInner({
       <main id="contenu" className="relative">
         <VitrineHero seoVariant={seoVariant} localPage={localSeoData} />
         {particulierHome ? <VitrineParticulierJourney /> : null}
+        {particulierHome ? <VitrineParticulierPourquoi /> : null}
         {hubPage ? <VitrineEarlyLocalLinks mode="hub" /> : null}
         {!hubPage && !localSeoData ? <VitrineEarlyLocalLinks mode="home" /> : null}
         {localSeoData ? (

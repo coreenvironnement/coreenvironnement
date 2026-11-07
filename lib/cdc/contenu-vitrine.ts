@@ -361,6 +361,33 @@ export const particulierAccueil = {
       },
     ],
   },
+  pourquoi: {
+    eyebrow: "Pourquoi Core Environnement",
+    titre: "Votre benne, l’esprit tranquille",
+    cta: "Voir les bennes et les tarifs",
+    cartes: [
+      {
+        id: "suivi",
+        titre: "Vous savez quand elle arrive",
+        texte:
+          "Suivez votre commande en direct et consultez l'heure prévue de livraison.",
+        image: "/images/core-icone-suivi.webp",
+      },
+      {
+        id: "prix",
+        titre: "Vous connaissez le prix avant de payer",
+        texte:
+          "Votre tarif s’affiche avant de confirmer votre réservation.",
+        image: "/images/core-icone-prix.webp",
+      },
+      {
+        id: "valorisation",
+        titre: "Vos déchets deviennent des ressources",
+        texte: "99 % des déchets pris en charge sont valorisés.",
+        image: "/images/core-icone-valorisation.webp",
+      },
+    ],
+  },
   conseils: {
     eyebrow: "Avant de commander",
     titre: "Bien préparer votre location de benne",

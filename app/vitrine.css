@@ -99,6 +99,14 @@
       @apply justify-center;
     }
 
+    .vitrine-root.vitrine--particulier-home-desktop-centered #pourquoi-core .pourquoi-core__header {
+      @apply mx-auto max-w-3xl text-center;
+    }
+
+    .vitrine-root.vitrine--particulier-home-desktop-centered #pourquoi-core .section-eyebrow {
+      @apply justify-center;
+    }
+
     .vitrine-root.vitrine--particulier-home-desktop-centered #parcours .parcours-volume-link a,
     .vitrine-root.vitrine--particulier-home-desktop-centered #parcours .parcours-volume-link button {
       @apply mx-auto inline-block;
@@ -136,6 +144,57 @@
 
   .vitrine-root .card-vitrine {
     @apply rounded-[var(--radius-card)] border border-brand-border bg-brand-bg shadow-[var(--shadow-vitrine-soft)] transition duration-300;
+  }
+
+  /* Accueil particulier — « Pourquoi Core » */
+  .vitrine-root .pourquoi-core-card {
+    @apply flex flex-row items-start gap-4 border-[#dce5df] bg-white p-5 shadow-[0_1px_3px_rgb(14_32_16/0.05)] sm:gap-5 sm:p-6;
+  }
+
+  .vitrine-root .pourquoi-core-card__icon-wrap {
+    @apply flex size-[4.75rem] shrink-0 items-center justify-center rounded-2xl bg-[#E9F1EC] sm:size-[5.25rem];
+  }
+
+  .vitrine-root .pourquoi-core-card__icon {
+    @apply size-[3.875rem] object-contain;
+  }
+
+  .vitrine-root .pourquoi-core-card__body {
+    @apply min-w-0 flex-1 pt-0.5;
+  }
+
+  .vitrine-root .pourquoi-core-card__title {
+    @apply font-[family-name:var(--font-body)] text-[16px] font-semibold leading-snug sm:text-[17px];
+  }
+
+  .vitrine-root .pourquoi-core-card__text {
+    @apply mt-2 font-[family-name:var(--font-body)] text-[14px] leading-relaxed sm:text-[15px];
+  }
+
+  @media (min-width: 1024px) {
+    .vitrine-root .pourquoi-core-card {
+      @apply flex-col items-center gap-0 px-6 pb-7 pt-8 text-center;
+    }
+
+    .vitrine-root .pourquoi-core-card__icon-wrap {
+      @apply size-[7.25rem] rounded-2xl;
+    }
+
+    .vitrine-root .pourquoi-core-card__icon {
+      @apply size-[5.5rem];
+    }
+
+    .vitrine-root .pourquoi-core-card__body {
+      @apply mt-5 flex w-full flex-1 flex-col pt-0;
+    }
+
+    .vitrine-root .pourquoi-core-card__title {
+      @apply mx-auto flex min-h-[4.25rem] max-w-[16.5rem] items-end justify-center text-[17px] leading-snug;
+    }
+
+    .vitrine-root .pourquoi-core-card__text {
+      @apply mx-auto mt-3 max-w-[17.5rem] text-[15px];
+    }
   }
 
   /* Bandes landing blanches → palette tunnel commande */
@@ -1114,6 +1173,10 @@
   }
 
   .vitrine-root.vitrine--mobile-centered #parcours .parcours-cta {
+    @apply w-full;
+  }
+
+  .vitrine-root.vitrine--mobile-centered #pourquoi-core .pourquoi-core__cta {
     @apply w-full;
   }
 
