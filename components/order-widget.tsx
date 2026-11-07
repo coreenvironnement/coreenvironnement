@@ -83,6 +83,7 @@ import {
   minDeliveryDateISO,
 } from "@/lib/order/delivery-dates"
 import { BENNE_VISUAL_BY_VOLUME } from "@/lib/commande/benne-visual"
+import { TruckAccessSpaceDisclosure } from "@/components/order/truck-access-space-help"
 import { cn } from "@/lib/utils"
 
 export { ORDER_TUNNEL_STEPS } from "@/lib/order/tunnel-steps"
@@ -1418,6 +1419,7 @@ export function OrderWidget({
                     ) : null}
                   </div>
                 </div>
+                <TruckAccessSpaceDisclosure embedded={embedded} />
               </div>
 
               <div className="space-y-2.5">

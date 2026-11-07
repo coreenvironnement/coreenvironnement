@@ -917,6 +917,50 @@
   aspect-ratio: 560 / 180;
 }
 
+/* Aide accès camion — tunnel & conseils accueil */
+.vitrine-root .truck-access-help__lottie,
+.order-tunnel-form .truck-access-help__lottie {
+  aspect-ratio: 540 / 350;
+  min-height: 140px;
+  max-width: 440px;
+}
+
+.vitrine-root .truck-access-help__lottie-player,
+.order-tunnel-form .truck-access-help__lottie-player {
+  display: block;
+  margin-inline: auto;
+}
+
+.vitrine-root .truck-access-help__body,
+.order-tunnel-form .truck-access-help__body {
+  width: 100%;
+  max-width: 440px;
+  margin-inline: auto;
+}
+
+.vitrine-root .truck-access-help--vitrine .truck-access-help__body,
+.vitrine-root .truck-access-help-disclosure__panel .truck-access-help__body {
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .vitrine-root .truck-access-help--vitrine .truck-access-help__body {
+    max-width: 440px;
+    margin-inline: auto;
+  }
+}
+
+.order-tunnel-form .truck-access-help-disclosure {
+  max-width: 100%;
+}
+
+@media (min-width: 640px) {
+  .order-tunnel-form .truck-access-help-disclosure .truck-access-help__body {
+    max-width: 440px;
+    margin-inline: auto;
+  }
+}
+
 /* Hero — toggle & adresse alignés sur #ecf4e9 (sans impacter le tunnel modal) */
 .vitrine-root .hero-order-card .order-audience-toggle--hero {
   background: var(--color-brand-warm);

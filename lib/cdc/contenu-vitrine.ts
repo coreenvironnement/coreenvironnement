@@ -404,6 +404,7 @@ export const particulierAccueil = {
         titre: "Où poser la benne ?",
         texte:
           "Prévoyez un accès pour le camion pour la livraison et l’enlèvement. En cas de pose sur la voie publique, une autorisation d’occupation est requise auprès de la mairie ou du gestionnaire de la voirie.",
+        accessHelpLabel: "Voir l’espace à prévoir",
         linkLabel: "Voir les démarches sur Service Public",
         linkHref:
           "https://entreprendre.service-public.gouv.fr/vosdroits/F23509",

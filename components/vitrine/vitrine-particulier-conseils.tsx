@@ -9,7 +9,9 @@ import {
   Recycle03Icon,
 } from "@hugeicons/core-free-icons"
 
+import { TruckAccessSpaceHelpBody } from "@/components/order/truck-access-space-help"
 import { particulierAccueil } from "@/lib/cdc/contenu-vitrine"
+import { TRUCK_ACCESS_SPACE_HELP_LINK_LABEL } from "@/lib/order/truck-access-help"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 
 import { HOME_VOLUME_ESTIMATOR_HASH } from "@/lib/seo/early-local-links"
@@ -105,6 +107,8 @@ export function VitrineParticulierConseils() {
   const { conseils } = particulierAccueil
   const { volumeEstimatorRequestId } = useVitrineOrder()
   const [volumeExpanded, setVolumeExpanded] = useState(false)
+  const [emplacementAccessOpen, setEmplacementAccessOpen] = useState(false)
+  const [emplacementAccessPlayToken, setEmplacementAccessPlayToken] = useState(0)
 
   useEffect(() => {
     if (volumeEstimatorRequestId > 0) setVolumeExpanded(true)
@@ -153,6 +157,10 @@ export function VitrineParticulierConseils() {
               typeof extras.contactLabel === "string"
                 ? extras.contactLabel
                 : null
+            const accessHelpLabel =
+              typeof extras.accessHelpLabel === "string"
+                ? extras.accessHelpLabel
+                : null
             const cta = typeof extras.cta === "string" ? extras.cta : null
 
             const Icon = CARD_ICONS[carte.id] ?? PackageDimensions01Icon
@@ -194,10 +202,34 @@ export function VitrineParticulierConseils() {
                   />
                 ) : null}
 
+                {carteId === "emplacement" && accessHelpLabel ? (
+                  <p className="mt-5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEmplacementAccessOpen(true)
+                        setEmplacementAccessPlayToken((token) => token + 1)
+                      }}
+                      className={cardLinkClass}
+                      aria-expanded={emplacementAccessOpen}
+                    >
+                      {accessHelpLabel || TRUCK_ACCESS_SPACE_HELP_LINK_LABEL}
+                    </button>
+                  </p>
+                ) : null}
+
+                {carteId === "emplacement" && emplacementAccessOpen ? (
+                  <div className="truck-access-help--vitrine mt-4">
+                    <TruckAccessSpaceHelpBody
+                      playToken={emplacementAccessPlayToken}
+                    />
+                  </div>
+                ) : null}
+
                 {(carteId === "emplacement" || carteId === "voie-publique") &&
                 linkLabel &&
                 linkHref ? (
-                  <p className="mt-5">
+                  <p className={carteId === "emplacement" ? "mt-3" : "mt-5"}>
                     <a
                       href={linkHref}
                       target="_blank"
