@@ -9,6 +9,8 @@ import {
   type ReactNode,
 } from "react"
 
+import { HOME_VOLUME_ESTIMATOR_HASH } from "@/lib/seo/early-local-links"
+
 import type { OrderAudience } from "@/components/order/order-audience-toggle"
 import type { AddressGeocodeHit } from "@/lib/geo/ban-api"
 import type { ParticulierWasteOptionId } from "@/lib/order/particulier-waste-options"
@@ -49,6 +51,9 @@ type OrderContextValue = {
   openOrder: (options?: OpenOrderOptions) => void
   closeOrder: () => void
   resolveIntentPhase: () => "location" | "waste" | "volume"
+  /** Incrémenté à chaque demande d’ouverture de l’estimateur vitrine. */
+  volumeEstimatorRequestId: number
+  openVolumeEstimator: () => void
 }
 
 const OrderContext = createContext<OrderContextValue | null>(null)
@@ -66,10 +71,23 @@ function resolvePhase(
   return draft.selectedAddress ? "waste" : "location"
 }
 
+function scrollToVolumeEstimatorSection() {
+  const anchor = document.getElementById(HOME_VOLUME_ESTIMATOR_HASH)
+  const conseils = document.getElementById("conseils")
+  ;(anchor ?? conseils)?.scrollIntoView({ behavior: "smooth", block: "start" })
+  if (typeof window !== "undefined") {
+    const nextHash = `#${HOME_VOLUME_ESTIMATOR_HASH}`
+    if (window.location.hash !== nextHash) {
+      window.history.replaceState(null, "", nextHash)
+    }
+  }
+}
+
 export function VitrineOrderProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
   const [draft, setDraft] = useState<OrderDraft>(defaultDraft)
   const [intentStart, setIntentStart] = useState<OrderIntentStart>("auto")
+  const [volumeEstimatorRequestId, setVolumeEstimatorRequestId] = useState(0)
 
   const patchDraft = useCallback((patch: Partial<OrderDraft>) => {
     setDraft((prev) => ({ ...prev, ...patch }))
@@ -81,6 +99,11 @@ export function VitrineOrderProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const closeOrder = useCallback(() => setOpen(false), [])
+
+  const openVolumeEstimator = useCallback(() => {
+    scrollToVolumeEstimatorSection()
+    setVolumeEstimatorRequestId((n) => n + 1)
+  }, [])
 
   const resolveIntentPhase = useCallback(
     () => resolvePhase(intentStart, draft),
@@ -96,8 +119,20 @@ export function VitrineOrderProvider({ children }: { children: ReactNode }) {
       openOrder,
       closeOrder,
       resolveIntentPhase,
+      volumeEstimatorRequestId,
+      openVolumeEstimator,
     }),
-    [open, intentStart, draft, patchDraft, openOrder, closeOrder, resolveIntentPhase]
+    [
+      open,
+      intentStart,
+      draft,
+      patchDraft,
+      openOrder,
+      closeOrder,
+      resolveIntentPhase,
+      volumeEstimatorRequestId,
+      openVolumeEstimator,
+    ]
   )
 
   return <OrderContext.Provider value={value}>{children}</OrderContext.Provider>

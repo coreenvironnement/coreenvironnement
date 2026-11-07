@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
@@ -12,7 +12,10 @@ import {
 import { particulierAccueil } from "@/lib/cdc/contenu-vitrine"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 
+import { HOME_VOLUME_ESTIMATOR_HASH } from "@/lib/seo/early-local-links"
+
 import { VITRINE_ICON_STROKE } from "./icons"
+import { useVitrineOrder } from "./order-context"
 import { VitrineVolumeEstimator } from "./vitrine-volume-estimator"
 
 const CARD_ICONS: Record<string, typeof PackageDimensions01Icon> = {
@@ -98,7 +101,23 @@ function VolumeConseilActions({
 
 export function VitrineParticulierConseils() {
   const { conseils } = particulierAccueil
+  const { volumeEstimatorRequestId } = useVitrineOrder()
   const [volumeExpanded, setVolumeExpanded] = useState(false)
+
+  useEffect(() => {
+    if (volumeEstimatorRequestId > 0) setVolumeExpanded(true)
+  }, [volumeEstimatorRequestId])
+
+  useEffect(() => {
+    const syncFromHash = () => {
+      if (window.location.hash === `#${HOME_VOLUME_ESTIMATOR_HASH}`) {
+        setVolumeExpanded(true)
+      }
+    }
+    syncFromHash()
+    window.addEventListener("hashchange", syncFromHash)
+    return () => window.removeEventListener("hashchange", syncFromHash)
+  }, [])
 
   return (
     <section
@@ -141,8 +160,11 @@ export function VitrineParticulierConseils() {
             return (
               <article
                 key={carte.id}
+                id={isVolume ? HOME_VOLUME_ESTIMATOR_HASH : undefined}
                 className={
-                  isVolume ? `${cardShellClass} md:col-span-3` : cardShellClass
+                  isVolume
+                    ? `${cardShellClass} scroll-mt-28 md:col-span-3`
+                    : cardShellClass
                 }
               >
                 {showVolumeShell ? (

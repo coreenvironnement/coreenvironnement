@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 
 import {
@@ -6,8 +8,11 @@ import {
   HOME_EARLY_LOCAL_LINKS,
   HOME_EARLY_LOCAL_SECTOR_LINKS,
   HOME_EARLY_VOLUME_ESTIMATE_LINK,
+  HOME_VOLUME_ESTIMATOR_HASH,
 } from "@/lib/seo/early-local-links"
 import type { LocalPage } from "@/lib/seo/local-copy"
+
+import { useVitrineOrder } from "./order-context"
 
 type VitrineEarlyLocalLinksProps =
   | { mode: "home" | "hub" }
@@ -16,7 +21,16 @@ type VitrineEarlyLocalLinksProps =
 const pillLinkClass =
   "inline-flex min-h-11 items-center rounded-full border border-brand-border bg-white px-3.5 py-2 text-xs font-medium text-brand-navy transition-colors hover:border-brand-green/40 hover:text-brand-green sm:text-sm"
 
+function isVolumeEstimatorHref(href: string): boolean {
+  return (
+    href === `/#${HOME_VOLUME_ESTIMATOR_HASH}` ||
+    href === `#${HOME_VOLUME_ESTIMATOR_HASH}`
+  )
+}
+
 export function VitrineEarlyLocalLinks(props: VitrineEarlyLocalLinksProps) {
+  const { openVolumeEstimator } = useVitrineOrder()
+
   if (props.mode === "home") {
     return (
       <nav
@@ -53,12 +67,13 @@ export function VitrineEarlyLocalLinks(props: VitrineEarlyLocalLinksProps) {
               Quelle taille de benne vous faut-il ?
             </h3>
             <div className="mt-3 flex justify-center md:max-lg:justify-start lg:justify-center">
-              <Link
-                href={HOME_EARLY_VOLUME_ESTIMATE_LINK.href}
+              <button
+                type="button"
+                onClick={() => openVolumeEstimator()}
                 className="btn btn-accent inline-flex min-h-11 w-full sm:w-auto"
               >
                 {HOME_EARLY_VOLUME_ESTIMATE_LINK.label}
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -87,10 +102,20 @@ export function VitrineEarlyLocalLinks(props: VitrineEarlyLocalLinksProps) {
         </p>
         <ul className="mt-2.5 flex flex-wrap justify-center gap-2 max-md:justify-center md:justify-start">
           {links.map(({ href, label }) => (
-            <li key={href}>
-              <Link href={href} className={pillLinkClass}>
-                {label}
-              </Link>
+            <li key={`${href}-${label}`}>
+              {isVolumeEstimatorHref(href) ? (
+                <button
+                  type="button"
+                  onClick={() => openVolumeEstimator()}
+                  className={pillLinkClass}
+                >
+                  {label}
+                </button>
+              ) : (
+                <Link href={href} className={pillLinkClass}>
+                  {label}
+                </Link>
+              )}
             </li>
           ))}
         </ul>

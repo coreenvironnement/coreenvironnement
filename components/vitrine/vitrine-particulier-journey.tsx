@@ -14,12 +14,14 @@ const STEP_LINK_CLASS =
 
 export function VitrineParticulierJourney() {
   const { parcours } = particulierAccueil
-  const { openOrder } = useVitrineOrder()
+  const { openOrder, openVolumeEstimator } = useVitrineOrder()
 
   const step01 = parcours.etapes[0]
   const lien =
     step01 && "lien" in step01 && step01.lien
-      ? (step01.lien as { label: string; href: string })
+      ? (step01.lien as
+          | { label: string; href: string }
+          | { label: string; action: "volume-estimator" })
       : null
 
   return (
@@ -61,9 +63,22 @@ export function VitrineParticulierJourney() {
 
         {lien ? (
           <p className="parcours-volume-link mt-6 text-center md:mt-8">
-            <Link href={lien.href} className={STEP_LINK_CLASS}>
-              {lien.label}
-            </Link>
+            {"action" in lien && lien.action === "volume-estimator" ? (
+              <button
+                type="button"
+                className={`${STEP_LINK_CLASS} cursor-pointer border-0 bg-transparent p-0`}
+                onClick={() => openVolumeEstimator()}
+              >
+                {lien.label}
+              </button>
+            ) : (
+              <Link
+                href={"href" in lien ? lien.href : "#"}
+                className={STEP_LINK_CLASS}
+              >
+                {lien.label}
+              </Link>
+            )}
           </p>
         ) : null}
 

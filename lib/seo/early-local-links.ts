@@ -21,8 +21,11 @@ export const HOME_EARLY_ALL_COMMUNES_LINK: SeoLink = {
   label: "Voir toutes les communes desservies",
 }
 
+/** Ancre accueil — ouvre l’estimateur inline (section conseils). */
+export const HOME_VOLUME_ESTIMATOR_HASH = "estimer-volume"
+
 export const HOME_EARLY_VOLUME_ESTIMATE_LINK: SeoLink = {
-  href: "/#conseils",
+  href: `/#${HOME_VOLUME_ESTIMATOR_HASH}`,
   label: "Estimer mon volume",
 }
 
@@ -35,7 +38,10 @@ export const HOME_EARLY_VOLUME_GUIDE_LINK: SeoLink = {
 export const HOME_EARLY_LOCAL_LINKS: SeoLink[] = [
   ...HOME_EARLY_LOCAL_SECTOR_LINKS,
   HOME_EARLY_ALL_COMMUNES_LINK,
-  { href: "/location-benne/volume", label: "Quel volume choisir ?" },
+  {
+    href: `/#${HOME_VOLUME_ESTIMATOR_HASH}`,
+    label: "Je ne sais pas quelle benne choisir",
+  },
 ]
 
 export function getEarlyLocalLinksForPage(page: LocalPage): SeoLink[] {

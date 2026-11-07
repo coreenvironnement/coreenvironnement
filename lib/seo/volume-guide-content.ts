@@ -54,7 +54,8 @@ export const VOLUME_GUIDE_PRICING_ROWS = [
   },
 ] as const
 
-export const VOLUME_GUIDE_ESTIMATEUR_HREF = "https://core-environnement.fr/#parcours"
+export const VOLUME_GUIDE_ESTIMATEUR_HREF =
+  "https://core-environnement.fr/#estimer-volume"
 export const VOLUME_GUIDE_ORDER_CTA_HREF = "https://core-environnement.fr/#parcours"
 export const VOLUME_GUIDE_COMMUNES_HREF = "https://core-environnement.fr/location-benne"
 export const VOLUME_GUIDE_PHONE_DISPLAY = "07 53 70 57 27"

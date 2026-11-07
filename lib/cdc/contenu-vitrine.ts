@@ -337,8 +337,8 @@ export const particulierAccueil = {
         texte:
           "Indiquez votre adresse, le type de déchets et le volume. Vous voyez le prix avant de payer.",
         lien: {
-          label: "Quel volume de benne choisir ?",
-          href: "/location-benne/volume",
+          label: "Je ne sais pas quelle benne choisir",
+          action: "volume-estimator" as const,
         },
       },
       {
