@@ -1,37 +1,18 @@
 import {
-  effectiveMarginPercentForRecommendation,
   extraBennesNeededForVolume,
   extraBennesMessageForCount,
   recommendBenneVolume,
-  recommendedMarginPercentForWaste,
 } from "../lib/order/volume-estimator"
 
 const checks: Array<[string, boolean]> = [
   [
-    "terre_cailloux recommended margin",
-    recommendedMarginPercentForWaste("terre_cailloux") === 20,
-  ],
-  [
-    "gravats default margin",
-    recommendedMarginPercentForWaste("gravats") === 10,
-  ],
-  [
-    "terre floor at 20 when user 0",
-    effectiveMarginPercentForRecommendation("terre_cailloux", 0) === 20,
-  ],
-  [
-    "gravats user margin unchanged",
-    effectiveMarginPercentForRecommendation("gravats", 10) === 10,
-  ],
-  [
-    "terre withMargin 10m3 @0% user",
-    recommendBenneVolume(10, "gravats_propres", "terre_cailloux", 0)
-      .withMarginM3 === 12,
-  ],
-  [
-    "gravats withMargin 10m3 @0% user",
-    recommendBenneVolume(10, "gravats_propres", "gravats", 0).withMarginM3 ===
+    "terre estimated volume unchanged",
+    recommendBenneVolume(10, "gravats_propres", "terre_cailloux").estimatedM3 ===
       10,
+  ],
+  [
+    "gravats estimated volume unchanged",
+    recommendBenneVolume(10, "gravats_propres", "gravats").estimatedM3 === 10,
   ],
   [
     "extra bennes 0 when within max",
@@ -56,8 +37,8 @@ const checks: Array<[string, boolean]> = [
   ],
   [
     "recommend sets extra when over catalog max",
-    recommendBenneVolume(14, "gravats_propres", "gravats", 10)
-      .extraBennesNeeded === 1,
+    recommendBenneVolume(14, "gravats_propres", "gravats").extraBennesNeeded ===
+      1,
   ],
 ]
 

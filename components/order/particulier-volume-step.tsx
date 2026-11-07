@@ -19,8 +19,6 @@ import type { ParticulierWasteOptionId } from "@/lib/order/particulier-waste-opt
 import {
   availableVolumesForFamily,
   recommendBenneVolume,
-  recommendedMarginPercentForFamily,
-  recommendedMarginPercentForWaste,
   volumeFromBagsM3,
   volumeFromDimensionsM3,
   type VolumeRecommendation,
@@ -164,14 +162,6 @@ const LOADING_STEPS = [
 function parseDim(raw: string): number {
   const n = parseFloat(raw.replace(",", "."))
   return Number.isFinite(n) && n > 0 ? n : 0
-}
-
-function defaultVolumeMarginPercent(
-  family: BenneFamily,
-  wasteId: ParticulierWasteOptionId | null
-): number {
-  if (wasteId) return recommendedMarginPercentForWaste(wasteId)
-  return recommendedMarginPercentForFamily(family)
 }
 
 function VolumeDisclaimer({ className }: { className?: string }) {
@@ -353,9 +343,6 @@ export function ParticulierVolumeStep({
   const [height, setHeight] = useState("")
   const [bagCount, setBagCount] = useState("")
   const [litersPerBag, setLitersPerBag] = useState("100")
-  const [marginPercent, setMarginPercent] = useState(() =>
-    defaultVolumeMarginPercent(family, wasteId)
-  )
   const [result, setResult] = useState<VolumeRecommendation | null>(null)
   const [knownPick, setKnownPick] = useState<number | null>(null)
   const [choiceHighlight, setChoiceHighlight] = useState<"known" | "estimate" | null>(
@@ -368,7 +355,6 @@ export function ParticulierVolumeStep({
     setHeight("")
     setBagCount("")
     setLitersPerBag("100")
-    setMarginPercent(defaultVolumeMarginPercent(family, wasteId))
     setResult(null)
   }
 
@@ -386,7 +372,7 @@ export function ParticulierVolumeStep({
         parseDim(height)
       )
     }
-    const rec = recommendBenneVolume(estimated, family, wasteId ?? null, marginPercent)
+    const rec = recommendBenneVolume(estimated, family, wasteId ?? null)
     setResult(rec)
   }, [
     bagCount,
@@ -395,7 +381,6 @@ export function ParticulierVolumeStep({
     height,
     length,
     litersPerBag,
-    marginPercent,
     wasteId,
     width,
   ])
@@ -607,27 +592,6 @@ export function ParticulierVolumeStep({
               </div>
             )}
 
-            <label className="block space-y-2">
-              <span className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wide text-brand-muted">
-                <span>Marge de prudence</span>
-                <span className="tabular-nums text-brand-navy">{marginPercent} %</span>
-              </span>
-              <input
-                type="range"
-                min={0}
-                max={20}
-                step={5}
-                value={marginPercent}
-                onChange={(e) => setMarginPercent(Number(e.target.value))}
-                className="h-2 w-full accent-brand-green"
-              />
-              {wasteId === "terre_cailloux" ? (
-                <p className="text-[12px] leading-snug text-brand-muted">
-                  Marge recommandée 20&nbsp;% pour terre et cailloux
-                </p>
-              ) : null}
-            </label>
-
             <OrderTunnelContinueButton
               disabled={!canCompute}
               onClick={() => setView("computing")}
@@ -665,8 +629,7 @@ export function ParticulierVolumeStep({
               </p>
               {result.recommendedVolumeM3 ? (
                 <p className="mt-3 text-[14px] leading-snug text-brand-navy">
-                  Capacité{" "}
-                  <strong>indicative</strong> avec marge :{" "}
+                  Capacité <strong>indicative</strong> :{" "}
                   <strong>{result.recommendedVolumeM3} m³</strong>
                 </p>
               ) : null}
