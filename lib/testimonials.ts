@@ -78,6 +78,29 @@ export const testimonials: Testimonial[] = [
     role: "Particulier · Avis Google",
     segment: "particulier",
   },
+  {
+    id: "google-vcp-idf",
+    quote:
+      "Excellente expérience ! Le commercial s'est déplacé le matin même de la dépose pour vérifier que tout était parfait. La benne est déjà pleine, plus qu'à demander la rotation 😄",
+    author: "VCP IDF",
+    role: "Particulier · Avis Google",
+    segment: "particulier",
+  },
+  {
+    id: "google-michel-doralus",
+    quote: "Super expérience. Je recommande fortement !!",
+    author: "Michel Doralus",
+    role: "Particulier · Avis Google",
+    segment: "particulier",
+  },
+  {
+    id: "google-ines-loulou",
+    quote:
+      "Très satisfaite des services de CORE ENVIRONNEMENT ! Entreprise sérieuse, professionnelle et réactive. Le service de location de bennes est au top, avec un travail efficace et des prestations de qualité. Équipe sympathique et à l'écoute des besoins du client. Je recommande vivement cette entreprise pour son sérieux et son professionnalisme !",
+    author: "inès loulou",
+    role: "Particulier · Avis Google",
+    segment: "particulier",
+  },
 ]
 
 /** Léon Grosse, NGE, GCC avec logos sous /public/ */

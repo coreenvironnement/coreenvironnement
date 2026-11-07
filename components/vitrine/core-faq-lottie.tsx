@@ -7,6 +7,8 @@ import {
   LottieSubscription,
 } from "lottie-react"
 
+import { cn } from "@/lib/utils"
+
 const CORE_FAQ_LOTTIE_SRC = "/images/core-faq-pack/core-faq-lottie.json"
 const CORE_FAQ_STATIC_SRC = "/images/core-faq-pack/core-faq-statique.svg"
 
@@ -24,7 +26,11 @@ function usePrefersReducedMotion() {
   return reduced
 }
 
-export function CoreFaqLottie() {
+type CoreFaqLottieProps = {
+  className?: string
+}
+
+export function CoreFaqLottie({ className }: CoreFaqLottieProps) {
   const reducedMotion = usePrefersReducedMotion()
   const rootRef = useRef<HTMLDivElement>(null)
   const lottieRef = useRef<LottieHandle>(null)
@@ -75,7 +81,10 @@ export function CoreFaqLottie() {
   return (
     <div
       ref={rootRef}
-      className="pointer-events-none absolute right-4 top-0 z-0 size-12 md:right-6 md:top-6 md:size-20"
+      className={cn(
+        "pointer-events-none absolute right-4 top-0 z-0 size-12 md:right-6 md:top-6 md:size-20",
+        className
+      )}
       aria-hidden
     >
       {showStatic ? (

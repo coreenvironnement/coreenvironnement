@@ -24,6 +24,7 @@ import { VitrineCityGuide } from "./vitrine-city-guide"
 import { VitrineDepartmentGuide } from "./vitrine-department-guide"
 import { VitrineLocalSeo } from "./vitrine-local-seo"
 import { VitrineEarlyLocalLinks } from "./vitrine-early-local-links"
+import { VitrineParticulierIdfCommunes } from "./vitrine-particulier-idf-communes"
 import { VitrineLocationHub } from "./vitrine-location-hub"
 import { VitrineLongtailIntro } from "./vitrine-longtail-intro"
 import { VitrineSeoPricingSection } from "./vitrine-seo-pricing-section"
@@ -92,7 +93,6 @@ function VitrineHomeInner({
         {particulierHome ? <VitrineParticulierJourney /> : null}
         {particulierHome ? <VitrineParticulierPourquoi /> : null}
         {hubPage ? <VitrineEarlyLocalLinks mode="hub" /> : null}
-        {!hubPage && !localSeoData ? <VitrineEarlyLocalLinks mode="home" /> : null}
         {localSeoData ? (
           <VitrineEarlyLocalLinks mode="local" page={localSeoData} />
         ) : null}
@@ -111,6 +111,7 @@ function VitrineHomeInner({
         {hubPage ? <VitrineSeoPricingSection showHubLink={false} /> : null}
         {localSeoData ? <VitrineLocalSeo seoVariant={seoVariant} /> : null}
         <VitrineAudienceSwitch mode="particulier" />
+        {particulierHome ? <VitrineParticulierIdfCommunes /> : null}
         <VitrineFinalCta />
       </main>
 

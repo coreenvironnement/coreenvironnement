@@ -32,24 +32,28 @@ export function VitrineParticulierFaq() {
       className="border-t border-brand-border/80 bg-brand-bg py-12 sm:py-16"
       aria-labelledby="faq-particulier-title"
     >
-      <div className="container-x relative max-w-2xl">
-        <CoreFaqLottie />
-        <div className="flex min-h-14 items-center justify-center md:min-h-0 md:block">
-          <p className="section-eyebrow mx-auto max-md:w-full max-md:justify-center text-center">
-            FAQ
-          </p>
+      <div className="container-x relative max-w-2xl lg:mx-auto lg:max-w-[900px]">
+        <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_5rem] lg:items-start lg:gap-x-6">
+          <div className="min-w-0 lg:col-start-1">
+            <div className="flex min-h-14 items-center justify-center md:min-h-0 md:block lg:flex lg:justify-center">
+              <p className="section-eyebrow mx-auto max-md:w-full max-md:justify-center text-center">
+                FAQ
+              </p>
+            </div>
+            <h2
+              id="faq-particulier-title"
+              className="section-title mt-3 text-center text-brand-navy lg:text-balance lg:overflow-visible"
+            >
+              {particulierAccueil.faqTitre}
+            </h2>
+            <p className="mx-auto mt-3 max-w-lg text-center text-sm text-brand-muted sm:text-base lg:max-w-[620px]">
+              {particulierAccueil.faqIntro}
+            </p>
+          </div>
+          <CoreFaqLottie className="lg:static lg:col-start-2 lg:row-start-1 lg:justify-self-end lg:self-start lg:z-auto" />
         </div>
-        <h2
-          id="faq-particulier-title"
-          className="section-title mt-3 text-center text-brand-navy"
-        >
-          {particulierAccueil.faqTitre}
-        </h2>
-        <p className="mx-auto mt-3 max-w-lg text-center text-sm text-brand-muted sm:text-base">
-          {particulierAccueil.faqIntro}
-        </p>
 
-        <div className="mt-8 overflow-hidden rounded-2xl border border-brand-border/80 bg-white shadow-sm">
+        <div className="mt-8 overflow-hidden rounded-2xl border border-brand-border/80 bg-[#EDF5EA] shadow-sm">
           {particulierFaq.map((item, index) => {
             const isOpen = openIndices.has(index)
             const buttonId = `${baseId}-faq-${index}`
@@ -67,7 +71,7 @@ export function VitrineParticulierFaq() {
                     aria-controls={panelId}
                     onClick={() => toggle(index)}
                     className={cn(
-                      "flex min-h-12 w-full items-start gap-3 px-4 py-3.5 text-left sm:px-5 sm:py-4",
+                      "flex min-h-12 w-full items-start gap-3 px-4 py-3.5 text-left sm:px-5 sm:py-4 lg:min-h-14 lg:px-6",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-navy/20",
                       isOpen ? "text-brand-navy" : "text-brand-text hover:text-brand-navy"
                     )}
@@ -98,7 +102,7 @@ export function VitrineParticulierFaq() {
                   )}
                 >
                   <div className="overflow-hidden">
-                    <div className="px-4 pb-4 sm:px-5 sm:pb-5">
+                    <div className="px-4 pb-4 sm:px-5 sm:pb-5 lg:px-6">
                       <p className="text-[14px] leading-relaxed text-brand-muted sm:text-[15px]">
                         {item.r}
                       </p>

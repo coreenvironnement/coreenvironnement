@@ -83,11 +83,11 @@
 
   /* Accueil particulier — desktop : contenu lisible centré (hors hero plein écran) */
   @media (min-width: 1024px) {
-    .vitrine-root.vitrine--particulier-home-desktop-centered .vitrine-early-local-links .container-x {
+    .vitrine-root.vitrine--particulier-home-desktop-centered .vitrine-particulier-idf-communes .container-x {
       @apply mx-auto max-w-5xl text-center;
     }
 
-    .vitrine-root.vitrine--particulier-home-desktop-centered .vitrine-early-local-links .container-x ul {
+    .vitrine-root.vitrine--particulier-home-desktop-centered .vitrine-particulier-idf-communes .container-x ul {
       @apply justify-center;
     }
 
@@ -1529,9 +1529,9 @@
     @apply items-center text-center;
   }
 
-  .vitrine-root.vitrine--mobile-centered .vitrine-early-local-links,
-  .vitrine-root.vitrine--mobile-centered .vitrine-early-local-links h2,
-  .vitrine-root.vitrine--mobile-centered .vitrine-early-local-links p {
+  .vitrine-root.vitrine--mobile-centered .vitrine-particulier-idf-communes,
+  .vitrine-root.vitrine--mobile-centered .vitrine-particulier-idf-communes h2,
+  .vitrine-root.vitrine--mobile-centered .vitrine-particulier-idf-communes p {
     @apply text-center;
   }
 

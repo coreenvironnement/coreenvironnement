@@ -391,33 +391,57 @@ export const particulierAccueil = {
   conseils: {
     eyebrow: "Avant de commander",
     titre: "Bien préparer votre location de benne",
+    intro:
+      "Trois repères simples pour choisir et préparer la livraison.",
     cartes: [
       {
         id: "volume",
-        titre: "Quelle taille de benne vous faut-il ?",
+        num: "01",
+        label: "LE VOLUME",
+        titre: "Quelle taille choisir ?",
         texte:
-          "Estimez en quelques clics le volume adapté à vos déchets.",
+          "Estimez le volume de vos déchets pour choisir une benne adaptée.",
+        note: "Une estimation pour vous guider.",
         cta: "Estimer mon volume",
+        imageFile: "Trois bennes vertes en perspective-3.png",
       },
       {
-        id: "emplacement",
-        titre: "Où poser la benne ?",
-        texte:
-          "Prévoyez un accès pour le camion pour la livraison et l’enlèvement. En cas de pose sur la voie publique, une autorisation d’occupation est requise auprès de la mairie ou du gestionnaire de la voirie.",
-        accessHelpLabel: "Voir l’espace à prévoir",
-        linkLabel: "Voir les démarches sur Service Public",
+        id: "acces",
+        num: "02",
+        label: "L'ACCÈS",
+        titre: "Le camion peut-il passer ?",
+        specsTitre: "Espace à prévoir",
+        specs: [
+          { value: "3 m", detail: "de large" },
+          { value: "4 m", detail: "de haut" },
+          { value: "10 à 12 m", detail: "pour la pose" },
+        ],
+        rueTexte: "Dans la rue ? Une autorisation est nécessaire.",
+        linkLabel: "Voir les démarches",
         linkHref:
           "https://entreprendre.service-public.gouv.fr/vosdroits/F23509",
       },
       {
         id: "dechets",
-        titre: "Quels déchets sont acceptés ?",
+        num: "03",
+        label: "LES DÉCHETS",
+        titre: "Que mettre dans la benne ?",
         texte:
-          "Vérifiez les déchets autorisés avant de remplir la benne. Les produits dangereux et certains mélanges ne sont pas acceptés.",
-        guideLabel: "Voir les déchets acceptés",
+          "Gravats, bois, cartons… Vérifiez ce que votre benne peut recevoir avant de la remplir.",
+        cta: "Vérifier mes déchets",
         guideHref: "/location-benne/dechets-acceptes",
+        wasteImageFiles: [
+          "Tas de gravats de rénovation résidentielle-3_5.webp",
+          "Tas de bois de rénovation résidentielle-2_4.webp",
+          "Grand tas de déchets de rénovation-4_2.webp",
+        ],
       },
     ],
+    conseiller: {
+      titre: "Un doute sur la taille, l’accès ou vos déchets ?",
+      texte: "Notre équipe vous aide à faire le bon choix.",
+      cta: "Parler à un conseiller",
+    },
   },
   faqTitre: "Vos questions sur la location de benne",
   faqIntro:
