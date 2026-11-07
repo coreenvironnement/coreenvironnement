@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { redirect } from "next/navigation"
 
-import { ProAuthPanel } from "@/components/pro/pro-auth-panel"
 import { VitrinePublicShell } from "@/components/vitrine/vitrine-public-shell"
 import { comptePro } from "@/lib/cdc/contenu-vitrine"
 import { publicPageMetadata } from "@/lib/seo/public-page"
@@ -58,16 +58,27 @@ export default async function ProPage({ searchParams }: PageProps) {
             </ul>
           </div>
 
-          <div className="card-vitrine p-6 sm:p-8">
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-xl text-brand-navy">Créer ou accéder à votre dossier</h2>
-                <p className="mt-1.5 text-sm leading-relaxed text-brand-muted">
-                  Connectez-vous pour gérer votre dossier et votre abonnement dans un seul espace
-                  applicatif.
-                </p>
-              </div>
-              <ProAuthPanel />
+          <div className="card-vitrine space-y-5 p-6 sm:p-8">
+            <div>
+              <h2 className="text-xl text-brand-navy">Créer ou accéder à votre dossier</h2>
+              <p className="mt-1.5 text-sm leading-relaxed text-brand-muted">
+                Même page de connexion que les particuliers : après identification, vous
+                complétez votre dossier entreprise dans l&apos;espace client.
+              </p>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link
+                href="/inscription?type=professionnel&next=/espace/compte"
+                className="btn btn-accent inline-flex min-h-12 items-center justify-center"
+              >
+                Créer un compte pro
+              </Link>
+              <Link
+                href="/login?next=/espace/compte"
+                className="btn btn-outline inline-flex min-h-12 items-center justify-center"
+              >
+                Se connecter
+              </Link>
             </div>
           </div>
         </div>

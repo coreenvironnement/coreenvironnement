@@ -16,7 +16,7 @@ export default async function EspaceNouvelleCommandePage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/login?next=/espace/commandes/nouvelle&espace=pro")
+    redirect("/login?next=/espace/commandes/nouvelle")
   }
 
   const prefill = await loadProReorderPrefill(supabase, user.id, user.email)

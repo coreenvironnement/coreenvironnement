@@ -17,11 +17,11 @@ export default function LoginPage() {
             <div className="hidden pt-2 lg:block lg:pt-6">
               <p className="section-eyebrow">Espace client</p>
               <h1 className="mt-4 max-w-xl text-[clamp(1.85rem,3.2vw,2.75rem)] font-semibold leading-[1.12] text-brand-navy">
-                Connectez-vous en toute simplicité
+                Un seul accès à votre espace
               </h1>
               <p className="mt-4 max-w-md text-[16px] leading-relaxed text-brand-muted">
-                Mot de passe ou lien par e-mail. Vous êtes redirigé vers l’espace adapté à
-                votre compte.
+                Particulier ou professionnel : les mêmes identifiants. Après connexion, nous
+                vous orientons vers le bon tableau de bord.
               </p>
             </div>
 

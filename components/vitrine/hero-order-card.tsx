@@ -12,6 +12,7 @@ import {
   ORDER_FIELD_SECTION_LABEL,
   type OrderAudience,
 } from "@/components/order/order-audience-toggle"
+import { useOrderAudienceSession } from "@/lib/auth/use-order-audience-session"
 import { getEntryPriceTtcParticulier } from "@/lib/seo/pricing-snapshot"
 import { cn } from "@/lib/utils"
 
@@ -28,13 +29,27 @@ export function HeroOrderCard({
   defaultAudience = "particulier",
 }: HeroOrderCardProps) {
   const { draft, patchDraft, openOrder } = useVitrineOrder()
+  const sessionAudience = useOrderAudienceSession()
 
   useEffect(() => {
-    if (defaultAudience !== draft.audience) {
-      patchDraft({ audience: defaultAudience })
+    if (sessionAudience.loading) return
+    const effective =
+      sessionAudience.locked && sessionAudience.audience
+        ? sessionAudience.audience
+        : defaultAudience
+    if (effective !== draft.audience) {
+      patchDraft({ audience: effective })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- sync once on mount / page
-  }, [defaultAudience])
+  }, [
+    sessionAudience.loading,
+    sessionAudience.locked,
+    sessionAudience.audience,
+    defaultAudience,
+    draft.audience,
+    patchDraft,
+  ])
+
+  const showAudienceToggle = !sessionAudience.loading && !sessionAudience.locked
   const [addressError, setAddressError] = useState<string | null>(null)
 
   const audience = draft.audience ?? defaultAudience
@@ -91,11 +106,17 @@ export function HeroOrderCard({
       </h2>
 
       <div className="w-full">
-        <OrderAudienceToggle
-          variant="hero"
-          audience={audience}
-          onChange={handleAudience}
-        />
+        {showAudienceToggle ? (
+          <OrderAudienceToggle
+            variant="hero"
+            audience={audience}
+            onChange={handleAudience}
+          />
+        ) : sessionAudience.loading ? null : (
+          <p className="rounded-xl bg-white/60 px-3 py-2 text-center text-[13px] font-medium text-brand-navy">
+            {isPro ? "Demande professionnelle" : "Commande particulier"}
+          </p>
+        )}
       </div>
 
       <div className="w-full space-y-2">

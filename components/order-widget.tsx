@@ -68,6 +68,7 @@ import {
 } from "@/lib/prestations"
 import { priceBreakdownFromHt } from "@/lib/order/prestation-mapping"
 import type { ProReorderSeed } from "@/lib/espace/pro-reorder-prefill"
+import { useOrderAudienceSession } from "@/lib/auth/use-order-audience-session"
 import {
   ORDER_TUNNEL_STEPS,
   getOrderTunnelSteps,
@@ -173,6 +174,9 @@ export function OrderWidget({
 }: OrderWidgetProps) {
   const embedded = variant === "embedded"
   const { draft, patchDraft, resolveIntentPhase, intentStart } = useVitrineOrder()
+  const sessionAudience = useOrderAudienceSession()
+  const audienceLocked =
+    sessionAudience.locked && sessionAudience.audience !== null
   const modalWasOpen = useRef(false)
   const proReorderBootstrapped = useRef(false)
   const prefersReducedMotion = useReducedMotion()
@@ -522,6 +526,21 @@ export function OrderWidget({
   useEffect(() => {
     onAudienceChange?.(audience)
   }, [audience, onAudienceChange])
+
+  useEffect(() => {
+    if (sessionAudience.loading || entryMode === "pro-reorder") return
+    if (!audienceLocked || !sessionAudience.audience) return
+    if (audience === sessionAudience.audience) return
+    setAudience(sessionAudience.audience)
+    patchDraft({ audience: sessionAudience.audience })
+  }, [
+    sessionAudience.loading,
+    sessionAudience.audience,
+    audienceLocked,
+    entryMode,
+    audience,
+    patchDraft,
+  ])
 
   useEffect(() => {
     if (audience !== "professionnel") {
@@ -874,11 +893,19 @@ export function OrderWidget({
                   embedded ? "space-y-4 sm:space-y-5" : "space-y-4"
                 )}
               >
-                <OrderAudienceToggle
-                  audience={audience}
-                  onChange={handleAudienceChange}
-                  subdued={embedded}
-                />
+                {audienceLocked ? (
+                  <p className="rounded-xl border border-[#35A238]/15 bg-[#ECF4E9]/80 px-3 py-2 text-[13px] font-medium text-brand-navy">
+                    {audience === "professionnel"
+                      ? "Commande en tant que professionnel"
+                      : "Commande en tant que particulier"}
+                  </p>
+                ) : (
+                  <OrderAudienceToggle
+                    audience={audience}
+                    onChange={handleAudienceChange}
+                    subdued={embedded}
+                  />
+                )}
 
                 <div className="space-y-2.5">
                     <p className={ORDER_SECTION_LABEL}>Où livrer votre benne&nbsp;?</p>

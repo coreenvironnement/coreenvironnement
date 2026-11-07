@@ -10,6 +10,7 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
   const isStandalone =
     pathname === "/" ||
     pathname === "/login" ||
+    pathname === "/inscription" ||
     pathname.startsWith("/admin") ||
     pathname.startsWith("/espace") ||
     pathname === "/mes-commandes" ||

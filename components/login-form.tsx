@@ -1,15 +1,10 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 
 import { getPostLoginDestination } from "@/app/auth/post-login-actions"
-import {
-  loginHref,
-  resolveLoginEspace,
-  type LoginEspaceKind,
-} from "@/lib/auth/login-espace-context"
 import { safeNextPath } from "@/lib/auth/post-login-path"
 import { createClient } from "@/lib/supabase/client"
 import { PasswordInput } from "@/components/ui/password-input"
@@ -17,21 +12,12 @@ import { PasswordInput } from "@/components/ui/password-input"
 const fieldClass =
   "h-12 w-full rounded-xl border border-[#35A238]/18 bg-white px-3.5 text-[15px] text-brand-navy shadow-sm outline-none transition-colors placeholder:text-brand-muted/70 focus-visible:border-[#35A238] focus-visible:ring-3 focus-visible:ring-[#35A238]/20"
 
-function copyForEspace(espace: LoginEspaceKind) {
-  if (espace === "professionnel") {
-    return {
-      title: "Connexion espace professionnel",
-      lead: "Suivi chantier, commandes et documents.",
-      switchLabel: "Connexion particulier",
-      switchHrefEspace: "particulier" as const,
-    }
-  }
-  return {
-    title: "Connexion espace particulier",
-    lead: "Retrouvez vos commandes et votre suivi.",
-    switchLabel: "Compte professionnel",
-    switchHrefEspace: "professionnel" as const,
-  }
+function inscriptionHref(nextRaw: string | null): string {
+  const next = safeNextPath(nextRaw)
+  const params = new URLSearchParams()
+  if (next) params.set("next", next)
+  const q = params.toString()
+  return q ? `/inscription?${q}` : "/inscription"
 }
 
 export function LoginForm() {
@@ -45,15 +31,6 @@ export function LoginForm() {
   const [magicLoading, setMagicLoading] = useState(false)
 
   const nextRaw = searchParams.get("next")
-  const espace = useMemo(
-    () => resolveLoginEspace(searchParams.get("espace"), nextRaw),
-    [searchParams, nextRaw]
-  )
-  const copy = copyForEspace(espace)
-  const switchHref = loginHref({
-    espace: copy.switchHrefEspace,
-    next: nextRaw,
-  })
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -108,8 +85,10 @@ export function LoginForm() {
 
   return (
     <div className="rounded-2xl border border-[#35A238]/14 bg-white p-5 shadow-[0_8px_32px_-12px_rgb(14_32_16/0.12)] sm:p-7">
-      <h2 className="text-lg font-semibold text-brand-navy">{copy.title}</h2>
-      <p className="mt-1.5 text-sm leading-snug text-brand-muted">{copy.lead}</p>
+      <h2 className="text-lg font-semibold text-brand-navy">Connexion</h2>
+      <p className="mt-1.5 text-sm leading-snug text-brand-muted">
+        Un seul accès pour vos commandes, votre suivi et votre espace client.
+      </p>
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <div className="space-y-2">
           <label htmlFor="email" className="text-sm font-medium text-brand-navy">
@@ -166,17 +145,17 @@ export function LoginForm() {
         </button>
       </form>
       <p className="mt-5 text-center text-sm text-brand-muted">
-        <Link href={switchHref} className="font-medium text-[#35A238] hover:underline">
-          {copy.switchLabel}
+        Pas encore de compte ?{" "}
+        <Link
+          href={inscriptionHref(nextRaw)}
+          className="font-medium text-[#35A238] hover:underline"
+        >
+          Créer un compte
         </Link>
-        {espace === "professionnel" ? null : (
-          <>
-            {" · "}
-            <Link href="/" className="link-digital">
-              Accueil
-            </Link>
-          </>
-        )}
+        {" · "}
+        <Link href="/" className="link-digital">
+          Accueil
+        </Link>
       </p>
     </div>
   )
