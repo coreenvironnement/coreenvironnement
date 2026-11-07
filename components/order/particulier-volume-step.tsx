@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import Image from "next/image"
-import { ArrowLeft, ChevronRight, Info, Phone } from "lucide-react"
+import { ArrowLeft, ChevronRight, Info, Pencil } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 import { OrderTunnelContinueButton } from "@/components/order/order-tunnel-continue-button"
@@ -16,6 +16,7 @@ import {
   type VolumeRecommendation,
 } from "@/lib/order/volume-estimator"
 import type { BenneFamily } from "@/lib/prestations"
+import { prestationsByFamily } from "@/lib/prestations"
 import { benneImageForVolume } from "@/lib/commande/benne-visual"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
@@ -40,6 +41,25 @@ function volumeEstimatorImageSrc(imageFile: string): string {
 const VOLUME_INTENT_KNOWN_IMAGE =
   "Benne à gravats verte, vue trois-quarts-2.png"
 const VOLUME_INTENT_GUIDE_IMAGE = "Ampoule verte pour choisir la benne-1.png"
+const VOLUME_RESULT_PHONE_IMAGE = "Combiné téléphonique vert stylisé-1.png"
+
+function recommendedBenneTitle(
+  family: BenneFamily,
+  volumeM3: number
+): string {
+  const match = prestationsByFamily(family).find((p) => p.volumeM3 === volumeM3)
+  if (!match) return `Benne de ${volumeM3} m³`
+  const short = match.label.split(",")[0]?.trim()
+  return short ?? `Benne de ${volumeM3} m³`
+}
+
+function totalBennesForRecommendation(
+  estimatedM3: number,
+  recommendedVolumeM3: number
+): number {
+  if (recommendedVolumeM3 <= 0) return 1
+  return Math.max(1, Math.ceil(estimatedM3 / recommendedVolumeM3))
+}
 
 const ESTIMATOR_MODE_OPTIONS: ReadonlyArray<{
   id: EstimatorMode
@@ -422,6 +442,14 @@ export function ParticulierVolumeStep({
         parseDim(width) > 0 &&
         parseDim(height) > 0
 
+  const resultTotalBennes = useMemo(() => {
+    if (!result?.recommendedVolumeM3) return 1
+    return totalBennesForRecommendation(
+      result.estimatedM3,
+      result.recommendedVolumeM3
+    )
+  }, [result])
+
   const headerBack = () => {
     if (view === "choice") {
       onBackToWaste()
@@ -658,57 +686,103 @@ export function ParticulierVolumeStep({
             key="result"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-4"
+            className="order-tunnel-volume-result space-y-4"
           >
-            <div className="rounded-2xl border-2 border-brand-green/15 bg-gradient-to-br from-white to-brand-warm-field p-4 text-center shadow-sm">
-              <p className="text-[12px] font-semibold uppercase tracking-wide text-brand-muted">
-                Volume estimé
-              </p>
-              <p className="mt-1 text-4xl font-bold tabular-nums text-brand-navy">
-                ≈ {result.estimatedM3}
-                <span className="ml-1 text-xl font-semibold">m³</span>
-              </p>
-              {result.recommendedVolumeM3 ? (
-                <p className="mt-3 text-[14px] leading-snug text-brand-navy">
-                  Capacité <strong>indicative</strong> :{" "}
-                  <strong>{result.recommendedVolumeM3} m³</strong>
-                </p>
-              ) : null}
-            </div>
+            <h2 className="text-center text-[20px] font-bold leading-snug text-brand-navy sm:text-[22px]">
+              Votre estimation est prête
+            </h2>
 
-            {result.extraBennesMessage ? (
+            {result.recommendedVolumeM3 ? (
+              <div className="overflow-hidden rounded-2xl border-2 border-[#35A238] bg-[#EEF5EE] shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-stretch">
+                  <div className="relative mx-auto aspect-[4/3] w-full max-w-[220px] shrink-0 bg-[#E8F0E8] sm:mx-0 sm:max-w-none sm:w-[42%] sm:min-h-[168px]">
+                    <Image
+                      src={benneImageForVolume(result.recommendedVolumeM3)}
+                      alt=""
+                      fill
+                      sizes="(max-width: 640px) 220px, 240px"
+                      className="object-contain p-3"
+                      aria-hidden
+                    />
+                  </div>
+                  <div className="flex min-w-0 flex-1 flex-col justify-center gap-2.5 px-4 py-4 text-center sm:px-5 sm:py-5 sm:text-left">
+                    <p className="text-[17px] font-bold leading-snug text-brand-navy sm:text-[18px]">
+                      {recommendedBenneTitle(family, result.recommendedVolumeM3)}
+                    </p>
+                    <span className="mx-auto inline-flex w-fit items-center rounded-full bg-[#D9EBDA] px-3 py-1 text-[12px] font-semibold text-[#19752B] sm:mx-0">
+                      1 benne pour cette commande
+                    </span>
+                    <p className="text-[14px] leading-snug text-brand-navy">
+                      Votre estimation : environ{" "}
+                      <span className="font-semibold tabular-nums">
+                        {result.estimatedM3} m³
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <p className="text-center text-[14px] leading-snug text-brand-muted">
+                {result.note ??
+                  "Indiquez des mesures valides pour obtenir une recommandation."}
+              </p>
+            )}
+
+            {result.recommendedVolumeM3 && resultTotalBennes > 1 ? (
               <div
-                className="rounded-xl border border-brand-green/20 bg-brand-green/5 px-3.5 py-3 text-[13px] leading-snug text-brand-navy"
+                className="rounded-xl border border-[#35A238]/35 bg-[#EEF5EE] px-4 py-3.5 text-center sm:text-left"
                 role="status"
               >
-                {result.extraBennesMessage}
+                <p className="text-[15px] font-bold leading-snug text-brand-navy">
+                  Environ {resultTotalBennes} bennes au total
+                </p>
+                <p className="mt-1 text-[13px] leading-snug text-brand-navy">
+                  Vous commandez une benne à la fois.
+                </p>
               </div>
             ) : null}
 
-            {result.note ? (
-              <p className="text-[12px] leading-snug text-brand-muted">{result.note}</p>
-            ) : null}
+            <div className="flex flex-col gap-2.5 sm:flex-row sm:items-stretch">
+              <OrderTunnelContinueButton
+                className="sm:min-w-0 sm:flex-1"
+                disabled={!result.recommendedVolumeM3}
+                onClick={() =>
+                  onContinue(result.recommendedVolumeM3, "estimated")
+                }
+              >
+                Continuer avec 1 benne
+              </OrderTunnelContinueButton>
+              <button
+                type="button"
+                onClick={() => setView("estimator-form")}
+                className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border-2 border-[#35A238] bg-white px-4 text-[15px] font-semibold text-brand-navy shadow-sm transition-colors hover:bg-[#EEF5EE] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#35A238]/45 focus-visible:ring-offset-2 sm:min-w-0 sm:flex-1"
+              >
+                <Pencil
+                  className="size-5 shrink-0 text-[#35A238]"
+                  strokeWidth={2}
+                  aria-hidden
+                />
+                Modifier mes mesures
+              </button>
+            </div>
 
-            <a
-              href={SITE_PHONE_HREF}
-              className="flex items-center justify-center gap-2 rounded-xl border-2 border-brand-green/35 bg-white py-3 text-[14px] font-semibold text-brand-navy transition-colors hover:bg-brand-warm-field"
-            >
-              <Phone className="size-4 text-brand-green" aria-hidden />
-              Conseil : {SITE_PHONE_DISPLAY}
-            </a>
-
-            <OrderTunnelContinueButton
-              disabled={!result.recommendedVolumeM3}
-              onClick={() =>
-                onContinue(result.recommendedVolumeM3, "estimated")
-              }
-            >
-              {addressPending
-                ? "Je souhaite commander cette benne"
-                : isPro
-                  ? "Voir les forfaits adaptés"
-                  : "Voir les bennes adaptées"}
-            </OrderTunnelContinueButton>
+            <p className="flex flex-wrap items-center justify-center gap-1.5 text-center text-[13px] leading-snug text-brand-muted">
+              <span>Une question ?</span>
+              <Image
+                src={volumeEstimatorImageSrc(VOLUME_RESULT_PHONE_IMAGE)}
+                alt=""
+                width={22}
+                height={22}
+                className="size-[22px] shrink-0 object-contain"
+                aria-hidden
+              />
+              <a
+                href={SITE_PHONE_HREF}
+                className="font-semibold text-brand-navy underline decoration-brand-green/50 underline-offset-2 transition-colors hover:text-[#19752B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#35A238]/45 focus-visible:ring-offset-2"
+              >
+                {SITE_PHONE_DISPLAY}
+              </a>
+            </p>
           </motion.div>
         ) : null}
       </AnimatePresence>
