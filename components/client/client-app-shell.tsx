@@ -8,15 +8,16 @@ import {
   Building2,
   FolderOpen,
   LineChart,
-  LogOut,
   Menu,
   Package,
   Plus,
   Receipt,
+  User,
   X,
   type LucideIcon,
 } from "lucide-react"
 
+import { LogoutButton } from "@/components/auth/logout-button"
 import { Button } from "@/components/ui/button"
 import { resolveEspaceNavId } from "@/lib/client/espace-active"
 import {
@@ -32,6 +33,7 @@ const NAV_ICONS: Record<ClientNavId, LucideIcon> = {
   documents: FolderOpen,
   factures: Receipt,
   compte: Building2,
+  profil: User,
 }
 
 type Props = {
@@ -77,10 +79,22 @@ function NavItemLink({
   )
 }
 
+function ShellSessionFooter({ userLabel }: { userLabel: string }) {
+  return (
+    <div className="shrink-0 border-t border-[#35A238]/15 bg-white/80 p-3">
+      <p className="truncate px-1 text-xs text-muted-foreground" title={userLabel}>
+        {userLabel}
+      </p>
+      <LogoutButton className="mt-2 w-full justify-start px-3" />
+    </div>
+  )
+}
+
 export function ClientAppShell({ children, navItems, userLabel }: Props) {
   const pathname = usePathname()
   const active = resolveEspaceNavId(pathname)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const mobileTabItems = navItems.filter((item) => item.id !== "profil")
 
   return (
     <div className="min-h-screen text-brand-navy" style={{ backgroundColor: ESPACE_WARM_BG }}>
@@ -115,22 +129,7 @@ export function ClientAppShell({ children, navItems, userLabel }: Props) {
               </Link>
             </div>
           </nav>
-          <div className="border-t border-[#35A238]/15 p-3">
-            <p className="truncate px-1 text-xs text-muted-foreground" title={userLabel}>
-              {userLabel}
-            </p>
-            <form action="/auth/logout" method="post" className="mt-2">
-              <Button
-                type="submit"
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start gap-2 text-brand-navy/80"
-              >
-                <LogOut className="size-4 text-[#35A238]" aria-hidden />
-                Déconnexion
-              </Button>
-            </form>
-          </div>
+          <ShellSessionFooter userLabel={userLabel} />
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
@@ -152,6 +151,13 @@ export function ClientAppShell({ children, navItems, userLabel }: Props) {
               Mon espace
             </div>
             <div className="flex items-center gap-2">
+              <Link
+                href="/espace/profil"
+                className="inline-flex size-10 items-center justify-center rounded-xl border border-[#35A238]/25 bg-white"
+                aria-label="Mon compte"
+              >
+                <User className="size-5 text-[#35A238]" aria-hidden />
+              </Link>
               <Link href="/" className="hidden sm:inline-flex">
                 <Button
                   size="sm"
@@ -176,7 +182,7 @@ export function ClientAppShell({ children, navItems, userLabel }: Props) {
         className="fixed inset-x-0 bottom-0 z-30 flex border-t border-[#35A238]/20 bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(25,55,35,0.08)] md:hidden"
         aria-label="Navigation rapide"
       >
-        {navItems.slice(0, 5).map((item) => {
+        {mobileTabItems.slice(0, 5).map((item) => {
           const isActive = item.id === active
           const Icon = NAV_ICONS[item.id]
           return (
@@ -231,7 +237,18 @@ export function ClientAppShell({ children, navItems, userLabel }: Props) {
                   onNavigate={() => setMobileNavOpen(false)}
                 />
               ))}
+              <div className="mt-3 border-t border-[#35A238]/15 pt-3">
+                <Link
+                  href="/"
+                  onClick={() => setMobileNavOpen(false)}
+                  className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-brand-navy/70 hover:bg-[#ECF4E9]"
+                >
+                  <Plus className="size-[18px] text-[#35A238]" aria-hidden />
+                  Commander
+                </Link>
+              </div>
             </nav>
+            <ShellSessionFooter userLabel={userLabel} />
           </div>
         </div>
       ) : null}

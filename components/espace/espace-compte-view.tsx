@@ -1,5 +1,6 @@
 import Link from "next/link"
 
+import { LogoutButton } from "@/components/auth/logout-button"
 import { CompteProForm } from "@/components/pro/compte-pro-form"
 import { ProAuthPanel } from "@/components/pro/pro-auth-panel"
 import { SubscriptionPanel } from "@/components/pro/subscription-panel"
@@ -114,6 +115,29 @@ export function EspaceCompteView({
           </Link>
         </p>
       ) : null}
+
+      <EspacePanel className="space-y-3">
+        <p className="text-sm font-medium text-brand-navy">Session</p>
+        <p className="text-sm text-muted-foreground">
+          {user.email ? (
+            <>
+              Connecté : <span className="text-brand-navy">{user.email}</span>
+            </>
+          ) : (
+            "Déconnectez-vous pour changer de compte."
+          )}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          <Link href="/espace/profil" className="font-medium text-[#35A238] hover:underline">
+            Paramètres du compte
+          </Link>
+        </p>
+        <LogoutButton
+          variant="outline"
+          size="default"
+          className="h-11 w-full justify-center border-[#35A238]/30"
+        />
+      </EspacePanel>
     </div>
   )
 }

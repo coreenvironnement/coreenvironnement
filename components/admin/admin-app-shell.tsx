@@ -8,7 +8,6 @@ import {
   Briefcase,
   HardHat,
   LayoutDashboard,
-  LogOut,
   Menu,
   Package,
   Users,
@@ -16,6 +15,7 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
+import { LogoutButton } from "@/components/auth/logout-button"
 import { Button } from "@/components/ui/button"
 import { resolveAdminNavId } from "@/lib/admin/admin-active"
 import { ADMIN_WARM_BG, type AdminNavId, type AdminNavItem } from "@/lib/admin/nav-items"
@@ -78,6 +78,17 @@ function NavItemLink({
   )
 }
 
+function AdminSessionFooter({ userLabel }: { userLabel: string }) {
+  return (
+    <div className="shrink-0 border-t border-[#35A238]/15 bg-white/80 p-3">
+      <p className="truncate px-1 text-xs text-muted-foreground" title={userLabel}>
+        {userLabel}
+      </p>
+      <LogoutButton className="mt-2 w-full justify-start px-3" />
+    </div>
+  )
+}
+
 export function AdminAppShell({ children, navItems, userLabel }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -116,22 +127,7 @@ export function AdminAppShell({ children, navItems, userLabel }: Props) {
               </Link>
             </div>
           </nav>
-          <div className="border-t border-[#35A238]/15 p-3">
-            <p className="truncate px-1 text-xs text-muted-foreground" title={userLabel}>
-              {userLabel}
-            </p>
-            <form action="/auth/logout" method="post" className="mt-2">
-              <Button
-                type="submit"
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start gap-2 text-brand-navy/80"
-              >
-                <LogOut className="size-4 text-[#35A238]" aria-hidden />
-                Déconnexion
-              </Button>
-            </form>
-          </div>
+          <AdminSessionFooter userLabel={userLabel} />
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
@@ -150,9 +146,16 @@ export function AdminAppShell({ children, navItems, userLabel }: Props) {
             <div className="hidden text-sm font-medium text-brand-navy/80 lg:block">
               Back-office CORE
             </div>
-            <p className="hidden max-w-[12rem] truncate text-xs text-muted-foreground sm:block">
-              {userLabel}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="hidden max-w-[12rem] truncate text-xs text-muted-foreground sm:block">
+                {userLabel}
+              </p>
+              <LogoutButton
+                variant="outline"
+                size="sm"
+                className="hidden h-9 border-[#35A238]/25 bg-white px-3 sm:inline-flex"
+              />
+            </div>
           </header>
 
           <main key={`${pathname}?${query}`} className="flex-1 p-4 lg:p-6">
@@ -223,6 +226,7 @@ export function AdminAppShell({ children, navItems, userLabel }: Props) {
                 />
               ))}
             </nav>
+            <AdminSessionFooter userLabel={userLabel} />
           </div>
         </div>
       ) : null}

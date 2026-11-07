@@ -2,9 +2,9 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Briefcase, HardHat, LayoutDashboard, LogOut, Package } from "lucide-react"
+import { Briefcase, HardHat, LayoutDashboard, Package } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { LogoutButton } from "@/components/auth/logout-button"
 import { cn } from "@/lib/utils"
 
 const links = [
@@ -58,12 +58,7 @@ export function AdminNav({ commandesATraiter = 0 }: { commandesATraiter?: number
           >
             ← Espace client
           </Link>
-          <form action="/auth/logout" method="post">
-            <Button type="submit" variant="ghost" size="sm" className="w-full justify-start px-3">
-              <LogOut className="size-4" aria-hidden />
-              Déconnexion
-            </Button>
-          </form>
+          <LogoutButton className="w-full justify-start px-3" />
         </div>
       </div>
     </aside>

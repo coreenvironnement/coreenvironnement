@@ -6,5 +6,6 @@ export function resolveEspaceNavId(pathname: string | null): ClientNavId {
   if (pathname.startsWith("/espace/documents")) return "documents"
   if (pathname.startsWith("/espace/factures")) return "factures"
   if (pathname.startsWith("/espace/compte")) return "compte"
+  if (pathname.startsWith("/espace/profil")) return "profil"
   return "commandes"
 }

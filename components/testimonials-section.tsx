@@ -49,7 +49,8 @@ function StarRating({
         vitrine &&
           !compact &&
           "max-md:mx-auto max-md:justify-center md:mx-0 md:justify-start",
-        compact && "justify-start"
+        compact && "justify-start",
+        compact && vitrine && "max-md:mx-auto max-md:justify-center"
       )}
       role="img"
       aria-label="5 sur 5 étoiles"
@@ -82,19 +83,16 @@ function TestimonialCardProVitrine({ t, i }: { t: Testimonial; i: number }) {
 
   return (
     <article
-      className={cn(
-        cardArticleClass(true),
-        "max-md:text-left md:text-left"
-      )}
+      className={cn(cardArticleClass(true), "md:text-left")}
       style={{ animationDelay: `${i * 40}ms` }}
     >
       <StarRating vitrine compact />
-      <blockquote className="flex-1 text-left text-sm leading-relaxed text-brand-text sm:text-[0.95rem]">
+      <blockquote className="flex-1 text-sm leading-relaxed text-brand-text sm:text-[0.95rem] max-md:text-center md:text-left">
         «&nbsp;{t.quote}&nbsp;»
       </blockquote>
       <footer className="mt-5 border-t border-brand-border pt-4">
-        <div className="flex items-end justify-between gap-4">
-          <div className="min-w-0 text-left">
+        <div className="flex items-end justify-between gap-4 max-md:flex-col max-md:items-center">
+          <div className="min-w-0 max-md:text-center md:text-left">
             <p className="font-semibold text-brand-navy font-[family-name:var(--font-display)]">
               {t.author}
             </p>
@@ -103,12 +101,12 @@ function TestimonialCardProVitrine({ t, i }: { t: Testimonial; i: number }) {
             </p>
           </div>
           {t.logoSrc ? (
-            <div className="relative h-9 w-[min(108px,38%)] shrink-0 opacity-90">
+            <div className="relative h-9 w-[min(108px,38%)] shrink-0 opacity-90 max-md:mx-auto">
               <Image
                 src={t.logoSrc}
                 alt={logoAlt}
                 fill
-                className="object-contain object-right"
+                className="object-contain object-center md:object-right"
                 sizes="108px"
               />
             </div>

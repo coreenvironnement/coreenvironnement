@@ -918,4 +918,76 @@
   .vitrine-root.vitrine--mobile-centered .vitrine-early-local-links p {
     @apply text-center;
   }
+
+  /* Page /professionnels — titres, cartes et actions centrés (mobile) */
+  .vitrine-root.vitrine--pro-home-mobile-centered #services .container-x > .mx-auto {
+    @apply text-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #services .service-flip-face.card-vitrine {
+    @apply items-center text-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #services .service-flip-icon-wrap {
+    @apply mx-auto;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #services .service-flip-back ul > li {
+    @apply justify-center text-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #engagements header {
+    @apply items-center text-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #engagements .engagements-step article {
+    @apply grid-cols-1 justify-items-center text-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #engagements .engagements-step .vitrine-label {
+    @apply justify-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-panel-main,
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-panel {
+    @apply text-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-panel > div:first-child {
+    @apply justify-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-card .flex.flex-1.flex-col {
+    @apply items-center text-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-icon-circle {
+    @apply mx-auto;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-tags {
+    @apply justify-items-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #faq h3 button,
+  .vitrine-root.vitrine--pro-home-mobile-centered #faq h4 button {
+    @apply justify-center text-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #faq h3 button > span.flex,
+  .vitrine-root.vitrine--pro-home-mobile-centered #faq h4 button > span.flex-1 {
+    @apply items-center text-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #faq [role="region"] p {
+    @apply text-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #temoignages .container-x > .mx-auto {
+    @apply text-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #temoignages .snap-x {
+    @apply justify-center;
+  }
 }
