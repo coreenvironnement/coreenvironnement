@@ -164,6 +164,7 @@ type OrderWidgetProps = {
   onAudienceChange?: (audience: Audience) => void
   onClose?: () => void
   scrollContainerRef?: React.RefObject<HTMLElement | null>
+  onVolumeIntentChoiceActive?: (active: boolean) => void
 }
 
 export function OrderWidget({
@@ -175,6 +176,7 @@ export function OrderWidget({
   onAudienceChange,
   onClose,
   scrollContainerRef,
+  onVolumeIntentChoiceActive,
 }: OrderWidgetProps) {
   const embedded = variant === "embedded"
   const { draft, patchDraft, resolveIntentPhase, intentStart } = useVitrineOrder()
@@ -216,6 +218,7 @@ export function OrderWidget({
   >("unknown")
   /** Particulier : ouvre l’étape volume directement sur l’estimateur (pas le choix connaître / estimer). */
   const [volumeEstimateOnly, setVolumeEstimateOnly] = useState(false)
+  const [volumeStepView, setVolumeStepView] = useState<string>("choice")
   const [deliveryDate, setDeliveryDate] = useState("")
   const [pickupDate, setPickupDate] = useState("")
   const [selectedPrestationId, setSelectedPrestationId] = useState<
@@ -534,6 +537,19 @@ export function OrderWidget({
     if (!open) return
     onStepIndexChange?.(currentStepIdx)
   }, [currentStepIdx, onStepIndexChange, open])
+
+  const volumeIntentChoiceActive =
+    embedded &&
+    open &&
+    step === "intent" &&
+    intentPhase === "volume" &&
+    audience === "particulier" &&
+    !volumeEstimateOnly &&
+    volumeStepView === "choice"
+
+  useEffect(() => {
+    onVolumeIntentChoiceActive?.(volumeIntentChoiceActive)
+  }, [volumeIntentChoiceActive, onVolumeIntentChoiceActive])
 
   useEffect(() => {
     onAudienceChange?.(audience)
@@ -1128,7 +1144,9 @@ export function OrderWidget({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
-              className={cn(embedded && "order-tunnel-step--fill")}
+              className={cn(
+                embedded && !volumeIntentChoiceActive && "order-tunnel-step--fill"
+              )}
             >
               <ParticulierVolumeStep
                 embedded={embedded}
@@ -1141,6 +1159,7 @@ export function OrderWidget({
                 estimateOnly={
                   audience === "particulier" && volumeEstimateOnly
                 }
+                onViewChange={setVolumeStepView}
                 onBackToWaste={() => {
                   setAddressError(null)
                   setVolumeEstimateOnly(false)

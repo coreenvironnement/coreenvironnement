@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import Image from "next/image"
-import { ArrowLeft, Box, Info, Phone, Ruler, Sparkles } from "lucide-react"
+import { ArrowLeft, ChevronRight, Info, Phone } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 import { OrderTunnelContinueButton } from "@/components/order/order-tunnel-continue-button"
@@ -36,6 +36,10 @@ type EstimatorMode = "regular" | "irregular" | "bags"
 function volumeEstimatorImageSrc(imageFile: string): string {
   return `/images/${encodeURIComponent(imageFile)}`
 }
+
+const VOLUME_INTENT_KNOWN_IMAGE =
+  "Benne à gravats verte, vue trois-quarts-2.png"
+const VOLUME_INTENT_GUIDE_IMAGE = "Ampoule verte pour choisir la benne-1.png"
 
 const ESTIMATOR_MODE_OPTIONS: ReadonlyArray<{
   id: EstimatorMode
@@ -238,48 +242,43 @@ function VolumeDisclaimer({ className }: { className?: string }) {
   )
 }
 
-function ChoiceCard({
+function VolumeIntentChoiceCard({
   title,
   description,
-  icon: Icon,
+  imageFile,
   onClick,
-  selected,
-  accent,
 }: {
   title: string
   description: string
-  icon: typeof Ruler
+  imageFile: string
+  imageAlt: string
   onClick: () => void
-  selected?: boolean
-  accent?: boolean
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={cn(
-        "group flex w-full flex-col rounded-2xl border-2 p-4 text-left shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/45 focus-visible:ring-offset-2",
-        selected
-          ? "border-brand-green bg-brand-green/5 shadow-md ring-1 ring-brand-green/20"
-          : accent
-            ? "border-brand-green/40 bg-gradient-to-br from-white to-brand-warm-field hover:border-brand-green hover:shadow-md"
-            : "border-primary/15 bg-white hover:border-brand-green/30 hover:shadow-md"
-      )}
+      className="order-tunnel-volume-intent-card"
     >
-      <span
-        className={cn(
-          "mb-3 inline-flex size-11 items-center justify-center rounded-xl",
-          accent ? "bg-brand-green/15 text-brand-green" : "bg-brand-green/8 text-brand-navy"
-        )}
-      >
-        <Icon className="size-5" strokeWidth={2} aria-hidden />
+      <span className="order-tunnel-volume-intent-card__icon">
+        <Image
+          src={volumeEstimatorImageSrc(imageFile)}
+          alt=""
+          width={56}
+          height={56}
+          className="size-full object-contain"
+          aria-hidden
+        />
       </span>
-      <span className="text-[15px] font-bold leading-snug text-brand-navy">
-        {title}
+      <span className="order-tunnel-volume-intent-card__body">
+        <span className="order-tunnel-volume-intent-card__title">{title}</span>
+        <span className="order-tunnel-volume-intent-card__desc">{description}</span>
       </span>
-      <span className="mt-1.5 text-[12px] leading-snug text-brand-muted sm:text-[13px]">
-        {description}
-      </span>
+      <ChevronRight
+        className="order-tunnel-volume-intent-card__arrow shrink-0 text-brand-green"
+        strokeWidth={2.25}
+        aria-hidden
+      />
     </button>
   )
 }
@@ -350,6 +349,7 @@ export type ParticulierVolumeStepProps = {
     volumeM3: number | null,
     origin: "estimated" | "chosen"
   ) => void
+  onViewChange?: (view: View) => void
 }
 
 export function ParticulierVolumeStep({
@@ -361,6 +361,7 @@ export function ParticulierVolumeStep({
   estimateOnly = false,
   onBackToWaste,
   onContinue,
+  onViewChange,
 }: ParticulierVolumeStepProps) {
   const isPro = audience === "professionnel"
   const volumes = useMemo(() => availableVolumesForFamily(family), [family])
@@ -373,9 +374,10 @@ export function ParticulierVolumeStep({
   const [litersPerBag, setLitersPerBag] = useState("1000")
   const [result, setResult] = useState<VolumeRecommendation | null>(null)
   const [knownPick, setKnownPick] = useState<number | null>(null)
-  const [choiceHighlight, setChoiceHighlight] = useState<"known" | "estimate" | null>(
-    null
-  )
+
+  useEffect(() => {
+    onViewChange?.(view)
+  }, [view, onViewChange])
 
   const resetEstimatorInputs = () => {
     setLength("")
@@ -457,7 +459,7 @@ export function ParticulierVolumeStep({
 
   const title =
     view === "choice"
-      ? "Quel volume de déchets souhaitez-vous évacuer ?"
+      ? "Quelle benne vous faut-il ?"
       : view === "known"
         ? "Choisissez votre volume"
         : view === "estimator-mode"
@@ -470,11 +472,16 @@ export function ParticulierVolumeStep({
               ? "Votre volume"
               : ""
 
+  const isVolumeIntentChoice = view === "choice" && !estimateOnly
+
   return (
     <div className={cn(!embedded && "space-y-4")}>
       <div
         className={cn(
-          embedded ? "order-tunnel-step__stack space-y-4" : "space-y-4"
+          embedded ? "order-tunnel-step__stack space-y-4" : "space-y-4",
+          embedded &&
+            isVolumeIntentChoice &&
+            "order-tunnel-volume-intent-choice order-tunnel-volume-intent-choice--embedded"
         )}
       >
       <div className="flex items-start gap-2.5">
@@ -490,9 +497,9 @@ export function ParticulierVolumeStep({
           <h3 className="text-[17px] font-bold leading-snug text-brand-navy sm:text-[18px]">
             {title}
           </h3>
-          {view === "choice" && !estimateOnly ? (
+          {isVolumeIntentChoice ? (
             <p className="mt-1 text-[12px] leading-snug text-brand-muted sm:text-[13px]">
-              Vous connaissez le volume ou vous préférez estimer ?
+              Choisissez directement ou laissez-vous guider.
             </p>
           ) : null}
         </div>
@@ -503,36 +510,30 @@ export function ParticulierVolumeStep({
 
       <AnimatePresence mode="wait">
         {view === "choice" ? (
-          <motion.div
+          <div
             key="choice"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            className="grid gap-3 sm:grid-cols-2"
+            className="order-tunnel-volume-intent-choice__cards"
+            role="group"
+            aria-label="Comment choisir votre benne"
           >
-            <ChoiceCard
-              title="Je connais le volume"
-              description="Sélectionnez directement le volume correspondant à votre besoin."
-              icon={Box}
-              selected={choiceHighlight === "known"}
-              onClick={() => {
-                setChoiceHighlight("known")
-                setView("known")
-              }}
+            <VolumeIntentChoiceCard
+              title="Je choisis ma benne"
+              description="Je connais déjà la taille dont j’ai besoin."
+              imageFile={VOLUME_INTENT_KNOWN_IMAGE}
+              imageAlt="Benne à gravats verte"
+              onClick={() => setView("known")}
             />
-            <ChoiceCard
-              title="J'ai besoin d'une estimation"
-              description="Estimez votre volume à partir des dimensions du tas ou du nombre de sacs."
-              icon={Sparkles}
-              accent
-              selected={choiceHighlight === "estimate"}
+            <VolumeIntentChoiceCard
+              title="Aidez-moi à choisir"
+              description="On vous aide à estimer le volume adapté."
+              imageFile={VOLUME_INTENT_GUIDE_IMAGE}
+              imageAlt="Ampoule verte pour choisir la benne"
               onClick={() => {
-                setChoiceHighlight("estimate")
                 resetEstimatorInputs()
                 setView("estimator-mode")
               }}
             />
-          </motion.div>
+          </div>
         ) : null}
 
         {view === "known" ? (
@@ -731,12 +732,12 @@ export function ParticulierVolumeStep({
         </div>
       ) : null}
 
-      {view === "choice" ? (
-        <p className="py-1 text-center text-[13px] text-brand-muted">
-          Besoin d&apos;un conseil ?{" "}
+      {isVolumeIntentChoice ? (
+        <p className="order-tunnel-volume-intent-choice__footer text-center text-[13px] leading-snug text-brand-muted">
+          Une question ? Appelez-nous au{" "}
           <a
             href={SITE_PHONE_HREF}
-            className="font-semibold text-brand-green hover:text-brand-green-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2"
+            className="font-semibold text-brand-green hover:text-[#19752B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#35A238]/45 focus-visible:ring-offset-2"
           >
             {SITE_PHONE_DISPLAY}
           </a>

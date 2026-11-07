@@ -10,11 +10,14 @@ import {
 type OrderModalStepperProps = {
   stepIndex: number
   audience?: "particulier" | "professionnel"
+  /** Étape « Quelle benne » : barre de progression compacte (sans 5 tuiles). */
+  compact?: boolean
 }
 
 export function OrderModalStepper({
   stepIndex,
   audience = "particulier",
+  compact = false,
 }: OrderModalStepperProps) {
   const steps = getOrderTunnelSteps(audience)
   const current = steps[stepIndex]
@@ -25,9 +28,9 @@ export function OrderModalStepper({
       className="order-tunnel-stepper min-w-0"
       aria-label={`Étape ${stepIndex + 1} sur ${steps.length} : ${current?.label}`}
     >
-      <div className="md:hidden">
+      <div className={cn(compact ? "block" : "md:hidden")}>
         <p className="text-center text-[12px] font-medium leading-snug text-brand-navy">
-          Étape {stepIndex + 1} sur {steps.length} — {current?.label}
+          Étape {stepIndex + 1} sur {steps.length} · {current?.label}
         </p>
         <div
           className="mx-auto mt-2 h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-brand-green/12"
@@ -44,7 +47,7 @@ export function OrderModalStepper({
         </div>
       </div>
 
-      <div className="hidden md:block">
+      <div className={cn(compact ? "hidden" : "hidden md:block")}>
         <div className="grid w-full min-w-0 grid-cols-5 gap-1 sm:gap-1.5">
           {steps.map((step, index) => {
             const active = index === stepIndex

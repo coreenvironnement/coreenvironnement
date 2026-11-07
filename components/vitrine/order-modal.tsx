@@ -35,6 +35,7 @@ export function VitrineOrderModal() {
   const [audience, setAudience] = useState<"particulier" | "professionnel">(
     "particulier"
   )
+  const [volumeIntentChoiceActive, setVolumeIntentChoiceActive] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -82,14 +83,27 @@ export function VitrineOrderModal() {
         )}
       />
 
-      <div className="absolute inset-0 flex h-[100dvh] w-full max-w-[100vw] items-stretch justify-center overflow-x-hidden lg:h-full lg:items-center lg:p-6">
+      <div
+        className={cn(
+          "absolute inset-0 flex h-[100dvh] w-full max-w-[100vw] justify-center overflow-x-hidden lg:h-full lg:items-center lg:p-6",
+          volumeIntentChoiceActive
+            ? "items-end max-h-[94vh] lg:items-center"
+            : "items-stretch"
+        )}
+      >
         <div
           role="dialog"
           aria-modal="true"
           aria-label={orderModalTitle(audience, stepIndex)}
           className={cn(
-            "order-tunnel-shell relative flex h-[100dvh] max-h-none w-full min-w-0 max-w-[100vw] flex-col overflow-hidden rounded-none border border-primary/15 pb-[env(safe-area-inset-bottom)] shadow-[var(--shadow-vitrine-pop)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
-            "lg:h-auto lg:max-h-[min(92svh,100dvh)] lg:w-full lg:max-w-[min(72rem,94vw)] lg:rounded-2xl lg:pb-0",
+            "order-tunnel-shell relative flex w-full min-w-0 max-w-[100vw] flex-col overflow-hidden border border-primary/15 shadow-[var(--shadow-vitrine-pop)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+            volumeIntentChoiceActive
+              ? "h-auto max-h-[94vh] rounded-t-2xl rounded-b-none pb-[env(safe-area-inset-bottom)] lg:max-h-[min(92svh,100dvh)] lg:rounded-2xl lg:pb-0"
+              : "h-[100dvh] max-h-none rounded-none pb-[env(safe-area-inset-bottom)] lg:h-auto lg:max-h-[min(92svh,100dvh)] lg:rounded-2xl lg:pb-0",
+            "lg:w-full",
+            volumeIntentChoiceActive
+              ? "order-tunnel-shell--volume-intent-choice lg:max-w-[min(57.5rem,94vw)]"
+              : "lg:max-w-[min(72rem,94vw)]",
             open
               ? "translate-y-0 opacity-100 lg:scale-100"
               : "translate-y-8 opacity-0 lg:translate-y-4 lg:scale-[0.97]"
@@ -120,12 +134,19 @@ export function VitrineOrderModal() {
           </div>
 
           <div className="order-tunnel-stepper-wrap min-w-0 shrink-0 px-4 py-2.5 sm:px-6 sm:py-3">
-            <OrderModalStepper stepIndex={stepIndex} audience={audience} />
+            <OrderModalStepper
+              stepIndex={stepIndex}
+              audience={audience}
+              compact={volumeIntentChoiceActive}
+            />
           </div>
 
           <div
             ref={scrollContainerRef}
-            className="order-tunnel-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain px-4 pb-3 pt-1 sm:px-6 sm:pb-4 sm:pt-1.5"
+            className={cn(
+              "order-tunnel-scroll min-h-0 overflow-x-hidden overflow-y-auto overscroll-contain px-5 pb-3 pt-1 sm:px-6 sm:pb-4 sm:pt-1.5",
+              volumeIntentChoiceActive ? "flex-none" : "flex-1"
+            )}
           >
             <OrderWidget
               variant="embedded"
@@ -134,6 +155,7 @@ export function VitrineOrderModal() {
               onAudienceChange={setAudience}
               onClose={closeOrder}
               scrollContainerRef={scrollContainerRef}
+              onVolumeIntentChoiceActive={setVolumeIntentChoiceActive}
             />
           </div>
         </div>
