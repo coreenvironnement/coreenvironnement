@@ -68,7 +68,11 @@ export default async function LocationBenneLocalPage({ params, searchParams }: P
 
   return (
     <>
-      <VitrineJsonLd localPage={page} />
+      <VitrineJsonLd
+        localPage={page}
+        faqSource="particulier"
+        description={buildLocalDescription(page)}
+      />
       <VitrineHome orderParam={orderParam} localSeoData={page} />
     </>
   )

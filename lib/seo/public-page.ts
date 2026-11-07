@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 
+import { withBrandTitle } from "@/lib/seo/page-title"
 import {
   getShareOpenGraphImages,
   getShareTwitterImages,
@@ -12,12 +13,13 @@ export function publicPageMetadata(
   path: string,
 ): Metadata {
   const url = `${getSiteUrl()}${path}`
+  const pageTitle = withBrandTitle(title)
   return {
-    title,
+    title: { absolute: pageTitle },
     description,
     alternates: { canonical: url },
     openGraph: {
-      title,
+      title: pageTitle,
       description,
       url,
       siteName: "CORE ENVIRONNEMENT",
@@ -27,7 +29,7 @@ export function publicPageMetadata(
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: pageTitle,
       description,
       images: getShareTwitterImages(),
     },

@@ -38,7 +38,11 @@ export const metadata: Metadata = {
 export default function VolumeGuidePage() {
   return (
     <>
-      <VitrineJsonLd />
+      <VitrineJsonLd
+        faqSource="none"
+        description={VOLUME_GUIDE_DESCRIPTION}
+        includeAggregateRating={false}
+      />
       <VitrineVolumeGuide />
     </>
   )

@@ -49,7 +49,7 @@ export function getDefaultSeoVariant(): SeoVariant {
 /** Hero page /professionnels (H1 distinct de l’accueil particulier). */
 export const PROFESSIONNELS_HERO_VARIANT: SeoVariant = {
   intent: "default",
-  title: "Location de benne pour professionnels en Île-de-France | CORE",
+  title: "Location de benne pour professionnels en Île-de-France",
   description:
     "Location de benne pour vos chantiers en Île-de-France : tarifs HT en ligne, demande professionnelle et accompagnement pour la livraison et l’enlèvement.",
   h1Line1: "Location de benne pour vos chantiers en Île-de-France",

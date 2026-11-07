@@ -13,7 +13,11 @@ export const metadata: Metadata = publicPageMetadata(
 export default function ProfessionnelsPage() {
   return (
     <>
-      <VitrineJsonLd />
+      <VitrineJsonLd
+        faqSource="professionnels"
+        description={PROFESSIONNELS_HERO_VARIANT.description}
+        includeAggregateRating={false}
+      />
       <VitrineProfessionnelsHome />
     </>
   )

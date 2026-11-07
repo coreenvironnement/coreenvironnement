@@ -1,4 +1,8 @@
-import { faq, particulierFaq } from "@/lib/cdc/contenu-vitrine"
+import {
+  faq,
+  particulierFaq,
+  professionnelsFaqModalitesPaiement,
+} from "@/lib/cdc/contenu-vitrine"
 import { buildLocalBreadcrumbs } from "@/lib/seo/breadcrumbs"
 import { DEFAULT_VARIANT } from "@/lib/seo/landing-variants"
 import { buildLocalDescription } from "@/lib/seo/local-copy"
@@ -12,6 +16,10 @@ import {
   SITE_PHONE_HREF,
 } from "@/lib/site"
 
+const PROFESSIONNELS_PAYMENT_QUESTION = "Quelles sont les modalités de paiement ?"
+
+export type VitrineFaqSource = "general" | "particulier" | "professionnels" | "none"
+
 function faqAnswerText(item: { r: string; linkLabel?: string; linkHref?: string }) {
   if (item.linkLabel && item.linkHref) {
     return `${item.r} ${item.linkLabel} : ${item.linkHref}`
@@ -19,33 +27,72 @@ function faqAnswerText(item: { r: string; linkLabel?: string; linkHref?: string 
   return item.r
 }
 
-function buildFaqSchema(source: "general" | "particulier" = "general") {
-  const mainEntity =
-    source === "particulier"
-      ? particulierFaq.map((item) => ({
-          "@type": "Question" as const,
-          name: item.q,
-          acceptedAnswer: {
-            "@type": "Answer" as const,
-            text: faqAnswerText(item),
-          },
-        }))
-      : faq.flatMap((section) =>
-          section.questions.map((item) => ({
-            "@type": "Question" as const,
-            name: item.q,
-            acceptedAnswer: {
-              "@type": "Answer" as const,
-              text: item.r,
-            },
-          }))
-        )
+function buildGeneralFaqSchema() {
+  const mainEntity = faq.flatMap((section) =>
+    section.questions.map((item) => ({
+      "@type": "Question" as const,
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer" as const,
+        text: item.r,
+      },
+    })),
+  )
 
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity,
   }
+}
+
+function buildParticulierFaqSchema() {
+  const mainEntity = particulierFaq.map((item) => ({
+    "@type": "Question" as const,
+    name: item.q,
+    acceptedAnswer: {
+      "@type": "Answer" as const,
+      text: faqAnswerText(item),
+    },
+  }))
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity,
+  }
+}
+
+function buildProfessionnelsFaqSchema() {
+  const mainEntity = faq.flatMap((section) =>
+    section.questions.map((item) => {
+      const answer =
+        item.q === PROFESSIONNELS_PAYMENT_QUESTION
+          ? professionnelsFaqModalitesPaiement
+          : item.r
+      return {
+        "@type": "Question" as const,
+        name: item.q,
+        acceptedAnswer: {
+          "@type": "Answer" as const,
+          text: answer,
+        },
+      }
+    }),
+  )
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity,
+  }
+}
+
+function buildFaqSchema(source: VitrineFaqSource) {
+  if (source === "none") return null
+  if (source === "particulier") return buildParticulierFaqSchema()
+  if (source === "professionnels") return buildProfessionnelsFaqSchema()
+  return buildGeneralFaqSchema()
 }
 
 function buildBreadcrumbListSchema(siteUrl: string, localPage?: LocalPage) {
@@ -67,7 +114,15 @@ function buildBreadcrumbListSchema(siteUrl: string, localPage?: LocalPage) {
   }
 }
 
-function buildLocalBusinessSchema(siteUrl: string, localPage?: LocalPage) {
+function buildLocalBusinessSchema(
+  siteUrl: string,
+  options: {
+    localPage?: LocalPage
+    description?: string
+    includeAggregateRating: boolean
+  },
+) {
+  const { localPage, description, includeAggregateRating } = options
   const pageUrl = localPage
     ? `${siteUrl}/location-benne/${localPage.slug}`
     : siteUrl
@@ -90,24 +145,19 @@ function buildLocalBusinessSchema(siteUrl: string, localPage?: LocalPage) {
 
   const entryHt = getEntryPriceHt()
 
-  return {
+  const businessDescription =
+    description ??
+    (localPage ? buildLocalDescription(localPage) : DEFAULT_VARIANT.description)
+
+  const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "@id": `${pageUrl}#organization`,
     name: "CORE ENVIRONNEMENT",
     url: pageUrl,
     telephone: SITE_PHONE_HREF.replace("tel:", ""),
-    description: localPage
-      ? buildLocalDescription(localPage)
-      : DEFAULT_VARIANT.description,
+    description: businessDescription,
     areaServed,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: SITE_GOOGLE_RATING,
-      reviewCount: SITE_GOOGLE_REVIEW_COUNT,
-      bestRating: 5,
-      worstRating: 1,
-    },
     serviceArea: {
       "@type": "GeoCircle",
       geoMidpoint: {
@@ -141,16 +191,28 @@ function buildLocalBusinessSchema(siteUrl: string, localPage?: LocalPage) {
       },
     },
   }
+
+  if (includeAggregateRating) {
+    schema.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: SITE_GOOGLE_RATING,
+      reviewCount: SITE_GOOGLE_REVIEW_COUNT,
+      bestRating: 5,
+      worstRating: 1,
+    }
+  }
+
+  return schema
 }
 
-function buildWebSiteSchema(siteUrl: string, websiteName: string) {
+function buildWebSiteSchema(siteUrl: string, websiteName: string, description: string) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": `${siteUrl}/#website`,
     url: siteUrl,
     name: websiteName,
-    description: DEFAULT_VARIANT.description,
+    description,
     inLanguage: "fr-FR",
   }
 }
@@ -161,15 +223,29 @@ export function VitrineJsonLd({
   localPage,
   faqSource = "general",
   websiteName = DEFAULT_WEBSITE_NAME,
+  description,
+  includeAggregateRating = true,
 }: {
   localPage?: LocalPage
-  faqSource?: "general" | "particulier"
+  faqSource?: VitrineFaqSource
   websiteName?: string
+  /** Aligne LocalBusiness / WebSite sur la meta description de la page. */
+  description?: string
+  /** Note Google : uniquement si le badge hero est affiché sur la page. */
+  includeAggregateRating?: boolean
 } = {}) {
   const siteUrl = getSiteUrl()
+  const resolvedDescription =
+    description ??
+    (localPage ? buildLocalDescription(localPage) : DEFAULT_VARIANT.description)
+
   const schemas = [
-    buildWebSiteSchema(siteUrl, websiteName),
-    buildLocalBusinessSchema(siteUrl, localPage),
+    buildWebSiteSchema(siteUrl, websiteName, resolvedDescription),
+    buildLocalBusinessSchema(siteUrl, {
+      localPage,
+      description: resolvedDescription,
+      includeAggregateRating,
+    }),
     buildFaqSchema(faqSource),
     buildBreadcrumbListSchema(siteUrl, localPage),
   ].filter((schema): schema is NonNullable<typeof schema> => schema !== null)

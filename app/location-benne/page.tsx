@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 export default function LocationBenneHubPage() {
   return (
     <>
-      <VitrineJsonLd />
+      <VitrineJsonLd faqSource="particulier" description={HUB_DESCRIPTION} />
       <VitrineHome
         hubPage
         seoVariant={{

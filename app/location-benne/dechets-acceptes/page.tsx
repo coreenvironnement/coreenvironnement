@@ -39,7 +39,11 @@ export const metadata: Metadata = {
 export default function DechetsAcceptesGuidePage() {
   return (
     <>
-      <VitrineJsonLd />
+      <VitrineJsonLd
+        faqSource="none"
+        description={DECHETS_ACCEPTES_GUIDE_DESCRIPTION}
+        includeAggregateRating={false}
+      />
       <VitrineDechetsAcceptesGuide />
     </>
   )

@@ -55,7 +55,11 @@ export default async function HomePage({ searchParams }: PageProps) {
 
   return (
     <>
-      <VitrineJsonLd faqSource="particulier" websiteName={HOME_PAGE_SITE_NAME} />
+      <VitrineJsonLd
+        faqSource="particulier"
+        websiteName={HOME_PAGE_SITE_NAME}
+        description={HOME_PAGE_META_DESCRIPTION}
+      />
       <VitrineHome orderParam={orderParam} />
     </>
   )
