@@ -24,6 +24,7 @@ import {
   type VolumeRecommendation,
 } from "@/lib/order/volume-estimator"
 import type { BenneFamily } from "@/lib/prestations"
+import { benneImageForVolume } from "@/lib/commande/benne-visual"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
@@ -162,6 +163,60 @@ const LOADING_STEPS = [
 function parseDim(raw: string): number {
   const n = parseFloat(raw.replace(",", "."))
   return Number.isFinite(n) && n > 0 ? n : 0
+}
+
+function KnownVolumeCard({
+  volumeM3,
+  selected,
+  onSelect,
+}: {
+  volumeM3: number
+  selected: boolean
+  onSelect: () => void
+}) {
+  const imageSrc = benneImageForVolume(volumeM3)
+
+  return (
+    <button
+      type="button"
+      aria-pressed={selected}
+      onClick={onSelect}
+      className={cn(
+        "relative isolate min-h-[5.25rem] overflow-hidden rounded-xl border-2 px-3 py-4 text-center shadow-sm transition-[border-color,box-shadow]",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2",
+        selected
+          ? "border-brand-green bg-primary/10 ring-1 ring-brand-green/20"
+          : "border-primary/15 bg-white hover:border-brand-green/40"
+      )}
+    >
+      <Image
+        src={imageSrc}
+        alt=""
+        fill
+        aria-hidden
+        sizes="(max-width: 640px) 45vw, 220px"
+        className={cn(
+          "pointer-events-none object-contain object-bottom pb-0.5 transition-opacity duration-200",
+          selected ? "opacity-40" : "opacity-[0.22]"
+        )}
+      />
+      <div
+        className={cn(
+          "pointer-events-none absolute inset-0",
+          selected
+            ? "bg-gradient-to-t from-white/90 via-white/65 to-white/40"
+            : "bg-gradient-to-t from-white/95 via-white/78 to-white/50"
+        )}
+        aria-hidden
+      />
+      <span className="relative z-10 block text-2xl font-bold tabular-nums text-brand-navy">
+        {volumeM3}
+      </span>
+      <span className="relative z-10 text-[12px] font-semibold text-brand-muted">
+        m³
+      </span>
+    </button>
+  )
 }
 
 function VolumeDisclaimer({ className }: { className?: string }) {
@@ -513,26 +568,18 @@ export function ParticulierVolumeStep({
             <p className="text-[13px] text-brand-muted">
               Capacités disponibles pour votre type de déchet :
             </p>
-            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+            <div
+              className="grid grid-cols-2 gap-2.5 sm:gap-3"
+              role="group"
+              aria-label="Volumes de benne disponibles"
+            >
               {volumes.map((v) => (
-                <button
+                <KnownVolumeCard
                   key={v}
-                  type="button"
-                  onClick={() => setKnownPick(v)}
-                  className={cn(
-                    "rounded-xl border-2 px-3 py-4 text-center transition-colors",
-                    knownPick === v
-                      ? "border-brand-green bg-primary/10 shadow-sm"
-                      : "border-primary/15 bg-white hover:border-brand-green/40"
-                  )}
-                >
-                  <span className="block text-2xl font-bold tabular-nums text-brand-navy">
-                    {v}
-                  </span>
-                  <span className="text-[12px] font-medium text-brand-muted">
-                    m³
-                  </span>
-                </button>
+                  volumeM3={v}
+                  selected={knownPick === v}
+                  onSelect={() => setKnownPick(v)}
+                />
               ))}
             </div>
           </motion.div>

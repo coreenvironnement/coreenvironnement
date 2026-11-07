@@ -210,6 +210,8 @@ export function OrderWidget({
   const [volumeHintOrigin, setVolumeHintOrigin] = useState<
     "estimated" | "chosen" | "unknown"
   >("unknown")
+  /** Particulier : ouvre l’étape volume directement sur l’estimateur (pas le choix connaître / estimer). */
+  const [volumeEstimateOnly, setVolumeEstimateOnly] = useState(false)
   const [deliveryDate, setDeliveryDate] = useState("")
   const [pickupDate, setPickupDate] = useState("")
   const [selectedPrestationId, setSelectedPrestationId] = useState<
@@ -333,7 +335,7 @@ export function OrderWidget({
     scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
   }
 
-  const goToIntentVolume = () => {
+  const goToIntentVolume = (options?: { estimateOnly?: boolean }) => {
     setAddressError(null)
     if (audience === "particulier") {
       if (!particulierWasteId) {
@@ -343,6 +345,11 @@ export function OrderWidget({
     } else if (!family) {
       setAddressError("Choisissez un type de déchet dans la liste.")
       return
+    }
+    if (audience === "particulier") {
+      setVolumeEstimateOnly(options?.estimateOnly === true)
+    } else {
+      setVolumeEstimateOnly(false)
     }
     syncDraftFromWidget()
     setIntentPhase("volume")
@@ -1020,6 +1027,18 @@ export function OrderWidget({
                         setAddressError(null)
                       }}
                     />
+                    <p className="text-center">
+                      <button
+                        type="button"
+                        disabled={!particulierWasteId}
+                        className="text-[13px] font-medium text-brand-navy underline underline-offset-2 transition-colors hover:text-brand-green disabled:cursor-not-allowed disabled:text-brand-muted disabled:no-underline sm:text-[14px]"
+                        onClick={() =>
+                          goToIntentVolume({ estimateOnly: true })
+                        }
+                      >
+                        Je ne sais pas quelle benne choisir
+                      </button>
+                    </p>
                   </>
                 ) : (
                   <>
@@ -1126,8 +1145,12 @@ export function OrderWidget({
                   audience === "particulier" ? particulierWasteId : null
                 }
                 addressPending={!zoneOk}
+                estimateOnly={
+                  audience === "particulier" && volumeEstimateOnly
+                }
                 onBackToWaste={() => {
                   setAddressError(null)
+                  setVolumeEstimateOnly(false)
                   setIntentPhase("waste")
                 }}
                 onContinue={(volumeM3, volumeOrigin) =>

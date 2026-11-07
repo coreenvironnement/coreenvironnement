@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { ParticulierVolumeStep } from "@/components/order/particulier-volume-step"
 import { ParticulierWastePicker } from "@/components/order/particulier-waste-picker"
@@ -15,19 +15,32 @@ import { useVitrineOrder } from "./order-context"
 
 export function VitrineVolumeEstimator({
   compactTop = false,
+  launchId = 0,
 }: {
   compactTop?: boolean
+  /** Incrémenté par `openVolumeEstimator` — enchaîne vers l’estimateur si le déchet est déjà choisi. */
+  launchId?: number
 }) {
-  const { openOrder, patchDraft } = useVitrineOrder()
+  const { openOrder, patchDraft, draft } = useVitrineOrder()
   const [particulierWasteId, setParticulierWasteId] =
-    useState<ParticulierWasteOptionId | null>(null)
-  const [family, setFamily] = useState<BenneFamily | null>(null)
+    useState<ParticulierWasteOptionId | null>(draft.particulierWasteId ?? null)
+  const [family, setFamily] = useState<BenneFamily | null>(() => {
+    const id = draft.particulierWasteId
+    if (!id) return null
+    return particulierWasteOptionById(id)?.family ?? null
+  })
 
-  const beginEstimate = () => {
-    if (!particulierWasteId) return
-    const mapped = particulierWasteOptionById(particulierWasteId)
+  const beginEstimate = (wasteId: ParticulierWasteOptionId | null = particulierWasteId) => {
+    if (!wasteId) return
+    const mapped = particulierWasteOptionById(wasteId)
     if (mapped) setFamily(mapped.family)
   }
+
+  useEffect(() => {
+    if (launchId === 0) return
+    if (family && particulierWasteId) return
+    if (particulierWasteId) beginEstimate(particulierWasteId)
+  }, [launchId, particulierWasteId, family])
 
   const handleContinueOrder = (
     volumeM3: number | null,

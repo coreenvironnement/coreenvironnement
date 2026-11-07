@@ -73,17 +73,19 @@ function VolumeConseilActions({
   cta,
   expanded,
   onExpand,
+  volumeEstimatorRequestId,
 }: {
   cta: string
   expanded: boolean
   onExpand: () => void
+  volumeEstimatorRequestId: number
 }) {
   if (!expanded) {
     return (
       <div className="mt-5 w-full">
         <button
           type="button"
-          onClick={onExpand}
+          onClick={() => onExpand()}
           className="btn btn-accent flex min-h-12 w-full items-center justify-center font-bold"
         >
           {cta}
@@ -94,7 +96,7 @@ function VolumeConseilActions({
 
   return (
     <div className={expanded ? "w-full" : "mt-5 w-full"}>
-      <VitrineVolumeEstimator compactTop />
+      <VitrineVolumeEstimator compactTop launchId={volumeEstimatorRequestId} />
     </div>
   )
 }
@@ -188,6 +190,7 @@ export function VitrineParticulierConseils() {
                     cta={cta}
                     expanded={volumeExpanded}
                     onExpand={() => setVolumeExpanded(true)}
+                    volumeEstimatorRequestId={volumeEstimatorRequestId}
                   />
                 ) : null}
 

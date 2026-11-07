@@ -99,7 +99,8 @@
       @apply justify-center;
     }
 
-    .vitrine-root.vitrine--particulier-home-desktop-centered #parcours .parcours-volume-link a {
+    .vitrine-root.vitrine--particulier-home-desktop-centered #parcours .parcours-volume-link a,
+    .vitrine-root.vitrine--particulier-home-desktop-centered #parcours .parcours-volume-link button {
       @apply mx-auto inline-block;
     }
 
@@ -946,7 +947,8 @@
     @apply justify-start text-left;
   }
 
-  .vitrine-root.vitrine--mobile-centered #parcours .parcours-volume-link a {
+  .vitrine-root.vitrine--mobile-centered #parcours .parcours-volume-link a,
+  .vitrine-root.vitrine--mobile-centered #parcours .parcours-volume-link button {
     @apply mx-auto inline-block;
   }
 
