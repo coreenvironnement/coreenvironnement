@@ -50,7 +50,6 @@ export function ParcoursLottieStepCard({
     ? []
     : [
         lottieInView({
-          once: true,
           amount: 0.15,
           margin: "0px 0px -6% 0px",
         }),
@@ -70,14 +69,13 @@ export function ParcoursLottieStepCard({
             <Lottie
               src={animationSrc}
               autoplay={false}
-              loop={false}
+              loop={!reduceMotion}
               lottieRef={lottieRef}
               className="h-full w-full max-h-[min(240px,52vw)] max-w-[min(100%,420px)]"
               subscriptions={{
                 [LottieSubscription.ready]: () => {
                   if (reduceMotion) holdLastFrame()
                 },
-                [LottieSubscription.complete]: holdLastFrame,
               }}
             />
           </LottieInteractions>
