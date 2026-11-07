@@ -29,6 +29,7 @@ import {
 import { useVitrineOrder } from "@/components/vitrine/order-context"
 import { VITRINE_ICON_STROKE } from "@/components/vitrine/icons"
 import { Button } from "@/components/ui/button"
+import { LoaderCore } from "@/components/ui/loader-core"
 import {
   Card,
   CardContent,
@@ -729,9 +730,8 @@ export function OrderWidget({
           <div className="space-y-4">
               {audience === "professionnel" ? (
                 proCompteLoading ? (
-                  <div className="order-tunnel-card flex min-h-[140px] flex-col items-center justify-center gap-2 px-4 py-6 text-center">
-                    <Loader2 className="size-8 animate-spin text-brand-green" aria-hidden />
-                    <p className="text-sm text-brand-navy">Vérification de votre compte…</p>
+                  <div className="order-tunnel-card flex min-h-[140px] flex-col items-center justify-center px-4 py-6 text-center">
+                    <LoaderCore caption="Vérification de votre compte…" />
                   </div>
                 ) : proRequestSent ? (
                   <div className="order-tunnel-card space-y-4 px-4 py-5 text-center">

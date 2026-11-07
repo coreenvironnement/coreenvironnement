@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion"
 
 import { OrderEmailConfirmBlock } from "@/components/order/order-email-confirm-block"
 import { Button } from "@/components/ui/button"
+import { LoaderCore } from "@/components/ui/loader-core"
 import { formatOrderReference } from "@/lib/commande/reference"
 import type { OrderCheckoutInput } from "@/lib/order/checkout-input"
 import { prestationById } from "@/lib/prestations"
@@ -53,10 +54,11 @@ export function OrderConfirmingState({
       transition={{ duration, ease }}
       role="status"
       aria-live="polite"
+      aria-busy={!isFinalizing}
     >
-      <div className="relative mx-auto mb-2.5 flex size-[52px] items-center justify-center">
-        <span className="absolute inset-0 rounded-full bg-brand-green/10" aria-hidden />
-        {isFinalizing ? (
+      {isFinalizing ? (
+        <div className="relative mx-auto mb-2.5 flex size-[52px] items-center justify-center">
+          <span className="absolute inset-0 rounded-full bg-brand-green/10" aria-hidden />
           <svg
             viewBox="0 0 56 56"
             className="relative size-10 text-brand-green"
@@ -80,13 +82,12 @@ export function OrderConfirmingState({
               strokeLinejoin="round"
             />
           </svg>
-        ) : (
-          <span
-            className="size-5 animate-spin rounded-full border-2 border-brand-navy/10 border-t-brand-green"
-            aria-hidden
-          />
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="mb-2">
+          <LoaderCore standaloneStatus={false} />
+        </div>
+      )}
 
       <h3 className="text-[18px] font-semibold leading-tight text-brand-navy sm:text-[20px]">
         Paiement validé

@@ -14,6 +14,7 @@ import { getCommandePaymentStatus } from "@/app/order/commande-status"
 import { initOrderEmbeddedPayment } from "@/app/order/embedded-payment"
 import type { OrderCheckoutInput } from "@/lib/order/checkout-input"
 import { Button } from "@/components/ui/button"
+import { LoaderCore } from "@/components/ui/loader-core"
 import {
   CheckoutParticulierTrackingNote,
   CheckoutReassuranceBanner,
@@ -238,15 +239,13 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
 
 function PaymentLoadingState() {
   return (
-    <div className="order-tunnel-card flex min-h-[180px] flex-col items-center justify-center gap-3 px-4 py-6 text-center">
-      <span
-        className="size-8 animate-spin rounded-full border-2 border-brand-green/15 border-t-[#35A238]"
-        aria-hidden
+    <div className="order-tunnel-card flex min-h-[180px] flex-col items-center justify-center px-4 py-6 text-center">
+      <LoaderCore
+        caption="Préparation sécurisée du paiement…"
       />
-      <p className="text-sm font-medium text-brand-navy">
-        Préparation sécurisée du paiement...
+      <p className="mt-1 text-[11px] text-muted-foreground">
+        Cela ne prend que quelques secondes.
       </p>
-      <p className="text-[11px] text-muted-foreground">Cela ne prend que quelques secondes.</p>
     </div>
   )
 }

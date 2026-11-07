@@ -1,0 +1,11 @@
+Chargement Core Environnement
+Fichier à intégrer : core-chargement.svg (fond transparent, animation autonome, boucle 1,6 s).
+Placer dans public/images puis utiliser /images/core-chargement.svg.
+Exemple : <img src="/images/core-chargement.svg" width="80" height="48" alt="" aria-hidden="true">
+Afficher à 80 × 48 px ou 96 × 58 px dans un bloc de chargement, accompagné de « Chargement… ».
+Mettre le message dans role="status" aria-live="polite" et aria-busy="true" sur la zone qui charge.
+Ne pas attribuer de pourcentage fictif : cette animation indique une attente sans durée connue.
+Ne pas l'imposer dans les petits boutons : conserver leurs dimensions.
+Respecter prefers-reduced-motion : remplacer par core-chargement-statique.svg lorsque reduce est actif (via picture/media ou le composant).
+Le GIF sert uniquement d’aperçu ; utiliser le SVG sur le site.
+Conserver la logique et les déclencheurs de chargement existants.

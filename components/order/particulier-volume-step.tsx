@@ -2,15 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import Image from "next/image"
-import {
-  ArrowLeft,
-  Box,
-  Info,
-  Loader2,
-  Phone,
-  Ruler,
-  Sparkles,
-} from "lucide-react"
+import { ArrowLeft, Box, Info, Phone, Ruler, Sparkles } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 import { OrderTunnelContinueButton } from "@/components/order/order-tunnel-continue-button"
@@ -28,6 +20,7 @@ import { benneImageForVolume } from "@/lib/commande/benne-visual"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
+import { LoaderCore } from "@/components/ui/loader-core"
 import { VolumeEstimatorMeasureLottie } from "@/components/order/volume-estimator-measure-lottie"
 
 type View =
@@ -154,7 +147,7 @@ function EstimatorModeOptionCard({
   )
 }
 
-const LOADING_MS = 950
+const LOADING_MS = 1020
 const LOADING_STEPS = [
   "Volume estimé…",
   "Type de déchet…",
@@ -337,28 +330,7 @@ function ComputingOverlay({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="flex min-h-[220px] flex-col items-center justify-center gap-4 px-4 py-8 text-center">
-      <div className="relative">
-        <div className="absolute inset-0 animate-ping rounded-full bg-brand-green/20" />
-        <div className="relative flex size-16 items-center justify-center rounded-full bg-brand-green text-white shadow-lg">
-          <Loader2 className="size-8 animate-spin" aria-hidden />
-        </div>
-      </div>
-      <div>
-        <p className="text-[15px] font-bold text-brand-navy">
-          Analyse de votre estimation
-        </p>
-        <p className="mt-1 text-[13px] text-brand-muted" aria-live="polite">
-          {LOADING_STEPS[stepIdx]}
-        </p>
-      </div>
-      <div className="h-1 w-full max-w-[200px] overflow-hidden rounded-full bg-brand-green/10">
-        <motion.div
-          className="h-full rounded-full bg-brand-green"
-          initial={{ width: "8%" }}
-          animate={{ width: "100%" }}
-          transition={{ duration: LOADING_MS / 1000, ease: "easeInOut" }}
-        />
-      </div>
+      <LoaderCore caption={LOADING_STEPS[stepIdx]} />
     </div>
   )
 }
