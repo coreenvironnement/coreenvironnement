@@ -16,6 +16,7 @@ import { useOrderAudienceSession } from "@/lib/auth/use-order-audience-session"
 import { getEntryPriceTtcParticulier } from "@/lib/seo/pricing-snapshot"
 import { cn } from "@/lib/utils"
 
+import { HeroFormulaireLivraisonLottie } from "./hero-formulaire-livraison-lottie"
 import { useVitrineOrder } from "./order-context"
 
 type HeroOrderCardProps = {
@@ -105,14 +106,17 @@ export function HeroOrderCard({
       )}
       aria-labelledby="hero-order-card-title"
     >
-      <h2
-        id="hero-order-card-title"
-        className="w-full text-[17px] font-bold leading-snug tracking-[-0.02em] text-brand-navy sm:text-[18px] lg:text-left"
-      >
+      <div className="flex w-full flex-col gap-2 max-lg:items-center lg:items-stretch">
+        <HeroFormulaireLivraisonLottie />
+        <h2
+          id="hero-order-card-title"
+          className="w-full text-[17px] font-bold leading-snug tracking-[-0.02em] text-brand-navy sm:text-[18px] max-lg:text-center lg:text-left"
+        >
         {isPro
           ? "Préparez votre demande de benne"
           : "Trouvez votre benne et consultez son tarif"}
-      </h2>
+        </h2>
+      </div>
 
       <div className="w-full">
         {showAudienceToggle ? (

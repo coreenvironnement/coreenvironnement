@@ -831,6 +831,32 @@
   border-top: 1px solid color-mix(in srgb, #35a238 12%, #e3e9e6);
 }
 
+.vitrine-root .hero-order-card__lottie-banner {
+  --hero-order-lottie-height: 64px;
+  display: flex;
+  width: 100%;
+  min-height: var(--hero-order-lottie-height);
+  height: var(--hero-order-lottie-height);
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .vitrine-root .hero-order-card__lottie-banner {
+    --hero-order-lottie-height: 80px;
+  }
+}
+
+.vitrine-root .hero-order-card__lottie {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  aspect-ratio: 560 / 180;
+}
+
 /* Hero — toggle & adresse alignés sur #ecf4e9 (sans impacter le tunnel modal) */
 .vitrine-root .hero-order-card .order-audience-toggle--hero {
   background: var(--color-brand-warm);
