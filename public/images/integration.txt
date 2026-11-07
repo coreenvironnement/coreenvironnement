@@ -1,0 +1,7 @@
+Icônes Core — ordinateur uniquement.
+SVG vectoriels transparents, viewBox 48 × 48, trait 2, vert #35A238.
+Afficher à 24 ou 28 px avec le libellé visible.
+Pour une intégration SVG inline : remplacer la couleur du stroke par currentColor ; utiliser le vert pour l’étape active et une couleur atténuée mais lisible pour les suivantes.
+Conserver le numéro via un petit badge si nécessaire ; étape terminée : coche.
+Ne pas modifier le rendu mobile/tablette.
+Avec un libellé adjacent, rendre l’icône décorative : aria-hidden=true (inline) ou alt vide (img).

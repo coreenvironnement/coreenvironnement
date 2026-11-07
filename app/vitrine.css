@@ -975,6 +975,45 @@
   color: var(--color-brand-navy);
 }
 
+/* Tunnel commande — stepper desktop : tuiles blanches + icônes traits verts */
+@media (min-width: 768px) {
+  .order-tunnel-stepper__tile {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.625rem;
+    background: #fff;
+    box-shadow:
+      0 1px 2px rgb(14 32 16 / 0.06),
+      inset 0 0 0 1px color-mix(in srgb, var(--color-brand-navy) 6%, transparent);
+    color: color-mix(in srgb, #35a238 36%, var(--color-brand-muted));
+    transition:
+      color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .order-tunnel-stepper__tile--active,
+  .order-tunnel-stepper__tile--done {
+    color: #35a238;
+    box-shadow:
+      0 1px 3px rgb(53 162 56 / 0.14),
+      inset 0 0 0 1px color-mix(in srgb, #35a238 18%, transparent);
+  }
+
+  .order-tunnel-stepper__tile--upcoming {
+    color: color-mix(in srgb, #35a238 34%, var(--color-brand-muted));
+  }
+
+  .order-tunnel-stepper__icon {
+    display: block;
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+}
+
 /* Pied d’étape collant (mobile → desktop) */
 .order-tunnel-step-nav {
   position: sticky;
@@ -1022,10 +1061,15 @@
     padding-block: 0.375rem;
   }
 
-  .order-tunnel-stepper .order-tunnel-stepper__node {
-    height: 1.75rem;
-    width: 1.75rem;
-    font-size: 0.75rem;
+  .order-tunnel-stepper .order-tunnel-stepper__tile {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+  }
+
+  .order-tunnel-stepper .order-tunnel-stepper__icon {
+    width: 1.5rem;
+    height: 1.5rem;
   }
 
   .order-tunnel-stepper .order-tunnel-stepper__label {
