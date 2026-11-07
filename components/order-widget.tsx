@@ -232,8 +232,9 @@ export function OrderWidget({
         setStep("recap")
       }
       setAudience(next)
+      patchDraft({ audience: next })
     },
-    [audience, step]
+    [audience, step, patchDraft]
   )
 
   const [proRequestSent, setProRequestSent] = useState(false)

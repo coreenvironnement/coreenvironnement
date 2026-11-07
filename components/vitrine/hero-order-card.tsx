@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ChevronRight } from "lucide-react"
 
 import {
@@ -30,15 +30,24 @@ export function HeroOrderCard({
 }: HeroOrderCardProps) {
   const { draft, patchDraft, openOrder } = useVitrineOrder()
   const sessionAudience = useOrderAudienceSession()
+  const initialDefaultAppliedRef = useRef(false)
 
   useEffect(() => {
-    if (sessionAudience.loading) return
-    const effective =
-      sessionAudience.locked && sessionAudience.audience
-        ? sessionAudience.audience
-        : defaultAudience
-    if (effective !== draft.audience) {
-      patchDraft({ audience: effective })
+    if (sessionAudience.loading) {
+      initialDefaultAppliedRef.current = false
+      return
+    }
+
+    if (sessionAudience.locked && sessionAudience.audience) {
+      if (draft.audience !== sessionAudience.audience) {
+        patchDraft({ audience: sessionAudience.audience })
+      }
+      return
+    }
+
+    if (!initialDefaultAppliedRef.current) {
+      initialDefaultAppliedRef.current = true
+      patchDraft({ audience: defaultAudience })
     }
   }, [
     sessionAudience.loading,

@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js"
 import type { OrderAudience } from "@/components/order/order-audience-toggle"
 
 export type ResolvedOrderAudience = {
-  /** null = visiteur, toggle affiché */
+  /** Audience imposée si locked; null = l’utilisateur choisit (toggle). */
   audience: OrderAudience | null
   locked: boolean
 }
@@ -26,5 +26,6 @@ export async function resolveOrderAudienceForUser(
     return { audience: "professionnel", locked: true }
   }
 
-  return { audience: "particulier", locked: true }
+  /** Connecté sans pro validé : défaut UI = particulier, choix explicite au checkout. */
+  return { audience: null, locked: false }
 }

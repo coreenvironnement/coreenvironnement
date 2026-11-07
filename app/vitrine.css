@@ -99,21 +99,8 @@
       @apply justify-center;
     }
 
-    .vitrine-root.vitrine--particulier-home-desktop-centered #parcours .parcours-step {
-      @apply text-center;
-    }
-
-    .vitrine-root.vitrine--particulier-home-desktop-centered #parcours .parcours-step-visual {
-      @apply mx-auto;
-    }
-
-    .vitrine-root.vitrine--particulier-home-desktop-centered #parcours .parcours-step-body h3,
-    .vitrine-root.vitrine--particulier-home-desktop-centered #parcours .parcours-step-body p {
-      @apply text-center;
-    }
-
-    .vitrine-root.vitrine--particulier-home-desktop-centered #parcours ol a[href] {
-      @apply mx-auto block w-fit;
+    .vitrine-root.vitrine--particulier-home-desktop-centered #parcours .parcours-volume-link a {
+      @apply mx-auto inline-block;
     }
 
     .vitrine-root.vitrine--particulier-home-desktop-centered #temoignages .container-x {
@@ -924,22 +911,17 @@
     @apply text-center;
   }
 
-  /* Accueil particulier — parcours : étapes alignées à gauche sur mobile */
-  .vitrine-root.vitrine--mobile-centered #parcours .parcours-step {
-    @apply text-left;
+  /* Accueil particulier — grille Lottie 4 étapes */
+  .vitrine-root #parcours .parcours-lottie-grid {
+    @apply w-full;
   }
 
-  .vitrine-root.vitrine--mobile-centered #parcours .parcours-step-visual {
-    @apply mx-0;
+  .vitrine-root.vitrine--mobile-centered #parcours .parcours-lottie-card__caption {
+    @apply justify-start text-left;
   }
 
-  .vitrine-root.vitrine--mobile-centered #parcours .parcours-step-body h3,
-  .vitrine-root.vitrine--mobile-centered #parcours .parcours-step-body p {
-    @apply text-left;
-  }
-
-  .vitrine-root.vitrine--mobile-centered #parcours ol a[href] {
-    @apply mx-0 block w-fit;
+  .vitrine-root.vitrine--mobile-centered #parcours .parcours-volume-link a {
+    @apply mx-auto inline-block;
   }
 
   .vitrine-root.vitrine--mobile-centered #parcours .parcours-cta {
