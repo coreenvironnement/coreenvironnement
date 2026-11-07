@@ -13,12 +13,13 @@ import {
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 
-const MATERIALS_ILLUSTRATION = "/images/Déchets inertes acceptés.png"
+const MATERIALS_ILLUSTRATION_FILE = "Déchets inertes acceptés.png"
+const MATERIALS_ILLUSTRATION = `/images/${encodeURIComponent(MATERIALS_ILLUSTRATION_FILE)}`
 
 const MATERIAL_GROUPS = [
-  { label: "Briques et tuiles", backgroundPosition: "18% 82%" },
-  { label: "Béton et parpaings", backgroundPosition: "50% 82%" },
-  { label: "Terre et cailloux", backgroundPosition: "82% 82%" },
+  { label: "Briques et tuiles", backgroundPosition: "0% 50%" },
+  { label: "Béton et parpaings", backgroundPosition: "50% 50%" },
+  { label: "Terre et cailloux", backgroundPosition: "100% 50%" },
 ] as const
 
 function SectionCheckIcon({ className }: { className?: string }) {
