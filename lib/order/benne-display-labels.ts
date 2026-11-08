@@ -60,8 +60,6 @@ function subtitleFromFamily(family: BenneFamily): string {
       return "Pour les gravats mélangés"
     case "gravats_propres":
       return "Pour les gravats propres"
-    default:
-      return `Pour les ${FAMILY_LABELS[family].title.toLowerCase()}`
   }
 }
 
