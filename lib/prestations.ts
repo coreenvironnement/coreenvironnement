@@ -149,6 +149,32 @@ export const PRESTATIONS: Prestation[] = [
     excludedSummary: "Tous déchets dangereux sont strictement exclus.",
   },
   {
+    id: "gm-ch-20",
+    family: "gravats_melanges",
+    label: "Benne à chaîne 20 m³, gravats mélangés",
+    volumeM3: 20,
+    system: "chaine",
+    priceHt: 730,
+    tonnageMax: 9,
+    surchargePerTonHt: 125,
+    acceptedSummary:
+      "Mélange de déchets non dangereux composé principalement de gravats.",
+    excludedSummary: "Tous déchets dangereux sont strictement exclus.",
+  },
+  {
+    id: "gm-ch-30",
+    family: "gravats_melanges",
+    label: "Benne à chaîne 30 m³, gravats mélangés",
+    volumeM3: 30,
+    system: "chaine",
+    priceHt: 1050,
+    tonnageMax: 11,
+    surchargePerTonHt: 125,
+    acceptedSummary:
+      "Mélange de déchets non dangereux composé principalement de gravats.",
+    excludedSummary: "Tous déchets dangereux sont strictement exclus.",
+  },
+  {
     id: "gp-ch-8",
     family: "gravats_propres",
     label: "Benne à chaîne 8 m³, gravats propres",
