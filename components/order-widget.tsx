@@ -52,6 +52,11 @@ import { ParticulierVolumeStep } from "@/components/order/particulier-volume-ste
 import { ParticulierWastePicker } from "@/components/order/particulier-waste-picker"
 import { WasteFamilySelect } from "@/components/order/waste-situation-picker"
 import {
+  subtitleFromPrestationLabel,
+  tunnelFluxCardSubtitle,
+  tunnelFluxRecapName,
+} from "@/lib/order/benne-display-labels"
+import {
   particulierWasteOptionById,
   type ParticulierWasteOptionId,
 } from "@/lib/order/particulier-waste-options"
@@ -1218,11 +1223,22 @@ export function OrderWidget({
                     : "Prix H.T. Détail des déchets acceptés par forfait."}
                 </p>
                 {audience === "particulier" ? (
-                  <p className="mt-1.5 text-[11px] leading-snug text-muted-foreground">
-                    Ne dépassez pas le bord de la benne. Au-delà du poids
-                    inclus, le supplément par tonne est indiqué sur chaque
-                    offre.
-                  </p>
+                  <>
+                    {particulierWasteId && family ? (
+                      <p className="mt-1.5 text-[13px] font-medium leading-snug text-brand-navy">
+                        Pour vos{" "}
+                        {tunnelFluxRecapName(
+                          family,
+                          particulierWasteId
+                        ).toLowerCase()}
+                      </p>
+                    ) : null}
+                    <p className="mt-1.5 text-[11px] leading-snug text-muted-foreground">
+                      Ne dépassez pas le bord de la benne. Au-delà du poids
+                      inclus, le supplément par tonne est indiqué sur chaque
+                      offre.
+                    </p>
+                  </>
                 ) : null}
                 {volumeHintM3 && audience === "particulier" ? (
                   <div className="mt-2 space-y-1.5 rounded-lg border border-primary/12 bg-brand-warm-field/80 px-3 py-2.5">
@@ -1282,6 +1298,10 @@ export function OrderWidget({
                   <PrestationCard
                     key={p.id}
                     prestation={p}
+                    family={family}
+                    particulierWasteId={
+                      audience === "particulier" ? particulierWasteId : null
+                    }
                     selected={selectedPrestationId === p.id}
                     recommended={
                       volumeHintM3 !== null && p.volumeM3 === volumeHintM3
@@ -1799,7 +1819,9 @@ export function OrderWidget({
                           : "Déchets : "}
                       </span>
                       <span className="font-medium text-brand-navy">
-                        {FAMILY_LABELS[family].title}
+                        {audience === "particulier" && particulierWasteId
+                          ? tunnelFluxRecapName(family, particulierWasteId)
+                          : FAMILY_LABELS[family].title}
                       </span>
                     </li>
                 ) : null}
@@ -1983,21 +2005,14 @@ export function OrderWidget({
   )
 }
 
-function prestationWasteSubtitle(label: string): string {
-  const comma = label.indexOf(", ")
-  if (comma < 0) return ""
-  const tail = label.slice(comma + 2).trim()
-  if (tail.startsWith("gravats")) return `Pour les ${tail}`
-  if (tail.startsWith("mélange")) return `Pour le ${tail}`
-  return `Pour ${tail}`
-}
-
 function benneSystemSecondary(system: BenneSystem): string {
   return system === "chaine" ? "Benne à chaîne" : "Benne ampliroll"
 }
 
 function PrestationCard({
   prestation,
+  family,
+  particulierWasteId,
   selected,
   recommended,
   onSelect,
@@ -2007,6 +2022,8 @@ function PrestationCard({
   warmSurface,
 }: {
   prestation: Prestation
+  family: BenneFamily
+  particulierWasteId?: ParticulierWasteOptionId | null
   selected: boolean
   recommended?: boolean
   onSelect: () => void
@@ -2018,7 +2035,9 @@ function PrestationCard({
   const visualSrc = BENNE_VISUAL_BY_VOLUME[prestation.volumeM3]
   const price = priceBreakdownFromHt(prestation.priceHt)
   const surcharge = priceBreakdownFromHt(prestation.surchargePerTonHt)
-  const wasteSubtitle = prestationWasteSubtitle(prestation.label)
+  const wasteSubtitle = particulierWasteId
+    ? tunnelFluxCardSubtitle(family, particulierWasteId)
+    : subtitleFromPrestationLabel(prestation.label)
 
   const wastesDialog =
     prestation.id === "gp-ch-8" ? (
@@ -2116,7 +2135,7 @@ function PrestationCard({
         {visualSrc ? (
           <Image
             src={visualSrc}
-            alt={`Benne ${prestation.volumeM3} m³`}
+            alt={`Benne de ${prestation.volumeM3} m³`}
             width={368}
             height={207}
             className="h-full w-full object-contain object-center"

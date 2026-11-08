@@ -16,7 +16,7 @@ import {
   type VolumeRecommendation,
 } from "@/lib/order/volume-estimator"
 import type { BenneFamily } from "@/lib/prestations"
-import { prestationsByFamily } from "@/lib/prestations"
+import { benneLabelForVolume } from "@/lib/order/benne-display-labels"
 import { benneImageForVolume } from "@/lib/commande/benne-visual"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
@@ -42,16 +42,6 @@ const VOLUME_INTENT_KNOWN_IMAGE =
   "Benne à gravats verte, vue trois-quarts-2.png"
 const VOLUME_INTENT_GUIDE_IMAGE = "Ampoule verte pour choisir la benne-1.png"
 const VOLUME_RESULT_PHONE_IMAGE = "Combiné téléphonique vert stylisé-1.png"
-
-function recommendedBenneTitle(
-  family: BenneFamily,
-  volumeM3: number
-): string {
-  const match = prestationsByFamily(family).find((p) => p.volumeM3 === volumeM3)
-  if (!match) return `Benne de ${volumeM3} m³`
-  const short = match.label.split(",")[0]?.trim()
-  return short ?? `Benne de ${volumeM3} m³`
-}
 
 function totalBennesForRecommendation(
   estimatedM3: number,
@@ -548,7 +538,7 @@ export function ParticulierVolumeStep({
               title="Je choisis ma benne"
               description="Je connais déjà la taille dont j’ai besoin."
               imageFile={VOLUME_INTENT_KNOWN_IMAGE}
-              imageAlt="Benne à gravats verte"
+              imageAlt="Benne de location"
               onClick={() => setView("known")}
             />
             <VolumeIntentChoiceCard
@@ -707,7 +697,11 @@ export function ParticulierVolumeStep({
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col justify-center gap-2.5 px-4 py-4 text-center sm:px-5 sm:py-5 sm:text-left">
                     <p className="text-[17px] font-bold leading-snug text-brand-navy sm:text-[18px]">
-                      {recommendedBenneTitle(family, result.recommendedVolumeM3)}
+                      {benneLabelForVolume(
+                        family,
+                        result.recommendedVolumeM3,
+                        wasteId ?? undefined
+                      )}
                     </p>
                     <span className="mx-auto inline-flex w-fit items-center rounded-full bg-[#D9EBDA] px-3 py-1 text-[12px] font-semibold text-[#19752B] sm:mx-0">
                       1 benne pour cette commande
