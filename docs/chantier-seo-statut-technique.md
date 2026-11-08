@@ -1,21 +1,22 @@
 # Chantier SEO — statut des correctifs techniques
 
 **Référence commit :** `b44de8c` — `fix(seo): titre pro, sitemap, JSON-LD et annexes copy/URL`  
-**Branche :** `main` (synchronisée avec `origin/main` au 7 nov. 2026)  
+**Branche :** `main` (synchronisée avec `origin/main`)  
+**Vérification prod :** 8 nov. 2026 — audit [Audit technique URLs](efe625ee-9eda-4bb0-9bd2-f5ec3e276399)  
 **Périmètre hors scope :** aucune modification des composants visuels `vitrine-professionnels-*`.
 
 **Légende colonnes :** chaque étape est notée oui/non. Une étape ultérieure sans la précédente implique que le travail est en attente (ex. pas « publiée » tant que le déploiement prod ne reflète pas le commit).
 
 | Correctif | Préparée | Testée | Commitée | Publiée (prod) | Preuves |
 |-----------|----------|--------|----------|----------------|---------|
-| **Titre `/professionnels` — double marque** (`… \| CORE \| CORE ENVIRONNEMENT`) | oui | oui | oui | **non** | **Commit :** `b44de8c` — retrait de `\| CORE` dans `PROFESSIONNELS_HERO_VARIANT.title` (`lib/seo/landing-variants.ts`) + titre absolu via `withBrandTitle()` dans `lib/seo/public-page.ts` (`title: { absolute: pageTitle }`). **Snippet attendu après déploiement :** `Location de benne pour professionnels en Île-de-France \| CORE ENVIRONNEMENT`. **Build :** `npm run build` OK (7 nov. 2026, tests SEO + Next build). **Prod (fetch 7 nov.) :** title encore `… \| CORE \| CORE ENVIRONNEMENT` sur https://core-environnement.fr/professionnels |
-| **Sitemap — suppression `lastModified` artificiel** (date identique à chaque build) | oui | oui | oui | **non** | **Commit :** `b44de8c` — `app/sitemap.ts` : suppression de `lastModified` global et des champs sur chaque entrée ; commentaire d’intention lignes 6-8. **Snippet :** aucune clé `lastModified` dans le fichier actuel. **Build :** OK. **Prod :** `sitemap.xml` contient encore `<lastmod>2026-11-07T14:23:04.752Z</lastmod>` sur la majorité des URLs |
-| **`/pro` retiré du sitemap** (page toujours crawlable, **pas** de `noindex`) | oui | oui | oui | **non** | **Commit :** `b44de8c` — entrée `${base}/pro` supprimée ; commentaire explicite dans `app/sitemap.ts`. **Inventaire :** `docs/seo-url-inventory.csv` ligne `/pro` → `retirer-sitemap`. **Build :** OK. **Prod :** `<loc>https://core-environnement.fr/pro</loc>` toujours présent dans `sitemap.xml` (l. ~28) |
-| **JSON-LD — `faqSource`, `aggregateRating`, alignement `description`** | oui | oui | oui | **à confirmer post-déploiement** | **Commit :** `b44de8c` — `components/seo/vitrine-json-ld.tsx` : type `VitrineFaqSource` (`general` \| `particulier` \| `professionnels` \| `none`), FAQ pro avec variante paiement `professionnelsFaqModalitesPaiement`, `includeAggregateRating` conditionnel, `description` propagée vers `WebSite` + `LocalBusiness`. **Pages :** `/` et hub → `faqSource="particulier"` + `description` meta ; `/professionnels` → `faqSource="professionnels"`, `includeAggregateRating={false}` ; guides volume/déchets → `faqSource="none"`. **Build :** OK. **Prod :** contenu FAQ visible cohérent avec le CDC ; validation du JSON-LD brut (absence de `aggregateRating` sur `/professionnels`, absence de `FAQPage` sur guides) à refaire après déploiement |
+| **Titre `/professionnels` — double marque** (`… \| CORE \| CORE ENVIRONNEMENT`) | oui | oui | oui | **oui** | **Commit :** `b44de8c`. **Prod 8 nov. :** title `Location de benne pour professionnels en Île-de-France \| CORE ENVIRONNEMENT` (fetch document). |
+| **Sitemap — suppression `lastModified` artificiel** (date identique à chaque build) | oui | oui | oui | **oui** | **Commit :** `b44de8c`. **Prod 8 nov. :** `sitemap.xml` sans balises `<lastmod>` (fetch live). |
+| **`/pro` retiré du sitemap** (page toujours crawlable, **pas** de `noindex`) | oui | oui | oui | **oui** | **Commit :** `b44de8c`. **Prod 8 nov. :** aucune `<loc>…/pro</loc>` ; page **200**, indexable, liens footer/FAQ — **ne pas désindexer** sans analyse GSC (≈8 clics signalés côté métier, hors CSV repo). |
+| **JSON-LD — `faqSource`, `aggregateRating`, alignement `description`** | oui | oui | oui | **oui** (partiel) | **Prod 8 nov. :** `/professionnels` — FAQPage, sans `aggregateRating` ; guides volume/déchets — pas de FAQPage au fetch. **Indexation / rich results :** à confirmer dans GSC (Inspection d’URL), pas un constat HTTP. |
 
 ## Synthèse
 
-Les quatre correctifs sont **intégrés et testés en local** sur `main` (`b44de8c`, poussé sur `origin/main`). **La production consultée le 7 nov. 2026 n’a pas encore reflété** le sitemap ni le titre document `/professionnels` : **action attendue = déploiement** (même commit que `origin/main`).
+Les quatre correctifs sont **déployés en production** (contrôle 8 nov. 2026). L’**état d’indexation** (couverture, « Détectée / non indexée » au 23 oct.) reste distinct : pages publiées après cette date (ex. `/location-benne/dechets-acceptes`, ~5 nov.) ne peuvent pas être expliquées par seul le graphique du 23 oct. — **Inspection d’URL** GSC requise.
 
 ## Commande de build (preuve test)
 
@@ -35,4 +36,14 @@ npm run build
 
 ---
 
-*Dernière mise à jour : 7 novembre 2026.*
+## Suivi technique post-audit (périmètre 6 URLs)
+
+| URL | Constats HTTP/SEO | Action technique éventuelle |
+|-----|-------------------|---------------------------|
+| Périmètre audit + `/pro` | Toutes **200**, canoniques OK, pas de `noindex` bloquant ; voir détail audit `efe625ee` | Maillage optionnel : lien hub → `/location-benne/dechets-acceptes` (asymétrie vs `/volume`) — **sans** toucher au copywriting |
+
+**Inventaire GSC :** le fichier `docs/seo-url-inventory.csv` dans le dépôt affiche encore `statut GSC à importer` sur les lignes vérifiées — si vous avez fusionné les exports localement, **committer le CSV** pour aligner le repo avec votre analyse.
+
+---
+
+*Dernière mise à jour : 8 novembre 2026.*
