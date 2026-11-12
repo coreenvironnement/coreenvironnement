@@ -34,6 +34,11 @@ export const HOME_EARLY_VOLUME_GUIDE_LINK: SeoLink = {
   label: "Voir le guide des volumes",
 }
 
+export const HOME_EARLY_DECHETS_GUIDE_LINK: SeoLink = {
+  href: "/location-benne/dechets-acceptes",
+  label: "Déchets acceptés",
+}
+
 /** Liste plate — hub /location-benne (filtre « toutes les communes » côté UI). */
 export const HOME_EARLY_LOCAL_LINKS: SeoLink[] = [
   ...HOME_EARLY_LOCAL_SECTOR_LINKS,

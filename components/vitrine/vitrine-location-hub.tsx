@@ -1,6 +1,7 @@
 import Link from "next/link"
 
 import { SEO_CONTENT_REVISION_LABEL } from "@/lib/seo/content-revision"
+import { HOME_EARLY_DECHETS_GUIDE_LINK } from "@/lib/seo/early-local-links"
 import { getHubDepartementSections } from "@/lib/seo/local-pages"
 
 export function VitrineLocationHub() {
@@ -31,6 +32,14 @@ export function VitrineLocationHub() {
               className="font-semibold text-brand-navy underline-offset-2 hover:text-brand-green hover:underline"
             >
               Guide des volumes de benne (m³, gravats, débarras)
+            </Link>
+          </p>
+          <p className="mt-3 text-sm text-brand-muted">
+            <Link
+              href={HOME_EARLY_DECHETS_GUIDE_LINK.href}
+              className="font-semibold text-brand-navy underline-offset-2 hover:text-brand-green hover:underline"
+            >
+              {HOME_EARLY_DECHETS_GUIDE_LINK.label}
             </Link>
           </p>
           <p className="mt-6 text-xs text-brand-muted">
