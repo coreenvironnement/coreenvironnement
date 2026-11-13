@@ -28,6 +28,7 @@ import { VitrineParticulierIdfCommunes } from "./vitrine-particulier-idf-commune
 import { VitrineLocationHub } from "./vitrine-location-hub"
 import { VitrineLongtailIntro } from "./vitrine-longtail-intro"
 import { VitrineSeoPricingSection } from "./vitrine-seo-pricing-section"
+import { GoogleReviewsReassurance } from "./google-reviews-reassurance"
 function OrderBanner({ orderParam }: { orderParam?: string }) {
   const { openOrder } = useVitrineOrder()
 
@@ -96,6 +97,7 @@ function VitrineHomeInner({
         {localSeoData ? (
           <VitrineEarlyLocalLinks mode="local" page={localSeoData} />
         ) : null}
+        {localSeoData ? <GoogleReviewsReassurance /> : null}
         {hubPage ? <VitrineLocationHub /> : null}
         {localSeoData?.type === "departement" ? (
           <VitrineDepartmentGuide page={localSeoData} />

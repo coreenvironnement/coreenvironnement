@@ -12,6 +12,8 @@ import { getSiteUrl } from "@/lib/seo/site-url"
 import {
   SITE_GOOGLE_RATING,
   SITE_GOOGLE_REVIEW_COUNT,
+  SITE_GOOGLE_SAMPLE_REVIEW_AUTHOR,
+  SITE_GOOGLE_SAMPLE_REVIEW_BODY,
   SITE_PHONE_DISPLAY,
   SITE_PHONE_HREF,
 } from "@/lib/site"
@@ -200,6 +202,22 @@ function buildLocalBusinessSchema(
       bestRating: 5,
       worstRating: 1,
     }
+    schema.review = [
+      {
+        "@type": "Review",
+        author: {
+          "@type": "Person",
+          name: SITE_GOOGLE_SAMPLE_REVIEW_AUTHOR,
+        },
+        reviewBody: SITE_GOOGLE_SAMPLE_REVIEW_BODY,
+        reviewRating: {
+          "@type": "Rating",
+          ratingValue: SITE_GOOGLE_RATING,
+          bestRating: 5,
+          worstRating: 1,
+        },
+      },
+    ]
   }
 
   return schema
