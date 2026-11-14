@@ -1,11 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server"
 
+import { resolveLegacyImageRedirect } from "@/lib/media/image-legacy-path-map"
 import {
   getMaintenanceBypassSecret,
   isMaintenanceEnabled,
   MAINTENANCE_COOKIE,
 } from "@/lib/maintenance"
 import { updateSession } from "@/lib/supabase/middleware"
+
+const STATIC_ASSET = /\.(webp|png|jpe?g|gif|svg|ico)$/i
 
 /** Chemins critiques qui restent accessibles même en maintenance. */
 function isMaintenanceExemptPath(pathname: string) {
@@ -54,6 +57,15 @@ function maintenanceResponse(request: NextRequest) {
 }
 
 export async function middleware(request: NextRequest) {
+  const legacyDest = resolveLegacyImageRedirect(request.nextUrl.pathname)
+  if (legacyDest) {
+    return NextResponse.redirect(new URL(legacyDest, request.url), 308)
+  }
+
+  if (STATIC_ASSET.test(request.nextUrl.pathname)) {
+    return NextResponse.next()
+  }
+
   if (
     isMaintenanceEnabled() &&
     !isMaintenanceExemptPath(request.nextUrl.pathname) &&
@@ -67,6 +79,8 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/images/:path*",
+    "/vitrine-scroll/:path*",
+    "/((?!_next/static|_next/image|favicon.ico|images/|vitrine-scroll/).*)",
   ],
 }
