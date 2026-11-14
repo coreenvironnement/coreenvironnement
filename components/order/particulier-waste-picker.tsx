@@ -42,7 +42,7 @@ export function ParticulierWastePicker({
             <div className="order-tunnel-waste-card__media relative aspect-[4/3] w-full bg-[#F2F4F7]">
               <Image
                 src={option.imageSrc}
-                alt=""
+                alt={option.imageAlt}
                 fill
                 className="object-cover"
                 sizes="(max-width: 540px) 44vw, 220px"

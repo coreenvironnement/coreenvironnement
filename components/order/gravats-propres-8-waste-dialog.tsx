@@ -11,10 +11,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { SITE_IMAGES } from "@/lib/media/site-images"
 import { cn } from "@/lib/utils"
 
-const MATERIALS_ILLUSTRATION_FILE = "Déchets inertes acceptés.png"
-const MATERIALS_ILLUSTRATION = `/images/${encodeURIComponent(MATERIALS_ILLUSTRATION_FILE)}`
+const MATERIALS_ILLUSTRATION = SITE_IMAGES.tunnel.gravatsAcceptesSprite
 
 const MATERIAL_GROUPS = [
   { label: "Briques et tuiles", backgroundPosition: "0% 50%" },
@@ -121,7 +121,8 @@ export function GravatsPropres8WasteDialog({
                 >
                   <div
                     className="relative h-[4.5rem] w-full max-w-[6.75rem] overflow-hidden sm:h-[5.25rem] sm:max-w-[7.25rem]"
-                    aria-hidden
+                    role="img"
+                    aria-label={`Illustration : ${group.label} acceptés dans une benne gravats propres`}
                   >
                     <div
                       className="absolute inset-0 scale-[1.08] bg-no-repeat mix-blend-lighten"
@@ -130,6 +131,7 @@ export function GravatsPropres8WasteDialog({
                         backgroundSize: "300% auto",
                         backgroundPosition: group.backgroundPosition,
                       }}
+                      aria-hidden
                     />
                   </div>
                   <p className="flex w-full items-start justify-center gap-1 text-center text-[10px] font-semibold leading-tight text-brand-navy sm:text-[11px]">

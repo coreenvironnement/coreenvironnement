@@ -17,7 +17,11 @@ import {
 } from "@/lib/order/volume-estimator"
 import type { BenneFamily } from "@/lib/prestations"
 import { benneLabelForVolume } from "@/lib/order/benne-display-labels"
-import { benneImageForVolume } from "@/lib/commande/benne-visual"
+import {
+  benneImageAltForVolume,
+  benneImageForVolume,
+} from "@/lib/commande/benne-visual"
+import { SITE_IMAGES } from "@/lib/media/site-images"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
@@ -34,14 +38,20 @@ type View =
 
 type EstimatorMode = "regular" | "irregular" | "bags"
 
-function volumeEstimatorImageSrc(imageFile: string): string {
-  return `/images/${encodeURIComponent(imageFile)}`
-}
+const VOLUME_INTENT_KNOWN = {
+  src: SITE_IMAGES.tunnel.benneGravatsVue,
+  alt: "Benne de location verte — choisir directement la capacité en m³",
+} as const
 
-const VOLUME_INTENT_KNOWN_IMAGE =
-  "Benne à gravats verte, vue trois-quarts-2.png"
-const VOLUME_INTENT_GUIDE_IMAGE = "Ampoule verte pour choisir la benne-1.png"
-const VOLUME_RESULT_PHONE_IMAGE = "Combiné téléphonique vert stylisé-1.png"
+const VOLUME_INTENT_GUIDE = {
+  src: SITE_IMAGES.tunnel.ampouleVolume,
+  alt: "Illustration pour l’estimation guidée du volume de benne",
+} as const
+
+const VOLUME_RESULT_PHONE = {
+  src: SITE_IMAGES.tunnel.telephoneVolume,
+  alt: "Appeler pour affiner le volume de benne recommandé",
+} as const
 
 function totalBennesForRecommendation(
   estimatedM3: number,
@@ -55,29 +65,29 @@ const ESTIMATOR_MODE_OPTIONS: ReadonlyArray<{
   id: EstimatorMode
   label: string
   hint: string
-  imageFile: string
+  imageSrc: string
   imageAlt: string
 }> = [
   {
     id: "regular",
     label: "Tas régulier",
     hint: "",
-    imageFile: "Tas rectangulaire de gravats de chantier-2.png",
-    imageAlt: "Tas rectangulaire de gravats de chantier",
+    imageSrc: SITE_IMAGES.tunnel.volumeRectangulaire,
+    imageAlt: "Tas rectangulaire de gravats de chantier pour estimer le volume",
   },
   {
     id: "irregular",
     label: "Tas irrégulier",
     hint: "",
-    imageFile: "Tas de gravats de chantier-1.png",
-    imageAlt: "Tas irrégulier de gravats de chantier",
+    imageSrc: SITE_IMAGES.tunnel.volumeIrregulier,
+    imageAlt: "Tas irrégulier de gravats pour estimer le volume de benne",
   },
   {
     id: "bags",
     label: "Sac big bag",
     hint: "",
-    imageFile: "Big bag rempli de gravats-3.png",
-    imageAlt: "Big bag rempli de gravats",
+    imageSrc: SITE_IMAGES.tunnel.volumeBigBag,
+    imageAlt: "Big bag rempli de gravats pour l’estimation en sacs",
   },
 ]
 
@@ -105,14 +115,14 @@ function EstimatorModeSelectionIndicator({
 function EstimatorModeOptionCard({
   label,
   hint,
-  imageFile,
+  imageSrc,
   imageAlt,
   selected,
   onClick,
 }: {
   label: string
   hint: string
-  imageFile: string
+  imageSrc: string
   imageAlt: string
   selected: boolean
   onClick: () => void
@@ -134,7 +144,7 @@ function EstimatorModeOptionCard({
     >
       <div className="order-tunnel-estimator-card__media relative h-20 w-[100px] shrink-0 overflow-hidden rounded-lg bg-[#F2F4F7] sm:aspect-[4/3] sm:h-auto sm:w-full sm:rounded-none">
         <Image
-          src={volumeEstimatorImageSrc(imageFile)}
+          src={imageSrc}
           alt={imageAlt}
           fill
           className="object-contain p-0.5 sm:object-cover sm:p-0 lg:object-contain"
@@ -255,12 +265,13 @@ function VolumeDisclaimer({ className }: { className?: string }) {
 function VolumeIntentChoiceCard({
   title,
   description,
-  imageFile,
+  imageSrc,
+  imageAlt,
   onClick,
 }: {
   title: string
   description: string
-  imageFile: string
+  imageSrc: string
   imageAlt: string
   onClick: () => void
 }) {
@@ -272,12 +283,11 @@ function VolumeIntentChoiceCard({
     >
       <span className="order-tunnel-volume-intent-card__icon">
         <Image
-          src={volumeEstimatorImageSrc(imageFile)}
-          alt=""
+          src={imageSrc}
+          alt={imageAlt}
           width={56}
           height={56}
           className="size-full object-contain"
-          aria-hidden
         />
       </span>
       <span className="order-tunnel-volume-intent-card__body">
@@ -537,15 +547,15 @@ export function ParticulierVolumeStep({
             <VolumeIntentChoiceCard
               title="Je choisis ma benne"
               description="Je connais déjà la taille dont j’ai besoin."
-              imageFile={VOLUME_INTENT_KNOWN_IMAGE}
-              imageAlt="Benne de location"
+              imageSrc={VOLUME_INTENT_KNOWN.src}
+              imageAlt={VOLUME_INTENT_KNOWN.alt}
               onClick={() => setView("known")}
             />
             <VolumeIntentChoiceCard
               title="Aidez-moi à choisir"
               description="On vous aide à estimer le volume adapté."
-              imageFile={VOLUME_INTENT_GUIDE_IMAGE}
-              imageAlt="Ampoule verte pour choisir la benne"
+              imageSrc={VOLUME_INTENT_GUIDE.src}
+              imageAlt={VOLUME_INTENT_GUIDE.alt}
               onClick={() => {
                 resetEstimatorInputs()
                 setView("estimator-mode")
@@ -602,7 +612,7 @@ export function ParticulierVolumeStep({
                 key={item.id}
                 label={item.label}
                 hint={item.hint}
-                imageFile={item.imageFile}
+                imageSrc={item.imageSrc}
                 imageAlt={item.imageAlt}
                 selected={estimatorMode === item.id}
                 onClick={() => {
@@ -688,11 +698,10 @@ export function ParticulierVolumeStep({
                   <div className="relative mx-auto aspect-[4/3] w-full max-w-[220px] shrink-0 bg-[#E8F0E8] sm:mx-0 sm:max-w-none sm:w-[42%] sm:min-h-[168px]">
                     <Image
                       src={benneImageForVolume(result.recommendedVolumeM3)}
-                      alt=""
+                      alt={benneImageAltForVolume(result.recommendedVolumeM3)}
                       fill
                       sizes="(max-width: 640px) 220px, 240px"
                       className="object-contain p-3"
-                      aria-hidden
                     />
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col justify-center gap-2.5 px-4 py-4 text-center sm:px-5 sm:py-5 sm:text-left">
@@ -763,12 +772,11 @@ export function ParticulierVolumeStep({
             <p className="flex flex-wrap items-center justify-center gap-1.5 text-center text-[13px] leading-snug text-brand-muted">
               <span>Une question ?</span>
               <Image
-                src={volumeEstimatorImageSrc(VOLUME_RESULT_PHONE_IMAGE)}
-                alt=""
+                src={VOLUME_RESULT_PHONE.src}
+                alt={VOLUME_RESULT_PHONE.alt}
                 width={22}
                 height={22}
                 className="size-[22px] shrink-0 object-contain"
-                aria-hidden
               />
               <a
                 href={SITE_PHONE_HREF}

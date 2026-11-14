@@ -6,7 +6,12 @@ import {
   paymentStatusBadgeClass,
   paymentStatusLabel,
 } from "@/lib/commande/labels"
-import { benneImageForPrestationId, benneImageForVolume } from "@/lib/commande/benne-visual"
+import {
+  benneImageAltForVolume,
+  benneImageForPrestationId,
+  benneImageForVolume,
+} from "@/lib/commande/benne-visual"
+import { prestationById } from "@/lib/prestations"
 import { formatOrderReference } from "@/lib/commande/reference"
 import { buildCommandeTimeline } from "@/lib/commande/status-timeline"
 import { cn } from "@/lib/utils"
@@ -25,10 +30,15 @@ type Props = {
 }
 
 export function CommandeTrackCard({ commande, variant = "compact" }: Props) {
+  const volumeM3 =
+    commande.prestation_id != null
+      ? prestationById(commande.prestation_id)?.volumeM3 ?? commande.volume_m3
+      : commande.volume_m3
   const imageSrc =
     commande.prestation_id != null
       ? benneImageForPrestationId(commande.prestation_id)
       : benneImageForVolume(commande.volume_m3)
+  const imageAlt = benneImageAltForVolume(volumeM3)
 
   const { steps, terminalLabel, isTerminalError } = buildCommandeTimeline(
     commande.statut,
@@ -53,7 +63,7 @@ export function CommandeTrackCard({ commande, variant = "compact" }: Props) {
         >
           <Image
             src={imageSrc}
-            alt=""
+            alt={imageAlt}
             fill
             sizes={isHero ? "208px" : "112px"}
             className="object-contain object-center p-2"

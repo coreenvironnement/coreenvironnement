@@ -88,7 +88,10 @@ import {
   isValidPickupDate,
   minDeliveryDateISO,
 } from "@/lib/order/delivery-dates"
-import { BENNE_VISUAL_BY_VOLUME } from "@/lib/commande/benne-visual"
+import {
+  BENNE_VISUAL_BY_VOLUME,
+  benneImageAltForVolume,
+} from "@/lib/commande/benne-visual"
 import { TruckAccessSpaceDisclosure } from "@/components/order/truck-access-space-help"
 import { cn } from "@/lib/utils"
 
@@ -2135,7 +2138,7 @@ function PrestationCard({
         {visualSrc ? (
           <Image
             src={visualSrc}
-            alt={`Benne de ${prestation.volumeM3} m³`}
+            alt={benneImageAltForVolume(prestation.volumeM3)}
             width={368}
             height={207}
             className="h-full w-full object-contain object-center"

@@ -24,6 +24,11 @@ import {
   commentCaFonctionne,
   professionnelsCommentCaFonctionne,
 } from "@/lib/cdc/contenu-vitrine"
+import type { LocalPage } from "@/lib/seo/local-copy"
+import {
+  SITE_IMAGES,
+  buildParcoursStepImageAlt,
+} from "@/lib/media/site-images"
 
 import { VITRINE_ICON_STROKE } from "./icons"
 
@@ -39,40 +44,42 @@ type Step = {
   imageAlt?: string
 }
 
-const PARTICULIER_STEPS: Step[] = [
-  {
-    num: "01",
-    label: "DÉCHETS",
-    text: "Choisissez ce que vous voulez jeter : gravats, bois, encombrants, ou un mélange.",
-    icon: Recycle03Icon,
-    imageSrc: "/vitrine-scroll/benne-vide.png",
-    imageAlt: "Benne vide prête à recevoir vos déchets de chantier",
-  },
-  {
-    num: "02",
-    label: "VOLUME",
-    text: "Sélectionnez le volume de la benne adaptée à vos besoins.",
-    icon: PackageDimensions01Icon,
-    imageSrc: "/images/parcours-etape-2.png",
-    imageAlt: "Camion déposant une benne vide sur votre adresse",
-  },
-  {
-    num: "03",
-    label: "DATE & LIEU",
-    text: "Indiquez la date et l'adresse d'intervention en Île-de-France.",
-    icon: Location01Icon,
-    imageSrc: "/images/parcours-etape-3.png",
-    imageAlt: "Benne verte remplie de gravats sur place",
-  },
-  {
-    num: "04",
-    label: "PAIEMENT",
-    text: "Vous payez par carte. Le prix affiché est le prix à payer.",
-    icon: CreditCardValidationIcon,
-    imageSrc: "/images/parcours-etape-4.png",
-    imageAlt: "Camion porte-benne chargé de gravats — enlèvement",
-  },
-]
+function buildParticulierSteps(localPage?: LocalPage): Step[] {
+  return [
+    {
+      num: "01",
+      label: "DÉCHETS",
+      text: "Choisissez ce que vous voulez jeter : gravats, bois, encombrants, ou un mélange.",
+      icon: Recycle03Icon,
+      imageSrc: SITE_IMAGES.parcours.dechets,
+      imageAlt: buildParcoursStepImageAlt("dechets", localPage),
+    },
+    {
+      num: "02",
+      label: "VOLUME",
+      text: "Sélectionnez le volume de la benne adaptée à vos besoins.",
+      icon: PackageDimensions01Icon,
+      imageSrc: SITE_IMAGES.parcours.volume,
+      imageAlt: buildParcoursStepImageAlt("volume", localPage),
+    },
+    {
+      num: "03",
+      label: "DATE & LIEU",
+      text: "Indiquez la date et l'adresse d'intervention en Île-de-France.",
+      icon: Location01Icon,
+      imageSrc: SITE_IMAGES.parcours.dateLieu,
+      imageAlt: buildParcoursStepImageAlt("dateLieu", localPage),
+    },
+    {
+      num: "04",
+      label: "PAIEMENT",
+      text: "Vous payez par carte. Le prix affiché est le prix à payer.",
+      icon: CreditCardValidationIcon,
+      imageSrc: SITE_IMAGES.parcours.paiement,
+      imageAlt: buildParcoursStepImageAlt("paiement", localPage),
+    },
+  ]
+}
 
 const PRO_ACCOUNT_STEPS: Step[] = [
   {
@@ -243,7 +250,8 @@ function AfterPanel({ description }: { description: string }) {
   )
 }
 
-function ParticulierPanel() {
+function ParticulierPanel({ localPage }: { localPage?: LocalPage }) {
+  const steps = buildParticulierSteps(localPage)
   return (
     <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(14_32_16/0.03),0_12px_32px_-8px_rgb(14_32_16/0.1)]">
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
@@ -251,7 +259,7 @@ function ParticulierPanel() {
           <h3 className="vitrine-h3">
             {commentCaFonctionne.particulier.accroche}
           </h3>
-          <StepsGrid steps={PARTICULIER_STEPS} className="mt-6 sm:mt-8" />
+          <StepsGrid steps={steps} className="mt-6 sm:mt-8" />
         </div>
         <AfterPanel description={commentCaFonctionne.particulier.suite} />
       </div>
@@ -361,11 +369,13 @@ type VitrineHowItWorksProps = {
   defaultProfile?: Profile
   /** Textes « Comment ça fonctionne » de la page /professionnels. */
   professionnelsPageLayout?: boolean
+  localPage?: LocalPage
 }
 
 export function VitrineHowItWorks({
   defaultProfile = "particulier",
   professionnelsPageLayout = false,
+  localPage,
 }: VitrineHowItWorksProps = {}) {
   const [profile, setProfile] = useState<Profile>(defaultProfile)
 
@@ -407,7 +417,7 @@ export function VitrineHowItWorks({
         >
           <div key={profile} className="how-panel-enter">
             {profile === "particulier" ? (
-              <ParticulierPanel />
+              <ParticulierPanel localPage={localPage} />
             ) : (
               <ProfessionnelPanel professionnelsPageLayout={professionnelsPageLayout} />
             )}

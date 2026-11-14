@@ -1,0 +1,164 @@
+[
+  {
+    "from": "hero-paris-truck-mobile.png",
+    "to": "location-benne-camion-idf-hero-mobile.webp",
+    "inputBytes": 2054219,
+    "outputBytes": 175250
+  },
+  {
+    "from": "hero-paris-truck-desktop.png",
+    "to": "location-benne-camion-idf-hero-desktop.webp",
+    "inputBytes": 2191094,
+    "outputBytes": 208822
+  },
+  {
+    "from": "../vitrine-scroll/benne-vide.png",
+    "to": "parcours-etape-01-choix-dechets-benne-vide.webp",
+    "inputBytes": 1629388,
+    "outputBytes": 18930
+  },
+  {
+    "from": "parcours-etape-2.png",
+    "to": "parcours-etape-02-camion-depose-benne.webp",
+    "inputBytes": 687546,
+    "outputBytes": 42322
+  },
+  {
+    "from": "parcours-etape-3.png",
+    "to": "parcours-etape-03-benne-remplie-gravats.webp",
+    "inputBytes": 971659,
+    "outputBytes": 32450
+  },
+  {
+    "from": "parcours-etape-4.png",
+    "to": "parcours-etape-04-enlevement-porte-benne.webp",
+    "inputBytes": 1184756,
+    "outputBytes": 54546
+  },
+  {
+    "from": "Benne à gravats verte, vue trois-quarts-2.png",
+    "to": "benne-gravats-vert-vue-trois-quarts.webp",
+    "inputBytes": 1437863,
+    "outputBytes": 22046
+  },
+  {
+    "from": "Ampoule verte pour choisir la benne-1.png",
+    "to": "illustration-choix-volume-benne-ampoule.webp",
+    "inputBytes": 688960,
+    "outputBytes": 7492
+  },
+  {
+    "from": "Combiné téléphonique vert stylisé-1.png",
+    "to": "illustration-contact-telephone-estimation-volume.webp",
+    "inputBytes": 594746,
+    "outputBytes": 6084
+  },
+  {
+    "from": "Tas rectangulaire de gravats de chantier-2.png",
+    "to": "volume-estimateur-tas-gravats-rectangulaire.webp",
+    "inputBytes": 1584029,
+    "outputBytes": 67710
+  },
+  {
+    "from": "Tas de gravats de chantier-1.png",
+    "to": "volume-estimateur-tas-gravats-irregulier.webp",
+    "inputBytes": 1789967,
+    "outputBytes": 45894
+  },
+  {
+    "from": "Big bag rempli de gravats-3.png",
+    "to": "volume-estimateur-big-bag-gravats.webp",
+    "inputBytes": 2172330,
+    "outputBytes": 86888
+  },
+  {
+    "from": "Déchets inertes acceptés.png",
+    "to": "dechets-inertes-acceptes-gravats-sprite.webp",
+    "inputBytes": 1756101,
+    "outputBytes": 128880
+  },
+  {
+    "from": "Tas de gravats de rénovation résidentielle-3_5.webp",
+    "to": "tunnel-dechets-tas-gravats-renovation.webp",
+    "inputBytes": 188828,
+    "outputBytes": 89528
+  },
+  {
+    "from": "Grand débarras de meubles à domicile-1_1.webp",
+    "to": "tunnel-dechets-debarras-meubles-domicile.webp",
+    "inputBytes": 110060,
+    "outputBytes": 51016
+  },
+  {
+    "from": "Grand tas de déchets verts-5_3.webp",
+    "to": "tunnel-dechets-verts-jardin.webp",
+    "inputBytes": 260336,
+    "outputBytes": 119142
+  },
+  {
+    "from": "Grand tas de déchets de rénovation-4_2.webp",
+    "to": "tunnel-dechets-travaux-melange.webp",
+    "inputBytes": 143746,
+    "outputBytes": 73572
+  },
+  {
+    "from": "Tas de terre excavée au jardin-6_6.webp",
+    "to": "tunnel-dechets-terre-excavee-jardin.webp",
+    "inputBytes": 258212,
+    "outputBytes": 110630
+  },
+  {
+    "from": "Tas de bois de rénovation résidentielle-2_4.webp",
+    "to": "tunnel-dechets-bois-renovation.webp",
+    "inputBytes": 141792,
+    "outputBytes": 67026
+  },
+  {
+    "from": "core-benne-8m3.webp",
+    "to": "location-benne-8m3.webp",
+    "inputBytes": 39896,
+    "outputBytes": 22690
+  },
+  {
+    "from": "core-benne-10m3.webp",
+    "to": "location-benne-10m3.webp",
+    "inputBytes": 38392,
+    "outputBytes": 22584
+  },
+  {
+    "from": "core-benne-15m3.webp",
+    "to": "location-benne-15m3.webp",
+    "inputBytes": 51962,
+    "outputBytes": 29594
+  },
+  {
+    "from": "core-benne-20m3.webp",
+    "to": "location-benne-20m3.webp",
+    "inputBytes": 46880,
+    "outputBytes": 26068
+  },
+  {
+    "from": "core-benne-30m3.webp",
+    "to": "location-benne-30m3.webp",
+    "inputBytes": 49360,
+    "outputBytes": 27522
+  },
+  {
+    "from": "core-icone-suivi.webp",
+    "to": "core-icone-suivi-livraison-benne.webp",
+    "inputBytes": 47186,
+    "outputBytes": 7762
+  },
+  {
+    "from": "core-icone-prix.webp",
+    "to": "core-icone-prix-location-benne.webp",
+    "inputBytes": 54512,
+    "outputBytes": 8304
+  },
+  {
+    "from": "core-icone-valorisation.webp",
+    "to": "core-icone-valorisation-dechets.webp",
+    "inputBytes": 68296,
+    "outputBytes": 11088
+  }
+]

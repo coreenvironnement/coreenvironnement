@@ -33,7 +33,7 @@ export function VitrineParticulierPourquoi() {
                 <div className="pourquoi-core-card__icon-wrap">
                   <Image
                     src={carte.image}
-                    alt=""
+                    alt={carte.imageAlt}
                     width={176}
                     height={176}
                     className="pourquoi-core-card__icon"

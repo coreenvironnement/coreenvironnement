@@ -11,6 +11,7 @@
     "test": "npx --yes tsx scripts/test-local-seo.ts",
     "test:city-guide": "npx --yes tsx scripts/test-city-guide.ts",
     "test:department-guide": "npx --yes tsx scripts/test-department-guide.ts",
+    "optimize:images": "node scripts/optimize-site-images.mjs",
     "deploy": "vercel deploy --prod",
     "deploy:preview": "vercel deploy",
     "stripe": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1",
@@ -55,6 +56,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "^15.5.15",
+    "sharp": "^0.33.5",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vercel": "^65.12.1"

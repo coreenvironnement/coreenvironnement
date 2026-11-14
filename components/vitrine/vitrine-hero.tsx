@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { useEffect, useLayoutEffect, useState } from "react"
 
 import { hero } from "@/lib/cdc/contenu-vitrine"
+import { SITE_IMAGES, buildHeroImageAlt } from "@/lib/media/site-images"
 import type { SeoVariant } from "@/lib/seo/landing-variants"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
@@ -69,6 +70,7 @@ export function VitrineHero({
     : "pointer-events-none absolute inset-0 overflow-hidden"
 
   const introText = seoVariant.intro ?? hero.titre2
+  const heroImageAlt = buildHeroImageAlt(localPage)
 
   return (
     <>
@@ -80,8 +82,8 @@ export function VitrineHero({
         <div className="relative h-full min-h-0 w-full overflow-hidden">
           <div className="hero-bg-frame hero-bg-frame--mobile relative h-full w-full md:hidden">
             <Image
-              src="/images/hero-paris-truck-mobile.png"
-              alt={hero.imageAlt}
+              src={SITE_IMAGES.hero.mobile}
+              alt={heroImageAlt}
               fill
               priority
               sizes="100vw"
@@ -97,8 +99,8 @@ export function VitrineHero({
           </div>
           <div className="hero-bg-frame hero-bg-frame--desktop relative hidden h-full w-full md:block">
             <Image
-              src="/images/hero-paris-truck-desktop.png"
-              alt={hero.imageAlt}
+              src={SITE_IMAGES.hero.desktop}
+              alt={heroImageAlt}
               fill
               priority
               sizes="100vw"
