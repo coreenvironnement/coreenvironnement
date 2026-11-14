@@ -1,10 +1,33 @@
 import Link from "next/link"
 
-import { mentionsLegalesSections, politiqueConfidentialiteSections } from "@/lib/legal"
+import {
+  type LegalParagraph,
+  type LegalSection,
+  mentionsLegalesSections,
+  politiqueConfidentialiteSections,
+} from "@/lib/legal"
 
-type LegalSection = {
-  title: string
-  paragraphs: readonly string[]
+function legalParagraphKey(paragraph: LegalParagraph, index: number): string {
+  if (typeof paragraph === "string") return paragraph
+  return `${paragraph.href}-${index}`
+}
+
+function LegalParagraphBlock({ paragraph }: { paragraph: LegalParagraph }) {
+  if (typeof paragraph === "string") {
+    return <p>{paragraph}</p>
+  }
+  return (
+    <p>
+      <a
+        href={paragraph.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-medium text-brand-green underline underline-offset-2 transition hover:text-brand-navy"
+      >
+        {paragraph.label}
+      </a>
+    </p>
+  )
 }
 
 function LegalContent({ sections }: { sections: readonly LegalSection[] }) {
@@ -14,8 +37,11 @@ function LegalContent({ sections }: { sections: readonly LegalSection[] }) {
         <section key={section.title}>
           <h2 className="text-xl font-bold text-brand-navy">{section.title}</h2>
           <div className="mt-3 space-y-3 text-sm leading-relaxed text-muted-foreground">
-            {section.paragraphs.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
+            {section.paragraphs.map((paragraph, index) => (
+              <LegalParagraphBlock
+                key={legalParagraphKey(paragraph, index)}
+                paragraph={paragraph}
+              />
             ))}
           </div>
         </section>

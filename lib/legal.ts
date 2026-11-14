@@ -21,7 +21,20 @@ export const LEGAL_COMPANY = {
   host: "Vercel Inc., 440 Terry Avenue North, Seattle, WA 98109, États-Unis (https://vercel.com)",
 } as const
 
-export const mentionsLegalesSections = [
+export type LegalParagraph =
+  | string
+  | {
+      type: "link"
+      href: string
+      label: string
+    }
+
+export type LegalSection = {
+  title: string
+  paragraphs: readonly LegalParagraph[]
+}
+
+export const mentionsLegalesSections: readonly LegalSection[] = [
   {
     title: "Éditeur du site",
     paragraphs: [
@@ -44,6 +57,16 @@ export const mentionsLegalesSections = [
     ],
   },
   {
+    title: "Références en ligne",
+    paragraphs: [
+      {
+        type: "link",
+        href: "https://www.vitrimap.fr/adresse/core-environnement-villepinte",
+        label: "Location de benne à Villepinte sur Vitrimap",
+      },
+    ],
+  },
+  {
     title: "Propriété intellectuelle",
     paragraphs: [
       "L'ensemble des éléments du site (textes, visuels, logo, structure) est protégé par le droit de la propriété intellectuelle. Toute reproduction ou représentation sans autorisation préalable est interdite.",
@@ -55,7 +78,7 @@ export const mentionsLegalesSections = [
       `${LEGAL_COMPANY.name} s'efforce d'assurer l'exactitude des informations publiées. Toutefois, l'éditeur ne saurait être tenu responsable des erreurs, omissions ou indisponibilités temporaires du service.`,
     ],
   },
-] as const
+]
 
 /** Conditions Générales de Vente officielles — texte fourni par le client, sans modification de fond. */
 export const cgvSections = [
