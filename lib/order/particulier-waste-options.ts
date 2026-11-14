@@ -29,8 +29,7 @@ const PARTICULIER_WASTE_OPTIONS_RAW: readonly ParticulierWasteOption[] = [
     description: "Béton, briques, tuiles, carrelage.",
     cardSubtitle: "Pour les gravats propres",
     imageSrc: SITE_IMAGES.waste.gravats,
-    imageAlt:
-      "Tas de gravats de rénovation — photo pour le choix « gravats » dans la location de benne",
+    imageAlt: "Tas de gravats de rénovation (béton, briques, tuiles)",
     family: "gravats_propres",
   },
   {

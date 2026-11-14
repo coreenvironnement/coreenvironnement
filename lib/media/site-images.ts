@@ -48,35 +48,25 @@ export const SITE_IMAGES = {
 const HERO_ALT_BASE =
   "Camion CORE Environnement transportant une benne — illustration pour la location de benne en Île-de-France"
 
-/** Alt hero : contexte page locale sur l’offre, pas la géographie de la photo. */
+/** Alt hero : suffixe local uniquement sur pages locales (offre, pas la photo). */
 export function buildHeroImageAlt(localPage?: LocalPage): string {
   if (!localPage) return HERO_ALT_BASE
   return `${HERO_ALT_BASE} — prestation ${geoPrepositionalPhrase(localPage)}`
 }
 
-const PARCOURS_ALT = {
-  dechets:
-    "Benne vide prête à recevoir les déchets choisis dans le tunnel de commande",
-  volume: "Camion déposant une benne vide à l’adresse d’intervention",
+export const PARCOURS_STEP_IMAGE_ALT = {
+  dechets: "Benne vide prête à recevoir vos déchets de chantier",
+  volume: "Camion déposant une benne vide sur votre adresse",
   dateLieu: "Benne verte remplie de gravats sur le lieu de pose",
-  paiement: "Camion porte-benne chargé pour l’enlèvement des gravats",
+  paiement: "Camion porte-benne chargé de gravats — enlèvement",
 } as const
 
 export function buildParcoursStepImageAlt(
-  step: keyof typeof PARCOURS_ALT,
-  localPage?: LocalPage,
+  step: keyof typeof PARCOURS_STEP_IMAGE_ALT,
 ): string {
-  const base = PARCOURS_ALT[step]
-  if (!localPage) return base
-  return `${base} — étapes location de benne ${geoPrepositionalPhrase(localPage)}`
+  return PARCOURS_STEP_IMAGE_ALT[step]
 }
 
 export function benneVolumeImageAlt(volumeM3: number): string {
-  return `Illustration d’une benne de location de ${volumeM3} m³`
+  return `Benne de location de ${volumeM3} m³`
 }
-
-export const POURQUOI_ICONE_ALT = {
-  suivi: "Pictogramme suivi de livraison de benne en temps réel",
-  prix: "Pictogramme prix affiché avant paiement de la location de benne",
-  valorisation: "Pictogramme valorisation des déchets collectés",
-} as const

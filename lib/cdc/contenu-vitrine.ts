@@ -372,7 +372,6 @@ export const particulierAccueil = {
         texte:
           "Suivez votre commande en direct et consultez l'heure prévue de livraison.",
         image: "/images/core-icone-suivi-livraison-benne.webp",
-        imageAlt: "Pictogramme suivi de livraison de benne en temps réel",
       },
       {
         id: "prix",
@@ -380,14 +379,12 @@ export const particulierAccueil = {
         texte:
           "Votre tarif s’affiche avant de confirmer votre réservation.",
         image: "/images/core-icone-prix-location-benne.webp",
-        imageAlt: "Pictogramme prix affiché avant paiement de la location de benne",
       },
       {
         id: "valorisation",
         titre: "Vos déchets deviennent des ressources",
         texte: "99 % des déchets pris en charge sont valorisés.",
         image: "/images/core-icone-valorisation-dechets.webp",
-        imageAlt: "Pictogramme valorisation des déchets collectés",
       },
     ],
   },

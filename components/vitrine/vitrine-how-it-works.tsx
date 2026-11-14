@@ -24,7 +24,6 @@ import {
   commentCaFonctionne,
   professionnelsCommentCaFonctionne,
 } from "@/lib/cdc/contenu-vitrine"
-import type { LocalPage } from "@/lib/seo/local-copy"
 import {
   SITE_IMAGES,
   buildParcoursStepImageAlt,
@@ -44,7 +43,7 @@ type Step = {
   imageAlt?: string
 }
 
-function buildParticulierSteps(localPage?: LocalPage): Step[] {
+function buildParticulierSteps(): Step[] {
   return [
     {
       num: "01",
@@ -52,7 +51,7 @@ function buildParticulierSteps(localPage?: LocalPage): Step[] {
       text: "Choisissez ce que vous voulez jeter : gravats, bois, encombrants, ou un mélange.",
       icon: Recycle03Icon,
       imageSrc: SITE_IMAGES.parcours.dechets,
-      imageAlt: buildParcoursStepImageAlt("dechets", localPage),
+      imageAlt: buildParcoursStepImageAlt("dechets"),
     },
     {
       num: "02",
@@ -60,7 +59,7 @@ function buildParticulierSteps(localPage?: LocalPage): Step[] {
       text: "Sélectionnez le volume de la benne adaptée à vos besoins.",
       icon: PackageDimensions01Icon,
       imageSrc: SITE_IMAGES.parcours.volume,
-      imageAlt: buildParcoursStepImageAlt("volume", localPage),
+      imageAlt: buildParcoursStepImageAlt("volume"),
     },
     {
       num: "03",
@@ -68,7 +67,7 @@ function buildParticulierSteps(localPage?: LocalPage): Step[] {
       text: "Indiquez la date et l'adresse d'intervention en Île-de-France.",
       icon: Location01Icon,
       imageSrc: SITE_IMAGES.parcours.dateLieu,
-      imageAlt: buildParcoursStepImageAlt("dateLieu", localPage),
+      imageAlt: buildParcoursStepImageAlt("dateLieu"),
     },
     {
       num: "04",
@@ -76,7 +75,7 @@ function buildParticulierSteps(localPage?: LocalPage): Step[] {
       text: "Vous payez par carte. Le prix affiché est le prix à payer.",
       icon: CreditCardValidationIcon,
       imageSrc: SITE_IMAGES.parcours.paiement,
-      imageAlt: buildParcoursStepImageAlt("paiement", localPage),
+      imageAlt: buildParcoursStepImageAlt("paiement"),
     },
   ]
 }
@@ -250,8 +249,8 @@ function AfterPanel({ description }: { description: string }) {
   )
 }
 
-function ParticulierPanel({ localPage }: { localPage?: LocalPage }) {
-  const steps = buildParticulierSteps(localPage)
+function ParticulierPanel() {
+  const steps = buildParticulierSteps()
   return (
     <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(14_32_16/0.03),0_12px_32px_-8px_rgb(14_32_16/0.1)]">
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
@@ -369,13 +368,11 @@ type VitrineHowItWorksProps = {
   defaultProfile?: Profile
   /** Textes « Comment ça fonctionne » de la page /professionnels. */
   professionnelsPageLayout?: boolean
-  localPage?: LocalPage
 }
 
 export function VitrineHowItWorks({
   defaultProfile = "particulier",
   professionnelsPageLayout = false,
-  localPage,
 }: VitrineHowItWorksProps = {}) {
   const [profile, setProfile] = useState<Profile>(defaultProfile)
 
@@ -417,7 +414,7 @@ export function VitrineHowItWorks({
         >
           <div key={profile} className="how-panel-enter">
             {profile === "particulier" ? (
-              <ParticulierPanel localPage={localPage} />
+              <ParticulierPanel />
             ) : (
               <ProfessionnelPanel professionnelsPageLayout={professionnelsPageLayout} />
             )}

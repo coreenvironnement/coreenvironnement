@@ -1,164 +1,360 @@
-[
-  {
-    "from": "hero-paris-truck-mobile.png",
-    "to": "location-benne-camion-idf-hero-mobile.webp",
-    "inputBytes": 2054219,
-    "outputBytes": 175250
-  },
-  {
-    "from": "hero-paris-truck-desktop.png",
-    "to": "location-benne-camion-idf-hero-desktop.webp",
-    "inputBytes": 2191094,
-    "outputBytes": 208822
-  },
-  {
-    "from": "../vitrine-scroll/benne-vide.png",
-    "to": "parcours-etape-01-choix-dechets-benne-vide.webp",
-    "inputBytes": 1629388,
-    "outputBytes": 18930
-  },
-  {
-    "from": "parcours-etape-2.png",
-    "to": "parcours-etape-02-camion-depose-benne.webp",
-    "inputBytes": 687546,
-    "outputBytes": 42322
-  },
-  {
-    "from": "parcours-etape-3.png",
-    "to": "parcours-etape-03-benne-remplie-gravats.webp",
-    "inputBytes": 971659,
-    "outputBytes": 32450
-  },
-  {
-    "from": "parcours-etape-4.png",
-    "to": "parcours-etape-04-enlevement-porte-benne.webp",
-    "inputBytes": 1184756,
-    "outputBytes": 54546
-  },
-  {
-    "from": "Benne à gravats verte, vue trois-quarts-2.png",
-    "to": "benne-gravats-vert-vue-trois-quarts.webp",
-    "inputBytes": 1437863,
-    "outputBytes": 22046
-  },
-  {
-    "from": "Ampoule verte pour choisir la benne-1.png",
-    "to": "illustration-choix-volume-benne-ampoule.webp",
-    "inputBytes": 688960,
-    "outputBytes": 7492
-  },
-  {
-    "from": "Combiné téléphonique vert stylisé-1.png",
-    "to": "illustration-contact-telephone-estimation-volume.webp",
-    "inputBytes": 594746,
-    "outputBytes": 6084
-  },
-  {
-    "from": "Tas rectangulaire de gravats de chantier-2.png",
-    "to": "volume-estimateur-tas-gravats-rectangulaire.webp",
-    "inputBytes": 1584029,
-    "outputBytes": 67710
-  },
-  {
-    "from": "Tas de gravats de chantier-1.png",
-    "to": "volume-estimateur-tas-gravats-irregulier.webp",
-    "inputBytes": 1789967,
-    "outputBytes": 45894
-  },
-  {
-    "from": "Big bag rempli de gravats-3.png",
-    "to": "volume-estimateur-big-bag-gravats.webp",
-    "inputBytes": 2172330,
-    "outputBytes": 86888
-  },
-  {
-    "from": "Déchets inertes acceptés.png",
-    "to": "dechets-inertes-acceptes-gravats-sprite.webp",
-    "inputBytes": 1756101,
-    "outputBytes": 128880
-  },
-  {
-    "from": "Tas de gravats de rénovation résidentielle-3_5.webp",
-    "to": "tunnel-dechets-tas-gravats-renovation.webp",
-    "inputBytes": 188828,
-    "outputBytes": 89528
-  },
-  {
-    "from": "Grand débarras de meubles à domicile-1_1.webp",
-    "to": "tunnel-dechets-debarras-meubles-domicile.webp",
-    "inputBytes": 110060,
-    "outputBytes": 51016
-  },
-  {
-    "from": "Grand tas de déchets verts-5_3.webp",
-    "to": "tunnel-dechets-verts-jardin.webp",
-    "inputBytes": 260336,
-    "outputBytes": 119142
-  },
-  {
-    "from": "Grand tas de déchets de rénovation-4_2.webp",
-    "to": "tunnel-dechets-travaux-melange.webp",
-    "inputBytes": 143746,
-    "outputBytes": 73572
-  },
-  {
-    "from": "Tas de terre excavée au jardin-6_6.webp",
-    "to": "tunnel-dechets-terre-excavee-jardin.webp",
-    "inputBytes": 258212,
-    "outputBytes": 110630
-  },
-  {
-    "from": "Tas de bois de rénovation résidentielle-2_4.webp",
-    "to": "tunnel-dechets-bois-renovation.webp",
-    "inputBytes": 141792,
-    "outputBytes": 67026
-  },
-  {
-    "from": "core-benne-8m3.webp",
-    "to": "location-benne-8m3.webp",
-    "inputBytes": 39896,
-    "outputBytes": 22690
-  },
-  {
-    "from": "core-benne-10m3.webp",
-    "to": "location-benne-10m3.webp",
-    "inputBytes": 38392,
-    "outputBytes": 22584
-  },
-  {
-    "from": "core-benne-15m3.webp",
-    "to": "location-benne-15m3.webp",
-    "inputBytes": 51962,
-    "outputBytes": 29594
-  },
-  {
-    "from": "core-benne-20m3.webp",
-    "to": "location-benne-20m3.webp",
-    "inputBytes": 46880,
-    "outputBytes": 26068
-  },
-  {
-    "from": "core-benne-30m3.webp",
-    "to": "location-benne-30m3.webp",
-    "inputBytes": 49360,
-    "outputBytes": 27522
-  },
-  {
-    "from": "core-icone-suivi.webp",
-    "to": "core-icone-suivi-livraison-benne.webp",
-    "inputBytes": 47186,
-    "outputBytes": 7762
-  },
-  {
-    "from": "core-icone-prix.webp",
-    "to": "core-icone-prix-location-benne.webp",
-    "inputBytes": 54512,
-    "outputBytes": 8304
-  },
-  {
-    "from": "core-icone-valorisation.webp",
-    "to": "core-icone-valorisation-dechets.webp",
-    "inputBytes": 68296,
-    "outputBytes": 11088
-  }
-]
+{
+  "ranAt": "2026-11-14T12:17:20.767Z",
+  "total": 27,
+  "ok": 27,
+  "failed": 0,
+  "successes": [
+    {
+      "from": "hero-paris-truck-mobile.png",
+      "to": "location-benne-camion-idf-hero-mobile.webp",
+      "legacyPath": "/images/hero-paris-truck-mobile.png",
+      "mode": "webp-encode",
+      "inputBytes": 2054219,
+      "outputBytes": 175250,
+      "inputWidth": 941,
+      "inputHeight": 1672,
+      "outputWidth": 941,
+      "outputHeight": 1672,
+      "status": "ok"
+    },
+    {
+      "from": "hero-paris-truck-desktop.png",
+      "to": "location-benne-camion-idf-hero-desktop.webp",
+      "legacyPath": "/images/hero-paris-truck-desktop.png",
+      "mode": "webp-encode",
+      "inputBytes": 2191094,
+      "outputBytes": 208822,
+      "inputWidth": 1812,
+      "inputHeight": 868,
+      "outputWidth": 1812,
+      "outputHeight": 868,
+      "status": "ok"
+    },
+    {
+      "from": "../vitrine-scroll/benne-vide.png",
+      "to": "parcours-etape-01-choix-dechets-benne-vide.webp",
+      "legacyPath": "/vitrine-scroll/benne-vide.png",
+      "mode": "webp-encode",
+      "inputBytes": 1629388,
+      "outputBytes": 18930,
+      "inputWidth": 2149,
+      "inputHeight": 732,
+      "outputWidth": 800,
+      "outputHeight": 272,
+      "status": "ok"
+    },
+    {
+      "from": "parcours-etape-2.png",
+      "to": "parcours-etape-02-camion-depose-benne.webp",
+      "legacyPath": "/images/parcours-etape-2.png",
+      "mode": "webp-encode",
+      "inputBytes": 687546,
+      "outputBytes": 42322,
+      "inputWidth": 1448,
+      "inputHeight": 1086,
+      "outputWidth": 800,
+      "outputHeight": 600,
+      "status": "ok"
+    },
+    {
+      "from": "parcours-etape-3.png",
+      "to": "parcours-etape-03-benne-remplie-gravats.webp",
+      "legacyPath": "/images/parcours-etape-3.png",
+      "mode": "webp-encode",
+      "inputBytes": 971659,
+      "outputBytes": 32450,
+      "inputWidth": 1448,
+      "inputHeight": 1086,
+      "outputWidth": 800,
+      "outputHeight": 600,
+      "status": "ok"
+    },
+    {
+      "from": "parcours-etape-4.png",
+      "to": "parcours-etape-04-enlevement-porte-benne.webp",
+      "legacyPath": "/images/parcours-etape-4.png",
+      "mode": "webp-encode",
+      "inputBytes": 1184756,
+      "outputBytes": 54546,
+      "inputWidth": 1448,
+      "inputHeight": 1086,
+      "outputWidth": 800,
+      "outputHeight": 600,
+      "status": "ok"
+    },
+    {
+      "from": "Benne à gravats verte, vue trois-quarts-2.png",
+      "to": "benne-gravats-vert-vue-trois-quarts.webp",
+      "legacyPath": "/images/Benne à gravats verte, vue trois-quarts-2.png",
+      "mode": "webp-encode",
+      "inputBytes": 1437863,
+      "outputBytes": 22046,
+      "inputWidth": 1536,
+      "inputHeight": 1024,
+      "outputWidth": 560,
+      "outputHeight": 373,
+      "status": "ok"
+    },
+    {
+      "from": "Ampoule verte pour choisir la benne-1.png",
+      "to": "illustration-choix-volume-benne-ampoule.webp",
+      "legacyPath": "/images/Ampoule verte pour choisir la benne-1.png",
+      "mode": "webp-encode",
+      "inputBytes": 688960,
+      "outputBytes": 7492,
+      "inputWidth": 1254,
+      "inputHeight": 1254,
+      "outputWidth": 224,
+      "outputHeight": 224,
+      "status": "ok"
+    },
+    {
+      "from": "Combiné téléphonique vert stylisé-1.png",
+      "to": "illustration-contact-telephone-estimation-volume.webp",
+      "legacyPath": "/images/Combiné téléphonique vert stylisé-1.png",
+      "mode": "webp-encode",
+      "inputBytes": 594746,
+      "outputBytes": 6084,
+      "inputWidth": 1254,
+      "inputHeight": 1254,
+      "outputWidth": 224,
+      "outputHeight": 224,
+      "status": "ok"
+    },
+    {
+      "from": "Tas rectangulaire de gravats de chantier-2.png",
+      "to": "volume-estimateur-tas-gravats-rectangulaire.webp",
+      "legacyPath": "/images/Tas rectangulaire de gravats de chantier-2.png",
+      "mode": "webp-encode",
+      "inputBytes": 1584029,
+      "outputBytes": 67710,
+      "inputWidth": 1254,
+      "inputHeight": 1254,
+      "outputWidth": 640,
+      "outputHeight": 640,
+      "status": "ok"
+    },
+    {
+      "from": "Tas de gravats de chantier-1.png",
+      "to": "volume-estimateur-tas-gravats-irregulier.webp",
+      "legacyPath": "/images/Tas de gravats de chantier-1.png",
+      "mode": "webp-encode",
+      "inputBytes": 1789967,
+      "outputBytes": 45894,
+      "inputWidth": 1774,
+      "inputHeight": 887,
+      "outputWidth": 640,
+      "outputHeight": 320,
+      "status": "ok"
+    },
+    {
+      "from": "Big bag rempli de gravats-3.png",
+      "to": "volume-estimateur-big-bag-gravats.webp",
+      "legacyPath": "/images/Big bag rempli de gravats-3.png",
+      "mode": "webp-encode",
+      "inputBytes": 2172330,
+      "outputBytes": 86888,
+      "inputWidth": 1254,
+      "inputHeight": 1254,
+      "outputWidth": 640,
+      "outputHeight": 640,
+      "status": "ok"
+    },
+    {
+      "from": "Déchets inertes acceptés.png",
+      "to": "dechets-inertes-acceptes-gravats-sprite.webp",
+      "legacyPath": "/images/Déchets inertes acceptés.png",
+      "mode": "webp-encode",
+      "inputBytes": 1756101,
+      "outputBytes": 128880,
+      "inputWidth": 1920,
+      "inputHeight": 819,
+      "outputWidth": 1200,
+      "outputHeight": 512,
+      "status": "ok"
+    },
+    {
+      "from": "Tas de gravats de rénovation résidentielle-3_5.webp",
+      "to": "tunnel-dechets-tas-gravats-renovation.webp",
+      "legacyPath": "/images/Tas de gravats de rénovation résidentielle-3_5.webp",
+      "mode": "copy",
+      "inputBytes": 188828,
+      "outputBytes": 188828,
+      "inputWidth": 1448,
+      "inputHeight": 1086,
+      "outputWidth": 1448,
+      "outputHeight": 1086,
+      "status": "ok"
+    },
+    {
+      "from": "Grand débarras de meubles à domicile-1_1.webp",
+      "to": "tunnel-dechets-debarras-meubles-domicile.webp",
+      "legacyPath": "/images/Grand débarras de meubles à domicile-1_1.webp",
+      "mode": "copy",
+      "inputBytes": 110060,
+      "outputBytes": 110060,
+      "inputWidth": 1448,
+      "inputHeight": 1086,
+      "outputWidth": 1448,
+      "outputHeight": 1086,
+      "status": "ok"
+    },
+    {
+      "from": "Grand tas de déchets verts-5_3.webp",
+      "to": "tunnel-dechets-verts-jardin.webp",
+      "legacyPath": "/images/Grand tas de déchets verts-5_3.webp",
+      "mode": "copy",
+      "inputBytes": 260336,
+      "outputBytes": 260336,
+      "inputWidth": 1448,
+      "inputHeight": 1086,
+      "outputWidth": 1448,
+      "outputHeight": 1086,
+      "status": "ok"
+    },
+    {
+      "from": "Grand tas de déchets de rénovation-4_2.webp",
+      "to": "tunnel-dechets-travaux-melange.webp",
+      "legacyPath": "/images/Grand tas de déchets de rénovation-4_2.webp",
+      "mode": "copy",
+      "inputBytes": 143746,
+      "outputBytes": 143746,
+      "inputWidth": 1448,
+      "inputHeight": 1086,
+      "outputWidth": 1448,
+      "outputHeight": 1086,
+      "status": "ok"
+    },
+    {
+      "from": "Tas de terre excavée au jardin-6_6.webp",
+      "to": "tunnel-dechets-terre-excavee-jardin.webp",
+      "legacyPath": "/images/Tas de terre excavée au jardin-6_6.webp",
+      "mode": "copy",
+      "inputBytes": 258212,
+      "outputBytes": 258212,
+      "inputWidth": 1448,
+      "inputHeight": 1086,
+      "outputWidth": 1448,
+      "outputHeight": 1086,
+      "status": "ok"
+    },
+    {
+      "from": "Tas de bois de rénovation résidentielle-2_4.webp",
+      "to": "tunnel-dechets-bois-renovation.webp",
+      "legacyPath": "/images/Tas de bois de rénovation résidentielle-2_4.webp",
+      "mode": "copy",
+      "inputBytes": 141792,
+      "outputBytes": 141792,
+      "inputWidth": 1448,
+      "inputHeight": 1086,
+      "outputWidth": 1448,
+      "outputHeight": 1086,
+      "status": "ok"
+    },
+    {
+      "from": "core-benne-8m3.webp",
+      "to": "location-benne-8m3.webp",
+      "legacyPath": "/images/core-benne-8m3.webp",
+      "mode": "copy",
+      "inputBytes": 39896,
+      "outputBytes": 39896,
+      "inputWidth": 800,
+      "inputHeight": 600,
+      "outputWidth": 800,
+      "outputHeight": 600,
+      "status": "ok"
+    },
+    {
+      "from": "core-benne-10m3.webp",
+      "to": "location-benne-10m3.webp",
+      "legacyPath": "/images/core-benne-10m3.webp",
+      "mode": "copy",
+      "inputBytes": 38392,
+      "outputBytes": 38392,
+      "inputWidth": 800,
+      "inputHeight": 600,
+      "outputWidth": 800,
+      "outputHeight": 600,
+      "status": "ok"
+    },
+    {
+      "from": "core-benne-15m3.webp",
+      "to": "location-benne-15m3.webp",
+      "legacyPath": "/images/core-benne-15m3.webp",
+      "mode": "copy",
+      "inputBytes": 51962,
+      "outputBytes": 51962,
+      "inputWidth": 800,
+      "inputHeight": 600,
+      "outputWidth": 800,
+      "outputHeight": 600,
+      "status": "ok"
+    },
+    {
+      "from": "core-benne-20m3.webp",
+      "to": "location-benne-20m3.webp",
+      "legacyPath": "/images/core-benne-20m3.webp",
+      "mode": "copy",
+      "inputBytes": 46880,
+      "outputBytes": 46880,
+      "inputWidth": 800,
+      "inputHeight": 600,
+      "outputWidth": 800,
+      "outputHeight": 600,
+      "status": "ok"
+    },
+    {
+      "from": "core-benne-30m3.webp",
+      "to": "location-benne-30m3.webp",
+      "legacyPath": "/images/core-benne-30m3.webp",
+      "mode": "copy",
+      "inputBytes": 49360,
+      "outputBytes": 49360,
+      "inputWidth": 800,
+      "inputHeight": 600,
+      "outputWidth": 800,
+      "outputHeight": 600,
+      "status": "ok"
+    },
+    {
+      "from": "core-icone-suivi.webp",
+      "to": "core-icone-suivi-livraison-benne.webp",
+      "legacyPath": "/images/core-icone-suivi.webp",
+      "mode": "copy",
+      "inputBytes": 47186,
+      "outputBytes": 47186,
+      "inputWidth": 1254,
+      "inputHeight": 1254,
+      "outputWidth": 1254,
+      "outputHeight": 1254,
+      "status": "ok"
+    },
+    {
+      "from": "core-icone-prix.webp",
+      "to": "core-icone-prix-location-benne.webp",
+      "legacyPath": "/images/core-icone-prix.webp",
+      "mode": "copy",
+      "inputBytes": 54512,
+      "outputBytes": 54512,
+      "inputWidth": 1254,
+      "inputHeight": 1254,
+      "outputWidth": 1254,
+      "outputHeight": 1254,
+      "status": "ok"
+    },
+    {
+      "from": "core-icone-valorisation.webp",
+      "to": "core-icone-valorisation-dechets.webp",
+      "legacyPath": "/images/core-icone-valorisation.webp",
+      "mode": "copy",
+      "inputBytes": 68296,
+      "outputBytes": 68296,
+      "inputWidth": 1254,
+      "inputHeight": 1254,
+      "outputWidth": 1254,
+      "outputHeight": 1254,
+      "status": "ok"
+    }
+  ],
+  "failures": []
+}
