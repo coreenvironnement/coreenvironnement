@@ -54,6 +54,10 @@ export function PreparationLottieArt({
   const artClass =
     variant === "waste" ? "cp-art cp-art--waste" : "cp-art"
   const posterHeight = variant === "waste" ? 300 : 400
+  const posterLoading =
+    animation === "01-volume" ? undefined : ("lazy" as const)
+  const posterFetchPriority =
+    animation === "01-volume" ? undefined : ("low" as const)
 
   return (
     <figure
@@ -63,11 +67,13 @@ export function PreparationLottieArt({
     >
       <img
         className="cp-poster"
-        src={`${PACK_BASE}/posters/${animation}.svg`}
+        src={`${PACK_BASE}/posters/${animation}-poster.webp`}
         alt=""
         width={800}
         height={posterHeight}
         decoding="async"
+        loading={posterLoading}
+        fetchPriority={posterFetchPriority}
       />
       {shouldPlay && !reduceMotion ? (
         <div className="cp-lottie">

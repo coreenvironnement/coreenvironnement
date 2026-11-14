@@ -1,0 +1,62 @@
+{
+  "date": "2026-11-14T13:15:29.402Z",
+  "posters": [
+    {
+      "id": "01-volume",
+      "viewBox": "800x400",
+      "embeddedWebpBytes": 99736,
+      "flattenedPngBytes": 208153,
+      "outputWebpBytes": 104318,
+      "quality": "lossless",
+      "pixelDiff": {
+        "maxDelta": 0,
+        "meanDelta": 0,
+        "differingPixels": 0
+      },
+      "svgBytesBefore": 266267,
+      "svgBytesAfter": 180,
+      "totalBytesBefore": 266267,
+      "totalBytesAfter": 104498,
+      "savedBytes": 161769,
+      "savedPercent": 60.8
+    },
+    {
+      "id": "02-acces",
+      "viewBox": "800x400",
+      "embeddedWebpBytes": 159116,
+      "flattenedPngBytes": 254207,
+      "outputWebpBytes": 141260,
+      "quality": "lossless",
+      "pixelDiff": {
+        "maxDelta": 0,
+        "meanDelta": 0,
+        "differingPixels": 0
+      },
+      "svgBytesBefore": 212551,
+      "svgBytesAfter": 179,
+      "totalBytesBefore": 212551,
+      "totalBytesAfter": 141439,
+      "savedBytes": 71112,
+      "savedPercent": 33.5
+    },
+    {
+      "id": "03-dechets",
+      "viewBox": "800x300",
+      "embeddedWebpBytes": 258556,
+      "flattenedPngBytes": 243022,
+      "outputWebpBytes": 140478,
+      "quality": "lossless",
+      "pixelDiff": {
+        "maxDelta": 0,
+        "meanDelta": 0,
+        "differingPixels": 0
+      },
+      "svgBytesBefore": 344948,
+      "svgBytesAfter": 181,
+      "totalBytesBefore": 344948,
+      "totalBytesAfter": 140659,
+      "savedBytes": 204289,
+      "savedPercent": 59.2
+    }
+  ]
+}
