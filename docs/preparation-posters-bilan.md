@@ -25,14 +25,23 @@ Script : `node scripts/optimize-preparation-posters.mjs`
 
 Le composant React charge **directement** les `.webp` (une requête HTTP par poster, sans chaîne SVG → image).
 
-## Prod (avant déploiement de ce chantier)
+## Prod (après déploiement)
 
-`curl -I` sur `https://core-environnement.fr` le 14/11/2026 :
+Commit déployé : **`47f6535`** — `perf(vitrine): posters preparation en WebP externes et lazy loading`  
+Vérification `https://core-environnement.fr` le 14/11/2026 (post-release Vercel).
 
-| Ressource | Content-Length prod |
-|-----------|---------------------|
-| `/images/core-preparation-pack/posters/01-volume.svg` | 266 267 o |
-| Posters optimisés (`*-poster.webp`) | non déployés |
+| Ressource | HTTP | Content-Length |
+|-----------|------|----------------|
+| `/images/core-preparation-pack/posters/01-volume-poster.webp` | 200 | 104 318 o |
+| `/images/core-preparation-pack/posters/02-acces-poster.webp` | 200 | 141 260 o |
+| `/images/core-preparation-pack/posters/03-dechets-poster.webp` | 200 | 140 478 o |
+| **Total posters (servis)** | | **386 056 o** (−53 % vs ~824 Ko SVG) |
+
+Page d’accueil : les trois `img.cp-poster` pointent vers les `*-poster.webp` (SSR/RSC).  
+Attributs prod : `01-volume` sans `loading` ; `02-acces` / `03-dechets` `loading="lazy"` + `fetchPriority="low"`.  
+`prefers-reduced-motion: reduce` (chargement initial) : posters OK, **aucune** requête `animations/*.json`, pas de canvas Lottie.
+
+## Prod (référence avant chantier)
 | `/images/stickyheaderlogo.png` (source logo header) | 737 196 o |
 | `/_next/image?…stickyheaderlogo.png&w=256&q=75` | **7 380 o** |
 | `/_next/image?…stickyheaderlogo.png&w=384&q=75` | **11 703 o** |
@@ -64,5 +73,4 @@ Le composant React charge **directement** les `.webp` (une requête HTTP par pos
 
 ## Reste à faire
 
-- Déployer pour que la prod serve les `*-poster.webp` et le nouveau composant.
-- Re-tester `Content-Length` prod après déploiement.
+- Aucun blocage sur le périmètre posters (déployé en prod).
