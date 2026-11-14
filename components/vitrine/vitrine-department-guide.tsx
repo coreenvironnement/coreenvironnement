@@ -7,10 +7,12 @@ import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
 import { getDepartmentGuideCopy } from "@/lib/seo/department-guides"
 import type { LocalPage } from "@/lib/seo/local-copy"
 import { getCityPagesForDepartement } from "@/lib/seo/local-pages"
+import { getPrestationMeshLinksForDepartmentPage } from "@/lib/seo/prestation-mesh-lot1"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 
 import { VITRINE_ICON_STROKE } from "./icons"
 import { useVitrineOrder } from "./order-context"
+import { VitrinePrestationMeshBlock } from "./vitrine-prestation-mesh-block"
 
 export function VitrineDepartmentGuide({ page }: { page: LocalPage }) {
   const { openOrder } = useVitrineOrder()
@@ -26,6 +28,7 @@ export function VitrineDepartmentGuide({ page }: { page: LocalPage }) {
     .filter((city) => !featuredNames.includes(city.nom))
     .slice(0, Math.max(0, 8 - featured.length))
   const cities = [...featured, ...extra].slice(0, 8)
+  const prestationLinks = getPrestationMeshLinksForDepartmentPage(page)
 
   return (
     <section
@@ -80,6 +83,12 @@ export function VitrineDepartmentGuide({ page }: { page: LocalPage }) {
               </ul>
             </div>
           ) : null}
+
+          <VitrinePrestationMeshBlock
+            links={prestationLinks}
+            title={`Prestations dans le ${page.departementCode}`}
+            intro="Accédez aux pages par type de déchet pour l’ensemble du département."
+          />
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
             <button type="button" onClick={() => openOrder()} className="btn btn-accent">

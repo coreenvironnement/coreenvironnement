@@ -5,6 +5,7 @@ import { ArrowUpRight01Icon, CheckmarkCircle02Icon, InformationCircleIcon } from
 
 import type { LocalPage } from "@/lib/seo/local-copy"
 import { getCityOfficialInfo } from "@/lib/seo/city-official-info"
+import { getPrestationMeshLinksForCityPage } from "@/lib/seo/prestation-mesh-lot1"
 import {
   getEntryPriceHt,
   getEntryPriceTtcParticulier,
@@ -13,6 +14,7 @@ import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 
 import { VITRINE_ICON_STROKE } from "./icons"
 import { useVitrineOrder } from "./order-context"
+import { VitrinePrestationMeshBlock } from "./vitrine-prestation-mesh-block"
 
 type GuideVariant = {
   intro: string
@@ -58,6 +60,7 @@ export function VitrineCityGuide({ page }: { page: LocalPage }) {
   const officialInfo = getCityOfficialInfo(page.slug)
   const variant = GUIDE_VARIANTS[stableVariantIndex(page.slug)]
   const city = page.city ?? page.nom
+  const prestationLinks = getPrestationMeshLinksForCityPage(page)
 
   return (
     <section
@@ -121,6 +124,12 @@ export function VitrineCityGuide({ page }: { page: LocalPage }) {
               </div>
             </aside>
           </div>
+
+          <VitrinePrestationMeshBlock
+            links={prestationLinks}
+            title={`Flux de déchets à ${city}`}
+            intro="Pages dédiées pour préciser votre type de benne avant la commande."
+          />
 
           {officialInfo ? (
             <div className="mt-5 rounded-[var(--radius-card)] border border-brand-green/25 bg-brand-green-soft p-6 sm:p-8">

@@ -11,6 +11,7 @@
     "test": "npx --yes tsx scripts/test-local-seo.ts",
     "test:city-guide": "npx --yes tsx scripts/test-city-guide.ts",
     "test:department-guide": "npx --yes tsx scripts/test-department-guide.ts",
+    "test:prestation-mesh-lot1": "npx --yes tsx scripts/test-prestation-mesh-lot1.ts",
     "optimize:images": "node scripts/optimize-site-images.mjs",
     "verify:gravats-sprite": "node scripts/verify-gravats-sprite.mjs",
     "deploy": "vercel deploy --prod",
