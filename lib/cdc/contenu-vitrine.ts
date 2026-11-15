@@ -370,7 +370,7 @@ export const particulierAccueil = {
         id: "suivi",
         titre: "Vous savez quand elle arrive",
         texte:
-          "Suivez votre commande en direct et consultez l'heure prévue de livraison.",
+          "Retrouvez l'état de votre commande et la date de livraison prévue dans votre espace client.",
         image: "/images/core-icone-suivi-livraison-benne.webp",
       },
       {
@@ -383,7 +383,7 @@ export const particulierAccueil = {
       {
         id: "valorisation",
         titre: "Vos déchets deviennent des ressources",
-        texte: "99 % des déchets pris en charge sont valorisés.",
+        texte: "Au moins 90 % des déchets pris en charge sont valorisés.",
         image: "/images/core-icone-valorisation-dechets.webp",
       },
     ],
@@ -455,30 +455,36 @@ export const particulierAccueil = {
 /** FAQ courte affichée sur l’accueil particulier (pas de jargon pro). */
 export const particulierFaq = [
   {
-    q: "À partir de quand puis-je recevoir ma benne ?",
-    r: "La livraison est proposée à partir du lendemain de votre commande, selon les disponibilités. Choisissez votre date parmi celles proposées dans le calendrier.",
-  },
-  {
     q: "Combien coûte une benne pour un particulier ?",
     r: "Le tarif dépend de votre adresse, des déchets et du volume choisi. Renseignez ces informations pour consulter le montant TTC avant le paiement.",
-  },
-  {
-    q: "Puis-je commander entièrement en ligne ?",
-    r: "Oui. Le choix de la benne, les informations de livraison et le paiement se font en ligne. Notre équipe reste disponible par téléphone si vous souhaitez être conseillé.",
   },
   {
     q: "Comment choisir le volume de ma benne ?",
     r: "L'estimateur disponible dans la commande vous aide à évaluer votre besoin. La nature des déchets et leur poids comptent également dans le choix de la benne.",
     linkLabel: "Voir le guide des volumes",
-    linkHref: "https://core-environnement.fr/location-benne/volume",
+    linkHref: "/location-benne/volume",
   },
   {
-    q: "Que se passe-t-il après le paiement ?",
-    r: "Vous recevez un e-mail de confirmation. Nous vous contactons si nécessaire pour préparer la livraison. Vous pouvez également suivre l'avancement de votre commande depuis votre espace client.",
+    q: "Quels déchets puis-je mettre dans ma benne ?",
+    r: "Les déchets doivent correspondre au type de benne choisi. L'amiante, les produits chimiques et les peintures liquides ne sont pas acceptés dans une benne classique. Consultez notre guide et contactez-nous avant de réserver si vous avez un doute.",
+    linkLabel: "Vérifier les déchets acceptés",
+    linkHref: "/location-benne/dechets-acceptes",
   },
   {
-    q: "Quels déchets ne vont pas dans une benne classique ?",
-    r: "Une benne classique n'accepte notamment pas l'amiante, les produits chimiques et les peintures liquides. Contactez-nous avant de réserver si vous hésitez sur un déchet.",
+    q: "Combien de temps puis-je garder la benne ?",
+    r: "La durée de location est définie lors de votre commande. Si vous souhaitez conserver la benne plus longtemps, contactez-nous pour connaître les possibilités de prolongation et les éventuels frais supplémentaires.",
+  },
+  {
+    q: "Puis-je faire déposer la benne dans la rue ?",
+    r: "Une autorisation est nécessaire pour installer une benne sur la voie publique. Avant de prévoir la livraison, contactez votre mairie pour connaître les démarches et le service compétent pour l'emplacement choisi.",
+  },
+  {
+    q: "À partir de quand puis-je recevoir ma benne ?",
+    r: "La livraison est proposée à partir du lendemain de votre commande, selon les disponibilités. Choisissez votre date parmi celles proposées dans le calendrier.",
+  },
+  {
+    q: "Comment réserver ma benne ?",
+    r: "Choisissez votre benne, renseignez les informations de livraison et réglez votre commande en ligne. Vous recevez ensuite un e-mail de confirmation. Si vous hésitez sur le volume ou les déchets à évacuer, notre équipe peut vous conseiller par téléphone avant la réservation.",
   },
   {
     q: "Dois-je être présent lors de la livraison ?",

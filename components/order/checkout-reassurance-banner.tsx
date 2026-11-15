@@ -159,11 +159,11 @@ export function CheckoutParticulierTrackingNote({ className }: { className?: str
         </span>
         <div className="min-w-0 space-y-1 max-md:space-y-0.5">
           <p className="text-pretty text-[13px] font-semibold leading-snug tracking-[-0.01em] text-[#142018] sm:text-[14px]">
-            Suivez l’arrivée de votre benne en direct
+            Retrouvez votre commande dans votre espace client
           </p>
           <p className="text-pretty text-[12px] font-medium leading-snug text-[#3d4f45] sm:text-[13px]">
-            Votre espace de suivi est créé automatiquement après la réservation. Vous y
-            verrez l’état de la livraison et l’heure d’arrivée prévue.
+            Votre espace client est créé après la réservation. Consultez-y l’état de
+            votre commande et la date de livraison prévue.
           </p>
         </div>
       </div>
