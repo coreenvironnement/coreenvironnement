@@ -65,7 +65,7 @@ const guideSource = readFileSync(
   "utf8",
 )
 const homeSource = readFileSync(
-  resolve(process.cwd(), "components/vitrine/vitrine-home.tsx"),
+  resolve(process.cwd(), "components/vitrine/vitrine-home-client.tsx"),
   "utf8",
 )
 const routeSource = readFileSync(

@@ -1,11 +1,9 @@
 "use client"
 
-import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useEffect, useLayoutEffect, useState } from "react"
 
 import { hero } from "@/lib/cdc/contenu-vitrine"
-import { SITE_IMAGES, buildHeroImageAlt } from "@/lib/media/site-images"
 import type { SeoVariant } from "@/lib/seo/landing-variants"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
 import { cn } from "@/lib/utils"
@@ -56,12 +54,14 @@ type VitrineHeroProps = {
   seoVariant: SeoVariant
   localPage?: LocalPage
   heroOrderAudience?: OrderAudience
+  heroBackdrop: React.ReactNode
 }
 
 export function VitrineHero({
   seoVariant,
   localPage,
   heroOrderAudience = "particulier",
+  heroBackdrop,
 }: VitrineHeroProps) {
   const backdropPinned = useHeroBackdropPinned()
   const isParticulier = heroOrderAudience === "particulier"
@@ -70,7 +70,6 @@ export function VitrineHero({
     : "pointer-events-none absolute inset-0 overflow-hidden"
 
   const introText = seoVariant.intro ?? hero.titre2
-  const heroImageAlt = buildHeroImageAlt(localPage)
 
   return (
     <>
@@ -80,35 +79,8 @@ export function VitrineHero({
     >
         <div className={backdropLayerClass}>
         <div className="relative h-full min-h-0 w-full overflow-hidden">
-          <div className="hero-bg-frame hero-bg-frame--mobile relative h-full w-full md:hidden">
-            <Image
-              src={SITE_IMAGES.hero.mobile}
-              alt={heroImageAlt}
-              fill
-              priority
-              sizes="100vw"
-              className="z-0 object-cover object-center"
-            />
-            <div
-              aria-hidden="true"
-              className={cn(
-                "hero-overlay",
-                isParticulier ? "hero-overlay--particulier" : "hero-overlay--standard"
-              )}
-            />
-          </div>
-          <div className="hero-bg-frame hero-bg-frame--desktop relative hidden h-full w-full md:block">
-            <Image
-              src={SITE_IMAGES.hero.desktop}
-              alt={heroImageAlt}
-              fill
-              priority
-              sizes="100vw"
-              className={cn(
-                "z-0 object-cover",
-                isParticulier ? "object-[62%_center]" : "object-[55%_center]"
-              )}
-            />
+          <div className="hero-bg-frame hero-bg-frame--art relative h-full w-full">
+            {heroBackdrop}
             <div
               aria-hidden="true"
               className={cn(

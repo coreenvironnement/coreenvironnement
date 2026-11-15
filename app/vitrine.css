@@ -790,16 +790,18 @@
     isolation: isolate;
   }
 
-  .vitrine-root .hero-bg-frame--mobile {
+  .vitrine-root .hero-bg-frame--art {
     width: 106%;
     height: 106%;
     animation: hero-bg-zoom-mobile 28s ease-in-out infinite alternate;
   }
 
-  .vitrine-root .hero-bg-frame--desktop {
-    width: 100%;
-    height: 100%;
-    animation: hero-bg-zoom-desktop 28s ease-in-out infinite alternate;
+  @media (min-width: 768px) {
+    .vitrine-root .hero-bg-frame--art {
+      width: 100%;
+      height: 100%;
+      animation: hero-bg-zoom-desktop 28s ease-in-out infinite alternate;
+    }
   }
 
 }
