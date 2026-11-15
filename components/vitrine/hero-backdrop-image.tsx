@@ -19,32 +19,33 @@ type HeroBackdropImageProps = {
  * Pas de `priority` (évite doubles preloads) — `fetchPriority` + `loading="eager"` sur l’img.
  */
 export function HeroBackdropImage({ alt, isParticulier }: HeroBackdropImageProps) {
-  const common = { sizes: "100vw" as const, quality: 75 }
+  const quality = 75
 
   const {
     props: { srcSet: desktopSrcSet },
   } = getImageProps({
-    ...common,
     alt: "",
     src: SITE_IMAGES.hero.desktop,
     width: HERO_DESKTOP_WIDTH,
     height: HERO_DESKTOP_HEIGHT,
+    sizes: "(min-width: 768px) 100vw",
+    quality,
   })
 
-  const { props: mobileProps } = getImageProps({
-    ...common,
+  const { props: mobileImgProps } = getImageProps({
     alt,
     src: SITE_IMAGES.hero.mobile,
     width: HERO_MOBILE_WIDTH,
     height: HERO_MOBILE_HEIGHT,
+    sizes: "(max-width: 767px) 100vw, 1px",
+    quality,
   })
-  const { srcSet: _mobilePictureSrcSet, ...imgProps } = mobileProps
 
   return (
     <picture className="absolute inset-0 z-0 block h-full w-full">
       <source media="(min-width: 768px)" srcSet={desktopSrcSet} />
       <img
-        {...imgProps}
+        {...mobileImgProps}
         alt={alt}
         loading="eager"
         fetchPriority="high"
