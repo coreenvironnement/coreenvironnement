@@ -59,9 +59,29 @@ Sur **chaque** run : **mobile** (High, preload) **+ desktop** (Low, preload) ≈
 
 ---
 
-## Médianes **après** (prod)
+## Médianes **après** (prod, commit `9c0cd69`, déployé)
 
-> À compléter après déploiement : `lighthouse-hero-after-prod-{1,2,3}.json`
+Fichiers : `lighthouse-hero-after-prod-{1,2,3}.json` · desktop : `lighthouse-hero-desktop-prod.json`
+
+| Métrique | Médiane | Détail |
+|----------|---------|--------|
+| **LCP** | **10,7 s** | [13,3 / 10,7 / **6,1**] s — forte variance lab (run 3 proche de l’avant) |
+| **FCP** | **10,6 s** | [13,1 / 10,6 / **5,6**] s |
+| **TBT** | **N/A** | 3/3 runs → `NO_TTI_CPU_IDLE_PERIOD` (idem avant sur 2/3) |
+| **CLS** | **0** | |
+
+### Images hero **après** (prod)
+
+| Viewport | Téléchargé | Preload hero |
+|----------|------------|--------------|
+| **Mobile** (3/3 runs) | **mobile** uniquement (~127 Ko) | **non** |
+| **Desktop** (1 run LH) | **desktop** uniquement (w=3840, ~161 Ko) | **non** |
+
+**Gain réseau objectif** : suppression systématique de la **deuxième** variante hero (~42 Ko mobile avant).
+
+### Timeout Lighthouse
+
+Même symptômes **avant et après** sur prod : `Timed out waiting for page load` + TBT inaccessible quand le main thread reste occupé (bundle vitrine). **Pas lié au diff hero** ; desktop prod run complet sans hang confirme l’app saine.
 
 ---
 
