@@ -59,29 +59,74 @@ Sur **chaque** run : **mobile** (High, preload) **+ desktop** (Low, preload) ≈
 
 ---
 
-## Médianes **après** (prod, commit `9c0cd69`, déployé)
+## Régression réseau (`9c0cd69`) et correctif (`92c0493`)
+
+Sur `9c0cd69`, le spread `{...imgProps}` **retirait** le `srcSet` mobile : le navigateur tombait sur `src` seul → **`w=3840`** (~127 Ko, High) au lieu de **`w=750`** via `srcset` + `sizes="(max-width: 767px) 100vw, 1px"`.
+
+**Correctif** : spread complet `{...mobileImgProps}` + `sizes` distincts mobile/desktop dans `getImageProps`.
+
+| Contrôle post-déploiement (`92c0493`, prod) | Résultat |
+|---------------------------------------------|----------|
+| HTML SSR — `srcSet` sur l’`<img>` hero mobile | OK |
+| HTML SSR — `<source media="(min-width: 768px)"` desktop | OK |
+| Preload hero dans `<head>` | Aucun |
+| Smoke accueil + `/location-benne/meaux` (hero + tunnel étape 1) | OK |
+
+### Images hero **prod après correctif** (réseau Lighthouse)
+
+| Viewport | URL LCP / réseau | Priorité | `transferSize` |
+|----------|------------------|----------|----------------|
+| **Mobile** (412×823, 3/3) | `…hero-mobile.webp&w=750&q=75` | **High** | **~85,6 Ko** |
+| **Desktop** (1350×940, 1 run) | `…hero-desktop.webp&w=3840&q=75` | **High** | **~165 Ko** |
+
+Une seule requête hero par viewport ; pas de variante croisée.
+
+---
+
+## Médianes **après lot initial** (prod, commit `9c0cd69` — régression bytes)
 
 Fichiers : `lighthouse-hero-after-prod-{1,2,3}.json` · desktop : `lighthouse-hero-desktop-prod.json`
 
 | Métrique | Médiane | Détail |
 |----------|---------|--------|
-| **LCP** | **10,7 s** | [13,3 / 10,7 / **6,1**] s — forte variance lab (run 3 proche de l’avant) |
+| **LCP** | **10,7 s** | [13,3 / 10,7 / **6,1**] s — forte variance lab |
 | **FCP** | **10,6 s** | [13,1 / 10,6 / **5,6**] s |
-| **TBT** | **N/A** | 3/3 runs → `NO_TTI_CPU_IDLE_PERIOD` (idem avant sur 2/3) |
+| **TBT** | **N/A** | 3/3 → `NO_TTI_CPU_IDLE_PERIOD` |
 | **CLS** | **0** | |
 
-### Images hero **après** (prod)
+Images mobile (bug) : **w=3840** (~127 Ko) — voir correctif ci-dessus.
 
-| Viewport | Téléchargé | Preload hero |
-|----------|------------|--------------|
-| **Mobile** (3/3 runs) | **mobile** uniquement (~127 Ko) | **non** |
-| **Desktop** (1 run LH) | **desktop** uniquement (w=3840, ~161 Ko) | **non** |
+---
 
-**Gain réseau objectif** : suppression systématique de la **deuxième** variante hero (~42 Ko mobile avant).
+## Lighthouse **après correctif srcSet** (prod, commit `92c0493`)
 
-### Timeout Lighthouse
+Fichiers : `lighthouse-hero-after-fix-prod-{1,2,3}.json` · desktop : `lighthouse-hero-desktop-after-fix-prod.json`
 
-Même symptômes **avant et après** sur prod : `Timed out waiting for page load` + TBT inaccessible quand le main thread reste occupé (bundle vitrine). **Pas lié au diff hero** ; desktop prod run complet sans hang confirme l’app saine.
+### Runs **incomplets** (3/3 mobile + 1 desktop)
+
+Tous signalent : `The page loaded too slowly to finish within the time limit` + **TBT** → `NO_TTI_CPU_IDLE_PERIOD` ; **score perf `null`**. Ne pas interpréter LCP/FCP comme gain lab définitif.
+
+| Run | Erreurs | LCP (s) | FCP (s) | TBT | CLS |
+|-----|---------|---------|---------|-----|-----|
+| mobile 1 | timeout + NO_TTI | 8,99 | 8,57 | N/A | 0 |
+| mobile 2 | timeout + NO_TTI | 7,81 | 7,71 | N/A | 0 |
+| mobile 3 | timeout | 6,95 | 6,85 | N/A | 0 |
+| desktop 1 | timeout + NO_TTI | 7,20 | 7,08 | N/A | 0,018 |
+
+**Médiane LCP mobile** (présent malgré run incomplet) : **7,81 s** [6,95 / 7,81 / 8,99] — variance lab élevée.
+
+### Conclusion correctif
+
+| Objectif | Statut |
+|----------|--------|
+| Rétablir **bytes** mobile (`w=750` ~85 Ko vs `w=3840` ~127 Ko) | **OK** |
+| Une variante hero / viewport | **OK** |
+| Art direction desktop `w=3840` | **OK** |
+| Gain LCP lab mesuré | **Non concluant** (runs incomplets) |
+
+### Timeout Lighthouse (général)
+
+Même symptômes sur prod : page load timeout + TBT quand le main thread reste occupé (bundle vitrine). **Pas lié au diff hero**.
 
 ---
 
