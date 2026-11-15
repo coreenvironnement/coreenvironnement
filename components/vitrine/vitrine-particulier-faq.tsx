@@ -11,7 +11,7 @@ import { CoreFaqLottie } from "./core-faq-lottie"
 import { VITRINE_ICON_STROKE } from "./icons"
 import { VitrineSectionHeader } from "./vitrine-section-header"
 
-export function VitrineParticulierFaq() {
+export function VitrineParticulierFaq({ faqTitle }: { faqTitle?: string }) {
   const baseId = useId()
   const [openIndices, setOpenIndices] = useState<Set<number>>(() => new Set([0]))
 
@@ -38,7 +38,7 @@ export function VitrineParticulierFaq() {
           <div className="min-w-0 lg:col-start-1">
             <VitrineSectionHeader
               eyebrow="FAQ"
-              title={particulierAccueil.faqTitre}
+              title={faqTitle ?? particulierAccueil.faqTitre}
               titleId="faq-particulier-title"
               intro={particulierAccueil.faqIntro}
               titleClassName="lg:overflow-visible"

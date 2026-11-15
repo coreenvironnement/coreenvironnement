@@ -15,7 +15,10 @@ import { VitrineFinalCta } from "./vitrine-final-cta"
 import { VitrineFooter } from "./vitrine-footer"
 import { VitrineHeader } from "./vitrine-header"
 import type { SeoVariant } from "@/lib/seo/landing-variants"
-import type { LocalPage } from "@/lib/seo/local-copy"
+import {
+  buildParticulierFaqSectionTitle,
+  type LocalPage,
+} from "@/lib/seo/local-copy"
 
 import { FloatingHelpBubble } from "./floating-help-bubble"
 import { VitrineHero } from "./vitrine-hero"
@@ -76,6 +79,10 @@ export function VitrineHomeClient({
   heroBackdrop: React.ReactNode
 }) {
   const particulierHome = !localSeoData && !hubPage
+  const faqTitle = buildParticulierFaqSectionTitle(localSeoData, {
+    hubPage,
+    particulierHome,
+  })
 
   return (
     <VitrineOrderProvider>
@@ -115,7 +122,7 @@ export function VitrineHomeClient({
           {!particulierHome ? <VitrineParticulierJourney /> : null}
           <VitrineParticulierConseils />
           <TestimonialsSection vitrine particulierOnly />
-          <VitrineParticulierFaq />
+          <VitrineParticulierFaq faqTitle={faqTitle} />
           {localSeoData?.type === "ville" ? (
             <VitrineCityGuide page={localSeoData} />
           ) : null}

@@ -437,7 +437,7 @@ export const particulierAccueil = {
       cta: "Parler à un conseiller",
     },
   },
-  faqTitre: "Vos questions sur la location de benne",
+  faqTitre: "Vos questions sur la location de benne en Île-de-France",
   faqIntro:
     "Les informations utiles pour choisir votre benne, préparer la livraison et suivre votre commande.",
   switchPro: {

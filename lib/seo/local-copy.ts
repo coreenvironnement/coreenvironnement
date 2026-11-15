@@ -78,6 +78,39 @@ export function geoPrepositionalPhrase(page: LocalPage): string {
   return `en ${page.departementNom}`
 }
 
+const PARTICULIER_FAQ_TITLE_BASE = "Vos questions sur la location de benne"
+
+export function buildParticulierFaqSectionTitle(
+  localSeoData: LocalPage | undefined,
+  options: { hubPage?: boolean; particulierHome?: boolean },
+): string {
+  if (options.particulierHome || options.hubPage) {
+    return `${PARTICULIER_FAQ_TITLE_BASE} en Île-de-France`
+  }
+
+  if (!localSeoData) {
+    return `${PARTICULIER_FAQ_TITLE_BASE} en Île-de-France`
+  }
+
+  const cityName =
+    localSeoData.city ??
+    (localSeoData.type === "ville" ? localSeoData.nom : undefined)
+
+  if (cityName) {
+    return `${PARTICULIER_FAQ_TITLE_BASE} à ${cityName}`
+  }
+
+  if (localSeoData.departementCode === "75") {
+    return `${PARTICULIER_FAQ_TITLE_BASE} à Paris`
+  }
+
+  const labeled = departmentWithArticle(
+    localSeoData.departementCode,
+    localSeoData.departementNom,
+  )
+  return `${PARTICULIER_FAQ_TITLE_BASE} dans ${labeled}`
+}
+
 export function buildLocalTitle(page: LocalPage): string {
   if (page.type === "longtail") {
     return buildLongtailTitle(page)
