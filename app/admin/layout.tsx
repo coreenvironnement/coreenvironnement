@@ -1,7 +1,8 @@
 import { Suspense } from "react"
 
 import { AdminAppShell } from "@/components/admin/admin-app-shell"
-import { buildAdminNavItems } from "@/lib/admin/nav-items"
+import { loadAdminNavBadges } from "@/lib/admin/nav-badges"
+import { buildAdminNavGroups, flattenAdminNav } from "@/lib/admin/nav-items"
 import { requireAdmin } from "@/lib/auth/require-admin"
 
 export const metadata = {
@@ -15,21 +16,26 @@ export default async function AdminLayout({
   children: React.ReactNode
 }) {
   const { profile, supabase } = await requireAdmin()
-  const { count: commandesATraiter } = await supabase
-    .from("commandes")
-    .select("*", { count: "exact", head: true })
-    .eq("statut", "confirmee")
-    .eq("payment_status", "paid")
-    .eq("audience", "particulier")
+  let badges = {
+    clientsNew: 0,
+    chantiersNew: 0,
+    interventionsNew: 0,
+    prestatairesDocs: 0,
+    comptesProPending: 0,
+  }
+  try {
+    badges = await loadAdminNavBadges(supabase)
+  } catch {
+    /* migration 019 pas encore appliquée */
+  }
 
+  const navGroups = buildAdminNavGroups(badges)
+  const navItems = flattenAdminNav(navGroups)
   const userLabel = profile.full_name ?? profile.email ?? "Administrateur"
 
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#ECF4E9]" />}>
-      <AdminAppShell
-        navItems={buildAdminNavItems(commandesATraiter ?? 0)}
-        userLabel={userLabel}
-      >
+      <AdminAppShell navGroups={navGroups} navItems={navItems} userLabel={userLabel}>
         {children}
       </AdminAppShell>
     </Suspense>

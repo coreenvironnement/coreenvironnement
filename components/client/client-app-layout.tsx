@@ -27,7 +27,7 @@ export async function ClientAppLayout({ children, loginNext = "/espace" }: Props
     .maybeSingle()
 
   if (profile?.role === "admin") {
-    redirect("/admin/commandes")
+    redirect("/admin/interventions")
   }
 
   const ctx = await getClientNavContext(supabase, user.id)

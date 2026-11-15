@@ -95,11 +95,11 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
     <div className="space-y-8">
       <div>
         <Link
-          href="/admin/commandes"
+          href="/admin/interventions"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
         >
           <ArrowLeft className="size-4" aria-hidden />
-          Retour aux commandes
+          Retour aux interventions
         </Link>
         <h2 className="mt-2 text-xl font-bold text-brand-navy">
           {reference} · {commande.prestation_label ?? dechet?.nom ?? "Commande benne"}

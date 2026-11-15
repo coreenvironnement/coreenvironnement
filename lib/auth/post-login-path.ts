@@ -33,7 +33,7 @@ export async function getPostLoginRedirectPath(
     .maybeSingle()
 
   if (profile?.role === "admin") {
-    return "/admin/commandes"
+    return "/admin/interventions"
   }
 
   const { data: chantierLinks } = await supabase

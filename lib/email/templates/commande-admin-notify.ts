@@ -18,7 +18,7 @@ export type CommandeAdminNotifyData = {
 }
 
 export function buildCommandeAdminNotifyEmail(data: CommandeAdminNotifyData) {
-  const adminUrl = `${getAppUrl()}/admin/commandes/${data.commandeId}`
+  const adminUrl = `${getAppUrl()}/admin/interventions/${data.commandeId}`
   const breakdown = data.priceHt != null ? priceBreakdownFromHt(data.priceHt) : null
 
   const lines = [

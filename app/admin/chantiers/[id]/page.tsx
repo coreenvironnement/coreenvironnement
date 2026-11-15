@@ -15,6 +15,7 @@ import {
   ChantierRotationQueue,
   type AdminRotationDemandeRow,
 } from "@/components/admin/chantier-rotation-queue"
+import { ChantierTarifLines } from "@/components/admin/chantier-tarif-lines"
 import { DocumentUploadRow } from "@/components/admin/document-upload-row"
 import { requireAdmin } from "@/lib/auth/require-admin"
 import { loadChantierDashboard } from "@/lib/dashboard/chantier-data"
@@ -126,6 +127,7 @@ export default async function AdminChantierDetailPage({
     { data: typesDechets },
     { data: statsDechets },
     { data: prestataires },
+    { data: lignesTarifaires },
   ] = await Promise.all([
     supabase
       .from("chantier_membres")
@@ -142,6 +144,11 @@ export default async function AdminChantierDetailPage({
       .select("dechet_type_id, tonnage_t")
       .eq("chantier_id", id),
     supabase.from("prestataires").select("id, nom").eq("is_active", true).order("nom"),
+    supabase
+      .from("chantier_lignes_tarifaires")
+      .select("*")
+      .eq("chantier_id", id)
+      .order("created_at", { ascending: false }),
   ])
 
   const membres = membresResult.data
@@ -455,6 +462,11 @@ export default async function AdminChantierDetailPage({
           )}
         </CardContent>
       </Card>
+
+      <ChantierTarifLines
+        chantierId={id}
+        lignes={(lignesTarifaires ?? []) as import("@/components/admin/chantier-tarif-lines").ChantierTarifLine[]}
+      />
 
       {/* Stats dashboard */}
       <Card>

@@ -6,6 +6,7 @@ import { redirect } from "next/navigation"
 
 import type Stripe from "stripe"
 
+import { writeAuditLog } from "@/lib/admin/audit-log"
 import { requireAdmin } from "@/lib/auth/require-admin"
 import { syncProfileClientKind } from "@/lib/auth/sync-profile-client-kind"
 import { sendCommandeCancellationIfClaimed } from "@/lib/commande/cancellation-email"
@@ -16,6 +17,8 @@ import {
   interventionCommentFromCommande,
 } from "@/lib/commande/intervention-from-commande"
 import { notifyCompteProReviewed } from "@/lib/email/notifications"
+import { sendEmail } from "@/lib/email/send"
+import { interventionProgrammeeEmail } from "@/lib/email/templates/intervention-programmee"
 import { getStripe, isStripePaymentConfigured } from "@/lib/stripe/server"
 import { syncCommandeFromRefund } from "@/lib/stripe/sync-commande"
 import { createServiceClient } from "@/lib/supabase/service"
@@ -31,12 +34,15 @@ async function assertAdmin() {
 function revalidateAdmin(chantierId?: string) {
   revalidatePath("/admin")
   revalidatePath("/admin/chantiers")
+  revalidatePath("/admin/interventions")
+  revalidatePath("/admin/clients")
   if (chantierId) {
     revalidatePath(`/admin/chantiers/${chantierId}`)
   }
   revalidatePath("/dashboard")
   revalidatePath("/dashboard/historique")
   revalidatePath("/admin/comptes-pro")
+  revalidatePath("/admin/prestataires")
   revalidatePath("/pro")
 }
 
@@ -49,7 +55,9 @@ function revalidateComptePro(compteId: string) {
 function revalidateCommande(commandeId: string, chantierId?: string) {
   revalidatePath("/admin")
   revalidatePath("/admin/commandes")
-  revalidatePath(`/admin/commandes/${commandeId}`)
+  revalidatePath("/admin/interventions")
+  revalidatePath(`/admin/interventions/${commandeId}`)
+  revalidatePath(`/admin/interventions/${commandeId}`)
   if (chantierId) {
     revalidatePath("/admin/chantiers")
     revalidatePath(`/admin/chantiers/${chantierId}`)
@@ -317,11 +325,26 @@ export async function updateInterventionStatut(
   chantierId: string,
   formData: FormData
 ): Promise<void> {
-  const { supabase } = await assertAdmin()
+  await updateInterventionStatutAdmin(interventionId, chantierId, formData, {
+    redirectToInterventions: false,
+  })
+}
+
+export async function updateInterventionStatutAdmin(
+  interventionId: string,
+  chantierId: string,
+  formData: FormData,
+  options?: { redirectToInterventions?: boolean }
+): Promise<void> {
+  const { supabase, user } = await assertAdmin()
 
   const statut = String(formData.get("statut") ?? "")
   const date_reelle = String(formData.get("date_reelle") ?? "")
   const commentaire = String(formData.get("commentaire") ?? "").trim()
+  const prestataireRaw = String(formData.get("prestataire_id") ?? "")
+  const poidsRaw = String(formData.get("poids_reel_kg") ?? "").trim()
+
+  const poids_reel_kg = poidsRaw ? Number(poidsRaw) : null
 
   const { error } = await supabase
     .from("interventions")
@@ -329,15 +352,65 @@ export async function updateInterventionStatut(
       statut,
       date_reelle: date_reelle || null,
       commentaire: commentaire || null,
+      prestataire_id: prestataireRaw || null,
+      poids_reel_kg: poids_reel_kg != null && !Number.isNaN(poids_reel_kg) ? poids_reel_kg : null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", interventionId)
 
   if (error) {
+    if (options?.redirectToInterventions !== false) {
+      redirect(
+        `/admin/interventions/${interventionId}?error=${encodeURIComponent(error.message)}`
+      )
+    }
     return
   }
 
+  await writeAuditLog(supabase, {
+    entityType: "intervention",
+    entityId: interventionId,
+    action: "statut_modifie",
+    detail: { statut, date_reelle, poids_reel_kg },
+    actorId: user.id,
+  })
+
+  if (statut === "programme") {
+    const { data: meta } = await supabase
+      .from("interventions")
+      .select("numero, date_souhaitee, chantiers ( nom )")
+      .eq("id", interventionId)
+      .single()
+    const chantierNom = (meta?.chantiers as { nom: string } | null)?.nom ?? "votre chantier"
+    const { data: membres } = await supabase
+      .from("chantier_membres")
+      .select("invited_email, profiles ( email )")
+      .eq("chantier_id", chantierId)
+      .limit(3)
+    const recipients = new Set<string>()
+    for (const m of membres ?? []) {
+      const mail =
+        m.invited_email ??
+        (m.profiles as { email: string } | null)?.email ??
+        null
+      if (mail) recipients.add(mail)
+    }
+    const tpl = interventionProgrammeeEmail({
+      numero: meta?.numero ?? interventionId,
+      chantierNom,
+      date: meta?.date_souhaitee ?? date_reelle,
+    })
+    for (const to of recipients) {
+      await sendEmail({ to, ...tpl })
+    }
+  }
+
   revalidateAdmin(chantierId)
+  revalidatePath(`/admin/interventions/${interventionId}`)
+
+  if (options?.redirectToInterventions !== false) {
+    redirect(`/admin/interventions/${interventionId}?ok=statut`)
+  }
 }
 
 export async function upsertStatsDechet(chantierId: string, formData: FormData): Promise<void> {
@@ -569,7 +642,7 @@ export async function updateCommandeStatut(commandeId: string, formData: FormDat
 
   const statut = String(formData.get("statut") ?? "").trim()
   if (!STATUTS_COMMANDE_VALIDES.includes(statut as (typeof STATUTS_COMMANDE_VALIDES)[number])) {
-    redirect(`/admin/commandes/${commandeId}`)
+    redirect(`/admin/interventions/${commandeId}`)
   }
 
   const { error } = await supabase.from("commandes").update({ statut }).eq("id", commandeId)
@@ -581,7 +654,7 @@ export async function updateCommandeStatut(commandeId: string, formData: FormDat
   }
 
   revalidateCommande(commandeId)
-  redirect(`/admin/commandes/${commandeId}`)
+  redirect(`/admin/interventions/${commandeId}`)
 }
 
 export async function createInterventionFromCommande(commandeId: string): Promise<void> {
@@ -596,7 +669,7 @@ export async function createInterventionFromCommande(commandeId: string): Promis
     .single()
 
   if (commandeError || !commande) {
-    redirect("/admin/commandes")
+    redirect("/admin/interventions")
   }
 
   const { data: existing } = await supabase
@@ -741,7 +814,7 @@ export async function cancelCommande(commandeId: string): Promise<void> {
     .single()
 
   if (error || !commande) {
-    redirect("/admin/commandes")
+    redirect("/admin/interventions")
   }
 
   const paymentStatusBefore = commande.payment_status
@@ -777,7 +850,7 @@ export async function cancelAndRefundCommande(commandeId: string): Promise<void>
     .single()
 
   if (error || !commande) {
-    redirect("/admin/commandes")
+    redirect("/admin/interventions")
   }
 
   if (commande.payment_status !== "paid") {
@@ -978,6 +1051,140 @@ export async function acceptRotationDemande(
 
   revalidateAdmin(chantierId)
   revalidatePath("/espace/chantier")
+  redirect(`/admin/chantiers/${chantierId}`)
+}
+
+export async function createPrestataire(formData: FormData): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+  const raison = String(formData.get("raison_sociale") ?? "").trim()
+  if (!raison) return
+
+  const { data, error } = await supabase
+    .from("prestataires")
+    .insert({
+      nom: raison,
+      raison_sociale: raison,
+      email: String(formData.get("email") ?? "").trim() || null,
+      telephone: String(formData.get("telephone") ?? "").trim() || null,
+    })
+    .select("id")
+    .single()
+
+  if (error || !data) return
+
+  await writeAuditLog(supabase, {
+    entityType: "prestataire",
+    entityId: data.id,
+    action: "creation",
+    actorId: user.id,
+  })
+
+  revalidatePath("/admin/prestataires")
+  redirect(`/admin/prestataires/${data.id}`)
+}
+
+export async function updatePrestataire(prestataireId: string, formData: FormData): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+
+  const raison = String(formData.get("raison_sociale") ?? "").trim()
+  const { error } = await supabase
+    .from("prestataires")
+    .update({
+      raison_sociale: raison || null,
+      nom: raison || undefined,
+      email: String(formData.get("email") ?? "").trim() || null,
+      telephone: String(formData.get("telephone") ?? "").trim() || null,
+      ville: String(formData.get("ville") ?? "").trim() || null,
+      siret: String(formData.get("siret") ?? "").trim() || null,
+      contact_nom: String(formData.get("contact_nom") ?? "").trim() || null,
+      contact_email: String(formData.get("contact_email") ?? "").trim() || null,
+      is_active: formData.get("is_active") === "on",
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", prestataireId)
+
+  if (error) {
+    redirect(`/admin/prestataires/${prestataireId}?error=${encodeURIComponent(error.message)}`)
+  }
+
+  await writeAuditLog(supabase, {
+    entityType: "prestataire",
+    entityId: prestataireId,
+    action: "mise_a_jour",
+    actorId: user.id,
+  })
+
+  revalidatePath("/admin/prestataires")
+  revalidatePath(`/admin/prestataires/${prestataireId}`)
+  redirect(`/admin/prestataires/${prestataireId}?ok=1`)
+}
+
+export async function upsertChantierLigneTarifaire(
+  chantierId: string,
+  formData: FormData
+): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+
+  const lineId = String(formData.get("line_id") ?? "").trim()
+  const payload = {
+    chantier_id: chantierId,
+    label: String(formData.get("label") ?? "").trim() || "Ligne tarifaire",
+    facturation_traitement:
+      String(formData.get("facturation_traitement") ?? "forfait") === "poids" ? "poids" : "forfait",
+    prix_vente_traitement_ht: Number(formData.get("prix_vente_traitement_ht") ?? 0),
+    prix_achat_traitement_ht: Number(formData.get("prix_achat_traitement_ht") ?? 0),
+    prix_vente_transport_ht: Number(formData.get("prix_vente_transport_ht") ?? 0),
+    prix_achat_transport_ht: Number(formData.get("prix_achat_transport_ht") ?? 0),
+    prix_vente_location_ht: Number(formData.get("prix_vente_location_ht") ?? 0),
+    prix_achat_location_ht: Number(formData.get("prix_achat_location_ht") ?? 0),
+    tonnage_inclus_kg:
+      String(formData.get("tonnage_inclus_kg") ?? "").trim() === ""
+        ? null
+        : Number(formData.get("tonnage_inclus_kg")),
+    updated_at: new Date().toISOString(),
+  }
+
+  const { error } = lineId
+    ? await supabase.from("chantier_lignes_tarifaires").update(payload).eq("id", lineId)
+    : await supabase.from("chantier_lignes_tarifaires").insert(payload)
+
+  if (error) {
+    redirect(`/admin/chantiers/${chantierId}?error=${encodeURIComponent(error.message)}`)
+  }
+
+  await writeAuditLog(supabase, {
+    entityType: "chantier",
+    entityId: chantierId,
+    action: lineId ? "tarif_modifie" : "tarif_ajoute",
+    actorId: user.id,
+  })
+
+  revalidateAdmin(chantierId)
+  redirect(`/admin/chantiers/${chantierId}`)
+}
+
+export async function deactivateChantierLigneTarifaire(
+  lineId: string,
+  chantierId: string
+): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+
+  const { error } = await supabase
+    .from("chantier_lignes_tarifaires")
+    .update({ is_active: false, updated_at: new Date().toISOString() })
+    .eq("id", lineId)
+
+  if (!error) {
+    await writeAuditLog(supabase, {
+      entityType: "chantier",
+      entityId: chantierId,
+      action: "tarif_desactive",
+      detail: { lineId },
+      actorId: user.id,
+    })
+  }
+
+  revalidateAdmin(chantierId)
   redirect(`/admin/chantiers/${chantierId}`)
 }
 

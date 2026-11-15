@@ -9,29 +9,35 @@ import {
   HardHat,
   LayoutDashboard,
   Menu,
-  Package,
+  Truck,
   Users,
+  Wrench,
   X,
   type LucideIcon,
 } from "lucide-react"
 
 import { LogoutButton } from "@/components/auth/logout-button"
-import { Button } from "@/components/ui/button"
 import { resolveAdminNavId } from "@/lib/admin/admin-active"
-import { ADMIN_WARM_BG, type AdminNavId, type AdminNavItem } from "@/lib/admin/nav-items"
+import {
+  ADMIN_WARM_BG,
+  type AdminNavGroup,
+  type AdminNavId,
+  type AdminNavItem,
+} from "@/lib/admin/nav-items"
 import { cn } from "@/lib/utils"
 
 const NAV_ICONS: Record<AdminNavId, LucideIcon> = {
   overview: LayoutDashboard,
-  commandesB2C: Package,
-  commandesB2B: Package,
-  clientsB2C: Users,
-  comptesPro: Briefcase,
+  clients: Users,
   chantiers: HardHat,
+  interventions: Wrench,
+  prestataires: Truck,
+  comptesPro: Briefcase,
 }
 
 type Props = {
   children: React.ReactNode
+  navGroups: AdminNavGroup[]
   navItems: AdminNavItem[]
   userLabel: string
 }
@@ -89,7 +95,7 @@ function AdminSessionFooter({ userLabel }: { userLabel: string }) {
   )
 }
 
-export function AdminAppShell({ children, navItems, userLabel }: Props) {
+export function AdminAppShell({ children, navGroups, navItems, userLabel }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const query = searchParams?.toString() ?? ""
@@ -114,11 +120,20 @@ export function AdminAppShell({ children, navItems, userLabel }: Props) {
           <p className="px-4 pt-3 text-[11px] font-semibold uppercase tracking-wider text-[#35A238]">
             Administration
           </p>
-          <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto p-3" aria-label="Administration">
-            {navItems.map((item) => (
-              <NavItemLink key={item.id} item={item} isActive={item.id === active} />
+          <nav className="flex flex-1 flex-col gap-4 overflow-y-auto p-3" aria-label="Administration">
+            {navGroups.map((group) => (
+              <div key={group.title}>
+                <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  {group.title}
+                </p>
+                <div className="flex flex-col gap-0.5">
+                  {group.items.map((item) => (
+                    <NavItemLink key={item.id} item={item} isActive={item.id === active} />
+                  ))}
+                </div>
+              </div>
             ))}
-            <div className="mt-3 border-t border-[#35A238]/15 pt-3">
+            <div className="mt-1 border-t border-[#35A238]/15 pt-3">
               <Link
                 href="/"
                 className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-brand-navy/70 hover:bg-[#ECF4E9]"
@@ -216,14 +231,23 @@ export function AdminAppShell({ children, navItems, userLabel }: Props) {
                 <X className="size-5" />
               </button>
             </div>
-            <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto p-3">
-              {navItems.map((item) => (
-                <NavItemLink
-                  key={item.id}
-                  item={item}
-                  isActive={item.id === active}
-                  onNavigate={() => setMobileNavOpen(false)}
-                />
+            <nav className="flex flex-1 flex-col gap-4 overflow-y-auto p-3">
+              {navGroups.map((group) => (
+                <div key={group.title}>
+                  <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    {group.title}
+                  </p>
+                  <div className="flex flex-col gap-0.5">
+                    {group.items.map((item) => (
+                      <NavItemLink
+                        key={item.id}
+                        item={item}
+                        isActive={item.id === active}
+                        onNavigate={() => setMobileNavOpen(false)}
+                      />
+                    ))}
+                  </div>
+                </div>
               ))}
             </nav>
             <AdminSessionFooter userLabel={userLabel} />

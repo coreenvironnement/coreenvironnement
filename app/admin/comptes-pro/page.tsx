@@ -34,8 +34,8 @@ export default async function AdminComptesProPage() {
             "aucune demande en attente"
           )}
           {" · "}
-          <Link href="/admin/commandes?audience=professionnel" className="text-[#35A238] hover:underline">
-            Commandes pro
+          <Link href="/admin/interventions?audience=professionnel" className="text-[#35A238] hover:underline">
+            Interventions pro
           </Link>
         </p>
       </div>

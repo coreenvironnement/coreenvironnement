@@ -101,7 +101,13 @@ function CommandeBadges({
   )
 }
 
-export function AdminCommandesList({ commandes }: { commandes: AdminCommandeListItem[] }) {
+export function AdminCommandesList({
+  commandes,
+  detailBasePath = "/admin/interventions",
+}: {
+  commandes: AdminCommandeListItem[]
+  detailBasePath?: string
+}) {
   return (
     <>
       <ul className="space-y-3 lg:hidden">
@@ -150,7 +156,7 @@ export function AdminCommandesList({ commandes }: { commandes: AdminCommandeList
                   <CommandeBadges statut={c.statut} paymentStatus={c.payment_status} />
                 </div>
                 <Link
-                  href={`/admin/commandes/${c.id}`}
+                  href={`${detailBasePath}/${c.id}`}
                   className={cn(buttonVariants({ size: "sm" }))}
                 >
                   Ouvrir
@@ -238,7 +244,7 @@ export function AdminCommandesList({ commandes }: { commandes: AdminCommandeList
                   </td>
                   <td className="px-3 py-3 text-right">
                     <Link
-                      href={`/admin/commandes/${c.id}`}
+                      href={`${detailBasePath}/${c.id}`}
                       className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
                     >
                       Ouvrir

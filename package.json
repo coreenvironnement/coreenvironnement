@@ -16,6 +16,10 @@
     "verify:gravats-sprite": "node scripts/verify-gravats-sprite.mjs",
     "deploy": "vercel deploy --prod",
     "deploy:preview": "vercel deploy",
+    "verify:admin-v2": "node scripts/verify-migration-019.mjs",
+    "db:apply-admin-v2": "node scripts/apply-migration-019-remote.mjs",
+    "qa:admin-routes": "node scripts/qa-admin-routes.mjs",
+    "verify:resend": "node scripts/verify-resend-config.mjs",
     "stripe": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1",
     "stripe:login": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1 login",
     "stripe:listen": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1 listen --forward-to localhost:3001/api/stripe/webhook"
