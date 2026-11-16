@@ -159,14 +159,14 @@ export function ServiceFlipCard({
           >
             <ServiceCardIcon index={index} />
           </span>
-          <h3 className="vitrine-h3 mt-3.5 shrink-0 sm:mt-4">
+          <h3 className="vitrine-h3 mt-3 min-h-0 shrink sm:mt-4 sm:shrink-0">
             {service.titre}
           </h3>
-          <p className="mt-3 shrink-0 text-sm leading-relaxed text-brand-muted">
+          <p className="service-flip-front-accroche mt-2.5 min-h-0 text-sm leading-snug text-brand-muted sm:mt-3 sm:shrink-0 sm:leading-relaxed">
             {service.accroche}
           </p>
           <div
-            className="min-h-6 flex-1 sm:min-h-0 sm:flex-[0_0_0.5rem]"
+            className="min-h-0 flex-[0_0_0.25rem] sm:flex-[0_0_0.5rem]"
             aria-hidden
           />
           <div className="service-flip-front-footer mt-auto flex shrink-0 justify-center">
