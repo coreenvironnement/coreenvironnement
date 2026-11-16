@@ -1,34 +1,30 @@
 import Image from "next/image"
 
+import { SITE_IMAGES } from "@/lib/media/site-images"
 import { cn } from "@/lib/utils"
 
 const LOGO_ALT = "CORE ENVIRONNEMENT"
 
-const LOGO_DEFAULT = "/images/stickyheaderlogo.png"
+const LOGO_DEFAULT = SITE_IMAGES.logo.headerBrand
 
-const HEADER_LOGO_TRANSPARENT = {
-  src: "/images/core-environnement-logo-header-transparent.png",
-  width: 1983,
-  height: 793,
-} as const
-
-const HEADER_LOGO_STICKY = {
-  src: "/images/stickyheaderlogo.png",
+const HEADER_LOGO_BRAND = {
+  src: SITE_IMAGES.logo.headerBrand,
   width: 2172,
   height: 724,
 } as const
 
-/** Compense l’écart de canvas entre les deux exports pour un rendu visuel identique */
-const HEADER_LOGO_TRANSPARENT_SCALE =
-  (HEADER_LOGO_STICKY.width / HEADER_LOGO_STICKY.height) /
-  (HEADER_LOGO_TRANSPARENT.width / HEADER_LOGO_TRANSPARENT.height)
+const HEADER_LOGO_ON_DARK = {
+  src: SITE_IMAGES.logo.headerOnDark,
+  width: 1983,
+  height: 793,
+} as const
 
 type VitrineLogoProps = {
   className?: string
   priority?: boolean
   /** Header vitrine — logo lisible sans alourdir la barre (~160–178 px) */
   variant?: "default" | "header" | "footer" | "login"
-  /** Logo blanc/vert pour header transparent ou fond sombre */
+  /** État hero : barre transparente (logo bleu, identique à la variante scrollée). */
   transparent?: boolean
 }
 
@@ -36,7 +32,7 @@ export function VitrineLogo({
   className,
   priority,
   variant = "default",
-  transparent = false,
+  transparent: _transparent = false,
 }: VitrineLogoProps) {
   if (variant === "header") {
     return (
@@ -48,37 +44,19 @@ export function VitrineLogo({
         )}
       >
         <Image
-          src={HEADER_LOGO_STICKY.src}
-          alt={transparent ? "" : LOGO_ALT}
-          width={HEADER_LOGO_STICKY.width}
-          height={HEADER_LOGO_STICKY.height}
+          src={HEADER_LOGO_BRAND.src}
+          alt={LOGO_ALT}
+          width={HEADER_LOGO_BRAND.width}
+          height={HEADER_LOGO_BRAND.height}
           sizes="148px"
           priority={priority}
-          aria-hidden={transparent}
-          className={cn(
-            "absolute inset-0 h-full w-full origin-center object-contain object-center transition-opacity duration-500 ease-out lg:origin-left lg:object-left",
-            transparent ? "opacity-0" : "opacity-100"
-          )}
-        />
-        <Image
-          src={HEADER_LOGO_TRANSPARENT.src}
-          alt={transparent ? LOGO_ALT : ""}
-          width={HEADER_LOGO_TRANSPARENT.width}
-          height={HEADER_LOGO_TRANSPARENT.height}
-          sizes="148px"
-          priority={priority}
-          aria-hidden={!transparent}
-          style={{ scale: `${HEADER_LOGO_TRANSPARENT_SCALE}` }}
-          className={cn(
-            "absolute inset-0 h-full w-full origin-center object-contain object-center transition-opacity duration-500 ease-out lg:origin-left lg:object-left",
-            transparent ? "opacity-100" : "opacity-0"
-          )}
+          className="absolute inset-0 h-full w-full origin-center object-contain object-center lg:origin-left lg:object-left"
         />
       </span>
     )
   }
 
-  const footerLogo = HEADER_LOGO_TRANSPARENT
+  const footerLogo = HEADER_LOGO_ON_DARK
 
   return (
     <span
@@ -95,8 +73,8 @@ export function VitrineLogo({
       <Image
         src={variant === "footer" ? footerLogo.src : LOGO_DEFAULT}
         alt={LOGO_ALT}
-        width={variant === "footer" ? footerLogo.width : HEADER_LOGO_STICKY.width}
-        height={variant === "footer" ? footerLogo.height : HEADER_LOGO_STICKY.height}
+        width={variant === "footer" ? footerLogo.width : HEADER_LOGO_BRAND.width}
+        height={variant === "footer" ? footerLogo.height : HEADER_LOGO_BRAND.height}
         sizes={variant === "footer" ? "200px" : "220px"}
         priority={priority}
         className={cn(

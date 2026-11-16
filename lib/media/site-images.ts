@@ -3,6 +3,12 @@ import { geoPrepositionalPhrase } from "@/lib/seo/local-copy"
 
 /** Chemins stables (noms descriptifs, WebP). */
 export const SITE_IMAGES = {
+  logo: {
+    /** Logo bleu/navy — header vitrine (hero transparent + barre scrollée). */
+    headerBrand: "/images/stickyheaderlogo.png",
+    /** Version claire — footer vitrine et fonds sombres. */
+    headerOnDark: "/images/core-environnement-logo-header-transparent.png",
+  },
   hero: {
     mobile: "/images/location-benne-camion-idf-hero-mobile.webp",
     desktop: "/images/location-benne-camion-idf-hero-desktop.webp",
