@@ -3,13 +3,21 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import {
   ArrowRight01Icon,
   Call02Icon,
+  Facebook01Icon,
+  InstagramIcon,
   Linkedin01Icon,
   Recycle03Icon,
   SecurityCheckIcon,
   SparklesIcon,
 } from "@hugeicons/core-free-icons"
 
-import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
+import {
+  SITE_PHONE_DISPLAY,
+  SITE_PHONE_HREF,
+  SITE_SOCIAL_FACEBOOK_URL,
+  SITE_SOCIAL_INSTAGRAM_URL,
+  SITE_SOCIAL_LINKEDIN_URL,
+} from "@/lib/site"
 
 import { VITRINE_ICON_STROKE } from "./icons"
 import { VitrineLogo } from "./logo"
@@ -31,9 +39,19 @@ const TRUST_INDICATORS = [
 
 const SOCIAL_LINKS = [
   {
-    href: "https://www.linkedin.com/company/core-environnement",
-    label: "LinkedIn",
+    href: SITE_SOCIAL_LINKEDIN_URL,
+    label: "CORE Environnement sur LinkedIn",
     icon: Linkedin01Icon,
+  },
+  {
+    href: SITE_SOCIAL_INSTAGRAM_URL,
+    label: "CORE Environnement sur Instagram",
+    icon: InstagramIcon,
+  },
+  {
+    href: SITE_SOCIAL_FACEBOOK_URL,
+    label: "CORE Environnement sur Facebook",
+    icon: Facebook01Icon,
   },
 ] as const
 

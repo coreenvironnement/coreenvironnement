@@ -39,6 +39,12 @@ export function downloadSiteContactVCard(): void {
 
 export const SITE_WHATSAPP_HREF = "https://wa.me/33753705727"
 
+export const SITE_SOCIAL_LINKEDIN_URL =
+  "https://www.linkedin.com/company/core-environnement"
+export const SITE_SOCIAL_INSTAGRAM_URL = "https://www.instagram.com/coreenvironnement/"
+export const SITE_SOCIAL_FACEBOOK_URL =
+  "https://www.facebook.com/people/Core-Environnement/61596599095554/"
+
 export const SITE_GOOGLE_MAPS_URL =
   "https://maps.app.goo.gl/LkAHyAqv2VRjSzNy5"
 export const SITE_GOOGLE_MAPS_PIN_SRC = "/images/google-maps-pin.png"
