@@ -14,7 +14,12 @@ function isHeroAddressElement(el: EventTarget | null): boolean {
 
 const CONSEILS_SECTION_ID = "conseils"
 
-export function FloatingHelpBubble() {
+type FloatingHelpBubbleProps = {
+  /** Masque la bulle sous `lg` quand la barre d’actions mobile est affichée. */
+  hideBelowLg?: boolean
+}
+
+export function FloatingHelpBubble({ hideBelowLg = false }: FloatingHelpBubbleProps = {}) {
   const [open, setOpen] = useState(false)
   const [hiddenForAddress, setHiddenForAddress] = useState(false)
   const [visibleFromConseils, setVisibleFromConseils] = useState(false)
@@ -109,6 +114,7 @@ export function FloatingHelpBubble() {
         "pointer-events-none fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-3 z-30 sm:left-4",
         "max-md:bottom-[max(1rem,env(safe-area-inset-bottom))]",
         "transition-opacity duration-300",
+        hideBelowLg && "max-lg:hidden",
         hidden && "invisible opacity-0"
       )}
       aria-hidden={hidden}

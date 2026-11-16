@@ -18,7 +18,9 @@ import {
 } from "@/lib/seo/dechets-acceptes-guide-content"
 
 import { VitrineFooter } from "./vitrine-footer"
+import { VITRINE_HEADER_CONTENT_OFFSET_CLASS, VITRINE_SCROLL_MARGIN_CLASS } from "./header-layout"
 import { VitrineHeader } from "./vitrine-header"
+import { VitrineMobileActionBar } from "./vitrine-mobile-action-bar"
 import { VitrineOrderModal } from "./order-modal"
 import { VitrineOrderProvider } from "./order-context"
 
@@ -47,9 +49,9 @@ function GuideCallout({ children }: { children: ReactNode }) {
 export function VitrineDechetsAcceptesGuide() {
   return (
     <VitrineOrderProvider>
-      <div className="vitrine-root min-h-screen">
+      <div className="vitrine-root vitrine--with-action-bar min-h-screen">
         <VitrineHeader />
-        <main id="contenu" className="pt-[7.25rem] sm:pt-[7.75rem]">
+        <main id="contenu" className={VITRINE_HEADER_CONTENT_OFFSET_CLASS}>
           <nav aria-label="Fil d'Ariane" className="container-x pb-2">
             <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[12px] text-brand-muted sm:text-[13px]">
               {BREADCRUMBS.map((item, index) => {
@@ -105,7 +107,7 @@ export function VitrineDechetsAcceptesGuide() {
                 </ul>
               </nav>
 
-              <section id="identifier-dechets" className="mt-10 scroll-mt-28">
+              <section id="identifier-dechets" className={`mt-10 ${VITRINE_SCROLL_MARGIN_CLASS}`}>
                 <h2 className={H2_CLASS}>
                   Quels déchets correspondent à votre projet ?
                 </h2>
@@ -183,7 +185,7 @@ export function VitrineDechetsAcceptesGuide() {
                 </GuideParagraph>
               </section>
 
-              <section id="collecte-specifique" className="mt-10 scroll-mt-28">
+              <section id="collecte-specifique" className={`mt-10 ${VITRINE_SCROLL_MARGIN_CLASS}`}>
                 <h2 className={H2_CLASS}>
                   Quels déchets nécessitent une collecte spécifique ?
                 </h2>
@@ -238,7 +240,7 @@ export function VitrineDechetsAcceptesGuide() {
                 </p>
               </section>
 
-              <section id="preparer-chargement" className="mt-10 scroll-mt-28">
+              <section id="preparer-chargement" className={`mt-10 ${VITRINE_SCROLL_MARGIN_CLASS}`}>
                 <h2 className={H2_CLASS}>
                   Comment préparer le chargement de votre benne ?
                 </h2>
@@ -266,7 +268,7 @@ export function VitrineDechetsAcceptesGuide() {
                 </GuideCallout>
               </section>
 
-              <section id="conseil-dechets" className="mt-10 scroll-mt-28">
+              <section id="conseil-dechets" className={`mt-10 ${VITRINE_SCROLL_MARGIN_CLASS}`}>
                 <h2 className={H2_CLASS}>
                   Un doute sur vos déchets ? Parlons de votre projet.
                 </h2>
@@ -276,7 +278,7 @@ export function VitrineDechetsAcceptesGuide() {
                   conseiller sur l’offre à choisir.
                 </GuideParagraph>
                 <div className="mt-6 flex flex-col items-start gap-2">
-                  <a href={DECHETS_ACCEPTES_PHONE_HREF} className="btn btn-outline">
+                  <a href={DECHETS_ACCEPTES_PHONE_HREF} className="btn btn-ghost-dark">
                     Demander conseil sur mes déchets
                   </a>
                   <p className="text-sm text-brand-muted">{DECHETS_ACCEPTES_PHONE_DISPLAY}</p>
@@ -299,6 +301,7 @@ export function VitrineDechetsAcceptesGuide() {
         </main>
         <VitrineFooter />
         <VitrineOrderModal />
+        <VitrineMobileActionBar />
       </div>
     </VitrineOrderProvider>
   )

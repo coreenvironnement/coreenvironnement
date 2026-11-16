@@ -4,6 +4,7 @@ import { useState, useTransition } from "react"
 import { Loader2 } from "lucide-react"
 
 import { submitProWaitlist } from "@/app/pro/waitlist-actions"
+import { EntrepriseLookupFields } from "@/components/forms/entreprise-lookup-fields"
 
 const fieldWrap = "space-y-2"
 const inputClass =
@@ -13,6 +14,8 @@ export function ProWaitlistForm() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const [societe, setSociete] = useState("")
+  const [siret, setSiret] = useState("")
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -43,18 +46,26 @@ export function ProWaitlistForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <div className={fieldWrap}>
-        <label htmlFor="societe" className="text-sm font-medium text-brand-navy">
-          Nom de la société *
-        </label>
-        <input
-          id="societe"
-          name="societe"
-          required
-          autoComplete="organization"
-          className={inputClass}
-        />
-      </div>
+      <EntrepriseLookupFields
+        nativeInputs
+        inputClassName={inputClass}
+        raisonSocialeValue={societe}
+        siretValue={siret}
+        onRaisonSocialeChange={setSociete}
+        onSiretChange={setSiret}
+        raisonSociale={{
+          id: "societe",
+          name: "societe",
+          label: "Nom de la société",
+          required: true,
+        }}
+        siret={{
+          id: "siret",
+          name: "siret",
+          label: "SIRET",
+          placeholder: "12345678900012",
+        }}
+      />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className={fieldWrap}>
@@ -105,19 +116,6 @@ export function ProWaitlistForm() {
             className={inputClass}
           />
         </div>
-      </div>
-
-      <div className={fieldWrap}>
-        <label htmlFor="siret" className="text-sm font-medium text-brand-navy">
-          SIRET <span className="font-normal text-brand-muted">(optionnel)</span>
-        </label>
-        <input
-          id="siret"
-          name="siret"
-          inputMode="numeric"
-          placeholder="12345678900012"
-          className={inputClass}
-        />
       </div>
 
       {error ? (

@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react"
 import { submitComptePro } from "@/app/pro/actions"
 import { comptePro } from "@/lib/cdc/contenu-vitrine"
 import { ABONNEMENT_PRO_HT } from "@/lib/cdc/referentiels"
+import { EntrepriseLookupFields } from "@/components/forms/entreprise-lookup-fields"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
@@ -22,6 +23,8 @@ export function CompteProForm({ defaultEmail, isResubmit, previousNotes }: Props
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const [codeNaf, setCodeNaf] = useState("")
+  const [adresseSiege, setAdresseSiege] = useState("")
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -67,29 +70,45 @@ export function CompteProForm({ defaultEmail, isResubmit, previousNotes }: Props
       <section className="space-y-4">
         <h3 className="font-semibold text-brand-navy">{comptePro.sections[0].titre}</h3>
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2 sm:col-span-2">
-            <label htmlFor="raison_sociale" className="text-sm font-medium">
-              Raison sociale *
-            </label>
-            <Input id="raison_sociale" name="raison_sociale" required />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="siret" className="text-sm font-medium">
-              Numéro SIRET
-            </label>
-            <Input id="siret" name="siret" placeholder="123 456 789 00012" />
+          <div className="sm:col-span-2">
+            <EntrepriseLookupFields
+              raisonSociale={{
+                id: "raison_sociale",
+                name: "raison_sociale",
+                label: "Raison sociale",
+                required: true,
+              }}
+              siret={{ id: "siret", name: "siret", label: "Numéro SIRET" }}
+              onExtra={(extra) => {
+                if (extra.codeNaf) setCodeNaf(extra.codeNaf)
+                if (extra.adresseMultiligne) setAdresseSiege(extra.adresseMultiligne)
+                else if (extra.adresseSiege) setAdresseSiege(extra.adresseSiege)
+              }}
+            />
           </div>
           <div className="space-y-2">
             <label htmlFor="code_naf" className="text-sm font-medium">
               Code NAF / Activité
             </label>
-            <Input id="code_naf" name="code_naf" placeholder="43.99C" />
+            <Input
+              id="code_naf"
+              name="code_naf"
+              placeholder="43.99C"
+              value={codeNaf}
+              onChange={(e) => setCodeNaf(e.target.value)}
+            />
           </div>
           <div className="space-y-2 sm:col-span-2">
             <label htmlFor="adresse_siege" className="text-sm font-medium">
               Adresse du siège social
             </label>
-            <textarea id="adresse_siege" name="adresse_siege" className={textareaClass} />
+            <textarea
+              id="adresse_siege"
+              name="adresse_siege"
+              className={textareaClass}
+              value={adresseSiege}
+              onChange={(e) => setAdresseSiege(e.target.value)}
+            />
           </div>
         </div>
       </section>

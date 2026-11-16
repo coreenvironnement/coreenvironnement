@@ -22,12 +22,28 @@ export async function writeAuditLog(
   }
 }
 
+export type AuditLogEntry = {
+  id: string
+  action: string
+  detail: Record<string, unknown> | null
+  created_at: string
+  profiles: { full_name: string | null; email: string | null } | null
+}
+
+function normalizeAuditProfile(
+  raw: unknown
+): { full_name: string | null; email: string | null } | null {
+  if (!raw) return null
+  if (Array.isArray(raw)) return (raw[0] as { full_name: string | null; email: string | null }) ?? null
+  return raw as { full_name: string | null; email: string | null }
+}
+
 export async function loadAuditLog(
   supabase: SupabaseClient,
   entityType: string,
   entityId: string,
   limit = 30
-) {
+): Promise<AuditLogEntry[]> {
   const { data, error } = await supabase
     .from("audit_log")
     .select("id, action, detail, created_at, profiles ( full_name, email )")
@@ -37,5 +53,11 @@ export async function loadAuditLog(
     .limit(limit)
 
   if (error) return []
-  return data ?? []
+  return (data ?? []).map((row) => ({
+    id: row.id as string,
+    action: row.action as string,
+    detail: (row.detail as Record<string, unknown> | null) ?? null,
+    created_at: row.created_at as string,
+    profiles: normalizeAuditProfile(row.profiles),
+  }))
 }

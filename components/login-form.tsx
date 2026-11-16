@@ -3,14 +3,16 @@
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
+import { Loader2 } from "lucide-react"
 
 import { getPostLoginDestination } from "@/app/auth/post-login-actions"
 import { safeNextPath } from "@/lib/auth/post-login-path"
 import { createClient } from "@/lib/supabase/client"
+import { authFieldInputClass, fieldMessageId } from "@/lib/form/auth-field-styles"
+import { AuthSubmitButton } from "@/components/ui/auth-submit-button"
 import { PasswordInput } from "@/components/ui/password-input"
 
-const fieldClass =
-  "h-12 w-full rounded-xl border border-[#35A238]/18 bg-white px-3.5 text-[15px] text-brand-navy shadow-sm outline-none transition-colors placeholder:text-brand-muted/70 focus-visible:border-[#35A238] focus-visible:ring-3 focus-visible:ring-[#35A238]/20"
+const FORM_ERROR_ID = "login-form-error"
 
 function inscriptionHref(nextRaw: string | null): string {
   const next = safeNextPath(nextRaw)
@@ -25,12 +27,25 @@ export function LoginForm() {
   const searchParams = useSearchParams()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
+  const [formError, setFormError] = useState<string | null>(null)
+  const [emailError, setEmailError] = useState<string | null>(null)
   const [info, setInfo] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [resetLoading, setResetLoading] = useState(false)
 
   const nextRaw = searchParams.get("next")
+  const emailErrorId = fieldMessageId("email")
+  const emailDescribedBy = [
+    emailError ? emailErrorId : null,
+    formError && !emailError ? FORM_ERROR_ID : null,
+  ]
+    .filter(Boolean)
+    .join(" ") || undefined
+
+  function clearErrors() {
+    setFormError(null)
+    setEmailError(null)
+  }
 
   async function finishLogin() {
     const destination = await getPostLoginDestination(nextRaw)
@@ -40,7 +55,7 @@ export function LoginForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setError(null)
+    clearErrors()
     setInfo(null)
     setLoading(true)
 
@@ -52,7 +67,7 @@ export function LoginForm() {
 
     if (signInError || !data.user) {
       setLoading(false)
-      setError("Identifiants incorrects ou compte non activé.")
+      setFormError("Identifiants incorrects ou compte non activé.")
       return
     }
 
@@ -63,10 +78,12 @@ export function LoginForm() {
   async function handleForgotPassword() {
     const trimmed = email.trim()
     if (!trimmed.includes("@")) {
-      setError("Indiquez votre adresse e-mail pour recevoir le lien de réinitialisation.")
+      clearErrors()
+      setInfo(null)
+      setEmailError("Indiquez votre adresse e-mail pour recevoir le lien de réinitialisation.")
       return
     }
-    setError(null)
+    clearErrors()
     setInfo(null)
     setResetLoading(true)
 
@@ -78,7 +95,7 @@ export function LoginForm() {
 
     setResetLoading(false)
     if (resetError) {
-      setError("Impossible d’envoyer l’e-mail. Réessayez ou contactez-nous.")
+      setFormError("Impossible d’envoyer l’e-mail. Réessayez ou contactez-nous.")
       return
     }
     setInfo(
@@ -88,11 +105,13 @@ export function LoginForm() {
 
   return (
     <div className="rounded-2xl border border-[#35A238]/14 bg-white p-5 shadow-[0_8px_32px_-12px_rgb(14_32_16/0.12)] sm:p-7">
-      <h2 className="text-lg font-semibold text-brand-navy">Connexion</h2>
-      <p className="mt-1.5 text-sm leading-snug text-brand-muted">
-        Un seul accès pour vos commandes, votre suivi et votre espace client.
-      </p>
-      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+      <h2 className="text-center text-lg font-semibold text-brand-navy">Se connecter</h2>
+      <form
+        onSubmit={handleSubmit}
+        className="mt-6 space-y-4"
+        aria-describedby={formError ? FORM_ERROR_ID : undefined}
+        noValidate
+      >
         <div className="space-y-2">
           <label htmlFor="email" className="text-sm font-medium text-brand-navy">
             E-mail
@@ -103,10 +122,20 @@ export function LoginForm() {
             autoComplete="email"
             required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="vous@exemple.fr"
-            className={fieldClass}
+            onChange={(e) => {
+              setEmail(e.target.value)
+              if (emailError) setEmailError(null)
+            }}
+            placeholder="prenom.nom@email.com"
+            className={authFieldInputClass}
+            aria-invalid={emailError ? true : undefined}
+            aria-describedby={emailDescribedBy}
           />
+          {emailError ? (
+            <p id={emailErrorId} className="form-field-message form-field-message--error" role="alert">
+              {emailError}
+            </p>
+          ) : null}
         </div>
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-2">
@@ -115,10 +144,17 @@ export function LoginForm() {
             </label>
             <button
               type="button"
-              className="text-sm font-medium text-[#35A238] hover:underline disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-[#35A238] hover:underline disabled:opacity-60"
               disabled={resetLoading || loading}
+              aria-busy={resetLoading || undefined}
               onClick={() => void handleForgotPassword()}
             >
+              {resetLoading ? (
+                <Loader2
+                  className="size-3.5 shrink-0 animate-spin motion-reduce:animate-none"
+                  aria-hidden
+                />
+              ) : null}
               {resetLoading ? "Envoi…" : "Mot de passe oublié ?"}
             </button>
           </div>
@@ -128,26 +164,25 @@ export function LoginForm() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            inputClassName={fieldClass}
+            placeholder="••••••••"
+            inputClassName={authFieldInputClass}
+            aria-invalid={formError ? true : undefined}
+            aria-describedby={formError ? FORM_ERROR_ID : undefined}
           />
         </div>
-        {error ? (
-          <p className="text-sm text-red-600" role="alert">
-            {error}
+        {formError ? (
+          <p id={FORM_ERROR_ID} className="form-field-message form-field-message--error" role="alert">
+            {formError}
           </p>
         ) : null}
         {info ? (
-          <p className="text-sm text-brand-navy" role="status">
+          <p className="form-field-message form-field-message--status" role="status">
             {info}
           </p>
         ) : null}
-        <button
-          type="submit"
-          className="btn btn-accent min-h-12 w-full rounded-xl text-[15px] font-semibold"
-          disabled={loading || resetLoading}
-        >
-          {loading ? "Connexion…" : "Se connecter"}
-        </button>
+        <AuthSubmitButton loading={loading} loadingLabel="Connexion…" disabled={resetLoading}>
+          Se connecter
+        </AuthSubmitButton>
       </form>
 
       <p className="mt-5 text-center text-sm text-brand-muted">
@@ -157,10 +192,6 @@ export function LoginForm() {
           className="font-medium text-[#35A238] hover:underline"
         >
           Créer un compte
-        </Link>
-        {" · "}
-        <Link href="/" className="link-digital">
-          Accueil
         </Link>
       </p>
     </div>

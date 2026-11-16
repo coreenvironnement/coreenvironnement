@@ -14,10 +14,12 @@ type AccountLink = { label: string; href: string }
 
 import type { VitrineNavContext } from "@/app/vitrine/nav-context-actions"
 
+const LOGIN_HREF = "/login?next=/espace/commandes"
+
 function buildAccountLinks(ctx: VitrineNavContext): AccountLink[] {
   if (!ctx.isLoggedIn) {
     return [
-      { label: "Connexion", href: "/login?next=/espace/commandes" },
+      { label: "Connexion", href: LOGIN_HREF },
       { label: "Créer un compte", href: "/inscription?next=/espace/commandes" },
     ]
   }
@@ -26,6 +28,15 @@ function buildAccountLinks(ctx: VitrineNavContext): AccountLink[] {
   }
   return [{ label: "Mon espace", href: "/espace/commandes" }]
 }
+
+/** Cible unique « Mon compte » (header desktop) : connexion ou espace selon la session. */
+function resolveMonCompteHref(ctx: VitrineNavContext): string {
+  if (!ctx.isLoggedIn) return LOGIN_HREF
+  if (ctx.isAdmin) return "/admin"
+  return "/espace/commandes"
+}
+
+const DESKTOP_MON_COMPTE_BTN_CLASS = "btn btn-sm min-h-11"
 
 type VitrineAccountLinksProps = {
   solid: boolean
@@ -39,11 +50,15 @@ export function VitrineAccountLinks({
   onLinkClick,
 }: VitrineAccountLinksProps) {
   const [links, setLinks] = useState<AccountLink[] | null>(null)
+  const [navCtx, setNavCtx] = useState<VitrineNavContext | null>(null)
 
   useEffect(() => {
     let cancelled = false
     getVitrineNavContext().then((ctx) => {
-      if (!cancelled) setLinks(buildAccountLinks(ctx))
+      if (!cancelled) {
+        setNavCtx(ctx)
+        setLinks(buildAccountLinks(ctx))
+      }
     })
     return () => {
       cancelled = true
@@ -56,7 +71,7 @@ export function VitrineAccountLinks({
         <Link
           href="/login?next=/espace"
           onClick={onLinkClick}
-          className="flex min-h-11 items-center justify-between border-b border-white/10 py-[15px] text-[21px] text-white/90 hover:text-white"
+          className="flex min-h-11 items-center justify-between border-b border-white/10 py-3 text-[17px] text-white/90 hover:text-white"
         >
           Connexion
           <HugeiconsIcon
@@ -75,7 +90,7 @@ export function VitrineAccountLinks({
             key={link.href}
             href={link.href}
             onClick={onLinkClick}
-            className="group flex min-h-11 items-center justify-between border-b border-white/10 py-[15px] text-[21px] text-white/90 hover:text-white"
+            className="group flex min-h-11 items-center justify-between border-b border-white/10 py-3 text-[17px] text-white/90 hover:text-white"
           >
             {link.label}
             <HugeiconsIcon
@@ -90,49 +105,18 @@ export function VitrineAccountLinks({
     )
   }
 
-  if (!links) {
-    return (
-      <Link
-        href="/login?next=/espace/commandes"
-        className={cn("btn btn-sm", solid ? "btn-ghost-sky" : "btn-ghost-light")}
-      >
-        <HugeiconsIcon icon={UserIcon} size={16} strokeWidth={VITRINE_ICON_STROKE} />
-        Connexion
-      </Link>
-    )
-  }
+  const monCompteHref = navCtx ? resolveMonCompteHref(navCtx) : LOGIN_HREF
 
-  if (links.length > 1) {
-    return (
-      <div className="flex items-center gap-2">
-        <Link
-          href={links[0]!.href}
-          className={cn("btn btn-sm", solid ? "btn-ghost-sky" : "btn-ghost-light")}
-        >
-          <HugeiconsIcon icon={UserIcon} size={16} strokeWidth={VITRINE_ICON_STROKE} />
-          {links[0]!.label}
-        </Link>
-        <Link
-          href={links[1]!.href}
-          className={cn(
-            "btn btn-sm hidden xl:inline-flex",
-            solid ? "btn-ghost-sky" : "btn-ghost-light"
-          )}
-        >
-          {links[1]!.label}
-        </Link>
-      </div>
-    )
-  }
-
-  const link = links[0]!
   return (
     <Link
-      href={link.href}
-      className={cn("btn btn-sm", solid ? "btn-ghost-sky" : "btn-ghost-light")}
+      href={monCompteHref}
+      className={cn(
+        DESKTOP_MON_COMPTE_BTN_CLASS,
+        solid ? "btn-ghost-dark" : "btn-ghost-light"
+      )}
     >
       <HugeiconsIcon icon={UserIcon} size={16} strokeWidth={VITRINE_ICON_STROKE} />
-      {link.label}
+      Mon compte
     </Link>
   )
 }

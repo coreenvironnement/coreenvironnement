@@ -17,7 +17,7 @@ export function ParticulierWastePicker({
 }) {
   return (
     <div
-      className="order-tunnel-waste-grid grid grid-cols-2 gap-3 sm:gap-3.5 lg:grid-cols-3 lg:gap-4"
+      className="order-tunnel-waste-grid grid grid-cols-2 gap-3.5 sm:gap-4 lg:grid-cols-3 lg:gap-4"
       role="radiogroup"
       aria-label="Que souhaitez-vous jeter ?"
     >
@@ -39,7 +39,7 @@ export function ParticulierWastePicker({
                 : "border-[#E4E7EC] hover:border-brand-green/35"
             )}
           >
-            <div className="order-tunnel-waste-card__media relative aspect-[4/3] w-full bg-[#F2F4F7]">
+            <div className="order-tunnel-waste-card__media relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-[#F2F4F7]">
               <Image
                 src={option.imageSrc}
                 alt={option.imageAlt}
@@ -59,11 +59,11 @@ export function ParticulierWastePicker({
                 ) : null}
               </span>
             </div>
-            <div className="order-tunnel-waste-card__body flex flex-col gap-1 px-2.5 pb-3 pt-2.5 sm:px-3 sm:pb-3.5 sm:pt-3">
-              <span className="text-[13px] font-bold leading-snug text-brand-navy sm:text-[14px]">
+            <div className="order-tunnel-waste-card__body flex shrink-0 flex-col gap-1 px-2.5 pb-3 pt-2.5 sm:px-3 sm:pb-3.5 sm:pt-3">
+              <span className="order-tunnel-waste-card__title text-[13px] font-bold leading-snug text-brand-navy sm:text-[14px]">
                 {option.title}
               </span>
-              <span className="text-[11px] leading-snug text-brand-muted sm:text-[12px]">
+              <span className="order-tunnel-waste-card__description text-[11px] leading-snug text-brand-muted sm:text-[12px]">
                 {option.description}
               </span>
             </div>

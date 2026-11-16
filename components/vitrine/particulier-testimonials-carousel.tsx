@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import { ChevronLeft, ChevronRight, Star } from "lucide-react"
 
 import type { Testimonial } from "@/lib/testimonials"
@@ -41,12 +41,17 @@ export function TestimonialCardParticulierVitrine({
     <article
       className={cn(
         "flex flex-col items-center rounded-2xl border border-brand-green/14 bg-brand-warm-field p-4 text-center shadow-[var(--shadow-vitrine-soft)] sm:p-5",
-        mobileCarousel ? "w-full" : "w-full sm:min-w-0"
+        mobileCarousel ? "h-auto w-full" : "w-full sm:min-w-0"
       )}
       style={{ animationDelay: `${i * 40}ms` }}
     >
       <StarRatingParticulier />
-      <blockquote className="flex-1 text-balance text-sm leading-relaxed text-brand-text sm:text-[0.95rem]">
+      <blockquote
+        className={cn(
+          "text-balance text-sm leading-relaxed text-brand-text sm:text-[0.95rem]",
+          mobileCarousel ? "shrink-0" : "flex-1"
+        )}
+      >
         «&nbsp;{t.quote}&nbsp;»
       </blockquote>
       <footer className="mt-5 w-full border-t border-brand-border pt-4 text-center">
@@ -67,7 +72,28 @@ type Props = {
 
 export function ParticulierTestimonialsCarousel({ items }: Props) {
   const viewportRef = useRef<HTMLDivElement>(null)
+  const slideRefs = useRef<(HTMLDivElement | null)[]>([])
   const [activeIndex, setActiveIndex] = useState(0)
+
+  const syncMobileViewportHeight = useCallback(() => {
+    const viewport = viewportRef.current
+    const slide = slideRefs.current[activeIndex]
+    if (!viewport || !slide) return
+    viewport.style.height = `${slide.offsetHeight}px`
+  }, [activeIndex])
+
+  useLayoutEffect(() => {
+    slideRefs.current.length = items.length
+    syncMobileViewportHeight()
+
+    const viewport = viewportRef.current
+    const slide = slideRefs.current[activeIndex]
+    if (!viewport || !slide || typeof ResizeObserver === "undefined") return
+
+    const observer = new ResizeObserver(() => syncMobileViewportHeight())
+    observer.observe(slide)
+    return () => observer.disconnect()
+  }, [activeIndex, items.length, syncMobileViewportHeight])
 
   const scrollToIndex = useCallback(
     (index: number, behavior: ScrollBehavior = "smooth") => {
@@ -115,11 +141,14 @@ export function ParticulierTestimonialsCarousel({ items }: Props) {
           onScroll={onScroll}
           aria-roledescription="carousel"
           aria-label="Avis clients"
-          className="particulier-testimonials-carousel flex snap-x snap-mandatory gap-0 overflow-x-auto overflow-y-hidden overscroll-x-contain"
+          className="particulier-testimonials-carousel flex items-start snap-x snap-mandatory gap-0 overflow-x-auto overflow-y-hidden overscroll-x-contain"
         >
           {items.map((t, i) => (
             <div
               key={t.id}
+              ref={(node) => {
+                slideRefs.current[i] = node
+              }}
               data-testimonial-slide
               className="min-w-0 shrink-0 grow-0 basis-full snap-start snap-always"
               aria-hidden={i !== activeIndex}
@@ -130,7 +159,7 @@ export function ParticulierTestimonialsCarousel({ items }: Props) {
         </div>
 
         {items.length > 1 ? (
-          <div className="mt-4 flex items-center justify-center gap-3">
+          <div className="mt-3 flex items-center justify-center gap-3">
             <button
               type="button"
               onClick={goPrev}

@@ -160,9 +160,9 @@ export async function loadAdminUnifiedInterventions(
   }
 
   for (const i of interventions ?? []) {
-    const chantier = i.chantiers as { id: string; nom: string } | null
-    const type = i.types_intervention as { label: string } | null
-    const dechet = i.dechets_types as { nom: string } | null
+    const chantier = i.chantiers as unknown as { id: string; nom: string } | null
+    const type = i.types_intervention as unknown as { label: string } | null
+    const dechet = i.dechets_types as unknown as { nom: string } | null
     unified.push({
       id: i.id,
       kind: "intervention",

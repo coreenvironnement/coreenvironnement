@@ -11,7 +11,7 @@ export const metadata = {
 export default function ReinitialiserMotDePassePage() {
   return (
     <VitrinePublicShell>
-      <section className="bg-[#ECF4E9] py-10 sm:py-14 lg:py-20">
+      <section className="bg-[#ECF4E9] pt-6 pb-10 sm:py-14 lg:py-20">
         <div className="container-x">
           <div className="mx-auto w-full max-w-md">
             <div className="rounded-2xl border border-[#35A238]/14 bg-white p-5 shadow-[0_8px_32px_-12px_rgb(14_32_16/0.12)] sm:p-7">

@@ -1,6 +1,6 @@
 "use client"
 
-import { Briefcase, User } from "lucide-react"
+import { Briefcase, Check, User } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -8,6 +8,14 @@ export type OrderAudience = "particulier" | "professionnel"
 
 const ORDER_SECTION_LABEL =
   "text-left text-[14px] font-semibold leading-snug text-brand-navy"
+
+const SEGMENT_TRACK =
+  "flex w-full border border-brand-green/14 p-1 shadow-[0_1px_2px_rgb(14_32_16/0.04)]"
+
+const SEGMENT_BUTTON_BASE =
+  "flex flex-1 items-center justify-center gap-1.5 px-3 text-[13px] font-semibold outline-none motion-safe:transition-[color,background-color,box-shadow,outline] motion-safe:duration-200 motion-reduce:transition-none focus-visible:ring-2 focus-visible:ring-brand-green/35 focus-visible:ring-offset-1 sm:text-sm"
+
+const SEGMENT_INACTIVE = "text-brand-muted hover:text-brand-navy"
 
 type OrderAudienceToggleProps = {
   audience: OrderAudience
@@ -36,8 +44,12 @@ export function OrderAudienceToggle({
   if (variant === "hero") {
     return (
       <div
-        className="order-audience-toggle--hero flex rounded-xl p-1"
-        role="group"
+        className={cn(
+          "order-audience-toggle--hero",
+          SEGMENT_TRACK,
+          "rounded-xl bg-brand-warm-field"
+        )}
+        role="radiogroup"
         aria-label="Type de client"
       >
         {heroOptions.map((option) => {
@@ -46,15 +58,20 @@ export function OrderAudienceToggle({
             <button
               key={option.id}
               type="button"
-              aria-pressed={active}
+              role="radio"
+              aria-checked={active}
               onClick={() => onChange(option.id)}
               className={cn(
-                "flex min-h-10 flex-1 items-center justify-center rounded-[0.65rem] px-3 text-[13px] font-semibold transition-all duration-200 sm:min-h-11 sm:text-sm",
+                SEGMENT_BUTTON_BASE,
+                "min-h-10 rounded-[0.65rem] sm:min-h-11",
                 active
-                  ? "bg-white text-brand-navy shadow-[0_1px_3px_rgb(14_32_16/0.12),0_4px_12px_-4px_rgb(14_32_16/0.15)]"
-                  : "text-brand-muted hover:text-brand-navy"
+                  ? "form-choice--selected bg-white text-brand-navy shadow-[0_1px_3px_rgb(14_32_16/0.12),0_4px_12px_-4px_rgb(14_32_16/0.15)]"
+                  : SEGMENT_INACTIVE
               )}
             >
+              {active ? (
+                <Check className="size-3.5 shrink-0 text-brand-green" aria-hidden />
+              ) : null}
               {option.label}
             </button>
           )
@@ -74,8 +91,11 @@ export function OrderAudienceToggle({
         Vous êtes&nbsp;?
       </p>
       <div
-        className="flex rounded-full bg-primary/10 p-1"
-        role="group"
+        className={cn(
+          SEGMENT_TRACK,
+          "rounded-full bg-primary/10"
+        )}
+        role="radiogroup"
         aria-label="Type de client"
       >
         {tunnelOptions.map((option) => {
@@ -84,16 +104,22 @@ export function OrderAudienceToggle({
             <button
               key={option.id}
               type="button"
-              aria-pressed={active}
+              role="radio"
+              aria-checked={active}
               onClick={() => onChange(option.id)}
               className={cn(
-                "flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-3 text-[13px] font-semibold transition-colors duration-200 sm:text-sm",
+                SEGMENT_BUTTON_BASE,
+                "min-h-11 gap-1.5 rounded-full",
                 active
-                  ? "bg-brand-green text-white shadow-[0_1px_2px_rgba(53,162,56,0.25)]"
-                  : "text-[#8A847C] hover:text-brand-navy"
+                  ? "form-choice--selected bg-brand-green text-white shadow-[0_1px_2px_rgba(53,162,56,0.25)]"
+                  : SEGMENT_INACTIVE
               )}
             >
-              <option.Icon className="size-4 shrink-0" aria-hidden />
+              {active ? (
+                <Check className="size-3.5 shrink-0 opacity-95" aria-hidden />
+              ) : (
+                <option.Icon className="size-4 shrink-0" aria-hidden />
+              )}
               {option.label}
             </button>
           )

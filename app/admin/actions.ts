@@ -1065,6 +1065,10 @@ export async function createPrestataire(formData: FormData): Promise<void> {
     .insert({
       nom: raison,
       raison_sociale: raison,
+      siret: String(formData.get("siret") ?? "").trim() || null,
+      adresse: String(formData.get("adresse") ?? "").trim() || null,
+      code_postal: String(formData.get("code_postal") ?? "").trim() || null,
+      ville: String(formData.get("ville") ?? "").trim() || null,
       email: String(formData.get("email") ?? "").trim() || null,
       telephone: String(formData.get("telephone") ?? "").trim() || null,
     })
@@ -1095,6 +1099,8 @@ export async function updatePrestataire(prestataireId: string, formData: FormDat
       nom: raison || undefined,
       email: String(formData.get("email") ?? "").trim() || null,
       telephone: String(formData.get("telephone") ?? "").trim() || null,
+      adresse: String(formData.get("adresse") ?? "").trim() || null,
+      code_postal: String(formData.get("code_postal") ?? "").trim() || null,
       ville: String(formData.get("ville") ?? "").trim() || null,
       siret: String(formData.get("siret") ?? "").trim() || null,
       contact_nom: String(formData.get("contact_nom") ?? "").trim() || null,

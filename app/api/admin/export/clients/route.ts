@@ -16,7 +16,7 @@ export async function GET() {
     { header: "Dernière activité", value: (c) => c.lastActivity?.slice(0, 10) },
   ])
 
-  return new NextResponse(buffer, {
+  return new NextResponse(buffer as unknown as BodyInit, {
     headers: {
       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "Content-Disposition": 'attachment; filename="clients-core.xlsx"',

@@ -15,9 +15,9 @@ import type { LocalPage } from "@/lib/seo/local-copy"
 
 import { GoogleRatingBadge } from "./google-rating-badge"
 import { HeroOrderCard } from "./hero-order-card"
+import { VITRINE_HEADER_TOTAL_OFFSET_CLASS } from "./header-layout"
 import {
   readVitrineScrollSolid,
-  VITRINE_HEADER_TOTAL_OFFSET_CLASS,
   VITRINE_SCROLL_SOLID_THRESHOLD,
 } from "./vitrine-header"
 import { VitrineHeroReassurance } from "./vitrine-hero-reassurance"

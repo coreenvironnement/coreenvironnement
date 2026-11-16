@@ -5,28 +5,36 @@ import { useRouter } from "next/navigation"
 
 import { getPostLoginDestination } from "@/app/auth/post-login-actions"
 import { createClient } from "@/lib/supabase/client"
+import { AuthSubmitButton } from "@/components/ui/auth-submit-button"
 import { PasswordInput } from "@/components/ui/password-input"
-
-const fieldClass =
-  "h-12 w-full rounded-xl border border-[#35A238]/18 bg-white px-3.5 text-[15px] text-brand-navy shadow-sm outline-none transition-colors placeholder:text-brand-muted/70 focus-visible:border-[#35A238] focus-visible:ring-3 focus-visible:ring-[#35A238]/20"
+import { authFieldInputClass, fieldMessageId } from "@/lib/form/auth-field-styles"
 
 export function ResetPasswordForm() {
   const router = useRouter()
   const [password, setPassword] = useState("")
   const [passwordConfirm, setPasswordConfirm] = useState("")
-  const [error, setError] = useState<string | null>(null)
+  const [passwordError, setPasswordError] = useState<string | null>(null)
+  const [passwordConfirmError, setPasswordConfirmError] = useState<string | null>(null)
+  const [formError, setFormError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
+  const passwordErrorId = fieldMessageId("new-password")
+  const passwordConfirmErrorId = fieldMessageId("new-password-confirm")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setError(null)
+    setFormError(null)
+    setPasswordError(null)
+    setPasswordConfirmError(null)
 
     if (password.length < 8) {
-      setError("Le mot de passe doit contenir au moins 8 caractères.")
+      setPasswordError("Le mot de passe doit contenir au moins 8 caractères.")
       return
     }
     if (password !== passwordConfirm) {
-      setError("Les mots de passe ne correspondent pas.")
+      const mismatch = "Les mots de passe ne correspondent pas."
+      setPasswordError(mismatch)
+      setPasswordConfirmError(mismatch)
       return
     }
 
@@ -41,7 +49,9 @@ export function ResetPasswordForm() {
 
     setLoading(false)
     if (updateError) {
-      setError("Impossible de mettre à jour le mot de passe. Recommencez depuis le lien reçu par e-mail.")
+      setFormError(
+        "Impossible de mettre à jour le mot de passe. Recommencez depuis le lien reçu par e-mail."
+      )
       return
     }
 
@@ -62,9 +72,23 @@ export function ResetPasswordForm() {
           required
           minLength={8}
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          inputClassName={fieldClass}
+          onChange={(e) => {
+            setPassword(e.target.value)
+            if (passwordError) setPasswordError(null)
+          }}
+          inputClassName={authFieldInputClass}
+          aria-invalid={passwordError ? true : undefined}
+          aria-describedby={passwordError ? passwordErrorId : undefined}
         />
+        {passwordError ? (
+          <p
+            id={passwordErrorId}
+            className="form-field-message form-field-message--error"
+            role="alert"
+          >
+            {passwordError}
+          </p>
+        ) : null}
       </div>
       <div className="space-y-2">
         <label htmlFor="new-password-confirm" className="text-sm font-medium text-brand-navy">
@@ -76,22 +100,32 @@ export function ResetPasswordForm() {
           required
           minLength={8}
           value={passwordConfirm}
-          onChange={(e) => setPasswordConfirm(e.target.value)}
-          inputClassName={fieldClass}
+          onChange={(e) => {
+            setPasswordConfirm(e.target.value)
+            if (passwordConfirmError) setPasswordConfirmError(null)
+          }}
+          inputClassName={authFieldInputClass}
+          aria-invalid={passwordConfirmError ? true : undefined}
+          aria-describedby={passwordConfirmError ? passwordConfirmErrorId : undefined}
         />
+        {passwordConfirmError ? (
+          <p
+            id={passwordConfirmErrorId}
+            className="form-field-message form-field-message--error"
+            role="alert"
+          >
+            {passwordConfirmError}
+          </p>
+        ) : null}
       </div>
-      {error ? (
-        <p className="text-sm text-red-600" role="alert">
-          {error}
+      {formError ? (
+        <p className="form-field-message form-field-message--error" role="alert">
+          {formError}
         </p>
       ) : null}
-      <button
-        type="submit"
-        className="btn btn-accent min-h-12 w-full rounded-xl text-[15px] font-semibold"
-        disabled={loading}
-      >
-        {loading ? "Enregistrement…" : "Enregistrer le mot de passe"}
-      </button>
+      <AuthSubmitButton loading={loading} loadingLabel="Enregistrement…">
+        Enregistrer le mot de passe
+      </AuthSubmitButton>
     </form>
   )
 }

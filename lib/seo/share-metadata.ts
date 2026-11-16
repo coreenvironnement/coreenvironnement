@@ -13,20 +13,40 @@ export function getShareImageUrl() {
   return `${getSiteUrl()}${SHARE_IMAGE_PATH}`
 }
 
-export function getShareOpenGraphImages(alt = DEFAULT_SHARE_IMAGE_ALT) {
-  const url = getShareImageUrl()
+export function buildShareOpenGraphImages(
+  imagePath: string,
+  width: number,
+  height: number,
+  alt: string,
+  type: string = SHARE_IMAGE_TYPE,
+) {
+  const url = `${getSiteUrl()}${imagePath}`
   return [
     {
       url,
       secureUrl: url,
-      width: SHARE_IMAGE_WIDTH,
-      height: SHARE_IMAGE_HEIGHT,
+      width,
+      height,
       alt,
-      type: SHARE_IMAGE_TYPE,
+      type,
     },
   ]
 }
 
+export function buildShareTwitterImages(imagePath: string) {
+  return [`${getSiteUrl()}${imagePath}`]
+}
+
+export function getShareOpenGraphImages(alt = DEFAULT_SHARE_IMAGE_ALT) {
+  return buildShareOpenGraphImages(
+    SHARE_IMAGE_PATH,
+    SHARE_IMAGE_WIDTH,
+    SHARE_IMAGE_HEIGHT,
+    alt,
+    SHARE_IMAGE_TYPE,
+  )
+}
+
 export function getShareTwitterImages() {
-  return [getShareImageUrl()]
+  return buildShareTwitterImages(SHARE_IMAGE_PATH)
 }

@@ -54,6 +54,9 @@ type OrderContextValue = {
   /** Incrémenté à chaque demande d’ouverture de l’estimateur vitrine. */
   volumeEstimatorRequestId: number
   openVolumeEstimator: () => void
+  /** Menu mobile du header ouvert (masque la barre d’actions basse). */
+  headerMenuOpen: boolean
+  setHeaderMenuOpen: (open: boolean) => void
 }
 
 const OrderContext = createContext<OrderContextValue | null>(null)
@@ -88,6 +91,7 @@ export function VitrineOrderProvider({ children }: { children: ReactNode }) {
   const [draft, setDraft] = useState<OrderDraft>(defaultDraft)
   const [intentStart, setIntentStart] = useState<OrderIntentStart>("auto")
   const [volumeEstimatorRequestId, setVolumeEstimatorRequestId] = useState(0)
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
 
   const patchDraft = useCallback((patch: Partial<OrderDraft>) => {
     setDraft((prev) => ({ ...prev, ...patch }))
@@ -121,6 +125,8 @@ export function VitrineOrderProvider({ children }: { children: ReactNode }) {
       resolveIntentPhase,
       volumeEstimatorRequestId,
       openVolumeEstimator,
+      headerMenuOpen,
+      setHeaderMenuOpen,
     }),
     [
       open,
@@ -132,6 +138,7 @@ export function VitrineOrderProvider({ children }: { children: ReactNode }) {
       resolveIntentPhase,
       volumeEstimatorRequestId,
       openVolumeEstimator,
+      headerMenuOpen,
     ]
   )
 

@@ -1,6 +1,7 @@
 import Link from "next/link"
 
 import { createPrestataire } from "@/app/admin/actions"
+import { PrestataireEntrepriseFields } from "@/components/admin/prestataire-entreprise-fields"
 import { requireAdmin } from "@/lib/auth/require-admin"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -52,9 +53,8 @@ export default async function AdminPrestatairesPage() {
         </CardHeader>
         <CardContent>
           <form action={createPrestataire} className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2 sm:col-span-2">
-              <label className="text-sm font-medium">Raison sociale *</label>
-              <Input name="raison_sociale" required />
+            <div className="sm:col-span-2">
+              <PrestataireEntrepriseFields />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">E-mail</label>

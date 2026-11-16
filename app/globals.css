@@ -101,6 +101,17 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* États formulaire interactifs (focus / erreur / sélection) */
+  --form-focus-border: var(--brand-green);
+  --form-focus-halo: color-mix(in srgb, var(--brand-green) 22%, transparent);
+  --form-error-border: color-mix(in srgb, var(--destructive) 72%, #b91c1c);
+  --form-error-halo: color-mix(in srgb, var(--destructive) 18%, transparent);
+  --form-selection-bg: color-mix(in srgb, var(--brand-green) 10%, white);
+  --form-selection-outline: color-mix(in srgb, var(--brand-green) 38%, transparent);
+
+  /* Sons UI formulaire : activation volontaire (--form-sound-enabled: 1) — fichiers audio à charger à la demande */
+  --form-sound-enabled: 0;
 }
 
 .dark {

@@ -580,7 +580,7 @@ export function VitrineClientPortal() {
   return (
     <section
       id="espace-client"
-      className="relative scroll-mt-[72px] overflow-hidden border-b border-white/10 bg-brand-forest py-16 text-white sm:py-20 lg:py-24"
+      className="relative overflow-hidden border-b border-white/10 bg-brand-forest py-16 text-white sm:py-20 lg:py-24"
     >
       <div
         aria-hidden

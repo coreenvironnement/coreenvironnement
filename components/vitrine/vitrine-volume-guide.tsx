@@ -14,7 +14,9 @@ import {
 } from "@/lib/seo/volume-guide-content"
 
 import { VitrineFooter } from "./vitrine-footer"
+import { VITRINE_HEADER_CONTENT_OFFSET_CLASS, VITRINE_SCROLL_MARGIN_CLASS } from "./header-layout"
 import { VitrineHeader } from "./vitrine-header"
+import { VitrineMobileActionBar } from "./vitrine-mobile-action-bar"
 import { VitrineOrderModal } from "./order-modal"
 import { VitrineOrderProvider } from "./order-context"
 
@@ -43,9 +45,9 @@ function GuideCallout({ children }: { children: ReactNode }) {
 export function VitrineVolumeGuide() {
   return (
     <VitrineOrderProvider>
-      <div className="vitrine-root min-h-screen">
+      <div className="vitrine-root vitrine--with-action-bar min-h-screen">
         <VitrineHeader />
-        <main id="contenu" className="pt-[7.25rem] sm:pt-[7.75rem]">
+        <main id="contenu" className={VITRINE_HEADER_CONTENT_OFFSET_CLASS}>
           <nav aria-label="Fil d'Ariane" className="container-x pb-2">
             <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[12px] text-brand-muted sm:text-[13px]">
               {VOLUME_BREADCRUMBS.map((item, index) => {
@@ -96,7 +98,7 @@ export function VitrineVolumeGuide() {
                 </ul>
               </nav>
 
-              <section id="volume-et-poids" className="mt-10 scroll-mt-28">
+              <section id="volume-et-poids" className={`mt-10 ${VITRINE_SCROLL_MARGIN_CLASS}`}>
                 <h2 className={H2_CLASS}>
                   Volume et poids : quelle différence ?
                 </h2>
@@ -115,7 +117,7 @@ export function VitrineVolumeGuide() {
                 </GuideCallout>
               </section>
 
-              <section id="estimer-volume" className="mt-10 scroll-mt-28">
+              <section id="estimer-volume" className={`mt-10 ${VITRINE_SCROLL_MARGIN_CLASS}`}>
                 <h2 className={H2_CLASS}>
                   Comment estimer votre volume de déchets ?
                 </h2>
@@ -167,7 +169,7 @@ export function VitrineVolumeGuide() {
                 </p>
               </section>
 
-              <section id="choisir-dechets" className="mt-10 scroll-mt-28">
+              <section id="choisir-dechets" className={`mt-10 ${VITRINE_SCROLL_MARGIN_CLASS}`}>
                 <h2 className={H2_CLASS}>
                   Quelle benne choisir selon vos déchets ?
                 </h2>
@@ -208,7 +210,7 @@ export function VitrineVolumeGuide() {
                 </GuideCallout>
               </section>
 
-              <section id="exemples-tarifs" className="mt-10 scroll-mt-28">
+              <section id="exemples-tarifs" className={`mt-10 ${VITRINE_SCROLL_MARGIN_CLASS}`}>
                 <h2 className={H2_CLASS}>
                   Exemples de volumes et de tarifs
                 </h2>
@@ -254,7 +256,7 @@ export function VitrineVolumeGuide() {
                 </GuideParagraph>
               </section>
 
-              <section id="consulter-offres" className="mt-10 scroll-mt-28">
+              <section id="consulter-offres" className={`mt-10 ${VITRINE_SCROLL_MARGIN_CLASS}`}>
                 <h2 className={H2_CLASS}>
                   Consultez les bennes et les tarifs pour votre projet
                 </h2>
@@ -277,6 +279,7 @@ export function VitrineVolumeGuide() {
         </main>
         <VitrineFooter />
         <VitrineOrderModal />
+        <VitrineMobileActionBar />
       </div>
     </VitrineOrderProvider>
   )

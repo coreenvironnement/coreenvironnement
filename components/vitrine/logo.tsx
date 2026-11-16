@@ -27,7 +27,7 @@ type VitrineLogoProps = {
   className?: string
   priority?: boolean
   /** Header vitrine — logo lisible sans alourdir la barre (~160–178 px) */
-  variant?: "default" | "header" | "footer"
+  variant?: "default" | "header" | "footer" | "login"
   /** Logo blanc/vert pour header transparent ou fond sombre */
   transparent?: boolean
 }
@@ -56,7 +56,7 @@ export function VitrineLogo({
           priority={priority}
           aria-hidden={transparent}
           className={cn(
-            "absolute inset-0 h-full w-full origin-left object-contain object-left transition-opacity duration-500 ease-out",
+            "absolute inset-0 h-full w-full origin-center object-contain object-center transition-opacity duration-500 ease-out lg:origin-left lg:object-left",
             transparent ? "opacity-0" : "opacity-100"
           )}
         />
@@ -70,7 +70,7 @@ export function VitrineLogo({
           aria-hidden={!transparent}
           style={{ scale: `${HEADER_LOGO_TRANSPARENT_SCALE}` }}
           className={cn(
-            "absolute inset-0 h-full w-full origin-left object-contain object-left transition-opacity duration-500 ease-out",
+            "absolute inset-0 h-full w-full origin-center object-contain object-center transition-opacity duration-500 ease-out lg:origin-left lg:object-left",
             transparent ? "opacity-100" : "opacity-0"
           )}
         />
@@ -86,7 +86,9 @@ export function VitrineLogo({
         "relative inline-flex shrink-0 items-center",
         variant === "footer"
           ? "mx-auto h-10 w-[min(62vw,188px)] sm:h-11 sm:w-[200px] lg:mx-0"
-          : "h-9 max-w-[min(52vw,200px)] sm:h-10 sm:max-w-[220px]",
+          : variant === "login"
+            ? "mx-auto h-11 w-[min(70vw,220px)] sm:h-12 sm:max-w-[240px]"
+            : "h-9 max-w-[min(52vw,200px)] sm:h-10 sm:max-w-[220px]",
         className
       )}
     >
@@ -99,7 +101,11 @@ export function VitrineLogo({
         priority={priority}
         className={cn(
           "h-full w-full object-contain",
-          variant === "footer" ? "object-center lg:object-left" : "object-left"
+          variant === "footer"
+            ? "object-center lg:object-left"
+            : variant === "login"
+              ? "origin-center object-center"
+              : "object-left"
         )}
       />
     </span>

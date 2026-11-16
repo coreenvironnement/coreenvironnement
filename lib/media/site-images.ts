@@ -43,7 +43,25 @@ export const SITE_IMAGES = {
     terre: "/images/tunnel-dechets-terre-excavee-jardin.webp",
     bois: "/images/tunnel-dechets-bois-renovation.webp",
   },
+  prixLocationBenneArticle: {
+    cover: "/images/benne-chantier-allee-privee.webp",
+    famillesDechets: "/images/benne-gravats-beton-briques.webp",
+    volumePoids: "/images/benne-chargement-bois-carton-metal.webp",
+  },
 } as const
+
+export const PRIX_LOCATION_BENNE_ARTICLE_IMAGE_WIDTH = 1024
+export const PRIX_LOCATION_BENNE_ARTICLE_IMAGE_HEIGHT = 682
+
+export const PRIX_LOCATION_BENNE_ARTICLE_IMAGE_ALT = {
+  cover: "Benne verte sur une allée privée devant une maison",
+  famillesDechets: "Morceaux de béton et de briques dans une benne verte",
+  volumePoids:
+    "Benne contenant du bois, du carton et des éléments métalliques sous le rebord",
+} as const
+
+/** Sizes alignées sur `max-w-3xl` des guides vitrine (~768 px de colonne). */
+export const VITRINE_GUIDE_ARTICLE_IMAGE_SIZES = "(max-width: 768px) 100vw, 768px"
 
 const HERO_ALT_BASE =
   "Camion CORE Environnement transportant une benne — illustration pour la location de benne en Île-de-France"

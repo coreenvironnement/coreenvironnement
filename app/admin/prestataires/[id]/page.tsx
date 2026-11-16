@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 
 import { updatePrestataire } from "@/app/admin/actions"
+import { PrestataireEntrepriseFields } from "@/components/admin/prestataire-entreprise-fields"
 import { AdminAuditLogPanel } from "@/components/admin/admin-audit-log-panel"
 import { requireAdmin } from "@/lib/auth/require-admin"
 import { loadAuditLog } from "@/lib/admin/audit-log"
@@ -73,17 +74,14 @@ export default async function AdminPrestataireFichePage({ params, searchParams }
         </CardHeader>
         <CardContent>
           <form action={updateBound} className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2 sm:col-span-2">
-              <label className="text-sm font-medium">Raison sociale</label>
-              <Input name="raison_sociale" defaultValue={label} required />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">SIRET</label>
-              <Input name="siret" defaultValue={prestataire.siret ?? ""} />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Ville</label>
-              <Input name="ville" defaultValue={prestataire.ville ?? ""} />
+            <div className="sm:col-span-2">
+              <PrestataireEntrepriseFields
+                defaultRaison={label}
+                defaultSiret={prestataire.siret ?? ""}
+                defaultAdresse={prestataire.adresse ?? ""}
+                defaultCodePostal={prestataire.code_postal ?? ""}
+                defaultVille={prestataire.ville ?? ""}
+              />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">E-mail siège</label>

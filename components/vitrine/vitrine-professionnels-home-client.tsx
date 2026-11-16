@@ -11,6 +11,7 @@ import { VitrineFaq } from "./vitrine-faq"
 import { VitrineFinalCta } from "./vitrine-final-cta"
 import { VitrineFooter } from "./vitrine-footer"
 import { VitrineHeader } from "./vitrine-header"
+import { VitrineMobileActionBar } from "./vitrine-mobile-action-bar"
 import { VitrineHero } from "./vitrine-hero"
 import { VitrineHowItWorks } from "./vitrine-how-it-works"
 import { VitrineServices } from "./vitrine-sections"
@@ -22,7 +23,7 @@ export function VitrineProfessionnelsHomeClient({
 }) {
   return (
     <VitrineOrderProvider>
-      <div className="vitrine-root vitrine--mobile-centered vitrine--pro-home-mobile-centered min-h-screen">
+      <div className="vitrine-root vitrine--with-action-bar vitrine--mobile-centered vitrine--pro-home-mobile-centered min-h-screen">
         <a
           href="#contenu"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-[10px] focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-brand-navy focus:shadow-md"
@@ -47,6 +48,7 @@ export function VitrineProfessionnelsHomeClient({
         </main>
         <VitrineFooter />
         <VitrineOrderModal />
+        <VitrineMobileActionBar />
       </div>
     </VitrineOrderProvider>
   )

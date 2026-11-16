@@ -34,7 +34,7 @@ export default async function ProPage({ searchParams }: PageProps) {
 
   return (
     <VitrinePublicShell>
-      <section className="bg-brand-bg-alt py-12 sm:py-16 lg:py-20">
+      <section className="bg-brand-bg-alt pt-8 pb-12 sm:py-16 lg:py-20">
         <div className="container-x max-w-3xl space-y-6">
           <div className="pb-2 sm:pb-4">
             <p className="section-eyebrow">Espace professionnel</p>

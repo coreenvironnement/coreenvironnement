@@ -13,7 +13,7 @@ import { VitrineSectionHeader } from "./vitrine-section-header"
 
 export function VitrineParticulierFaq({ faqTitle }: { faqTitle?: string }) {
   const baseId = useId()
-  const [openIndices, setOpenIndices] = useState<Set<number>>(() => new Set([0]))
+  const [openIndices, setOpenIndices] = useState<Set<number>>(() => new Set())
 
   const toggle = useCallback((index: number) => {
     setOpenIndices((prev) => {

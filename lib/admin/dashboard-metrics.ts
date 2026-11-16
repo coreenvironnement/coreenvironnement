@@ -134,7 +134,7 @@ export async function loadAdminDashboardMetrics(
   }
 
   for (const i of interventionsAPlanifier ?? []) {
-    const chantier = i.chantiers as { nom: string } | null
+    const chantier = i.chantiers as unknown as { nom: string } | null
     aPlanifierRows.push({
       id: i.id,
       kind: "intervention",
@@ -148,7 +148,7 @@ export async function loadAdminDashboardMetrics(
   aPlanifierRows.sort((a, b) => a.dateSort.localeCompare(b.dateSort))
 
   const planifieesRows: PlanifieeRow[] = (interventionsPlanifiees ?? []).map((i) => {
-    const chantier = i.chantiers as { nom: string } | null
+    const chantier = i.chantiers as unknown as { nom: string } | null
     return {
       id: i.id,
       numero: i.numero,

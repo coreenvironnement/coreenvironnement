@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   ChevronRight,
   Circle,
-  Headphones,
   Info,
   Loader2,
   MapPin,
@@ -42,6 +41,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { EntrepriseLookupFields } from "@/components/forms/entreprise-lookup-fields"
 import { Input } from "@/components/ui/input"
 import { CheckoutReassuranceBanner } from "@/components/order/checkout-reassurance-banner"
 import { EmbeddedCheckout } from "@/components/order/embedded-checkout"
@@ -210,6 +210,8 @@ export function OrderWidget({
     null
   )
   const [addressError, setAddressError] = useState<string | null>(null)
+  /** Évite le bandeau zone au chargement si l’adresse vient du brouillon vitrine sans sélection. */
+  const [locationAddressTouched, setLocationAddressTouched] = useState(false)
   const [deliveryDateError, setDeliveryDateError] = useState<string | null>(null)
   const deliveryDateRef = useRef<HTMLDivElement>(null)
 
@@ -226,8 +228,6 @@ export function OrderWidget({
   const [volumeHintOrigin, setVolumeHintOrigin] = useState<
     "estimated" | "chosen" | "unknown"
   >("unknown")
-  /** Particulier : ouvre l’étape volume directement sur l’estimateur (pas le choix connaître / estimer). */
-  const [volumeEstimateOnly, setVolumeEstimateOnly] = useState(false)
   const [volumeStepView, setVolumeStepView] = useState<string>("choice")
   const [deliveryDate, setDeliveryDate] = useState("")
   const [pickupDate, setPickupDate] = useState("")
@@ -352,7 +352,7 @@ export function OrderWidget({
     scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
   }
 
-  const goToIntentVolume = (options?: { estimateOnly?: boolean }) => {
+  const goToIntentVolume = () => {
     setAddressError(null)
     if (audience === "particulier") {
       if (!particulierWasteId) {
@@ -362,11 +362,6 @@ export function OrderWidget({
     } else if (!family) {
       setAddressError("Choisissez un type de déchet dans la liste.")
       return
-    }
-    if (audience === "particulier") {
-      setVolumeEstimateOnly(options?.estimateOnly === true)
-    } else {
-      setVolumeEstimateOnly(false)
     }
     syncDraftFromWidget()
     setIntentPhase("volume")
@@ -554,7 +549,6 @@ export function OrderWidget({
     step === "intent" &&
     intentPhase === "volume" &&
     audience === "particulier" &&
-    !volumeEstimateOnly &&
     volumeStepView === "choice"
 
   const volumeEstimatorAppearanceActive =
@@ -564,9 +558,6 @@ export function OrderWidget({
     intentPhase === "volume" &&
     audience === "particulier" &&
     volumeStepView === "estimator-mode"
-
-  const volumeModalContentFit =
-    volumeIntentChoiceActive || volumeEstimatorAppearanceActive
 
   useEffect(() => {
     onVolumeIntentChoiceActive?.(volumeIntentChoiceActive)
@@ -686,6 +677,7 @@ export function OrderWidget({
     if (open && !modalWasOpen.current) {
       applyDraft(draft)
       setAddressError(null)
+      setLocationAddressTouched(false)
       setDraftCommandeId(null)
       setProRequestSent(false)
       setProReference(null)
@@ -974,6 +966,7 @@ export function OrderWidget({
                         onValueChange={(next) => {
                           setAddress(next)
                           setAddressError(null)
+                          setLocationAddressTouched(true)
                         }}
                         onSelect={handleAddressSelect}
                         onClearSelection={clearAddressSelection}
@@ -992,7 +985,10 @@ export function OrderWidget({
                 </div>
 
                 <AnimatePresence>
-                  {address.trim().length >= 3 && !selectedAddress && !addressError && (
+                  {locationAddressTouched &&
+                    address.trim().length >= 3 &&
+                    !selectedAddress &&
+                    !addressError && (
                     <motion.div
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -1046,7 +1042,7 @@ export function OrderWidget({
               <div
                 className={cn(
                   embedded
-                    ? "order-tunnel-step__stack space-y-4 sm:space-y-5"
+                    ? "order-tunnel-step__stack flex min-h-0 flex-1 flex-col gap-3 sm:gap-4"
                     : "space-y-4"
                 )}
               >
@@ -1079,18 +1075,6 @@ export function OrderWidget({
                         setAddressError(null)
                       }}
                     />
-                    <p className="text-center">
-                      <button
-                        type="button"
-                        disabled={!particulierWasteId}
-                        className="text-[13px] font-medium text-brand-navy underline underline-offset-2 transition-colors hover:text-brand-green disabled:cursor-not-allowed disabled:text-brand-muted disabled:no-underline sm:text-[14px]"
-                        onClick={() =>
-                          goToIntentVolume({ estimateOnly: true })
-                        }
-                      >
-                        Je ne sais pas quelle benne choisir
-                      </button>
-                    </p>
                   </>
                 ) : (
                   <>
@@ -1149,13 +1133,23 @@ export function OrderWidget({
                   </p>
                 ) : null}
 
-                <div className={cn(embedded && ORDER_TUNNEL_STEP_NAV)}>
+                {!embedded ? (
+                  <div>
+                    <OrderTunnelContinueButton
+                      onClick={goToIntentVolume}
+                      disabled={!canLeaveIntentWaste}
+                    />
+                  </div>
+                ) : null}
+              </div>
+              {embedded ? (
+                <div className={ORDER_TUNNEL_STEP_NAV}>
                   <OrderTunnelContinueButton
                     onClick={goToIntentVolume}
                     disabled={!canLeaveIntentWaste}
                   />
                 </div>
-              </div>
+              ) : null}
             </motion.div>
           )}
 
@@ -1170,7 +1164,7 @@ export function OrderWidget({
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
               className={cn(
-                embedded && !volumeModalContentFit && "order-tunnel-step--fill"
+                embedded && "order-tunnel-step--fill"
               )}
             >
               <ParticulierVolumeStep
@@ -1181,13 +1175,9 @@ export function OrderWidget({
                   audience === "particulier" ? particulierWasteId : null
                 }
                 addressPending={!zoneOk}
-                estimateOnly={
-                  audience === "particulier" && volumeEstimateOnly
-                }
                 onViewChange={setVolumeStepView}
                 onBackToWaste={() => {
                   setAddressError(null)
-                  setVolumeEstimateOnly(false)
                   setIntentPhase("waste")
                 }}
                 onContinue={(volumeM3, volumeOrigin) =>
@@ -1499,24 +1489,42 @@ export function OrderWidget({
                 </div>
                 {audience === "professionnel" ? (
                   <>
-                    <div className="space-y-1.5">
-                      <label htmlFor="order-company-name" className="text-xs font-semibold text-brand-navy">
-                        Nom de l’entreprise&nbsp;*
-                      </label>
-                      <Input
-                        id="order-company-name"
-                        autoComplete="organization"
-                        value={companyName}
-                        onChange={(e) => {
-                          setCompanyName(e.target.value)
-                          setAddressError(null)
-                        }}
-                        className={cn(
+                    <EntrepriseLookupFields
+                      className="space-y-3"
+                      raisonSocialeValue={companyName}
+                      siretValue={siret}
+                      onRaisonSocialeChange={(v) => {
+                        setCompanyName(v)
+                        setAddressError(null)
+                      }}
+                      onSiretChange={(v) => {
+                        setSiret(v)
+                        setAddressError(null)
+                      }}
+                      raisonSociale={{
+                        id: "order-company-name",
+                        name: "order_company_name",
+                        label: "Nom de l’entreprise",
+                        required: true,
+                      }}
+                      siret={{
+                        id: "order-siret",
+                        name: "order_siret",
+                        label: "SIRET",
+                      }}
+                      inputClassName={cn(
                         "h-11 rounded-xl border-2 border-primary/15 px-3",
                         orderFieldBg(embedded)
                       )}
-                      />
-                </div>
+                      onExtra={(extra) => {
+                        if (locationAddressTouched) return
+                        const line =
+                          extra.adresseUneLigne ??
+                          extra.adresseSiege?.replace(/\n/g, ", ") ??
+                          ""
+                        if (line) setAddress(line)
+                      }}
+                    />
                     <div className="space-y-1.5">
                       <label htmlFor="order-pro-contact" className="text-xs font-semibold text-brand-navy">
                         Nom et prénom du contact&nbsp;*
@@ -1628,27 +1636,6 @@ export function OrderWidget({
                     </span>
                   </p>
                   </div>
-                {audience === "professionnel" ? (
-                  <div className="space-y-1.5">
-                    <label htmlFor="order-siret" className="text-xs font-medium text-muted-foreground">
-                      SIRET (optionnel)
-                    </label>
-                    <Input
-                      id="order-siret"
-                      inputMode="numeric"
-                      autoComplete="off"
-                      value={siret}
-                      onChange={(e) => {
-                        setSiret(e.target.value)
-                        setAddressError(null)
-                      }}
-                      className={cn(
-                        "h-11 rounded-xl border-2 border-primary/15 px-3",
-                        orderFieldBg(embedded)
-                      )}
-                    />
-                  </div>
-                ) : null}
                 </div>
 
               {addressError && (
@@ -1968,32 +1955,9 @@ export function OrderWidget({
         )}
       </CardContent>
 
-      {!(
-        embedded &&
-        audience === "particulier" &&
-        step === "intent" &&
-        intentPhase === "volume"
-      ) ? (
-        <CardFooter
-          className={cn(
-            "relative flex flex-col text-center",
-            embedded
-              ? "order-tunnel-help-footer gap-1 border-t border-primary/12 bg-transparent px-1 pb-0 pt-2 sm:px-2 sm:pt-2.5"
-              : "gap-2 border-t border-primary/5 bg-muted/30 py-4 text-[0.65rem] text-muted-foreground"
-          )}
-        >
-          <span
-            className={cn(
-              "inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0 leading-tight",
-              embedded ? "text-[11px] text-brand-muted" : ""
-            )}
-          >
-            {embedded ? (
-              <Headphones
-                className="size-3.5 shrink-0 text-brand-muted"
-                aria-hidden
-              />
-            ) : null}
+      {!embedded ? (
+        <CardFooter className="relative flex flex-col gap-2 border-t border-primary/5 bg-muted/30 py-4 text-center text-[0.65rem] text-muted-foreground">
+          <span className="inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0 leading-tight">
             Besoin d’aide pour votre commande&nbsp;?{" "}
             <a
               href={SITE_PHONE_HREF}

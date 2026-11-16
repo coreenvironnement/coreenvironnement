@@ -14,6 +14,7 @@ import { VitrineParticulierPourquoi } from "./vitrine-particulier-pourquoi"
 import { VitrineFinalCta } from "./vitrine-final-cta"
 import { VitrineFooter } from "./vitrine-footer"
 import { VitrineHeader } from "./vitrine-header"
+import { VitrineMobileActionBar } from "./vitrine-mobile-action-bar"
 import type { SeoVariant } from "@/lib/seo/landing-variants"
 import {
   buildParticulierFaqSectionTitle,
@@ -43,7 +44,7 @@ function OrderBanner({ orderParam }: { orderParam?: string }) {
 
   if (orderParam === "success") {
     return (
-      <div className="container-x relative z-20 -mb-6 pt-24">
+      <div className="container-x relative z-20 -mb-6 pt-[calc(var(--vitrine-header-height)+0.75rem)]">
         <p className="rounded-xl border border-brand-green/30 bg-brand-bg-alt px-4 py-3 text-center text-sm text-brand-navy">
           Paiement reçu. Votre commande est confirmée. Vous recevrez un e-mail de
           confirmation sous peu.
@@ -54,7 +55,7 @@ function OrderBanner({ orderParam }: { orderParam?: string }) {
 
   if (orderParam === "cancelled") {
     return (
-      <div className="container-x relative z-20 -mb-6 pt-24">
+      <div className="container-x relative z-20 -mb-6 pt-[calc(var(--vitrine-header-height)+0.75rem)]">
         <p className="rounded-xl border border-brand-border bg-brand-bg px-4 py-3 text-center text-sm text-brand-muted">
           Paiement annulé. Vous pouvez reprendre votre commande.
         </p>
@@ -87,7 +88,7 @@ export function VitrineHomeClient({
   return (
     <VitrineOrderProvider>
       <div
-        className={`vitrine-root min-h-screen${particulierHome ? " vitrine--mobile-centered vitrine--particulier-home-desktop-centered" : ""}`}
+        className={`vitrine-root vitrine--with-action-bar min-h-screen${particulierHome ? " vitrine--mobile-centered vitrine--particulier-home-desktop-centered" : ""}`}
       >
         <a
           href="#contenu"
@@ -135,7 +136,8 @@ export function VitrineHomeClient({
 
         <VitrineFooter />
         <VitrineOrderModal />
-        {particulierHome ? <FloatingHelpBubble /> : null}
+        <VitrineMobileActionBar />
+        {particulierHome ? <FloatingHelpBubble hideBelowLg /> : null}
       </div>
     </VitrineOrderProvider>
   )

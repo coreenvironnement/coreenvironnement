@@ -54,9 +54,10 @@ function StreetLampIcon() {
   )
 }
 
-function AdvisorChatIcon() {
+function AdvisorChatIcon({ className }: { className?: string }) {
   return (
     <svg
+      className={className}
       viewBox="0 0 48 48"
       fill="none"
       stroke="currentColor"
@@ -199,7 +200,7 @@ export function VitrineParticulierConseils() {
         {volumeExpanded ? (
           <div
             id={HOME_VOLUME_ESTIMATOR_HASH}
-            className="cp-estimator scroll-mt-28"
+            className="cp-estimator scroll-mt-[calc(var(--vitrine-header-height)+1rem)]"
           >
             <VitrineVolumeEstimator
               compactTop
@@ -207,20 +208,17 @@ export function VitrineParticulierConseils() {
             />
           </div>
         ) : (
-          <div id={HOME_VOLUME_ESTIMATOR_HASH} className="scroll-mt-28" />
+          <div id={HOME_VOLUME_ESTIMATOR_HASH} className="scroll-mt-[calc(var(--vitrine-header-height)+1rem)]" />
         )}
 
-        <aside className="cp-help" aria-label="Demander conseil">
-          <AdvisorChatIcon />
-          <div className="cp-help-copy">
-            <strong>{conseils.conseiller.titre}</strong>
-            <p>{conseils.conseiller.texte}</p>
-          </div>
-          <a className="cp-link" href={SITE_PHONE_HREF}>
-            {conseils.conseiller.cta}
-            <ChevronIcon />
-          </a>
-        </aside>
+        <a
+          href={SITE_PHONE_HREF}
+          className="btn btn-ghost-dark btn-sm mt-6 hidden min-h-11 w-auto lg:inline-flex"
+          aria-label={conseils.conseiller.titre}
+        >
+          <AdvisorChatIcon className="size-5 shrink-0 text-brand-green" />
+          {conseils.conseiller.cta}
+        </a>
       </div>
     </section>
   )

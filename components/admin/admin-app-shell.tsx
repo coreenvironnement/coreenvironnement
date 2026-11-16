@@ -84,6 +84,34 @@ function NavItemLink({
   )
 }
 
+function AdminNavGroup({
+  title,
+  sectionId,
+  isFirst,
+  children,
+}: {
+  title: string
+  sectionId: string
+  isFirst?: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <section
+      className={cn(!isFirst && "border-t border-[#35A238]/15 pt-4")}
+      aria-labelledby={sectionId}
+    >
+      <h2
+        id={sectionId}
+        className="mb-2 flex items-center gap-2 px-2 text-[11px] font-bold uppercase leading-none tracking-[0.12em] text-brand-navy"
+      >
+        <span className="h-3.5 w-[3px] shrink-0 rounded-full bg-[#35A238]" aria-hidden />
+        {title}
+      </h2>
+      <div className="flex flex-col gap-0.5">{children}</div>
+    </section>
+  )
+}
+
 function AdminSessionFooter({ userLabel }: { userLabel: string }) {
   return (
     <div className="shrink-0 border-t border-[#35A238]/15 bg-white/80 p-3">
@@ -117,21 +145,21 @@ export function AdminAppShell({ children, navGroups, navItems, userLabel }: Prop
               />
             </Link>
           </div>
-          <p className="px-4 pt-3 text-[11px] font-semibold uppercase tracking-wider text-[#35A238]">
-            Administration
+          <p className="border-b border-[#35A238]/10 px-4 pb-3 pt-3 text-[10px] font-medium uppercase tracking-[0.14em] text-brand-navy/45">
+            Espace administration
           </p>
-          <nav className="flex flex-1 flex-col gap-4 overflow-y-auto p-3" aria-label="Administration">
-            {navGroups.map((group) => (
-              <div key={group.title}>
-                <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  {group.title}
-                </p>
-                <div className="flex flex-col gap-0.5">
-                  {group.items.map((item) => (
-                    <NavItemLink key={item.id} item={item} isActive={item.id === active} />
-                  ))}
-                </div>
-              </div>
+          <nav className="flex flex-1 flex-col gap-5 overflow-y-auto p-3 pt-4" aria-label="Administration">
+            {navGroups.map((group, index) => (
+              <AdminNavGroup
+                key={group.title}
+                title={group.title}
+                sectionId={`admin-nav-group-${index}`}
+                isFirst={index === 0}
+              >
+                {group.items.map((item) => (
+                  <NavItemLink key={item.id} item={item} isActive={item.id === active} />
+                ))}
+              </AdminNavGroup>
             ))}
             <div className="mt-1 border-t border-[#35A238]/15 pt-3">
               <Link
@@ -231,23 +259,23 @@ export function AdminAppShell({ children, navGroups, navItems, userLabel }: Prop
                 <X className="size-5" />
               </button>
             </div>
-            <nav className="flex flex-1 flex-col gap-4 overflow-y-auto p-3">
-              {navGroups.map((group) => (
-                <div key={group.title}>
-                  <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    {group.title}
-                  </p>
-                  <div className="flex flex-col gap-0.5">
-                    {group.items.map((item) => (
-                      <NavItemLink
-                        key={item.id}
-                        item={item}
-                        isActive={item.id === active}
-                        onNavigate={() => setMobileNavOpen(false)}
-                      />
-                    ))}
-                  </div>
-                </div>
+            <nav className="flex flex-1 flex-col gap-5 overflow-y-auto p-3 pt-4">
+              {navGroups.map((group, index) => (
+                <AdminNavGroup
+                  key={group.title}
+                  title={group.title}
+                  sectionId={`admin-nav-mobile-group-${index}`}
+                  isFirst={index === 0}
+                >
+                  {group.items.map((item) => (
+                    <NavItemLink
+                      key={item.id}
+                      item={item}
+                      isActive={item.id === active}
+                      onNavigate={() => setMobileNavOpen(false)}
+                    />
+                  ))}
+                </AdminNavGroup>
               ))}
             </nav>
             <AdminSessionFooter userLabel={userLabel} />

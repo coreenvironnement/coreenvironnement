@@ -82,6 +82,7 @@ export function isCommandeNouvelle(dateCreation: string | null | undefined): boo
 export const COMMANDES_VUES = [
   { code: "toutes", label: "Toutes" },
   { code: "a-traiter", label: "À traiter" },
+  { code: "brouillon", label: "Brouillons" },
   { code: "en-cours", label: "En cours" },
   { code: "livrees", label: "Livrées" },
   { code: "annulees", label: "Annulées" },
@@ -101,6 +102,8 @@ export function matchesCommandeVue(
   switch (vue) {
     case "a-traiter":
       return isCommandeATraiter(commande.statut, commande.payment_status)
+    case "brouillon":
+      return commande.statut === "brouillon"
     case "en-cours":
       return commande.statut === "en_cours"
     case "livrees":

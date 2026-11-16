@@ -53,9 +53,10 @@ export default async function AdminInterventionsPage({ searchParams }: PageProps
   const commandeOnly =
     vue === "a-traiter" ||
     vue === "brouillon" ||
-    vue === "en_cours" ||
-    vue === "livree" ||
-    vue === "annulee"
+    vue === "en-cours" ||
+    vue === "livrees" ||
+    vue === "annulees" ||
+    vue === "remboursees"
 
   const commandeRows = rows
     .map((r) => r.commande)
