@@ -1064,6 +1064,39 @@
   -webkit-backdrop-filter: blur(10px) saturate(1.15);
 }
 
+/* En-tête de section — même adoucissement glass quand une étape est au focus scroll */
+.vitrine-root #engagements .engagements-section-header__panel {
+  border-radius: 1rem;
+  transition:
+    opacity 360ms ease,
+    filter 360ms ease,
+    background-color 360ms ease,
+    border-color 360ms ease,
+    box-shadow 360ms ease,
+    backdrop-filter 360ms ease,
+    -webkit-backdrop-filter 360ms ease,
+    padding 360ms ease;
+}
+
+.vitrine-root #engagements .engagements-section-header__panel--inactive {
+  opacity: 0.68;
+  filter: blur(2.5px);
+  padding: 0.875rem 1rem;
+  background: rgb(255 255 255 / 0.42);
+  border: 1px solid rgb(255 255 255 / 0.55);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.65),
+    0 6px 22px -14px rgb(14 32 16 / 0.14);
+  backdrop-filter: blur(10px) saturate(1.15);
+  -webkit-backdrop-filter: blur(10px) saturate(1.15);
+}
+
+@media (min-width: 1024px) {
+  .vitrine-root #engagements .engagements-section-header__panel--inactive {
+    padding: 0.75rem 1rem;
+  }
+}
+
 @media (min-width: 1024px) {
   .vitrine-root #engagements .engagements-step--inactive .engagements-step__card {
     padding: 0.5rem 0.75rem;
@@ -1080,7 +1113,20 @@
     box-shadow: none;
   }
 
+  .vitrine-root #engagements .engagements-section-header__panel--inactive {
+    opacity: 0.78;
+    filter: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgb(255 255 255 / 0.5);
+    box-shadow: none;
+  }
+
   .vitrine-root #engagements .engagements-step__card {
+    transition-duration: 0.01ms;
+  }
+
+  .vitrine-root #engagements .engagements-section-header__panel {
     transition-duration: 0.01ms;
   }
 }

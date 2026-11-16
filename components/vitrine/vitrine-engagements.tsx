@@ -222,10 +222,12 @@ export function VitrineEngagements() {
   const isDesktop = useDesktopEngagements()
   const listRef = useRef<HTMLOListElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
+  const [stepFocusEngaged, setStepFocusEngaged] = useState(false)
   const [enterIndex, setEnterIndex] = useState<number | null>(null)
   const hasMountedRef = useRef(false)
 
   const scrollFocus = !reduced
+  const headerInactive = scrollFocus && stepFocusEngaged
 
   useEffect(() => {
     if (!scrollFocus) return
@@ -236,7 +238,12 @@ export function VitrineEngagements() {
     const inFocusBand = new Map<number, DOMRectReadOnly>()
 
     const syncActiveFromBand = () => {
-      if (inFocusBand.size === 0) return
+      if (inFocusBand.size === 0) {
+        setStepFocusEngaged(false)
+        return
+      }
+
+      setStepFocusEngaged(true)
 
       const viewportCenter = window.innerHeight * 0.5
       let bestIndex = 0
@@ -292,17 +299,24 @@ export function VitrineEngagements() {
       <div className="container-x">
         <div className="lg:grid lg:grid-cols-[minmax(0,2.5fr)_minmax(0,4fr)] lg:items-start lg:gap-12 xl:gap-16">
           <header className="flex flex-col items-center text-center lg:sticky lg:top-28 lg:self-start lg:items-start lg:text-left">
-            <p className="section-eyebrow">Nos engagements</p>
-            <h2 className="section-title max-w-[18rem]">
-              Réactivité, transparence et conformité
-            </h2>
-            <p className="vitrine-section-intro max-w-[30rem] sm:mt-5">
-              De la première dépose jusqu&apos;au recyclage final, CORE ENVIRONNEMENT coordonne
-              chaque étape pour une gestion des déchets simple, transparente et conforme.
-            </p>
-            <p className="mt-5 text-[13px] font-medium tracking-[0.02em] text-brand-navy/55 sm:mt-6">
-              Un seul interlocuteur. Un suivi complet.
-            </p>
+            <div
+              className={cn(
+                "engagements-section-header__panel flex w-full flex-col items-center lg:items-start",
+                headerInactive && "engagements-section-header__panel--inactive"
+              )}
+            >
+              <p className="section-eyebrow">Nos engagements</p>
+              <h2 className="section-title max-w-[18rem]">
+                Réactivité, transparence et conformité
+              </h2>
+              <p className="vitrine-section-intro max-w-[30rem] sm:mt-5">
+                De la première dépose jusqu&apos;au recyclage final, CORE ENVIRONNEMENT coordonne
+                chaque étape pour une gestion des déchets simple, transparente et conforme.
+              </p>
+              <p className="mt-5 text-[13px] font-medium tracking-[0.02em] text-brand-navy/55 sm:mt-6">
+                Un seul interlocuteur. Un suivi complet.
+              </p>
+            </div>
           </header>
 
           <ol ref={listRef} className="engagements-steps mt-12 lg:mt-0">
