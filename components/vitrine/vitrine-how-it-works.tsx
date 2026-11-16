@@ -272,7 +272,9 @@ function ProFlowBridge() {
         className="rotate-90 text-brand-border sm:rotate-0"
         aria-hidden
       />
-      <p className="vitrine-label text-[11px] tracking-[0.12em] text-brand-navy/70">Passer une commande</p>
+      <p className="vitrine-label how-step-phase text-[11px] tracking-[0.12em] text-brand-green">
+        Passer une commande
+      </p>
     </div>
   )
 }
@@ -477,7 +479,9 @@ function ProfessionnelPanel({ professionnelsPageLayout = false }: { professionne
           </p>
           <StepsGrid
             steps={PRO_ACCOUNT_STEPS}
-            className={professionnelsPageLayout ? "mt-2.5" : "mt-4"}
+            className={
+              professionnelsPageLayout ? "how-steps-grid--pro-account mt-2.5" : "mt-4"
+            }
             variant={stepVariant}
             dense={professionnelsPageLayout}
           />

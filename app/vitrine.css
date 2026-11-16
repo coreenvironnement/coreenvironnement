@@ -2465,6 +2465,11 @@
     @apply text-left;
   }
 
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-main-card--pro-page .how-step-phase,
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-main-card--pro-page .how-pro-flow-bridge .how-step-phase {
+    @apply w-full text-center;
+  }
+
   .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-main-card--pro-page .how-step-card--compact .how-step-card--compact__inner {
     @apply justify-items-start text-left;
     grid-template-columns: 2.35rem minmax(0, 1fr);
@@ -2492,6 +2497,16 @@
 
   .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-main-card--pro-page .how-step-card--compact p.col-start-2 {
     @apply col-start-2 text-left;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered
+    #fonctionnement
+    .how-main-card--pro-page
+    .how-steps-grid--pro-account
+    > li:nth-child(2)
+    .how-step-card--compact
+    p.col-start-2 {
+    @apply text-center;
   }
 
   .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-icon-circle {
