@@ -483,6 +483,10 @@ export function ParticulierVolumeStep({
       setView("estimator-mode")
       return
     }
+    if (view === "computing") {
+      setView("estimator-form")
+      return
+    }
   }
 
   const title =

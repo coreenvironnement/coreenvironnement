@@ -38,9 +38,9 @@ export function VitrineVolumeEstimator({
 
   useEffect(() => {
     if (launchId === 0) return
-    if (family && particulierWasteId) return
-    if (particulierWasteId) beginEstimate(particulierWasteId)
-  }, [launchId, particulierWasteId, family])
+    beginEstimate(particulierWasteId)
+    // Seulement quand openVolumeEstimator incrémente launchId — pas au retour (setFamily(null)).
+  }, [launchId])
 
   const handleContinueOrder = (
     volumeM3: number | null,
