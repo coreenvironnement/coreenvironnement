@@ -159,3 +159,34 @@
     @apply font-sans;
   }
 }
+
+/* Page 404 : masquer le chrome legacy (header vitrine / layout padding) sans JS client. */
+body:has([data-not-found-page]) [data-site-chrome="legacy-header"],
+body:has([data-not-found-page]) [data-site-chrome="vitrine-header"],
+body:has([data-not-found-page]) [data-site-chrome="legacy-backdrop"] {
+  display: none !important;
+}
+
+body:has([data-not-found-page]) [data-site-chrome="layout-main"] {
+  padding-top: 0 !important;
+}
+
+@keyframes not-found-benne-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.not-found-benne-art {
+  animation: not-found-benne-float 4.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .not-found-benne-art {
+    animation: none;
+  }
+}

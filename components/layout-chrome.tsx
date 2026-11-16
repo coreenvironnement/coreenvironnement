@@ -28,6 +28,7 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div
+        data-site-chrome="legacy-backdrop"
         className="pointer-events-none fixed inset-0 -z-10"
         aria-hidden
         style={{
@@ -39,7 +40,12 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
         }}
       />
       <SiteHeader />
-      <main className={cn("relative z-0 pt-28 sm:pt-32")}>{children}</main>
+      <main
+        data-site-chrome="layout-main"
+        className={cn("relative z-0 pt-28 sm:pt-32")}
+      >
+        {children}
+      </main>
     </>
   )
 }

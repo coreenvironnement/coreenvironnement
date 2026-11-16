@@ -57,7 +57,10 @@ export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4 sm:px-6 lg:top-6">
+    <header
+      data-site-chrome="legacy-header"
+      className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4 sm:px-6 lg:top-6"
+    >
       <div
         className="pointer-events-auto flex h-14 w-full max-w-5xl items-center justify-between gap-3 rounded-2xl border border-brand-navy/[0.14] bg-[color-mix(in_srgb,var(--background)_88%,transparent)] px-3 shadow-[0_6px_28px_-10px_color-mix(in_srgb,var(--brand-navy)_45%,transparent)] backdrop-blur-md backdrop-saturate-100 supports-[backdrop-filter]:bg-[color-mix(in_srgb,var(--muted)_92%,transparent)] sm:h-16 sm:px-5"
         role="banner"

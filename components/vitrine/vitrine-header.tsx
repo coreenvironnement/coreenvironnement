@@ -210,7 +210,10 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 border-0">
+      <header
+        data-site-chrome="vitrine-header"
+        className="fixed inset-x-0 top-0 z-50 border-0"
+      >
         <div
           className={cn(
             "relative border-0 transition-[background-color,box-shadow] duration-300 ease-out",
