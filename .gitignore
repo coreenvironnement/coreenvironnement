@@ -38,6 +38,12 @@ npm-install.log
 # vercel
 .vercel
 
+# supabase CLI (cache local)
+supabase/.temp/
+
+# logs build locaux
+docs/last-build.log
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
