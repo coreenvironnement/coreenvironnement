@@ -196,23 +196,18 @@ export function HeroOrderCard({
         />
       </button>
 
-      {isPro ? (
-        <p className="text-center text-[12px] leading-snug text-brand-muted sm:text-[13px]">
-          Vous pourrez vérifier votre demande avant de l’envoyer.
-        </p>
-      ) : null}
-
       <div
         className={cn(
           "hero-order-card__footer text-center leading-snug",
           isPro
-            ? "hero-order-card__footer--rule pt-4 text-[11px] text-brand-muted sm:text-xs"
+            ? "text-[11px] text-brand-muted sm:text-xs"
             : "hero-order-card__footer--price max-lg:-mt-0.5 max-lg:pt-0 lg:pt-4 lg:text-[15px] lg:font-semibold lg:text-brand-navy lg:text-base"
         )}
       >
         {isPro ? (
           <p>
-            Les modalités d’intervention et de règlement sont précisées avec notre équipe.
+            Vérification avant envoi. Modalités d’intervention et de règlement
+            précisées avec notre équipe.
           </p>
         ) : (
           <>

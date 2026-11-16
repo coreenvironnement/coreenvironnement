@@ -1326,10 +1326,6 @@
     0 12px 36px -10px rgb(14 32 16 / 0.18);
 }
 
-.vitrine-root .hero-order-card__footer--rule {
-  border-top: 1px solid color-mix(in srgb, #35a238 12%, #e3e9e6);
-}
-
 @media (max-width: 1023px) {
   .vitrine-root .hero-order-card__footer--price {
     margin-top: -0.125rem;
