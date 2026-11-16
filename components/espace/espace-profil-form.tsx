@@ -24,6 +24,7 @@ import {
   espaceProfilInputClass,
   espaceProfilReadonlyInputClass,
 } from "@/lib/form/auth-field-styles"
+import { isValidContactPhone } from "@/lib/phone/phone-value"
 import { cn } from "@/lib/utils"
 
 const profilTextareaClass = "espace-profil-textarea"
@@ -137,6 +138,12 @@ export function EspaceProfilForm({ initial }: Props) {
     e.preventDefault()
     setError(null)
     setSaved(false)
+
+    if (!isValidContactPhone(fields.phone)) {
+      setError("Indiquez un numéro de téléphone valide.")
+      return
+    }
+
     const formData = new FormData(e.currentTarget)
 
     startTransition(async () => {
@@ -227,13 +234,13 @@ export function EspaceProfilForm({ initial }: Props) {
       <Field
         id="phone"
         label="Téléphone"
-        hint="Facultatif — utile pour le suivi de vos livraisons."
+        hint="Obligatoire, utile pour le suivi de vos livraisons."
       >
         <PhoneInputWithCountry
           id="phone"
           value={fields.phone}
           onChange={(next) => patchFields({ phone: next })}
-          variant="vitrine"
+          variant="espace"
           warmSurface={false}
           className="espace-profil-phone"
         />
@@ -310,7 +317,7 @@ export function EspaceProfilForm({ initial }: Props) {
             <p className={espaceFieldHintClass}>
               {initial.compte.status === "approved"
                 ? "Raison sociale et SIRET : modifiez le dossier depuis Entreprise & abonnement si besoin."
-                : "Dossier en cours — vous pouvez aussi compléter le formulaire sur la page Entreprise."}
+                : "Dossier en cours (vous pouvez aussi compléter le formulaire sur la page Entreprise)."}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 max-[320px]:grid-cols-1">

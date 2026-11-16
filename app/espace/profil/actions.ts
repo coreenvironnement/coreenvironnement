@@ -39,8 +39,8 @@ function validateParticulierFields(fields: ReturnType<typeof readParticulierFiel
     return "Indiquez votre prénom et votre nom."
   }
 
-  if (fields.phoneRaw && !isValidContactPhone(fields.phoneRaw)) {
-    return "Numéro de téléphone invalide."
+  if (!isValidContactPhone(fields.phoneRaw)) {
+    return "Indiquez un numéro de téléphone valide."
   }
 
   const hasPartialAddress =
@@ -80,7 +80,7 @@ export async function saveProfilParticulier(formData: FormData): Promise<SavePro
     .from("profiles")
     .update({
       full_name: fields.full_name,
-      phone: fields.phoneRaw || null,
+      phone: fields.phoneRaw,
       adresse_livraison_ligne: fields.adresse_ligne || null,
       adresse_livraison_code_postal: fields.code_postal || null,
       adresse_livraison_ville: fields.ville || null,
@@ -143,7 +143,7 @@ export async function saveProfilCompteProContact(formData: FormData): Promise<Sa
 
   const profilePatch = {
     full_name: fields.full_name,
-    phone: fields.phoneRaw || null,
+    phone: fields.phoneRaw,
     updated_at: new Date().toISOString(),
   }
 
