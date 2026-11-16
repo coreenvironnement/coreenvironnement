@@ -252,7 +252,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
                   strokeWidth={VITRINE_ICON_STROKE}
                 />
               </button>
-              <div className="hidden min-w-0 flex-col items-start gap-0.5 lg:flex">
+              <div className="hidden min-w-0 flex-col items-center gap-0.5 lg:flex">
                 <Link
                   href={logoHref}
                   aria-label="CORE ENVIRONNEMENT — Accueil"
