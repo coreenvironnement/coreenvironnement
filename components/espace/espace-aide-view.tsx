@@ -65,12 +65,13 @@ export function EspaceAideView() {
   return (
     <div className="mx-auto max-w-lg space-y-5">
       <EspacePageHeader
+        className="flex-col items-center justify-center text-center"
         title="Besoin d'aide ?"
         meta="Commande, chantier ou facturation : contactez votre conseiller."
       />
 
       <EspacePanel className="space-y-6">
-        <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-start sm:text-left">
+        <div className="flex flex-col items-center gap-3 text-center">
           <span
             className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-brand-navy/[0.04] shadow-[inset_0_0_0_1px_rgba(53,162,56,0.22)]"
             aria-hidden

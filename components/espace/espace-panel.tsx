@@ -23,13 +23,20 @@ export function EspacePageHeader({
   title,
   meta,
   action,
+  className,
 }: {
   title: string
   meta?: string
   action?: React.ReactNode
+  className?: string
 }) {
   return (
-    <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+    <div
+      className={cn(
+        "mb-5 flex flex-wrap items-center justify-between gap-3",
+        className
+      )}
+    >
       <div>
         <h1 className="text-xl font-semibold tracking-tight text-brand-navy sm:text-2xl">
           {title}
