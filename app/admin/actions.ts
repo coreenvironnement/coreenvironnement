@@ -381,7 +381,8 @@ export async function updateInterventionStatutAdmin(
       .select("numero, date_souhaitee, chantiers ( nom )")
       .eq("id", interventionId)
       .single()
-    const chantierNom = (meta?.chantiers as { nom: string } | null)?.nom ?? "votre chantier"
+    const chantierNom =
+      (meta?.chantiers as unknown as { nom: string } | null)?.nom ?? "votre chantier"
     const { data: membres } = await supabase
       .from("chantier_membres")
       .select("invited_email, profiles ( email )")
@@ -391,7 +392,7 @@ export async function updateInterventionStatutAdmin(
     for (const m of membres ?? []) {
       const mail =
         m.invited_email ??
-        (m.profiles as { email: string } | null)?.email ??
+        (m.profiles as unknown as { email: string } | null)?.email ??
         null
       if (mail) recipients.add(mail)
     }
