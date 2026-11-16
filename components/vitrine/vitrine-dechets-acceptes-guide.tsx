@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 
+import Image from "next/image"
 import Link from "next/link"
 
 import {
@@ -16,7 +17,21 @@ import {
   DECHETS_ACCEPTES_PHONE_HREF,
   DECHETS_ACCEPTES_VOLUME_GUIDE_HREF,
 } from "@/lib/seo/dechets-acceptes-guide-content"
+import {
+  DECHETS_ACCEPTES_BANNER_HEIGHT,
+  DECHETS_ACCEPTES_BANNER_SIZES,
+  DECHETS_ACCEPTES_BANNER_WIDTH,
+  DECHETS_ACCEPTES_CARD_IMAGE_HEIGHT,
+  DECHETS_ACCEPTES_CARD_IMAGE_SIZES,
+  DECHETS_ACCEPTES_CARD_IMAGE_WIDTH,
+  DECHETS_ACCEPTES_CATEGORY_DISCLAIMER,
+  DECHETS_ACCEPTES_PACK_IMAGES,
+  DECHETS_ACCEPTES_PACK_LOTTIE,
+  dechetsAcceptesCategoryImageAlt,
+  dechetsAcceptesCategoryImageSrc,
+} from "@/lib/media/dechets-acceptes-pack"
 
+import { DechetsAcceptesLottie } from "./dechets-acceptes-lottie"
 import { VitrineFooter } from "./vitrine-footer"
 import { VITRINE_HEADER_CONTENT_OFFSET_CLASS, VITRINE_SCROLL_MARGIN_CLASS } from "./header-layout"
 import { VitrineHeader } from "./vitrine-header"
@@ -91,6 +106,18 @@ export function VitrineDechetsAcceptesGuide() {
 
               <GuideCallout>{DECHETS_ACCEPTES_GUIDE_CALLOUT}</GuideCallout>
 
+              <div className="mt-8 overflow-hidden rounded-[var(--radius-card)] border border-brand-border bg-white shadow-[0_1px_3px_rgb(14_32_16/0.05)]">
+                <Image
+                  src={DECHETS_ACCEPTES_PACK_IMAGES.banniereMatieres}
+                  alt="Exemples illustratifs de gravats, bois, végétaux et terre issus de travaux"
+                  width={DECHETS_ACCEPTES_BANNER_WIDTH}
+                  height={DECHETS_ACCEPTES_BANNER_HEIGHT}
+                  sizes={DECHETS_ACCEPTES_BANNER_SIZES}
+                  className="h-auto w-full"
+                  priority
+                />
+              </div>
+
               <nav
                 aria-label="Dans ce guide"
                 className="mt-8 rounded-[var(--radius-card)] border border-brand-border bg-brand-bg-alt px-4 py-4 sm:px-5"
@@ -116,6 +143,40 @@ export function VitrineDechetsAcceptesGuide() {
                   ci-dessous vous aident à les identifier : leur acceptation doit ensuite être vérifiée
                   dans le détail de l’offre choisie.
                 </GuideParagraph>
+
+                <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+                  {DECHETS_ACCEPTES_GUIDE_TABLE_ROWS.map((row) => (
+                    <article
+                      key={row.category}
+                      className="overflow-hidden rounded-[var(--radius-card)] border border-brand-border bg-brand-bg-alt shadow-[0_1px_3px_rgb(14_32_16/0.04)]"
+                    >
+                      <div className="relative aspect-[230/185] w-full overflow-hidden bg-brand-warm-field/50">
+                        <Image
+                          src={dechetsAcceptesCategoryImageSrc(row.category)}
+                          alt={dechetsAcceptesCategoryImageAlt(row.category)}
+                          width={DECHETS_ACCEPTES_CARD_IMAGE_WIDTH}
+                          height={DECHETS_ACCEPTES_CARD_IMAGE_HEIGHT}
+                          sizes={DECHETS_ACCEPTES_CARD_IMAGE_SIZES}
+                          loading="lazy"
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div className="px-3 py-3 sm:px-4 sm:py-3.5">
+                        <h3 className="text-sm font-semibold text-brand-navy sm:text-[15px]">
+                          {row.category}
+                        </h3>
+                        <p className="mt-1 text-xs leading-relaxed text-brand-muted sm:text-sm">
+                          {row.examples}
+                        </p>
+                        <p className="mt-2 text-xs leading-relaxed text-brand-muted lg:hidden">
+                          {row.verify}
+                        </p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+
+                <GuideCallout>{DECHETS_ACCEPTES_CATEGORY_DISCLAIMER}</GuideCallout>
 
                 <div className="mt-6 hidden overflow-x-auto rounded-[var(--radius-card)] border border-brand-border bg-brand-bg-alt md:block">
                   <table className="w-full min-w-[280px] text-left text-sm">
@@ -152,26 +213,6 @@ export function VitrineDechetsAcceptesGuide() {
                   </table>
                 </div>
 
-                <div className="mt-6 space-y-4 md:hidden">
-                  {DECHETS_ACCEPTES_GUIDE_TABLE_ROWS.map((row) => (
-                    <article
-                      key={row.category}
-                      className="rounded-[var(--radius-card)] border border-brand-border bg-brand-bg-alt p-4"
-                    >
-                      <p className="text-sm font-semibold text-brand-navy">Vos déchets</p>
-                      <p className="mt-1 text-sm text-brand-muted">{row.category}</p>
-                      <p className="mt-3 text-sm font-semibold text-brand-navy">Exemples</p>
-                      <p className="mt-1 text-sm text-brand-muted">{row.examples}</p>
-                      <p className="mt-3 text-sm font-semibold text-brand-navy">
-                        Ce qu’il faut vérifier
-                      </p>
-                      <p className="mt-1 text-sm leading-relaxed text-brand-muted">
-                        {row.verify}
-                      </p>
-                    </article>
-                  ))}
-                </div>
-
                 <h3 className={H3_CLASS}>Que signifie « mélange DND » ?</h3>
                 <GuideParagraph>
                   DND signifie « déchets non dangereux ». Une offre de mélange DND peut accepter
@@ -193,6 +234,17 @@ export function VitrineDechetsAcceptesGuide() {
                   Certains déchets doivent être gardés à part et orientés vers une collecte adaptée. Ne
                   les ajoutez pas à une benne classique de gravats ou de déchets mélangés.
                 </GuideParagraph>
+                <div className="mt-6 overflow-hidden rounded-[var(--radius-card)] border border-brand-border bg-white">
+                  <Image
+                    src={DECHETS_ACCEPTES_PACK_IMAGES.collecteSpecifique}
+                    alt="Déchets à orienter vers une collecte séparée : produits chimiques, huiles, batteries, amiante et appareils électriques"
+                    width={DECHETS_ACCEPTES_BANNER_WIDTH}
+                    height={DECHETS_ACCEPTES_BANNER_HEIGHT}
+                    sizes={DECHETS_ACCEPTES_BANNER_SIZES}
+                    loading="lazy"
+                    className="h-auto w-full"
+                  />
+                </div>
                 <ul className={`${BODY_CLASS} list-disc space-y-2 pl-5`}>
                   {DECHETS_ACCEPTES_COLLECTE_LIST.map((item) => (
                     <li key={item}>{item}</li>
@@ -244,6 +296,29 @@ export function VitrineDechetsAcceptesGuide() {
                 <h2 className={H2_CLASS}>
                   Comment préparer le chargement de votre benne ?
                 </h2>
+
+                <div className="mt-6 overflow-hidden rounded-[var(--radius-card)] border border-brand-border bg-white">
+                  <Image
+                    src={DECHETS_ACCEPTES_PACK_IMAGES.chargement}
+                    alt="Comparaison d’une benne correctement remplie et d’une benne qui déborde au-dessus des parois"
+                    width={DECHETS_ACCEPTES_BANNER_WIDTH}
+                    height={DECHETS_ACCEPTES_BANNER_HEIGHT}
+                    sizes={DECHETS_ACCEPTES_BANNER_SIZES}
+                    loading="lazy"
+                    className="h-auto w-full"
+                  />
+                </div>
+
+                <div className="mt-6 grid max-w-2xl grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
+                  <DechetsAcceptesLottie
+                    src={DECHETS_ACCEPTES_PACK_LOTTIE.triDechets}
+                    label="Tri des déchets — illustration animée"
+                  />
+                  <DechetsAcceptesLottie
+                    src={DECHETS_ACCEPTES_PACK_LOTTIE.chargementBenne}
+                    label="Chargement conforme — illustration animée"
+                  />
+                </div>
 
                 <ol className="mt-6 space-y-6">
                   {DECHETS_ACCEPTES_CHARGEMENT_STEPS.map((step, index) => (
