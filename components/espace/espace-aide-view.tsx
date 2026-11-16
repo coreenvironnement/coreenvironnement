@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
-import Image from "next/image"
 import { Clock, MessageCircle, Phone } from "lucide-react"
 
+import { FaviconIcon } from "@/components/favicon-icon"
 import { EspacePageHeader, EspacePanel } from "@/components/espace/espace-panel"
 import {
   SITE_CONTACT_VCARD_PHONE_DISPLAY,
@@ -74,13 +74,7 @@ export function EspaceAideView() {
       <EspacePanel className="space-y-6">
         <div className="flex flex-col items-center gap-3 text-center">
           <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-brand-navy/[0.04] shadow-[inset_0_0_0_1px_rgba(53,162,56,0.22)]">
-            <Image
-              src="/images/faviconcore-environnement.png"
-              alt="CORE Environnement"
-              width={24}
-              height={24}
-              className="size-6 object-contain"
-            />
+            <FaviconIcon size={24} className="size-6" decorative={false} />
           </span>
           <div className="min-w-0 space-y-1">
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">

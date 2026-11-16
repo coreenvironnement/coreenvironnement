@@ -11,12 +11,12 @@ import {
   Package,
   Plus,
   FileText,
-  LifeBuoy,
   User,
   type LucideIcon,
 } from "lucide-react"
 
 import { LogoutButton } from "@/components/auth/logout-button"
+import { FaviconIcon } from "@/components/favicon-icon"
 import { resolveEspaceNavId } from "@/lib/client/espace-active"
 import {
   ESPACE_WARM_BG,
@@ -25,14 +25,60 @@ import {
 } from "@/lib/client/nav-items"
 import { cn } from "@/lib/utils"
 
-const NAV_ICONS: Record<ClientNavId, LucideIcon> = {
+const NAV_ICONS: Record<Exclude<ClientNavId, "aide">, LucideIcon> = {
   commandes: Package,
   chantier: LineChart,
   documents: FolderOpen,
   factures: FileText,
   compte: Building2,
-  aide: LifeBuoy,
   profil: User,
+}
+
+function ClientNavIcon({
+  id,
+  isActive,
+  variant,
+}: {
+  id: ClientNavId
+  isActive: boolean
+  variant: "sidebar" | "mobileTab"
+}) {
+  if (id === "aide") {
+    const size = variant === "mobileTab" ? 22 : 18
+    return (
+      <FaviconIcon
+        size={size}
+        className={cn(
+          variant === "mobileTab" ? "size-[22px]" : "size-[18px]",
+          variant === "mobileTab"
+            ? isActive
+              ? "opacity-100"
+              : "opacity-55"
+            : isActive
+              ? "opacity-100"
+              : "opacity-80"
+        )}
+      />
+    )
+  }
+
+  const Icon = NAV_ICONS[id]
+  const sizeClass = variant === "mobileTab" ? "size-5" : "size-[18px]"
+  return (
+    <Icon
+      className={cn(
+        "shrink-0",
+        sizeClass,
+        variant === "mobileTab"
+          ? isActive && "text-[#35A238]"
+          : isActive
+            ? "text-[#35A238]"
+            : "text-[#35A238]/80"
+      )}
+      strokeWidth={2}
+      aria-hidden
+    />
+  )
 }
 
 type Props = {
@@ -50,7 +96,6 @@ function NavItemLink({
   isActive: boolean
   className?: string
 }) {
-  const Icon = NAV_ICONS[item.id]
   return (
     <Link
       href={item.href}
@@ -65,11 +110,7 @@ function NavItemLink({
       )}
       aria-current={isActive ? "page" : undefined}
     >
-      <Icon
-        className={cn("size-[18px] shrink-0", isActive ? "text-[#35A238]" : "text-[#35A238]/80")}
-        strokeWidth={2}
-        aria-hidden
-      />
+      <ClientNavIcon id={item.id} isActive={isActive} variant="sidebar" />
       {item.label}
     </Link>
   )
@@ -188,7 +229,6 @@ export function ClientAppShell({ children, navItems, userLabel }: Props) {
       >
         {mobileTabItems.map((item) => {
           const isActive = item.id === active
-          const Icon = NAV_ICONS[item.id]
           return (
             <Link
               key={item.id}
@@ -206,11 +246,7 @@ export function ClientAppShell({ children, navItems, userLabel }: Props) {
               )}
               aria-current={isActive ? "page" : undefined}
             >
-              <Icon
-                className={cn("size-5 shrink-0", isActive && "text-[#35A238]")}
-                strokeWidth={2}
-                aria-hidden
-              />
+              <ClientNavIcon id={item.id} isActive={isActive} variant="mobileTab" />
               <span className="max-w-[4.5rem] truncate text-center">{item.label}</span>
             </Link>
           )
