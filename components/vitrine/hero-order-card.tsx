@@ -175,8 +175,8 @@ export function HeroOrderCard({
             className="text-[12px] leading-snug text-brand-muted max-lg:text-center lg:text-left sm:text-[13px]"
           >
             {isPro
-              ? "Votre adresse permet d’afficher les bennes et les tarifs HT proposés dans votre secteur."
-              : "Votre adresse permet d’afficher les bennes et tarifs proposés dans votre secteur."}
+              ? "Indiquez votre adresse pour afficher bennes et tarifs HT de votre secteur."
+              : "Indiquez votre adresse pour afficher bennes et tarifs de votre secteur."}
           </p>
         )}
       </div>
