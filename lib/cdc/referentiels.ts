@@ -77,6 +77,9 @@ export const MODES_PAIEMENT_PRO = [
 
 export const ABONNEMENT_PRO_HT = 35
 
+/** Libellé vitrine / e-mails (facturation Stripe : 1 titulaire + sièges actifs). */
+export const ABONNEMENT_PRO_LABEL = `${ABONNEMENT_PRO_HT} € HT / mois par utilisateur`
+
 export const COLONNES_HISTORIQUE = [
   "N° de demande d'intervention",
   "Date de la demande d'intervention",
