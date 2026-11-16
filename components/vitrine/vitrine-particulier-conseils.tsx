@@ -1,9 +1,15 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 
 import { particulierAccueil } from "@/lib/cdc/contenu-vitrine"
+import {
+  PRIX_LOCATION_BENNE_ARTICLE_IMAGE_HEIGHT,
+  PRIX_LOCATION_BENNE_ARTICLE_IMAGE_WIDTH,
+  SITE_IMAGES,
+} from "@/lib/media/site-images"
 import { HOME_VOLUME_ESTIMATOR_HASH } from "@/lib/seo/early-local-links"
 import { SITE_PHONE_HREF } from "@/lib/site"
 
@@ -79,8 +85,9 @@ export function VitrineParticulierConseils() {
   const [volumeExpanded, setVolumeExpanded] = useState(false)
 
   const volumeCarte = conseils.cartes.find((c) => c.id === "volume")
-  const accesCarte = conseils.cartes.find((c) => c.id === "acces")
   const dechetsCarte = conseils.cartes.find((c) => c.id === "dechets")
+  const prixCarte = conseils.cartes.find((c) => c.id === "prix")
+  const { accesEncart } = conseils
 
   useEffect(() => {
     if (volumeEstimatorRequestId > 0) setVolumeExpanded(true)
@@ -119,9 +126,6 @@ export function VitrineParticulierConseils() {
               <h3>{volumeCarte.titre}</h3>
               <p className="cp-copy">{volumeCarte.texte}</p>
               <PreparationLottieArt animation="01-volume" />
-              {"note" in volumeCarte && volumeCarte.note ? (
-                <p className="cp-note">{volumeCarte.note}</p>
-              ) : null}
               <button
                 type="button"
                 className="cp-button"
@@ -130,49 +134,11 @@ export function VitrineParticulierConseils() {
                 {volumeCarte.cta}
                 <ChevronIcon />
               </button>
-            </article>
-          ) : null}
-
-          {accesCarte ? (
-            <article className="cp-card cp-access">
-              <p className="cp-category">
-                {accesCarte.num} · {accesCarte.label}
-              </p>
-              <h3>{accesCarte.titre}</h3>
-              <PreparationLottieArt animation="02-acces" />
-              {"specsTitre" in accesCarte ? (
-                <>
-                  <p className="cp-space">{accesCarte.specsTitre}</p>
-                  <dl className="cp-dimensions">
-                    {accesCarte.specs.map((spec) => (
-                      <div key={spec.detail}>
-                        <dt>{spec.value}</dt>
-                        <dd>{spec.detail}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </>
+              {"guideHref" in volumeCarte && volumeCarte.guideLabel ? (
+                <Link className="cp-link-secondary" href={volumeCarte.guideHref}>
+                  {volumeCarte.guideLabel}
+                </Link>
               ) : null}
-              <div className="cp-street">
-                <StreetLampIcon />
-                <div>
-                  <p>
-                    {"rueTexte" in accesCarte ? accesCarte.rueTexte : null}
-                  </p>
-                  {"linkHref" in accesCarte && accesCarte.linkLabel ? (
-                    <a
-                      className="cp-link"
-                      href={accesCarte.linkHref}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {accesCarte.linkLabel}
-                      <ExternalLinkIcon />
-                      <span className="cp-sr-only"> (nouvel onglet)</span>
-                    </a>
-                  ) : null}
-                </div>
-              </div>
             </article>
           ) : null}
 
@@ -195,7 +161,89 @@ export function VitrineParticulierConseils() {
               </Link>
             </article>
           ) : null}
+
+          {prixCarte ? (
+            <article className="cp-card cp-price">
+              <p className="cp-category">
+                {prixCarte.num} · {prixCarte.label}
+              </p>
+              <h3>{prixCarte.titre}</h3>
+              <p className="cp-copy">{prixCarte.texte}</p>
+              <figure className="cp-art cp-art--cover" aria-hidden>
+                <Image
+                  src={SITE_IMAGES.prixLocationBenneArticle.cover}
+                  alt=""
+                  width={PRIX_LOCATION_BENNE_ARTICLE_IMAGE_WIDTH}
+                  height={PRIX_LOCATION_BENNE_ARTICLE_IMAGE_HEIGHT}
+                  sizes="(min-width: 1024px) 33vw, 620px"
+                  className="cp-poster"
+                  loading="lazy"
+                />
+              </figure>
+              <Link
+                className="cp-button cp-button--outline"
+                href={
+                  "guideHref" in prixCarte ? prixCarte.guideHref : "#"
+                }
+              >
+                {prixCarte.cta}
+                <ChevronIcon />
+              </Link>
+            </article>
+          ) : null}
         </div>
+
+        <aside className="cp-acces-encart" aria-labelledby="cp-acces-encart-title">
+          <h3 id="cp-acces-encart-title">{accesEncart.titre}</h3>
+          <div className="cp-acces-encart__main">
+            <PreparationLottieArt animation="02-acces" />
+            <div className="cp-acces-encart__details">
+              <p className="cp-space">{accesEncart.specsTitre}</p>
+              <dl className="cp-dimensions">
+                {accesEncart.specs.map((spec) => (
+                  <div key={spec.detail}>
+                    <dt>{spec.value}</dt>
+                    <dd>{spec.detail}</dd>
+                  </div>
+                ))}
+              </dl>
+              <div className="cp-street">
+                <StreetLampIcon />
+                <div>
+                  <p>{accesEncart.rueTexte}</p>
+                  <a
+                    className="cp-link"
+                    href={accesEncart.linkHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {accesEncart.linkLabel}
+                    <ExternalLinkIcon />
+                    <span className="cp-sr-only"> (nouvel onglet)</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="cp-acces-encart__help">
+            <p>{conseils.conseiller.titre}</p>
+            <a
+              href={SITE_PHONE_HREF}
+              className="cp-acces-encart__advisor"
+              aria-label={`${conseils.conseiller.cta} — ${conseils.conseiller.texte}`}
+            >
+              <AdvisorChatIcon className="size-5 shrink-0 text-brand-green" />
+              {conseils.conseiller.cta}
+            </a>
+          </div>
+        </aside>
+
+        <p className="cp-hub-cta">
+          <Link className="cp-hub-cta__link" href={conseils.hub.href}>
+            {conseils.hub.label}
+            <ChevronIcon />
+          </Link>
+        </p>
 
         {volumeExpanded ? (
           <div
@@ -208,17 +256,11 @@ export function VitrineParticulierConseils() {
             />
           </div>
         ) : (
-          <div id={HOME_VOLUME_ESTIMATOR_HASH} className="scroll-mt-[calc(var(--vitrine-header-height)+1rem)]" />
+          <div
+            id={HOME_VOLUME_ESTIMATOR_HASH}
+            className="scroll-mt-[calc(var(--vitrine-header-height)+1rem)]"
+          />
         )}
-
-        <a
-          href={SITE_PHONE_HREF}
-          className="btn btn-ghost-dark btn-sm mt-6 hidden min-h-11 w-auto lg:inline-flex"
-          aria-label={conseils.conseiller.titre}
-        >
-          <AdvisorChatIcon className="size-5 shrink-0 text-brand-green" />
-          {conseils.conseiller.cta}
-        </a>
       </div>
     </section>
   )

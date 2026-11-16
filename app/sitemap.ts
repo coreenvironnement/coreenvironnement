@@ -31,6 +31,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.85,
     },
+    {
+      url: `${base}/blog`,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${base}/blog/prix-location-benne`,
+      changeFrequency: "monthly",
+      priority: 0.75,
+    },
     // /pro : parcours compte / onboarding — retiré du sitemap (toujours crawlable, pas de noindex).
     {
       url: `${base}/professionnels`,

@@ -33,7 +33,7 @@ export function VitrinePublicShell({
         )}
       >
         {hideChrome ? (
-          <main id="contenu" className="flex-1">
+          <main id="contenu" className="flex min-h-0 flex-1 flex-col">
             {children}
           </main>
         ) : (

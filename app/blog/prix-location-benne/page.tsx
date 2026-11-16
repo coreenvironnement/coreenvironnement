@@ -45,8 +45,7 @@ export const metadata: Metadata = {
     description: PRIX_LOCATION_BENNE_ARTICLE_DESCRIPTION,
     images: buildShareTwitterImages(SITE_IMAGES.prixLocationBenneArticle.cover),
   },
-  /** Passer à index: true à la publication (photos + maillage). */
-  robots: { index: false, follow: true },
+  robots: { index: true, follow: true },
 }
 
 export default function PrixLocationBenneArticlePage() {

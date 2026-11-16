@@ -3,6 +3,8 @@
  * Mois 3 : intégration UI. Fichier posé dès maintenant comme référence unique.
  */
 
+import { ABONNEMENT_PRO_LABEL } from "@/lib/cdc/referentiels"
+
 export const hero = {
   titre1Ligne1: "Location de Benne en Île-de-France :",
   titre1Ligne2: "Intervention 24h & Suivi Digital",
@@ -127,7 +129,7 @@ export const comptePro = {
     "Simplifiez la gestion de vos chantiers avec l'ouverture d'un compte professionnel.",
   description:
     "Bénéficiez de conditions de règlement adaptées (30 jours fin de mois), d'une facturation centralisée et d'un interlocuteur dédié pour l'ensemble de vos chantiers en Île-de-France.",
-  abonnement: "35 € HT / mois",
+  abonnement: ABONNEMENT_PRO_LABEL,
   sections: [
     {
       titre: "Informations Entreprise",
@@ -244,7 +246,7 @@ export const faq = [
     questions: [
       {
         q: "Quelles sont les modalités de paiement ?",
-        r: "Les particuliers règlent leur commande en ligne par carte bancaire. Les entreprises ouvrent un compte pro sur /pro : après validation du dossier (KBIS, RIB), l'abonnement espace client (35 € HT / mois) s'active via Stripe ; les prestations peuvent être réglées sur facture selon les conditions validées.",
+        r: `Les particuliers règlent leur commande en ligne par carte bancaire. Les entreprises ouvrent un compte pro sur /pro : après validation du dossier (KBIS, RIB), l'abonnement espace client (${ABONNEMENT_PRO_LABEL}) s'active via Stripe ; les prestations peuvent être réglées sur facture selon les conditions validées.`,
       },
       {
         q: "Comment rejoindre l'offre professionnelle ?",
@@ -309,7 +311,7 @@ export const faq = [
 ] as const
 
 export const espaceClient = {
-  abonnement: "35 € HT / mois",
+  abonnement: ABONNEMENT_PRO_LABEL,
   connexion: "Adresse e-mail + mot de passe",
   dashboardVide:
     "Le client arrive sur un dashboard vide et choisit son chantier dans une barre de sélection.",
@@ -389,48 +391,60 @@ export const particulierAccueil = {
     ],
   },
   conseils: {
-    eyebrow: "AVANT DE COMMANDER",
+    eyebrow: "GUIDES ET CONSEILS",
     titre: "Bien préparer votre location de benne",
     intro:
-      "Trois repères simples pour choisir et préparer la livraison.",
+      "Des repères pour choisir votre benne, comprendre votre offre et préparer la livraison.",
     cartes: [
       {
         id: "volume",
         num: "01",
         label: "LE VOLUME",
-        titre: "Quelle taille choisir ?",
+        titre: "Quelle taille de benne choisir ?",
         texte:
-          "Estimez le volume de vos déchets pour choisir une benne adaptée.",
-        note: "Une estimation pour vous guider.",
+          "Estimez le volume de vos déchets et trouvez une benne adaptée à votre projet.",
         cta: "Estimer mon volume",
-      },
-      {
-        id: "acces",
-        num: "02",
-        label: "L\u2019ACCÈS",
-        titre: "Le camion peut-il passer ?",
-        specsTitre: "Espace à prévoir",
-        specs: [
-          { value: "3 m", detail: "de large" },
-          { value: "4 m", detail: "de haut" },
-          { value: "10 à 12 m", detail: "pour la pose" },
-        ],
-        rueTexte: "Dans la rue ? Une autorisation est nécessaire.",
-        linkLabel: "Voir les démarches",
-        linkHref:
-          "https://entreprendre.service-public.gouv.fr/vosdroits/F23509",
+        guideLabel: "Consulter le guide des volumes",
+        guideHref: "/location-benne/volume",
       },
       {
         id: "dechets",
-        num: "03",
+        num: "02",
         label: "LES DÉCHETS",
-        titre: "Que mettre dans la benne ?",
+        titre: "Quels déchets mettre dans la benne ?",
         texte:
-          "Gravats, bois, cartons… Vérifiez ce que votre benne peut recevoir avant de la remplir.",
+          "Repérez les matériaux acceptés et ceux qui nécessitent une collecte spécifique.",
         cta: "Vérifier mes déchets",
         guideHref: "/location-benne/dechets-acceptes",
       },
+      {
+        id: "prix",
+        num: "03",
+        label: "LE PRIX",
+        titre: "Que comprend le prix d’une location ?",
+        texte:
+          "Volume, déchets, poids inclus : les points à comparer pour choisir votre offre.",
+        cta: "Comprendre les tarifs",
+        guideHref: "/blog/prix-location-benne",
+      },
     ],
+    accesEncart: {
+      titre: "Préparer l’accès et la pose",
+      specsTitre: "Espace à prévoir",
+      specs: [
+        { value: "3 m", detail: "de large" },
+        { value: "4 m", detail: "de haut" },
+        { value: "10 à 12 m", detail: "pour la pose" },
+      ],
+      rueTexte: "Dans la rue ? Une autorisation est nécessaire.",
+      linkLabel: "Voir les démarches",
+      linkHref:
+        "https://entreprendre.service-public.gouv.fr/vosdroits/F23509",
+    },
+    hub: {
+      label: "Voir tous les guides et conseils",
+      href: "/blog",
+    },
     conseiller: {
       titre: "Un doute sur la taille, l’accès ou vos déchets ?",
       texte: "Notre équipe vous aide à faire le bon choix.",
