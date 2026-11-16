@@ -60,7 +60,7 @@ BANDEAU D’AIDE SOUS LES CARTES
 Titre : Un doute sur la taille, l’accès ou vos déchets ?
 Texte : Notre équipe vous aide à faire le bon choix.
 Action : Parler à un conseiller
-Réutilise le contact déjà configuré dans le site. Lors de la préparation du pack, le site affichait le 07 53 70 57 27 ; vérifie sa configuration actuelle dans le projet. Utilise un lien téléphonique si c’est le canal réellement proposé. N’ajoute pas un accès WhatsApp sans vérifier qu’il existe.
+Réutilise le contact déjà configuré dans le site (`lib/site.ts`, 06 31 13 86 56) ; vérifie sa configuration actuelle dans le projet. Utilise un lien téléphonique si c’est le canal réellement proposé. N’ajoute pas un accès WhatsApp sans vérifier qu’il existe.
 
 3. COMPOSITION ORDINATEUR
 

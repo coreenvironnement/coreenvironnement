@@ -1,3 +1,5 @@
+import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
+
 /** Titre document exact (sans suffixe automatique). */
 export const DECHETS_ACCEPTES_GUIDE_TITLE =
   "Déchets acceptés dans une benne : guide | CORE Environnement"
@@ -95,5 +97,5 @@ export const DECHETS_ACCEPTES_ADEME_COLLECTE_HREF =
   "https://quefairedemesdechets.ademe.fr/"
 export const DECHETS_ACCEPTES_VOLUME_GUIDE_HREF = "/location-benne/volume"
 export const DECHETS_ACCEPTES_ORDER_CTA_HREF = "https://core-environnement.fr/#parcours"
-export const DECHETS_ACCEPTES_PHONE_DISPLAY = "07 53 70 57 27"
-export const DECHETS_ACCEPTES_PHONE_HREF = "tel:+33753705727"
+export const DECHETS_ACCEPTES_PHONE_DISPLAY = SITE_PHONE_DISPLAY
+export const DECHETS_ACCEPTES_PHONE_HREF = SITE_PHONE_HREF

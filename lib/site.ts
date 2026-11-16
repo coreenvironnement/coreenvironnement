@@ -1,13 +1,14 @@
 export const SITE_ORG_NAME = "CORE Environnement"
 
-export const SITE_PHONE_DISPLAY = "07 53 70 57 27"
-export const SITE_PHONE_HREF = "tel:+33753705727"
+export const SITE_PHONE_DISPLAY = "06 31 13 86 56"
+export const SITE_PHONE_E164 = "+33631138656"
+export const SITE_PHONE_HREF = `tel:${SITE_PHONE_E164}`
 
 /** Ligne mobile conseiller (fiche contact / vCard post-commande). */
-export const SITE_CONTACT_VCARD_PHONE_DISPLAY = "06 31 13 86 56"
-export const SITE_CONTACT_VCARD_PHONE_E164 = "+33631138656"
-export const SITE_CONTACT_VCARD_PHONE_HREF = `tel:${SITE_CONTACT_VCARD_PHONE_E164}`
-export const SITE_CONTACT_VCARD_WHATSAPP_HREF = `https://wa.me/${SITE_CONTACT_VCARD_PHONE_E164.replace("+", "")}`
+export const SITE_CONTACT_VCARD_PHONE_DISPLAY = SITE_PHONE_DISPLAY
+export const SITE_CONTACT_VCARD_PHONE_E164 = SITE_PHONE_E164
+export const SITE_CONTACT_VCARD_PHONE_HREF = SITE_PHONE_HREF
+export const SITE_CONTACT_VCARD_WHATSAPP_HREF = `https://wa.me/${SITE_PHONE_E164.replace("+", "")}`
 
 export function buildSiteContactVCard(): string {
   return [
@@ -37,7 +38,7 @@ export function downloadSiteContactVCard(): void {
   URL.revokeObjectURL(url)
 }
 
-export const SITE_WHATSAPP_HREF = "https://wa.me/33753705727"
+export const SITE_WHATSAPP_HREF = SITE_CONTACT_VCARD_WHATSAPP_HREF
 
 export const SITE_SOCIAL_LINKEDIN_URL =
   "https://www.linkedin.com/company/core-environnement"

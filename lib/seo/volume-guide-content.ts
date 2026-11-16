@@ -1,3 +1,5 @@
+import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
+
 /** Titre document exact (sans suffixe automatique). */
 export const VOLUME_GUIDE_TITLE =
   "Quel volume de benne choisir ? Guide m³ | CORE Environnement"
@@ -58,5 +60,5 @@ export const VOLUME_GUIDE_ESTIMATEUR_HREF =
   "https://core-environnement.fr/#estimer-volume"
 export const VOLUME_GUIDE_ORDER_CTA_HREF = "https://core-environnement.fr/#parcours"
 export const VOLUME_GUIDE_COMMUNES_HREF = "https://core-environnement.fr/location-benne"
-export const VOLUME_GUIDE_PHONE_DISPLAY = "07 53 70 57 27"
-export const VOLUME_GUIDE_PHONE_HREF = "tel:+33753705727"
+export const VOLUME_GUIDE_PHONE_DISPLAY = SITE_PHONE_DISPLAY
+export const VOLUME_GUIDE_PHONE_HREF = SITE_PHONE_HREF
