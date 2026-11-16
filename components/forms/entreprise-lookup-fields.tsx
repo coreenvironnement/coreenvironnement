@@ -354,13 +354,25 @@ export function EntrepriseLookupFields({
               >
                 {adresseFields.adresse.label ?? "Adresse"}
               </label>
-              <Input
-                id={adresseFields.adresse.id ?? "entreprise-adresse"}
-                name={adresseFields.adresse.name}
-                value={adresseFields.values?.adresse ?? ""}
-                onChange={(e) => adresseFields.onAdresseChange?.(e.target.value)}
-                autoComplete="street-address"
-              />
+              {nativeInputs ? (
+                <input
+                  id={adresseFields.adresse.id ?? "entreprise-adresse"}
+                  name={adresseFields.adresse.name}
+                  value={adresseFields.values?.adresse ?? ""}
+                  onChange={(e) => adresseFields.onAdresseChange?.(e.target.value)}
+                  autoComplete="street-address"
+                  className={inputClassName}
+                  placeholder="Numéro et voie"
+                />
+              ) : (
+                <Input
+                  id={adresseFields.adresse.id ?? "entreprise-adresse"}
+                  name={adresseFields.adresse.name}
+                  value={adresseFields.values?.adresse ?? ""}
+                  onChange={(e) => adresseFields.onAdresseChange?.(e.target.value)}
+                  autoComplete="street-address"
+                />
+              )}
             </div>
           ) : null}
           {adresseFields.codePostal ? (
@@ -371,14 +383,27 @@ export function EntrepriseLookupFields({
               >
                 {adresseFields.codePostal.label ?? "Code postal"}
               </label>
-              <Input
-                id={adresseFields.codePostal.id ?? "entreprise-cp"}
-                name={adresseFields.codePostal.name}
-                inputMode="numeric"
-                value={adresseFields.values?.codePostal ?? ""}
-                onChange={(e) => adresseFields.onCodePostalChange?.(e.target.value)}
-                autoComplete="postal-code"
-              />
+              {nativeInputs ? (
+                <input
+                  id={adresseFields.codePostal.id ?? "entreprise-cp"}
+                  name={adresseFields.codePostal.name}
+                  inputMode="numeric"
+                  value={adresseFields.values?.codePostal ?? ""}
+                  onChange={(e) => adresseFields.onCodePostalChange?.(e.target.value)}
+                  autoComplete="postal-code"
+                  className={inputClassName}
+                  placeholder="75001"
+                />
+              ) : (
+                <Input
+                  id={adresseFields.codePostal.id ?? "entreprise-cp"}
+                  name={adresseFields.codePostal.name}
+                  inputMode="numeric"
+                  value={adresseFields.values?.codePostal ?? ""}
+                  onChange={(e) => adresseFields.onCodePostalChange?.(e.target.value)}
+                  autoComplete="postal-code"
+                />
+              )}
             </div>
           ) : null}
           {adresseFields.ville ? (
@@ -389,13 +414,25 @@ export function EntrepriseLookupFields({
               >
                 {adresseFields.ville.label ?? "Ville"}
               </label>
-              <Input
-                id={adresseFields.ville.id ?? "entreprise-ville"}
-                name={adresseFields.ville.name}
-                value={adresseFields.values?.ville ?? ""}
-                onChange={(e) => adresseFields.onVilleChange?.(e.target.value)}
-                autoComplete="address-level2"
-              />
+              {nativeInputs ? (
+                <input
+                  id={adresseFields.ville.id ?? "entreprise-ville"}
+                  name={adresseFields.ville.name}
+                  value={adresseFields.values?.ville ?? ""}
+                  onChange={(e) => adresseFields.onVilleChange?.(e.target.value)}
+                  autoComplete="address-level2"
+                  className={inputClassName}
+                  placeholder="Paris"
+                />
+              ) : (
+                <Input
+                  id={adresseFields.ville.id ?? "entreprise-ville"}
+                  name={adresseFields.ville.name}
+                  value={adresseFields.values?.ville ?? ""}
+                  onChange={(e) => adresseFields.onVilleChange?.(e.target.value)}
+                  autoComplete="address-level2"
+                />
+              )}
             </div>
           ) : null}
         </div>

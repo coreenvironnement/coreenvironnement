@@ -2,7 +2,11 @@ import Link from "next/link"
 
 import type { AdminUnifiedRow } from "@/lib/admin/interventions-data"
 import { statutInterventionBadgeClass } from "@/lib/admin/intervention-display"
-import { audienceCommandeLabel } from "@/lib/commande/labels"
+import {
+  audienceCommandeLabel,
+  commandeDevisEnvoye,
+  commandeDevisEnvoyeBadgeClass,
+} from "@/lib/commande/labels"
 import { formatDateFr } from "@/lib/format/date"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -29,6 +33,16 @@ export function AdminInterventionsList({ rows }: Props) {
             >
               {r.statutLabel}
             </span>
+            {r.kind === "commande" && commandeDevisEnvoye(r.commande?.devis_sent_at) ? (
+              <span
+                className={cn(
+                  "rounded-full px-2 py-0.5 text-[11px] font-medium",
+                  commandeDevisEnvoyeBadgeClass(true)
+                )}
+              >
+                Devis envoyé
+              </span>
+            ) : null}
           </div>
           <p className="mt-1 text-sm text-muted-foreground">{r.clientLabel}</p>
           {r.typeLabel ? <p className="text-xs text-muted-foreground">{r.typeLabel}</p> : null}
@@ -48,6 +62,7 @@ export function AdminInterventionsList({ rows }: Props) {
             <th className="px-4 py-3 font-medium">Client / chantier</th>
             <th className="px-4 py-3 font-medium">Type</th>
             <th className="px-4 py-3 font-medium">Statut</th>
+            <th className="px-4 py-3 font-medium">Devis</th>
             <th className="px-4 py-3 font-medium">Date</th>
             <th className="px-4 py-3 font-medium" />
           </tr>
@@ -74,6 +89,20 @@ export function AdminInterventionsList({ rows }: Props) {
                 >
                   {r.statutLabel}
                 </span>
+              </td>
+              <td className="px-4 py-3">
+                {r.kind === "commande" && commandeDevisEnvoye(r.commande?.devis_sent_at) ? (
+                  <span
+                    className={cn(
+                      "rounded-full px-2 py-0.5 text-xs font-medium",
+                      commandeDevisEnvoyeBadgeClass(true)
+                    )}
+                  >
+                    Devis envoyé
+                  </span>
+                ) : (
+                  <span className="text-muted-foreground">—</span>
+                )}
               </td>
               <td className="px-4 py-3 whitespace-nowrap">{formatDateFr(r.dateSort.slice(0, 10))}</td>
               <td className="px-4 py-3 text-right">

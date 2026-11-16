@@ -22,7 +22,7 @@ export function CoreAccesCamionLottie({ playToken }: CoreAccesCamionLottieProps)
     lottieRef.current?.seek({ percent: 100 })
   }
 
-  const playOnce = () => {
+  const startPlayback = () => {
     if (reduceMotion) {
       holdLastFrame()
       return
@@ -40,15 +40,12 @@ export function CoreAccesCamionLottie({ playToken }: CoreAccesCamionLottieProps)
         key={playToken}
         src={CORE_ACCES_CAMION_LOTTIE_SRC}
         autoplay={false}
-        loop={false}
+        loop={!reduceMotion}
         lottieRef={lottieRef}
         className="truck-access-help__lottie-player h-full w-full"
         subscriptions={{
           [LottieSubscription.ready]: () => {
-            playOnce()
-          },
-          [LottieSubscription.complete]: () => {
-            holdLastFrame()
+            startPlayback()
           },
         }}
       />

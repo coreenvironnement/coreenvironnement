@@ -16,6 +16,8 @@ import {
   isValidDeliveryDate,
   isValidPickupDate,
 } from "@/lib/order/delivery-dates"
+import { BROUILLON_COMMANDE_SUPPRIME_MESSAGE } from "@/lib/order/brouillon-errors"
+import { isValidContactPhone } from "@/lib/phone/phone-value"
 
 export type PreparedProOrder = {
   commandeId: string
@@ -125,8 +127,7 @@ export async function prepareProOrderForEmbeddedPayment(
   }
 
   const phone = input.contactPhone?.trim() ?? ""
-  const phoneDigits = phone.replace(/\D/g, "")
-  if (phoneDigits.length < 10) {
+  if (!isValidContactPhone(phone)) {
     return { error: "Indiquez un numéro de téléphone valide." }
   }
 
@@ -210,6 +211,8 @@ export async function prepareProOrderForEmbeddedPayment(
         }
       }
     }
+
+    return { error: BROUILLON_COMMANDE_SUPPRIME_MESSAGE }
   }
 
   const dechetCode = dechetCodeForFamily(prestation.family)

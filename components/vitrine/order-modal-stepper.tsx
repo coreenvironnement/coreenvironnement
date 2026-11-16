@@ -1,3 +1,5 @@
+import { Fragment } from "react"
+
 import { cn } from "@/lib/utils"
 
 import { getOrderTunnelSteps } from "@/lib/order/tunnel-steps"
@@ -48,47 +50,61 @@ export function OrderModalStepper({
       </div>
 
       <div className={cn(compact ? "hidden" : "hidden md:block")}>
-        <div className="grid w-full min-w-0 grid-cols-5 gap-1 sm:gap-1.5">
+        <div className="order-tunnel-stepper__track flex w-full min-w-0 items-start">
           {steps.map((step, index) => {
             const active = index === stepIndex
             const done = index < stepIndex
+            const connectorDone = index > 0 && stepIndex >= index
 
             return (
-              <div
-                key={step.id}
-                className="flex min-w-0 flex-col items-center px-0.5 sm:px-1"
-              >
-                <span
+              <Fragment key={step.id}>
+                {index > 0 ? (
+                  <div
+                    className={cn(
+                      "order-tunnel-stepper__connector",
+                      connectorDone && "order-tunnel-stepper__connector--done"
+                    )}
+                    aria-hidden
+                  />
+                ) : null}
+                <div
                   className={cn(
-                    "order-tunnel-stepper__tile",
-                    done && "order-tunnel-stepper__tile--done",
-                    active && "order-tunnel-stepper__tile--active",
-                    !done && !active && "order-tunnel-stepper__tile--upcoming"
+                    "order-tunnel-stepper__cell flex shrink-0 flex-col items-center",
+                    active && "order-tunnel-stepper__cell--active"
                   )}
                 >
-                  {done ? (
-                    <OrderTunnelStepDoneIcon className="order-tunnel-stepper__icon" />
-                  ) : (
-                    <OrderTunnelStepIcon
-                      stepId={step.id}
-                      className="order-tunnel-stepper__icon"
-                    />
-                  )}
-                </span>
-                <p
-                  className={cn(
-                    "order-tunnel-stepper__label mt-1.5 w-full max-w-full text-center text-[11px] leading-tight",
-                    "line-clamp-2 break-words [overflow-wrap:anywhere]",
-                    active
-                      ? "font-semibold text-brand-navy"
-                      : done
-                        ? "font-medium text-brand-navy/62"
-                        : "font-medium text-brand-navy/42"
-                  )}
-                >
-                  {step.label}
-                </p>
-              </div>
+                  <span
+                    className={cn(
+                      "order-tunnel-stepper__tile",
+                      done && "order-tunnel-stepper__tile--done",
+                      active && "order-tunnel-stepper__tile--active",
+                      !done && !active && "order-tunnel-stepper__tile--upcoming"
+                    )}
+                  >
+                    {done ? (
+                      <OrderTunnelStepDoneIcon className="order-tunnel-stepper__icon" />
+                    ) : (
+                      <OrderTunnelStepIcon
+                        stepId={step.id}
+                        className="order-tunnel-stepper__icon"
+                      />
+                    )}
+                  </span>
+                  <p
+                    className={cn(
+                      "order-tunnel-stepper__label mt-1.5 max-w-[5.75rem] text-center text-[10px] leading-tight sm:max-w-[6.25rem] sm:text-[11px]",
+                      "whitespace-nowrap",
+                      active
+                        ? "font-semibold text-brand-navy"
+                        : done
+                          ? "font-medium text-brand-navy/62"
+                          : "font-medium text-brand-navy/42"
+                    )}
+                  >
+                    {step.label}
+                  </p>
+                </div>
+              </Fragment>
             )
           })}
         </div>

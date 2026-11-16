@@ -7,6 +7,11 @@ import { redirect } from "next/navigation"
 import type Stripe from "stripe"
 
 import { writeAuditLog } from "@/lib/admin/audit-log"
+import {
+  planifierCommandeLivraisonAdmin,
+  planifierInterventionAdmin,
+} from "@/lib/admin/planification-admin"
+import { formatCreneauFrShort, parseAdminCreneauForm } from "@/lib/planning/creneau"
 import { requireAdmin } from "@/lib/auth/require-admin"
 import { syncProfileClientKind } from "@/lib/auth/sync-profile-client-kind"
 import { sendCommandeCancellationIfClaimed } from "@/lib/commande/cancellation-email"
@@ -22,6 +27,7 @@ import { interventionProgrammeeEmail } from "@/lib/email/templates/intervention-
 import { getStripe, isStripePaymentConfigured } from "@/lib/stripe/server"
 import { syncCommandeFromRefund } from "@/lib/stripe/sync-commande"
 import { createServiceClient } from "@/lib/supabase/service"
+import type { SupabaseClient } from "@supabase/supabase-js"
 
 const BUCKET = "intervention-documents"
 const PRO_BUCKET = "compte-pro-documents"
@@ -346,17 +352,34 @@ export async function updateInterventionStatutAdmin(
 
   const poids_reel_kg = poidsRaw ? Number(poidsRaw) : null
 
-  const { error } = await supabase
-    .from("interventions")
-    .update({
-      statut,
-      date_reelle: date_reelle || null,
-      commentaire: commentaire || null,
-      prestataire_id: prestataireRaw || null,
-      poids_reel_kg: poids_reel_kg != null && !Number.isNaN(poids_reel_kg) ? poids_reel_kg : null,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", interventionId)
+  const hasPlanFields = Boolean(formData.get("date") || formData.get("plan_date"))
+  let planifiee_le: string | undefined
+  let plan_dateYmd: string | undefined
+  if (hasPlanFields) {
+    const planPatch = parseAdminCreneauForm(formData)
+    if ("error" in planPatch) {
+      redirect(
+        `/admin/interventions/${interventionId}?error=${encodeURIComponent(planPatch.error)}`
+      )
+    }
+    planifiee_le = planPatch.atUtc
+    plan_dateYmd = planPatch.dateYmd
+  }
+
+  const updateRow: Record<string, unknown> = {
+    statut,
+    date_reelle: date_reelle || null,
+    commentaire: commentaire || null,
+    prestataire_id: prestataireRaw || null,
+    poids_reel_kg: poids_reel_kg != null && !Number.isNaN(poids_reel_kg) ? poids_reel_kg : null,
+    updated_at: new Date().toISOString(),
+  }
+  if (planifiee_le) {
+    updateRow.planifiee_le = planifiee_le
+    updateRow.date_souhaitee = plan_dateYmd
+  }
+
+  const { error } = await supabase.from("interventions").update(updateRow).eq("id", interventionId)
 
   if (error) {
     if (options?.redirectToInterventions !== false) {
@@ -378,7 +401,7 @@ export async function updateInterventionStatutAdmin(
   if (statut === "programme") {
     const { data: meta } = await supabase
       .from("interventions")
-      .select("numero, date_souhaitee, chantiers ( nom )")
+      .select("numero, date_souhaitee, planifiee_le, commande_id, chantiers ( nom )")
       .eq("id", interventionId)
       .single()
     const chantierNom =
@@ -396,13 +419,23 @@ export async function updateInterventionStatutAdmin(
         null
       if (mail) recipients.add(mail)
     }
+    const creneauLabel =
+      formatCreneauFrShort(meta?.planifiee_le as string | null) ??
+      meta?.date_souhaitee ??
+      date_reelle
     const tpl = interventionProgrammeeEmail({
       numero: meta?.numero ?? interventionId,
       chantierNom,
-      date: meta?.date_souhaitee ?? date_reelle,
+      creneauLabel,
     })
     for (const to of recipients) {
       await sendEmail({ to, ...tpl })
+    }
+    if (meta?.commande_id && meta?.planifiee_le) {
+      await supabase
+        .from("commandes")
+        .update({ livraison_planifiee_at: meta.planifiee_le as string })
+        .eq("id", meta.commande_id)
     }
   }
 
@@ -630,6 +663,253 @@ export async function getCompteProDocumentUrl(compteId: string, kind: "kbis" | "
   return { url: signed.signedUrl, fileName }
 }
 
+type DeletableBrouillonRow = {
+  id: string
+  statut: string
+  payment_status: string | null
+  stripe_payment_intent_id: string | null
+}
+
+type DeletableBrouillonCheck =
+  | { ok: true; commande: DeletableBrouillonRow }
+  | { ok: false; reason: string }
+
+async function assertDeletableBrouillon(
+  supabase: SupabaseClient,
+  commandeId: string
+): Promise<DeletableBrouillonCheck> {
+  const { data: commande, error } = await supabase
+    .from("commandes")
+    .select("id, statut, payment_status, stripe_payment_intent_id")
+    .eq("id", commandeId)
+    .maybeSingle()
+
+  if (error || !commande) {
+    return { ok: false, reason: "Commande introuvable." }
+  }
+
+  if (commande.statut !== "brouillon") {
+    return { ok: false, reason: "Seuls les brouillons peuvent être supprimés." }
+  }
+
+  const payment = commande.payment_status ?? "pending"
+  if (payment !== "pending") {
+    return { ok: false, reason: "Ce brouillon ne peut pas être supprimé (paiement en cours)." }
+  }
+
+  const { data: interventions } = await supabase
+    .from("interventions")
+    .select("id, statut")
+    .eq("commande_id", commandeId)
+
+  for (const row of interventions ?? []) {
+    if (row.statut !== "annulee") {
+      return {
+        ok: false,
+        reason: "Une intervention active est liée à ce brouillon.",
+      }
+    }
+  }
+
+  return { ok: true, commande: commande as DeletableBrouillonRow }
+}
+
+async function cancelDraftStripePaymentIntent(paymentIntentId: string | null) {
+  if (!paymentIntentId?.trim() || !isStripePaymentConfigured()) return
+  try {
+    const stripe = getStripe()
+    await stripe.paymentIntents.cancel(paymentIntentId)
+  } catch (err) {
+    console.error("[deleteCommandeBrouillon] cancel payment intent:", err)
+  }
+}
+
+function redirectAfterBrouillonDelete(returnTo: string, params: { ok?: string; error?: string }) {
+  const url = new URL(returnTo, "http://local")
+  if (params.ok) url.searchParams.set("ok", params.ok)
+  if (params.error) url.searchParams.set("error", params.error)
+  redirect(`${url.pathname}${url.search}`)
+}
+
+async function deleteCommandeBrouillonById(
+  supabase: SupabaseClient,
+  userId: string | undefined,
+  commandeId: string
+): Promise<{ ok: true } | { ok: false; reason: string }> {
+  const check = await assertDeletableBrouillon(supabase, commandeId)
+  if (!check.ok) {
+    return { ok: false, reason: check.reason }
+  }
+
+  await cancelDraftStripePaymentIntent(check.commande.stripe_payment_intent_id)
+
+  const { error: deleteError } = await supabase.from("commandes").delete().eq("id", commandeId)
+  if (deleteError) {
+    return { ok: false, reason: deleteError.message }
+  }
+
+  await writeAuditLog(supabase, {
+    entityType: "commande",
+    entityId: commandeId,
+    action: "delete_brouillon",
+    actorId: userId ?? null,
+  })
+
+  return { ok: true }
+}
+
+function redirectAdminPlan(returnTo: string, params: { ok?: string; error?: string }) {
+  const url = new URL(returnTo, "http://local")
+  if (params.ok) url.searchParams.set("ok", params.ok)
+  if (params.error) url.searchParams.set("error", params.error)
+  redirect(`${url.pathname}${url.search}`)
+}
+
+export async function planifierCommandeLivraison(
+  commandeId: string,
+  formData: FormData
+): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+  const returnTo = sanitizeAdminReturnPath(String(formData.get("returnTo") ?? ""))
+  const result = await planifierCommandeLivraisonAdmin(supabase, user?.id, commandeId, formData)
+  if (!result.ok) {
+    redirectAdminPlan(returnTo, { error: result.error })
+  }
+  revalidateAdmin()
+  revalidateCommande(commandeId)
+  revalidatePath("/espace/commandes")
+  redirectAdminPlan(returnTo, { ok: "planned" })
+}
+
+export async function reporterCommandeLivraison(
+  commandeId: string,
+  formData: FormData
+): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+  const returnTo = sanitizeAdminReturnPath(String(formData.get("returnTo") ?? ""))
+  const result = await planifierCommandeLivraisonAdmin(supabase, user?.id, commandeId, formData, {
+    report: true,
+  })
+  if (!result.ok) {
+    redirectAdminPlan(returnTo, { error: result.error })
+  }
+  revalidateAdmin()
+  revalidateCommande(commandeId)
+  revalidatePath("/espace/commandes")
+  redirectAdminPlan(returnTo, { ok: "rescheduled" })
+}
+
+export async function planifierIntervention(
+  interventionId: string,
+  chantierId: string,
+  formData: FormData
+): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+  const returnTo = sanitizeAdminReturnPath(String(formData.get("returnTo") ?? ""))
+  const result = await planifierInterventionAdmin(
+    supabase,
+    user?.id,
+    interventionId,
+    chantierId,
+    formData
+  )
+  if (!result.ok) {
+    redirectAdminPlan(returnTo, { error: result.error })
+  }
+  revalidateAdmin(chantierId)
+  revalidatePath(`/admin/interventions/${interventionId}`)
+  revalidatePath("/dashboard/historique")
+  revalidatePath("/espace/chantier")
+  redirectAdminPlan(returnTo, { ok: "planned" })
+}
+
+export async function reporterIntervention(
+  interventionId: string,
+  chantierId: string,
+  formData: FormData
+): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+  const returnTo = sanitizeAdminReturnPath(String(formData.get("returnTo") ?? ""))
+  const result = await planifierInterventionAdmin(
+    supabase,
+    user?.id,
+    interventionId,
+    chantierId,
+    formData,
+    { report: true }
+  )
+  if (!result.ok) {
+    redirectAdminPlan(returnTo, { error: result.error })
+  }
+  revalidateAdmin(chantierId)
+  revalidatePath(`/admin/interventions/${interventionId}`)
+  revalidatePath("/dashboard/historique")
+  revalidatePath("/espace/chantier")
+  redirectAdminPlan(returnTo, { ok: "rescheduled" })
+}
+
+function sanitizeAdminReturnPath(raw: string): string {
+  const trimmed = raw.trim()
+  if (!trimmed.startsWith("/admin")) {
+    return "/admin/interventions?vue=brouillon"
+  }
+  return trimmed
+}
+
+export async function deleteCommandeBrouillon(
+  commandeId: string,
+  formData: FormData
+): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+  const returnTo = sanitizeAdminReturnPath(String(formData.get("returnTo") ?? ""))
+
+  const result = await deleteCommandeBrouillonById(supabase, user?.id, commandeId)
+  if (!result.ok) {
+    redirectAfterBrouillonDelete(returnTo, { error: result.reason })
+  }
+
+  revalidateAdmin()
+  revalidatePath(`/admin/commandes/${commandeId}`)
+  redirectAfterBrouillonDelete(returnTo, { ok: "deleted" })
+}
+
+export async function deleteCommandesBrouillonBulk(formData: FormData): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+  const returnTo = sanitizeAdminReturnPath(String(formData.get("returnTo") ?? ""))
+  const ids = [...new Set(formData.getAll("ids").map((v) => String(v).trim()).filter(Boolean))]
+
+  if (ids.length === 0) {
+    redirectAfterBrouillonDelete(returnTo, { error: "Aucun brouillon sélectionné." })
+  }
+
+  let deleted = 0
+  const skipped: string[] = []
+
+  for (const id of ids) {
+    const result = await deleteCommandeBrouillonById(supabase, user?.id, id)
+    if (result.ok) {
+      deleted += 1
+      revalidatePath(`/admin/commandes/${id}`)
+    } else {
+      skipped.push(result.reason)
+    }
+  }
+
+  revalidateAdmin()
+
+  if (deleted === 0) {
+    redirectAfterBrouillonDelete(returnTo, {
+      error: skipped[0] ?? "Impossible de supprimer la sélection.",
+    })
+  }
+
+  const ok =
+    skipped.length === 0
+      ? `deleted_${deleted}`
+      : `deleted_${deleted}_skipped_${skipped.length}`
+  redirectAfterBrouillonDelete(returnTo, { ok })
+}
+
 const STATUTS_COMMANDE_VALIDES = [
   "brouillon",
   "confirmee",
@@ -646,7 +926,12 @@ export async function updateCommandeStatut(commandeId: string, formData: FormDat
     redirect(`/admin/interventions/${commandeId}`)
   }
 
-  const { error } = await supabase.from("commandes").update({ statut }).eq("id", commandeId)
+  const patch: { statut: string; livree_at?: string } = { statut }
+  if (statut === "livree") {
+    patch.livree_at = new Date().toISOString()
+  }
+
+  const { error } = await supabase.from("commandes").update(patch).eq("id", commandeId)
 
   if (error) {
     redirect(
@@ -664,7 +949,7 @@ export async function createInterventionFromCommande(commandeId: string): Promis
   const { data: commande, error: commandeError } = await supabase
     .from("commandes")
     .select(
-      "id, adresse_complete, type_dechet_id, volume_m3, date_livraison, contact_nom, contact_email, prestation_label, payment_status, statut"
+      "id, adresse_complete, type_dechet_id, volume_m3, date_livraison, livraison_planifiee_at, contact_nom, contact_email, prestation_label, payment_status, statut"
     )
     .eq("id", commandeId)
     .single()
@@ -727,9 +1012,10 @@ export async function createInterventionFromCommande(commandeId: string): Promis
       type_intervention_id: typeDepose.id,
       contenant_id: contenant.id,
       dechet_type_id: commande.type_dechet_id,
-      statut: "programme",
+      statut: commande.livraison_planifiee_at ? "programme" : "en_cours_programmation",
       date_demande: today,
       date_souhaitee: commande.date_livraison,
+      planifiee_le: commande.livraison_planifiee_at ?? null,
       commentaire: interventionCommentFromCommande(commande),
       created_by: user.id,
     })
@@ -1124,6 +1410,82 @@ export async function updatePrestataire(prestataireId: string, formData: FormDat
   revalidatePath("/admin/prestataires")
   revalidatePath(`/admin/prestataires/${prestataireId}`)
   redirect(`/admin/prestataires/${prestataireId}?ok=1`)
+}
+
+async function deletePrestataireById(
+  supabase: SupabaseClient,
+  userId: string | undefined,
+  prestataireId: string
+): Promise<{ ok: true } | { ok: false; reason: string }> {
+  const { count: interventionCount, error: interventionError } = await supabase
+    .from("interventions")
+    .select("id", { count: "exact", head: true })
+    .eq("prestataire_id", prestataireId)
+
+  if (interventionError) {
+    return { ok: false, reason: interventionError.message }
+  }
+
+  if ((interventionCount ?? 0) > 0) {
+    const { count: commandeLinkCount } = await supabase
+      .from("interventions")
+      .select("id", { count: "exact", head: true })
+      .eq("prestataire_id", prestataireId)
+      .not("commande_id", "is", null)
+
+    const n = interventionCount ?? 0
+    const m = commandeLinkCount ?? 0
+    const base = `Impossible de supprimer ce prestataire : il est rattaché à ${n} intervention${n > 1 ? "s" : ""}.`
+    const commandePart =
+      m > 0
+        ? ` Dont ${m} liée${m > 1 ? "s" : ""} à une commande.`
+        : ""
+    return {
+      ok: false,
+      reason: `${base}${commandePart} Retirez-le des fiches concernées avant suppression.`,
+    }
+  }
+
+  const { error: deleteError } = await supabase.from("prestataires").delete().eq("id", prestataireId)
+  if (deleteError) {
+    const code = deleteError.code ?? ""
+    if (code === "23503") {
+      return {
+        ok: false,
+        reason:
+          "Impossible de supprimer ce prestataire : il est encore référencé par d'autres enregistrements.",
+      }
+    }
+    return { ok: false, reason: deleteError.message }
+  }
+
+  await writeAuditLog(supabase, {
+    entityType: "prestataire",
+    entityId: prestataireId,
+    action: "suppression",
+    actorId: userId ?? null,
+  })
+
+  return { ok: true }
+}
+
+export async function deletePrestataire(
+  prestataireId: string,
+  formData: FormData
+): Promise<void> {
+  const { supabase, user } = await assertAdmin()
+  const rawReturnTo = String(formData.get("returnTo") ?? "").trim()
+  const returnTo =
+    rawReturnTo.startsWith("/admin/prestataires") ? rawReturnTo : "/admin/prestataires"
+
+  const result = await deletePrestataireById(supabase, user?.id, prestataireId)
+  if (!result.ok) {
+    redirectAfterBrouillonDelete(returnTo, { error: result.reason })
+  }
+
+  revalidatePath("/admin/prestataires")
+  revalidatePath(`/admin/prestataires/${prestataireId}`)
+  redirectAfterBrouillonDelete(returnTo, { ok: "deleted" })
 }
 
 export async function upsertChantierLigneTarifaire(

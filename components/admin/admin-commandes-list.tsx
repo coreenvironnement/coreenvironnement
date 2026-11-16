@@ -2,6 +2,8 @@ import Link from "next/link"
 
 import {
   audienceCommandeLabel,
+  commandeDevisEnvoye,
+  commandeDevisEnvoyeBadgeClass,
   commandeMailtoHref,
   commandeTelHref,
   isCommandeNouvelle,
@@ -31,10 +33,12 @@ export type AdminCommandeListItem = {
   contact_nom: string | null
   contact_telephone: string | null
   date_creation: string
+  devis_sent_at: string | null
+  livraison_planifiee_at?: string | null
   dechets_types: { nom: string; code: string | null } | null
 }
 
-function ContactLinks({
+export function ContactLinks({
   email,
   telephone,
   className,
@@ -63,7 +67,7 @@ function ContactLinks({
   )
 }
 
-function NouvelleBadge({ dateCreation }: { dateCreation: string }) {
+export function NouvelleBadge({ dateCreation }: { dateCreation: string }) {
   if (!isCommandeNouvelle(dateCreation)) return null
   return (
     <span className="rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-sky-900">
@@ -72,12 +76,36 @@ function NouvelleBadge({ dateCreation }: { dateCreation: string }) {
   )
 }
 
-function CommandeBadges({
+export function DevisEnvoyeCell({
+  devisSentAt,
+  className,
+}: {
+  devisSentAt: string | null
+  className?: string
+}) {
+  const sent = commandeDevisEnvoye(devisSentAt)
+  return (
+    <span
+      className={cn(
+        "inline-flex rounded-full px-2 py-0.5 text-xs font-medium",
+        commandeDevisEnvoyeBadgeClass(sent),
+        className
+      )}
+      title={sent && devisSentAt ? `Envoyé le ${formatDateFr(devisSentAt)}` : undefined}
+    >
+      {sent ? "Devis envoyé" : "—"}
+    </span>
+  )
+}
+
+export function CommandeBadges({
   statut,
   paymentStatus,
+  devisSentAt,
 }: {
   statut: string
   paymentStatus: string | null
+  devisSentAt?: string | null
 }) {
   return (
     <div className="flex flex-wrap items-center gap-1.5">
@@ -97,6 +125,9 @@ function CommandeBadges({
       >
         {statutCommandeLabel(statut)}
       </span>
+      {devisSentAt !== undefined ? (
+        <DevisEnvoyeCell devisSentAt={devisSentAt} />
+      ) : null}
     </div>
   )
 }
@@ -153,7 +184,11 @@ export function AdminCommandesList({
                   <p className="text-sm font-medium text-brand-navy">
                     {formatEuro(c.price_ht == null ? null : Number(c.price_ht))}
                   </p>
-                  <CommandeBadges statut={c.statut} paymentStatus={c.payment_status} />
+                  <CommandeBadges
+                    statut={c.statut}
+                    paymentStatus={c.payment_status}
+                    devisSentAt={c.devis_sent_at}
+                  />
                 </div>
                 <Link
                   href={`${detailBasePath}/${c.id}`}
@@ -179,6 +214,7 @@ export function AdminCommandesList({
               <th className="px-3 py-3 font-medium">Montant HT</th>
               <th className="px-3 py-3 font-medium">Paiement</th>
               <th className="px-3 py-3 font-medium">Statut</th>
+              <th className="px-3 py-3 font-medium">Devis</th>
               <th className="px-3 py-3 font-medium" />
             </tr>
           </thead>
@@ -241,6 +277,9 @@ export function AdminCommandesList({
                     >
                       {statutCommandeLabel(c.statut)}
                     </span>
+                  </td>
+                  <td className="px-3 py-3">
+                    <DevisEnvoyeCell devisSentAt={c.devis_sent_at} />
                   </td>
                   <td className="px-3 py-3 text-right">
                     <Link

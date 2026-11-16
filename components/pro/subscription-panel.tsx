@@ -5,7 +5,7 @@ import { CreditCard, Loader2, Settings2 } from "lucide-react"
 import Link from "next/link"
 
 import { openBillingPortal, startProSubscription } from "@/app/pro/stripe-actions"
-import { ABONNEMENT_PRO_HT } from "@/lib/cdc/referentiels"
+import { ABONNEMENT_PRO_LABEL } from "@/lib/cdc/referentiels"
 import { paymentModeLabel } from "@/lib/compte-pro/labels"
 import { Button } from "@/components/ui/button"
 
@@ -48,7 +48,7 @@ export function SubscriptionPanel({
 
       <div className="rounded-xl border border-brand-navy/10 bg-background/80 p-4 text-sm">
         <p className="font-medium text-brand-navy">
-          Abonnement espace client · {ABONNEMENT_PRO_HT} € HT / mois
+          Abonnement espace client · {ABONNEMENT_PRO_LABEL}
         </p>
         {subscriptionActive ? (
           <p className="mt-2 text-muted-foreground">
@@ -107,7 +107,7 @@ export function SubscriptionPanel({
             ) : (
               <CreditCard className="size-4" aria-hidden />
             )}
-            Activer l&apos;abonnement ({ABONNEMENT_PRO_HT} € HT / mois)
+            Activer l&apos;abonnement ({ABONNEMENT_PRO_LABEL})
           </Button>
         ) : (
           <Link href="/espace/chantier">

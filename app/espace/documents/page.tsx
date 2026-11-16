@@ -1,7 +1,10 @@
 import { DocumentsLibraryView } from "@/components/espace/documents-library-view"
-import { getClientNavContext } from "@/lib/auth/client-nav-context"
+import {
+  getAuthUser,
+  getCachedClientNavContext,
+  getSupabaseServerClient,
+} from "@/lib/auth/espace-session"
 import { loadUserDocumentsLibrary } from "@/lib/dashboard/documents-library"
-import { createClient } from "@/lib/supabase/server"
 
 export const metadata = {
   title: "Documents · Mon espace",
@@ -9,14 +12,12 @@ export const metadata = {
 }
 
 export default async function EspaceDocumentsPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getAuthUser()
 
   if (!user) return null
 
-  const ctx = await getClientNavContext(supabase, user.id)
+  const supabase = await getSupabaseServerClient()
+  const ctx = await getCachedClientNavContext(user.id)
   const locked = ctx.isLoggedIn && !ctx.canViewDocuments
 
   const documents =

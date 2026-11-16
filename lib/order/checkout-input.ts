@@ -1,3 +1,6 @@
+import type { AddressGeocodeHit } from "@/lib/geo/ban-api"
+import type { ParticulierWasteOptionId } from "@/lib/order/particulier-waste-options"
+
 export type OrderCheckoutInput = {
   audience: "particulier" | "professionnel"
   address: string
@@ -11,7 +14,11 @@ export type OrderCheckoutInput = {
   pickupDate?: string
   contactEmail: string
   contactName?: string
+  contactFirstName?: string
+  contactLastName?: string
+  contactPhone?: string
+  selectedAddress?: AddressGeocodeHit
+  particulierWasteId?: ParticulierWasteOptionId | null
   /** Raison sociale (tunnel professionnel, paiement CB). */
   companyName?: string
-  contactPhone?: string
 }

@@ -9,7 +9,8 @@ export function AuthBackLink({ className }: { className?: string }) {
       href="/"
       aria-label="Retour à l'accueil"
       className={cn(
-        "inline-flex size-10 shrink-0 items-center justify-center rounded-lg border-2 border-brand-green/35 bg-white text-brand-navy shadow-sm transition-colors hover:border-brand-green hover:bg-brand-warm-field focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green",
+        "auth-back-link inline-flex size-9 shrink-0 items-center justify-center rounded-lg border-0 bg-transparent p-0 text-brand-green shadow-none",
+        "transition-colors hover:bg-[#35A238]/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green",
         className
       )}
     >

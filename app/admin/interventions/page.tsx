@@ -1,5 +1,7 @@
 import Link from "next/link"
 
+import { AdminCommandesBrouillonPanel } from "@/components/admin/admin-commandes-brouillon-panel"
+import { AdminInterventionsOpsList } from "@/components/admin/admin-interventions-ops-list"
 import { AdminInterventionsList } from "@/components/admin/admin-interventions-list"
 import { AdminCommandesList, type AdminCommandeListItem } from "@/components/admin/admin-commandes-list"
 import { Input } from "@/components/ui/input"
@@ -22,7 +24,7 @@ export const metadata = {
 type AudienceFilter = CommandeAudienceFilter
 
 type PageProps = {
-  searchParams: Promise<{ q?: string; vue?: string; audience?: string }>
+  searchParams: Promise<{ q?: string; vue?: string; audience?: string; ok?: string; error?: string }>
 }
 
 function parseAudience(raw: string | undefined): AudienceFilter {
@@ -42,7 +44,13 @@ function audienceHref(audience: AudienceFilter, vue: InterventionVue, q: string)
 }
 
 export default async function AdminInterventionsPage({ searchParams }: PageProps) {
-  const { q: qParam, vue: vueParam, audience: audienceParam } = await searchParams
+  const {
+    q: qParam,
+    vue: vueParam,
+    audience: audienceParam,
+    ok: okParam,
+    error: errorParam,
+  } = await searchParams
   const q = qParam?.trim() ?? ""
   const vue = parseInterventionVue(vueParam)
   const audience = parseAudience(audienceParam)
@@ -65,6 +73,33 @@ export default async function AdminInterventionsPage({ searchParams }: PageProps
   const aTraiter = rows.filter(
     (r) => r.kind === "commande" && r.statutLabel === "À planifier"
   ).length
+
+  const returnTo = interventionsHref(vue, q, audience)
+
+  const opsListVue =
+    vue === "a-planifier" || vue === "planifiees" ? vue : null
+
+  const flashOk =
+    okParam === "planned"
+      ? "Créneau enregistré et client notifié par e-mail."
+      : okParam === "rescheduled"
+        ? "Créneau reporté et client notifié."
+        : okParam === "deleted"
+      ? "Brouillon supprimé."
+      : okParam?.startsWith("deleted_")
+        ? (() => {
+            const parts = okParam.split("_")
+            const n = Number(parts[1])
+            if (!Number.isFinite(n) || n <= 0) return null
+            const skipped = okParam.includes("skipped")
+              ? Number(parts[3])
+              : 0
+            if (skipped > 0) {
+              return `${n} brouillon${n > 1 ? "s" : ""} supprimé${n > 1 ? "s" : ""}, ${skipped} ignoré${skipped > 1 ? "s" : ""}.`
+            }
+            return `${n} brouillon${n > 1 ? "s" : ""} supprimé${n > 1 ? "s" : ""}.`
+          })()
+        : null
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
@@ -162,12 +197,33 @@ export default async function AdminInterventionsPage({ searchParams }: PageProps
         </button>
       </form>
 
+      {errorParam ? (
+        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          {errorParam}
+        </p>
+      ) : null}
+      {flashOk ? (
+        <p className="rounded-lg border border-[#35A238]/30 bg-[#ECF4E9] px-4 py-3 text-sm text-brand-navy">
+          {flashOk}
+        </p>
+      ) : null}
+
       {rows.length === 0 ? (
         <p className="rounded-xl border border-dashed border-[#35A238]/25 bg-white p-10 text-center text-sm text-muted-foreground">
           Aucune intervention pour ce filtre{q ? ` ou « ${q} »` : ""}.
         </p>
+      ) : opsListVue && rows.length > 0 ? (
+        <AdminInterventionsOpsList rows={rows} returnTo={returnTo} mode={opsListVue} />
       ) : commandeOnly && commandeRows.length === rows.length ? (
-        <AdminCommandesList commandes={commandeRows} detailBasePath="/admin/interventions" />
+        vue === "brouillon" ? (
+          <AdminCommandesBrouillonPanel
+            commandes={commandeRows}
+            returnTo={returnTo}
+            detailBasePath="/admin/interventions"
+          />
+        ) : (
+          <AdminCommandesList commandes={commandeRows} detailBasePath="/admin/interventions" />
+        )
       ) : (
         <AdminInterventionsList rows={rows} />
       )}

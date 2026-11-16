@@ -35,6 +35,13 @@ const NAV_ICONS: Record<AdminNavId, LucideIcon> = {
   comptesPro: Briefcase,
 }
 
+/** Libellés courts pour la barre d’onglets mobile (5 colonnes étroites). */
+const MOBILE_TAB_LABELS: Partial<Record<AdminNavId, string>> = {
+  overview: "Accueil",
+  interventions: "Interv.",
+  prestataires: "Presta.",
+}
+
 type Props = {
   children: React.ReactNode
   navGroups: AdminNavGroup[]
@@ -208,33 +215,61 @@ export function AdminAppShell({ children, navGroups, navItems, userLabel }: Prop
       </div>
 
       <nav
-        className="fixed inset-x-0 bottom-0 z-30 flex border-t border-[#35A238]/20 bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(25,55,35,0.08)] lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-[#35A238]/20 bg-white pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] shadow-[0_-4px_20px_rgba(25,55,35,0.08)] lg:hidden"
         aria-label="Navigation admin"
       >
-        {navItems.slice(0, 5).map((item) => (
-          <Link
-            key={item.id}
-            href={item.href}
-            prefetch
-            scroll={false}
-            className={cn(
-              "relative flex flex-1 flex-col items-center justify-center gap-0.5 py-1.5 text-[9px] font-medium",
-              item.id === active ? "text-[#35A238]" : "text-brand-navy/55"
-            )}
-          >
-            {(() => {
-              const Icon = NAV_ICONS[item.id]
-              return <Icon className="size-5" strokeWidth={2} aria-hidden />
-            })()}
-            <span className="max-w-[4.2rem] truncate text-center leading-tight">{item.label}</span>
-            {item.badge ? (
-              <span className="absolute right-2 top-1 size-2 rounded-full bg-[#35A238]" aria-hidden />
-            ) : null}
-          </Link>
-        ))}
+        {navItems.slice(0, 5).map((item) => {
+          const isActive = item.id === active
+          const Icon = NAV_ICONS[item.id]
+          const label = MOBILE_TAB_LABELS[item.id] ?? item.label
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              prefetch
+              scroll={false}
+              className={cn(
+                "relative flex min-h-12 flex-col items-center justify-center gap-1 px-0.5 py-1.5 text-[10px] font-semibold leading-none transition-colors",
+                isActive
+                  ? "bg-[#35A238]/10 text-[#35A238]"
+                  : "text-brand-navy/60 active:bg-[#ECF4E9]"
+              )}
+              aria-current={isActive ? "page" : undefined}
+            >
+              {isActive ? (
+                <span
+                  className="absolute inset-x-2 top-0 h-0.5 rounded-full bg-[#35A238]"
+                  aria-hidden
+                />
+              ) : null}
+              <span className="relative flex size-6 shrink-0 items-center justify-center">
+                <Icon
+                  className={cn(
+                    "size-[22px]",
+                    isActive ? "text-[#35A238]" : "text-brand-navy/55"
+                  )}
+                  strokeWidth={isActive ? 2.25 : 2}
+                  aria-hidden
+                />
+                {item.badge ? (
+                  <span
+                    className="absolute -right-2 -top-1 flex min-w-[1rem] items-center justify-center rounded-full bg-[#35A238] px-0.5 py-px text-[8px] font-bold leading-none text-white"
+                    aria-label={`${item.badge} notification${item.badge > 1 ? "s" : ""}`}
+                  >
+                    {item.badge > 99 ? "99+" : item.badge}
+                  </span>
+                ) : null}
+              </span>
+              <span className="w-full truncate px-0.5 text-center">{label}</span>
+            </Link>
+          )
+        })}
       </nav>
 
-      <div className="h-[4.25rem] lg:hidden" aria-hidden />
+      <div
+        className="min-h-12 pb-[env(safe-area-inset-bottom)] lg:hidden"
+        aria-hidden
+      />
 
       {mobileNavOpen ? (
         <div className="fixed inset-0 z-40 lg:hidden">

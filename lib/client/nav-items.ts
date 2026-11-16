@@ -6,6 +6,7 @@ export type ClientNavId =
   | "documents"
   | "factures"
   | "compte"
+  | "aide"
   | "profil"
 
 /** Props sérialisables serveur → client (pas de composants React). */
@@ -55,6 +56,12 @@ export function buildClientNavItems(ctx: ClientNavContext): ClientNavItem[] {
       label: "Entreprise",
     })
   }
+
+  items.push({
+    id: "aide",
+    href: "/espace/aide",
+    label: "Besoin d'aide",
+  })
 
   items.push({
     id: "profil",

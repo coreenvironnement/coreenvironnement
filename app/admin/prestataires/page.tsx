@@ -1,10 +1,9 @@
 import Link from "next/link"
 
-import { createPrestataire } from "@/app/admin/actions"
-import { PrestataireEntrepriseFields } from "@/components/admin/prestataire-entreprise-fields"
+import { AdminDeletePrestataireButton } from "@/components/admin/admin-delete-prestataire-button"
+import { AdminPrestataireCreateDialog } from "@/components/admin/admin-prestataire-create-dialog"
 import { requireAdmin } from "@/lib/auth/require-admin"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
   Card,
@@ -18,7 +17,12 @@ export const metadata = {
   title: "Prestataires · Admin",
 }
 
-export default async function AdminPrestatairesPage() {
+type PageProps = {
+  searchParams: Promise<{ ok?: string; error?: string }>
+}
+
+export default async function AdminPrestatairesPage({ searchParams }: PageProps) {
+  const { ok: okParam, error: errorParam } = await searchParams
   const { supabase } = await requireAdmin()
 
   const { data: prestataires } = await supabase
@@ -38,38 +42,27 @@ export default async function AdminPrestatairesPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
-      <div>
-        <h2 className="text-xl font-bold text-brand-navy">Prestataires</h2>
-        <p className="text-sm text-muted-foreground">
-          Filières d&apos;élimination et transport — {prestataires?.length ?? 0} prestataire
-          {(prestataires?.length ?? 0) === 1 ? "" : "s"}
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-bold text-brand-navy">Prestataires</h2>
+          <p className="text-sm text-muted-foreground">
+            Filières d&apos;élimination et transport — {prestataires?.length ?? 0} prestataire
+            {(prestataires?.length ?? 0) === 1 ? "" : "s"}
+          </p>
+        </div>
+        <AdminPrestataireCreateDialog />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Nouveau prestataire</CardTitle>
-          <CardDescription>Raison sociale obligatoire</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form action={createPrestataire} className="grid gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2">
-              <PrestataireEntrepriseFields />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">E-mail</label>
-              <Input name="email" type="email" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Téléphone</label>
-              <Input name="telephone" />
-            </div>
-            <div>
-              <Button type="submit">Créer</Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+      {errorParam ? (
+        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          {errorParam}
+        </p>
+      ) : null}
+      {okParam === "deleted" ? (
+        <p className="rounded-lg border border-[#35A238]/30 bg-[#ECF4E9] px-4 py-3 text-sm text-brand-navy">
+          Prestataire supprimé.
+        </p>
+      ) : null}
 
       <Card>
         <CardHeader>
@@ -102,6 +95,7 @@ export default async function AdminPrestatairesPage() {
                       >
                         Fiche
                       </Link>
+                      <AdminDeletePrestataireButton prestataireId={p.id} label={label} />
                     </div>
                   </li>
                 )

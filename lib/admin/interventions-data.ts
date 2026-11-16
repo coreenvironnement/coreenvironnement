@@ -34,6 +34,11 @@ export type AdminUnifiedRow = {
   dateSort: string
   audience: string | null
   href: string
+  contactPhone?: string | null
+  contactEmail?: string | null
+  planifieeAt?: string | null
+  souhaiteeAt?: string | null
+  chantierId?: string | null
   /** Données commande pour export / liste riche */
   commande?: AdminCommandeListItem
 }
@@ -102,6 +107,8 @@ export async function loadAdminUnifiedInterventions(
       contact_nom,
       contact_telephone,
       date_creation,
+      devis_sent_at,
+      livraison_planifiee_at,
       dechets_types ( nom, code )
     `
       )
@@ -116,7 +123,9 @@ export async function loadAdminUnifiedInterventions(
         date_demande,
         date_souhaitee,
         date_reelle,
+        planifiee_le,
         commande_id,
+        chantier_id,
         chantiers ( id, nom ),
         types_intervention ( label ),
         dechets_types ( nom )
@@ -132,6 +141,8 @@ export async function loadAdminUnifiedInterventions(
       audience
     )
   )
+
+  const commandeById = new Map(byAudience.map((c) => [c.id, c]))
 
   const linkedCommandeIds = new Set(
     (interventions ?? [])
@@ -155,12 +166,19 @@ export async function loadAdminUnifiedInterventions(
       dateSort: c.date_creation,
       audience: c.audience,
       href: `/admin/interventions/${c.id}`,
+      contactPhone: c.contact_telephone,
+      contactEmail: c.contact_email,
+      planifieeAt: c.livraison_planifiee_at ?? null,
+      souhaiteeAt: c.date_livraison,
       commande: c,
     })
   }
 
   for (const i of interventions ?? []) {
     const chantier = i.chantiers as unknown as { id: string; nom: string } | null
+    const linkedCommande = i.commande_id
+      ? commandeById.get(i.commande_id as string)
+      : undefined
     const type = i.types_intervention as unknown as { label: string } | null
     const dechet = i.dechets_types as unknown as { nom: string } | null
     unified.push({
@@ -173,8 +191,13 @@ export async function loadAdminUnifiedInterventions(
       statutLabel: statutInterventionAffiche(i.statut),
       typeLabel: type?.label ?? dechet?.nom ?? null,
       dateSort: i.date_souhaitee ?? i.date_demande,
-      audience: null,
+      audience: linkedCommande?.audience ?? null,
       href: `/admin/interventions/${i.id}`,
+      contactPhone: linkedCommande?.contact_telephone ?? null,
+      contactEmail: linkedCommande?.contact_email ?? null,
+      planifieeAt: (i.planifiee_le as string | null) ?? linkedCommande?.livraison_planifiee_at ?? null,
+      souhaiteeAt: (i.date_souhaitee as string | null) ?? null,
+      chantierId: (i.chantier_id as string) ?? chantier?.id ?? null,
     })
   }
 
@@ -187,7 +210,13 @@ export async function loadAdminUnifiedInterventions(
       ).length
     }
     if (v === "planifiees") {
-      return unified.filter((r) => r.kind === "intervention" && r.statutCode === "programme").length
+      return unified.filter(
+        (r) =>
+          (r.kind === "intervention" && r.statutCode === "programme") ||
+          (r.kind === "commande" &&
+            Boolean(r.planifieeAt) &&
+            (r.statutCode === "en_cours" || r.statutCode === "confirmee"))
+      ).length
     }
     if (v === "realisees") {
       return unified.filter((r) => r.kind === "intervention" && r.statutCode === "realisee").length
@@ -210,7 +239,12 @@ export async function loadAdminUnifiedInterventions(
         )
       }
       if (vue === "planifiees") {
-        return r.kind === "intervention" && r.statutCode === "programme"
+        return (
+          (r.kind === "intervention" && r.statutCode === "programme") ||
+          (r.kind === "commande" &&
+            Boolean(r.planifieeAt) &&
+            (r.statutCode === "en_cours" || r.statutCode === "confirmee"))
+        )
       }
       if (vue === "realisees") {
         return r.kind === "intervention" && r.statutCode === "realisee"

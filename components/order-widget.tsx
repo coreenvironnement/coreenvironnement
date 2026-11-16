@@ -42,19 +42,31 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { EntrepriseLookupFields } from "@/components/forms/entreprise-lookup-fields"
+import { PhoneInputWithCountry } from "@/components/forms/phone-input-with-country"
 import { Input } from "@/components/ui/input"
 import { CheckoutReassuranceBanner } from "@/components/order/checkout-reassurance-banner"
 import { EmbeddedCheckout } from "@/components/order/embedded-checkout"
+import {
+  OrderConfirmingState,
+  OrderSuccessScreen,
+} from "@/components/order/order-success-screen"
+import { getOrderDemoSuccessScreenProps } from "@/lib/order/dev-order-demo"
 import { OrderDateField } from "@/components/order/order-date-field"
+import { OrderTunnelDateBlock } from "@/components/order/order-tunnel-date-block"
 import { GravatsPropres8WasteDialog } from "@/components/order/gravats-propres-8-waste-dialog"
 import { OrderTunnelContinueButton } from "@/components/order/order-tunnel-continue-button"
 import { ParticulierVolumeStep } from "@/components/order/particulier-volume-step"
 import { ParticulierWastePicker } from "@/components/order/particulier-waste-picker"
+import {
+  benneImageForVolume,
+  benneVolumeImageAlt,
+} from "@/lib/media/site-images"
 import { WasteFamilySelect } from "@/components/order/waste-situation-picker"
 import {
   subtitleFromPrestationLabel,
   tunnelFluxCardSubtitle,
   tunnelFluxRecapName,
+  tunnelForfaitIntroPhrase,
 } from "@/lib/order/benne-display-labels"
 import {
   particulierWasteOptionById,
@@ -62,7 +74,10 @@ import {
 } from "@/lib/order/particulier-waste-options"
 import { prestationIdForFamilyVolume } from "@/lib/order/volume-estimator"
 import { formatOrderDatePicker } from "@/lib/format/date"
-import { submitProfessionalBenneRequest } from "@/app/order/actions"
+import {
+  saveParticulierCommandeDraft,
+  submitProfessionalBenneRequest,
+} from "@/app/order/actions"
 import { createClient } from "@/lib/supabase/client"
 import {
   type BenneFamily,
@@ -75,10 +90,14 @@ import {
 } from "@/lib/prestations"
 import { priceBreakdownFromHt } from "@/lib/order/prestation-mapping"
 import type { ProReorderSeed } from "@/lib/espace/pro-reorder-prefill"
+import type { ParticulierReorderSeed } from "@/lib/espace/particulier-reorder-prefill"
 import { useOrderAudienceSession } from "@/lib/auth/use-order-audience-session"
 import {
   ORDER_TUNNEL_STEPS,
   getOrderTunnelSteps,
+  isTunnelInfosStep,
+  recapContactStep,
+  recapDatesStep,
   type OrderTunnelStepId,
 } from "@/lib/order/tunnel-steps"
 import { SITE_PHONE_DISPLAY, SITE_PHONE_HREF } from "@/lib/site"
@@ -93,6 +112,17 @@ import {
   benneImageAltForVolume,
 } from "@/lib/commande/benne-visual"
 import { TruckAccessSpaceDisclosure } from "@/components/order/truck-access-space-help"
+import { DevisEmailCard } from "@/components/order/devis-email-card"
+import {
+  formatContactPhoneDisplay,
+  isValidContactPhone,
+} from "@/lib/phone/phone-value"
+import {
+  buildParticulierTunnelDraftInput,
+  particulierTunnelDraftReady,
+} from "@/lib/order/particulier-tunnel-draft"
+import { normalizeSignupEmail } from "@/lib/auth/signup-validation"
+import { isBrouillonSupprimeError } from "@/lib/order/brouillon-errors"
 import { cn } from "@/lib/utils"
 
 export { ORDER_TUNNEL_STEPS } from "@/lib/order/tunnel-steps"
@@ -100,11 +130,77 @@ export { ORDER_TUNNEL_STEPS } from "@/lib/order/tunnel-steps"
 const ORDER_SECTION_LABEL =
   "text-left text-[14px] font-semibold leading-snug text-brand-navy"
 
+const ORDER_RECAP_CARD_TITLE =
+  "text-[12px] font-semibold uppercase tracking-[0.04em] text-brand-navy/80"
+
+const ORDER_RECAP_SECTION = (embedded: boolean) =>
+  cn(
+    embedded
+      ? cn(ORDER_TUNNEL_CARD, "bg-white/[0.94] shadow-[0_1px_0_rgb(14_32_16/0.04)]")
+      : "rounded-2xl border border-primary/10 bg-white/95",
+    "px-4 py-4"
+  )
+
+const ORDER_RECAP_MODIFY_BTN =
+  "text-[12px] font-medium text-primary underline-offset-2 hover:text-primary hover:underline"
+
+function OrderRecapCardHead({
+  title,
+  actionLabel,
+  onAction,
+  centered = false,
+}: {
+  title: string
+  actionLabel: string
+  onAction: () => void
+  centered?: boolean
+}) {
+  if (centered) {
+    return (
+      <div className="mb-3 flex flex-col items-center gap-1.5 text-center">
+        <h3 className={ORDER_RECAP_CARD_TITLE}>{title}</h3>
+        <button type="button" className={ORDER_RECAP_MODIFY_BTN} onClick={onAction}>
+          {actionLabel}
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mb-2.5 flex items-start justify-between gap-3">
+      <h3 className={ORDER_RECAP_CARD_TITLE}>{title}</h3>
+      <button type="button" className={cn("shrink-0", ORDER_RECAP_MODIFY_BTN)} onClick={onAction}>
+        {actionLabel}
+      </button>
+    </div>
+  )
+}
+
+function OrderRecapField({
+  label,
+  value,
+  centered = false,
+}: {
+  label: string
+  value: string
+  centered?: boolean
+}) {
+  return (
+    <li className={cn("list-none space-y-0.5", centered && "text-center")}>
+      <p className="text-[12px] leading-snug text-brand-muted">{label}</p>
+      <p className="text-[15px] font-medium leading-snug text-brand-navy">{value}</p>
+    </li>
+  )
+}
+
 const ORDER_HELP_TEXT =
   "flex items-start gap-1.5 text-[11px] leading-snug text-brand-muted sm:text-[12px]"
 
 const ORDER_TUNNEL_CARD = "order-tunnel-card"
 const ORDER_TUNNEL_STEP_NAV = "order-tunnel-step-nav"
+const ORDER_TUNNEL_STEP_ACTIONS = "order-tunnel-step-actions"
+const ORDER_TUNNEL_BTN_BACK = "order-tunnel-step-back"
+const ORDER_TUNNEL_BTN_PRIMARY = "order-tunnel-step-primary"
 
 function orderFieldBg(embedded: boolean) {
   return embedded ? "bg-brand-warm-field text-brand-navy" : "bg-white"
@@ -166,14 +262,16 @@ function OrderStepProgress({
 type OrderWidgetProps = {
   variant?: "default" | "embedded"
   open?: boolean
-  entryMode?: "default" | "pro-reorder"
+  entryMode?: "default" | "pro-reorder" | "particulier-reorder"
   proReorderSeed?: ProReorderSeed | null
+  particulierReorderSeed?: ParticulierReorderSeed | null
   onStepIndexChange?: (index: number) => void
   onAudienceChange?: (audience: Audience) => void
   onClose?: () => void
   scrollContainerRef?: React.RefObject<HTMLElement | null>
   onVolumeIntentChoiceActive?: (active: boolean) => void
   onVolumeEstimatorAppearanceActive?: (active: boolean) => void
+  onPostPaymentUiChange?: (active: boolean) => void
 }
 
 export function OrderWidget({
@@ -181,20 +279,38 @@ export function OrderWidget({
   open = true,
   entryMode = "default",
   proReorderSeed = null,
+  particulierReorderSeed = null,
   onStepIndexChange,
   onAudienceChange,
   onClose,
   scrollContainerRef,
   onVolumeIntentChoiceActive,
   onVolumeEstimatorAppearanceActive,
+  onPostPaymentUiChange,
 }: OrderWidgetProps) {
   const embedded = variant === "embedded"
-  const { draft, patchDraft, resolveIntentPhase, intentStart } = useVitrineOrder()
+  const {
+    draft,
+    patchDraft,
+    resolveIntentPhase,
+    intentStart,
+    takeTunnelResume,
+    orderDemo,
+  } = useVitrineOrder()
   const sessionAudience = useOrderAudienceSession()
   const audienceLocked =
     sessionAudience.locked && sessionAudience.audience !== null
+  const espaceEmbeddedParticulierLocked =
+    embedded &&
+    (entryMode === "particulier-reorder" ||
+      (sessionAudience.locked && sessionAudience.audience === "particulier"))
+  const hideOrderAudienceToggle =
+    entryMode === "particulier-reorder" || espaceEmbeddedParticulierLocked
   const modalWasOpen = useRef(false)
   const proReorderBootstrapped = useRef(false)
+  const particulierReorderBootstrapped = useRef(false)
+  const [savedAddressConfirmed, setSavedAddressConfirmed] = useState(false)
+  const [editSavedAddress, setEditSavedAddress] = useState(false)
   const prefersReducedMotion = useReducedMotion()
   const t = prefersReducedMotion
     ? { duration: 0.01 }
@@ -242,11 +358,14 @@ export function OrderWidget({
   const [contactPhone, setContactPhone] = useState("")
   const [contactEmail, setContactEmail] = useState("")
   const [draftCommandeId, setDraftCommandeId] = useState<string | null>(null)
+  const lastParticulierAutosaveRef = useRef<string | null>(null)
+  const particulierAutosaveInFlightRef = useRef(false)
 
   const handleAudienceChange = useCallback(
     (next: Audience) => {
       if (next === audience) return
       setDraftCommandeId(null)
+      lastParticulierAutosaveRef.current = null
       if (step === "payment") {
         setStep("recap")
       }
@@ -266,15 +385,110 @@ export function OrderWidget({
   const [proCompteLoading, setProCompteLoading] = useState(false)
   const [proSessionUserId, setProSessionUserId] = useState<string | null>(null)
   const [isSubmittingPro, startProSubmit] = useTransition()
+  const [isSavingParticulierDraft, startSaveParticulierDraft] = useTransition()
   const prestation = useMemo(
     () => (selectedPrestationId ? prestationById(selectedPrestationId) : null),
     [selectedPrestationId]
   )
 
-  const filteredPrestations = useMemo(
-    () => (family ? prestationsByFamily(family) : []),
-    [family]
-  )
+  const particulierDraftContentKey = useMemo(() => {
+    if (!prestation || !selectedAddress) return null
+    return [
+      prestation.id,
+      selectedAddress.label,
+      deliveryDate,
+      pickupDate,
+      contactFirstName.trim(),
+      contactLastName.trim(),
+      contactPhone.trim(),
+      normalizeSignupEmail(contactEmail),
+    ].join("\n")
+  }, [
+    prestation,
+    selectedAddress,
+    deliveryDate,
+    pickupDate,
+    contactFirstName,
+    contactLastName,
+    contactPhone,
+    contactEmail,
+  ])
+
+  useEffect(() => {
+    if (audience !== "particulier" || step !== "infos-contact") return
+    if (!prestation || !selectedAddress || !particulierDraftContentKey) return
+
+    const fields = {
+      selectedAddress,
+      prestationId: prestation.id,
+      deliveryDate,
+      pickupDate: pickupDate || undefined,
+      contactFirstName,
+      contactLastName,
+      contactPhone,
+      contactEmail,
+      particulierWasteId,
+    }
+    if (!particulierTunnelDraftReady(fields)) return
+    if (particulierDraftContentKey === lastParticulierAutosaveRef.current) return
+
+    const timer = window.setTimeout(() => {
+      if (particulierAutosaveInFlightRef.current) return
+      const input = buildParticulierTunnelDraftInput(
+        fields,
+        draftCommandeId ?? undefined
+      )
+      if (!input) return
+      particulierAutosaveInFlightRef.current = true
+      void saveParticulierCommandeDraft(input).then((result) => {
+        particulierAutosaveInFlightRef.current = false
+        if ("error" in result) {
+          if (isBrouillonSupprimeError(result.error)) {
+            setDraftCommandeId(null)
+            lastParticulierAutosaveRef.current = ""
+          }
+          return
+        }
+        setDraftCommandeId(result.commandeId)
+        lastParticulierAutosaveRef.current = particulierDraftContentKey
+      })
+    }, 1200)
+
+    return () => window.clearTimeout(timer)
+  }, [
+    audience,
+    step,
+    prestation,
+    selectedAddress,
+    deliveryDate,
+    pickupDate,
+    contactFirstName,
+    contactLastName,
+    contactPhone,
+    contactEmail,
+    draftCommandeId,
+    particulierDraftContentKey,
+    particulierWasteId,
+  ])
+
+  const volumeHintIsSuggestion =
+    volumeHintOrigin === "estimated" && volumeHintM3 !== null
+
+  const filteredPrestations = useMemo(() => {
+    if (!family) return []
+    const list = prestationsByFamily(family)
+    return [...list].sort((a, b) => {
+      if (selectedPrestationId) {
+        if (a.id === selectedPrestationId) return -1
+        if (b.id === selectedPrestationId) return 1
+      }
+      const hint = volumeHintIsSuggestion ? volumeHintM3 : null
+      const aSuggested = hint !== null && a.volumeM3 === hint
+      const bSuggested = hint !== null && b.volumeM3 === hint
+      if (aSuggested !== bSuggested) return aSuggested ? -1 : 1
+      return a.volumeM3 - b.volumeM3
+    })
+  }, [family, volumeHintM3, volumeHintIsSuggestion, selectedPrestationId])
 
   const clearAddressSelection = () => {
     setSelectedAddress(null)
@@ -293,6 +507,39 @@ export function OrderWidget({
   const syncDraftFromWidget = () => {
     if (!embedded) return
     patchDraft({ audience, address, selectedAddress })
+  }
+
+  const applyParticulierTunnelResume = (
+    resume: import("@/lib/order/particulier-tunnel-resume").ParticulierTunnelResume
+  ) => {
+    setAudience("particulier")
+    setAddress(resume.address)
+    setSelectedAddress(resume.selectedAddress)
+    setSelectedPrestationId(resume.prestationId)
+    setDeliveryDate(resume.deliveryDate)
+    setPickupDate(resume.pickupDate ?? "")
+    setContactFirstName(resume.contactFirstName)
+    setContactLastName(resume.contactLastName)
+    setContactPhone(resume.contactPhone)
+    setContactEmail(resume.contactEmail)
+    if (resume.particulierWasteId) {
+      setParticulierWasteId(resume.particulierWasteId)
+      const mapped = particulierWasteOptionById(resume.particulierWasteId)
+      if (mapped) setFamily(mapped.family)
+    }
+    patchDraft({
+      audience: "particulier",
+      address: resume.address,
+      selectedAddress: resume.selectedAddress,
+      particulierWasteId: resume.particulierWasteId,
+      family: resume.particulierWasteId
+        ? particulierWasteOptionById(resume.particulierWasteId)?.family ?? null
+        : null,
+    })
+    setStep("recap")
+    setIntentPhase("volume")
+    setAddressError(null)
+    scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
   }
 
   const applyDraft = (source: typeof draft) => {
@@ -321,8 +568,18 @@ export function OrderWidget({
     }
   }
 
+  const showSavedAddressConfirm =
+    entryMode === "particulier-reorder" &&
+    Boolean(particulierReorderSeed?.addressLabel?.trim()) &&
+    selectedAddress !== null &&
+    !editSavedAddress
+
   const advanceFromLocation = () => {
     setAddressError(null)
+    if (showSavedAddressConfirm && !savedAddressConfirmed) {
+      setAddressError("Cochez la case pour confirmer votre adresse de livraison.")
+      return
+    }
     if (!address.trim().length) {
       setAddressError("Indiquez l’adresse de livraison de la benne.")
       return
@@ -412,7 +669,39 @@ export function OrderWidget({
       return
     }
     setAddressError(null)
-    setStep("infos")
+    setStep(audience === "particulier" ? "infos-dates" : "infos")
+  }
+
+  const goToInfosContact = () => {
+    if (!deliveryDate.length) {
+      setDeliveryDateError("Veuillez sélectionner une date de livraison.")
+      setAddressError(null)
+      requestAnimationFrame(() => {
+        scrollToDeliveryDateField()
+        focusDeliveryDateField()
+      })
+      return
+    }
+    if (!isValidDeliveryDate(deliveryDate)) {
+      setDeliveryDateError(DELIVERY_DATE_INVALID_MESSAGE)
+      setAddressError(null)
+      requestAnimationFrame(() => {
+        scrollToDeliveryDateField()
+        focusDeliveryDateField()
+      })
+      return
+    }
+    if (pickupDate.length && !isValidPickupDate(deliveryDate, pickupDate)) {
+      setAddressError(
+        "La date d'enlèvement ne peut pas être antérieure à la date de livraison."
+      )
+      setDeliveryDateError(null)
+      return
+    }
+    setDeliveryDateError(null)
+    setAddressError(null)
+    setStep("infos-contact")
+    scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
   }
 
   const scrollToDeliveryDateField = () => {
@@ -430,35 +719,34 @@ export function OrderWidget({
   }
 
   const goToPayment = () => {
-    if (!deliveryDate.length) {
-      setDeliveryDateError("Veuillez sélectionner une date de livraison.")
-      setAddressError(null)
-      requestAnimationFrame(() => {
-        scrollToDeliveryDateField()
-        focusDeliveryDateField()
-      })
-      return
-    }
-    if (!isValidDeliveryDate(deliveryDate)) {
-      setDeliveryDateError(DELIVERY_DATE_INVALID_MESSAGE)
-    setAddressError(null)
-      requestAnimationFrame(() => {
-        scrollToDeliveryDateField()
-        focusDeliveryDateField()
-      })
-      return
-    }
-    if (
-      pickupDate.length &&
-      !isValidPickupDate(deliveryDate, pickupDate)
-    ) {
-      setAddressError(
-        "La date d'enlèvement ne peut pas être antérieure à la date de livraison."
-      )
+    if (audience === "professionnel") {
+      if (!deliveryDate.length) {
+        setDeliveryDateError("Veuillez sélectionner une date de livraison.")
+        setAddressError(null)
+        requestAnimationFrame(() => {
+          scrollToDeliveryDateField()
+          focusDeliveryDateField()
+        })
+        return
+      }
+      if (!isValidDeliveryDate(deliveryDate)) {
+        setDeliveryDateError(DELIVERY_DATE_INVALID_MESSAGE)
+        setAddressError(null)
+        requestAnimationFrame(() => {
+          scrollToDeliveryDateField()
+          focusDeliveryDateField()
+        })
+        return
+      }
+      if (pickupDate.length && !isValidPickupDate(deliveryDate, pickupDate)) {
+        setAddressError(
+          "La date d'enlèvement ne peut pas être antérieure à la date de livraison."
+        )
+        setDeliveryDateError(null)
+        return
+      }
       setDeliveryDateError(null)
-      return
     }
-    setDeliveryDateError(null)
     if (audience === "professionnel") {
       if (!companyName.trim()) {
         setAddressError("Indiquez le nom de l’entreprise.")
@@ -483,8 +771,7 @@ export function OrderWidget({
         return
       }
     }
-    const phoneDigits = contactPhone.replace(/\D/g, "")
-    if (phoneDigits.length < 10) {
+    if (!isValidContactPhone(contactPhone)) {
       setAddressError("Indiquez un numéro de téléphone valide.")
       return
     }
@@ -494,6 +781,52 @@ export function OrderWidget({
       return
     }
     setAddressError(null)
+
+    if (audience === "particulier") {
+      if (!prestation || !selectedAddress) {
+        setAddressError("Votre commande est incomplète. Revenez aux étapes précédentes.")
+        return
+      }
+      startSaveParticulierDraft(async () => {
+        const result = await saveParticulierCommandeDraft({
+          audience: "particulier",
+          address: selectedAddress.label,
+          lat: selectedAddress.lat,
+          lng: selectedAddress.lng,
+          addressLabel: selectedAddress.label,
+          postcode: selectedAddress.postcode,
+          departementCode: selectedAddress.departementCode,
+          prestationId: prestation.id,
+          deliveryDate,
+          pickupDate: pickupDate || undefined,
+          contactEmail: email,
+          contactName:
+            [contactFirstName.trim(), contactLastName.trim()].filter(Boolean).join(" ") ||
+            undefined,
+          contactFirstName: contactFirstName.trim(),
+          contactLastName: contactLastName.trim(),
+          contactPhone: contactPhone.trim() || undefined,
+          selectedAddress,
+          particulierWasteId,
+          existingCommandeId: draftCommandeId ?? undefined,
+        })
+        if ("error" in result) {
+          if (isBrouillonSupprimeError(result.error)) {
+            setDraftCommandeId(null)
+            lastParticulierAutosaveRef.current = ""
+          }
+          setAddressError(result.error)
+          return
+        }
+        setDraftCommandeId(result.commandeId)
+        if (particulierDraftContentKey) {
+          lastParticulierAutosaveRef.current = particulierDraftContentKey
+        }
+        setStep("recap")
+      })
+      return
+    }
+
     setStep("recap")
   }
 
@@ -572,7 +905,12 @@ export function OrderWidget({
   }, [audience, onAudienceChange])
 
   useEffect(() => {
-    if (sessionAudience.loading || entryMode === "pro-reorder") return
+    if (
+      sessionAudience.loading ||
+      entryMode === "pro-reorder" ||
+      entryMode === "particulier-reorder"
+    )
+      return
     if (!audienceLocked || !sessionAudience.audience) return
     if (audience === sessionAudience.audience) return
     setAudience(sessionAudience.audience)
@@ -672,9 +1010,52 @@ export function OrderWidget({
   ])
 
   useEffect(() => {
+    if (entryMode !== "particulier-reorder" || !particulierReorderSeed || !embedded || !open)
+      return
+
+    setAudience("particulier")
+    setContactFirstName(particulierReorderSeed.contactFirstName)
+    setContactLastName(particulierReorderSeed.contactLastName)
+    setContactPhone(particulierReorderSeed.contactPhone)
+    setContactEmail(particulierReorderSeed.contactEmail)
+
+    if (particulierReorderSeed.addressLabel.trim()) {
+      setAddress(particulierReorderSeed.addressLabel)
+    }
+
+    if (draft.selectedAddress) {
+      setSelectedAddress(draft.selectedAddress)
+      setSavedAddressConfirmed(false)
+      setEditSavedAddress(false)
+      if (!particulierReorderBootstrapped.current) {
+        setStep("intent")
+        setIntentPhase("location")
+        setAfterLocationTarget("waste")
+        particulierReorderBootstrapped.current = true
+      }
+    } else if (!particulierReorderBootstrapped.current) {
+      setStep("intent")
+      setIntentPhase("location")
+      setAfterLocationTarget("waste")
+    }
+  }, [
+    entryMode,
+    particulierReorderSeed,
+    embedded,
+    open,
+    draft.selectedAddress,
+  ])
+
+  useEffect(() => {
     if (!embedded) return
-    if (entryMode === "pro-reorder") return
+    if (entryMode === "pro-reorder" || entryMode === "particulier-reorder") return
     if (open && !modalWasOpen.current) {
+      const resume = takeTunnelResume()
+      if (resume) {
+        applyParticulierTunnelResume(resume)
+        modalWasOpen.current = open
+        return
+      }
       applyDraft(draft)
       setAddressError(null)
       setLocationAddressTouched(false)
@@ -704,7 +1085,14 @@ export function OrderWidget({
       }
     }
     modalWasOpen.current = open
-  }, [open, embedded, intentStart, draft, resolveIntentPhase])
+  }, [
+    open,
+    embedded,
+    intentStart,
+    draft,
+    resolveIntentPhase,
+    takeTunnelResume,
+  ])
 
   useEffect(() => {
     if (!embedded || !open) return
@@ -712,7 +1100,7 @@ export function OrderWidget({
   }, [embedded, open, audience, address, selectedAddress, patchDraft])
 
   useEffect(() => {
-    if (step !== "infos") return
+    if (!isTunnelInfosStep(step)) return
 
     scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
 
@@ -761,7 +1149,14 @@ export function OrderWidget({
           <OrderStepProgress currentStepIdx={currentStepIdx} steps={steps} />
         ) : null}
 
-        {step === "payment" && prestation && selectedAddress ? (
+        {embedded && orderDemo === "order-success" ? (
+          <OrderSuccessScreen
+            {...getOrderDemoSuccessScreenProps()}
+            onClose={onClose ?? (() => {})}
+          />
+        ) : embedded && orderDemo === "order-confirming" ? (
+          <OrderConfirmingState phase="confirming" onClose={onClose} />
+        ) : step === "payment" && prestation && selectedAddress ? (
           <div className="space-y-4">
               {audience === "professionnel" ? (
                 proCompteLoading ? (
@@ -806,6 +1201,7 @@ export function OrderWidget({
                       onCommandeId={setDraftCommandeId}
                       onBack={() => setStep("recap")}
                       onClose={onClose}
+                      onPostPaymentUiChange={onPostPaymentUiChange}
                       input={{
                         audience: "professionnel",
                         address: selectedAddress.label,
@@ -905,6 +1301,7 @@ export function OrderWidget({
                   onCommandeId={setDraftCommandeId}
                   onBack={() => setStep("recap")}
                   onClose={onClose}
+                  onPostPaymentUiChange={onPostPaymentUiChange}
                   input={{
                     audience,
                     address: selectedAddress.label,
@@ -939,7 +1336,7 @@ export function OrderWidget({
                   embedded ? "space-y-4 sm:space-y-5" : "space-y-4"
                 )}
               >
-                {audienceLocked ? (
+                {hideOrderAudienceToggle ? null : audienceLocked ? (
                   <p className="rounded-xl border border-[#35A238]/15 bg-[#ECF4E9]/80 px-3 py-2 text-[13px] font-medium text-brand-navy">
                     {audience === "professionnel"
                       ? "Commande en tant que professionnel"
@@ -955,33 +1352,91 @@ export function OrderWidget({
 
                 <div className="space-y-2.5">
                     <p className={ORDER_SECTION_LABEL}>Où livrer votre benne&nbsp;?</p>
-                    <div className="space-y-2">
-                      <label htmlFor="order-address" className="sr-only">
-                        Adresse de livraison
-                      </label>
-                      <AddressAutocomplete
-                        id="order-address"
-                        value={address}
-                        selected={selectedAddress}
-                        onValueChange={(next) => {
-                          setAddress(next)
-                          setAddressError(null)
-                          setLocationAddressTouched(true)
-                        }}
-                        onSelect={handleAddressSelect}
-                        onClearSelection={clearAddressSelection}
-                        aria-invalid={addressError !== null && !selectedAddress}
-                      inputClassName="h-12 rounded-xl"
-                      warmSurface={embedded}
-                      />
-                      <p className={ORDER_HELP_TEXT}>
-                        <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
-                        <span>
-                        Saisissez votre adresse en Île-de-France et choisissez une
-                        suggestion.
-                        </span>
-                      </p>
-                  </div>
+                    {showSavedAddressConfirm ? (
+                      <div className="space-y-3">
+                        <div
+                          className={cn(
+                            embedded
+                              ? ORDER_TUNNEL_CARD
+                              : "rounded-xl border border-primary/12 bg-white/95",
+                            "flex items-start gap-2.5 px-3.5 py-3"
+                          )}
+                        >
+                          <MapPin
+                            className="mt-0.5 size-4 shrink-0 text-brand-green"
+                            aria-hidden
+                          />
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[11px] font-semibold uppercase tracking-wide text-brand-muted">
+                              Adresse enregistrée
+                            </p>
+                            <p className="mt-0.5 text-[13px] font-medium leading-snug text-brand-navy sm:text-sm">
+                              {selectedAddress?.label}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            className="inline-flex shrink-0 items-center gap-1 text-[12px] font-semibold text-brand-green hover:text-[#19752B]"
+                            onClick={() => {
+                              setEditSavedAddress(true)
+                              setSavedAddressConfirmed(false)
+                              setAddressError(null)
+                            }}
+                          >
+                            <Pencil className="size-3.5" aria-hidden />
+                            Modifier
+                          </button>
+                        </div>
+                        <label
+                          htmlFor="order-saved-address-confirm"
+                          className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-primary/18 bg-brand-warm-field px-3 py-2.5 text-left text-[13px] leading-snug text-brand-navy"
+                        >
+                          <input
+                            id="order-saved-address-confirm"
+                            type="checkbox"
+                            checked={savedAddressConfirmed}
+                            onChange={(e) => {
+                              setSavedAddressConfirmed(e.target.checked)
+                              if (e.target.checked) setAddressError(null)
+                            }}
+                            className="mt-0.5 size-4 shrink-0 accent-[#35A238]"
+                          />
+                          <span>
+                            Je confirme que cette adresse est bien le lieu de livraison de la
+                            benne.
+                          </span>
+                        </label>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <label htmlFor="order-address" className="sr-only">
+                          Adresse de livraison
+                        </label>
+                        <AddressAutocomplete
+                          id="order-address"
+                          value={address}
+                          selected={selectedAddress}
+                          onValueChange={(next) => {
+                            setAddress(next)
+                            setAddressError(null)
+                            setLocationAddressTouched(true)
+                            setSavedAddressConfirmed(false)
+                          }}
+                          onSelect={handleAddressSelect}
+                          onClearSelection={clearAddressSelection}
+                          aria-invalid={addressError !== null && !selectedAddress}
+                          inputClassName="h-12 rounded-xl"
+                          warmSurface={embedded}
+                        />
+                        <p className={ORDER_HELP_TEXT}>
+                          <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
+                          <span>
+                            Saisissez votre adresse en Île-de-France et choisissez une
+                            suggestion.
+                          </span>
+                        </p>
+                      </div>
+                    )}
                 </div>
 
                 <AnimatePresence>
@@ -1206,71 +1661,75 @@ export function OrderWidget({
                     : "min-w-0 space-y-3.5"
                 )}
               >
-              <div className="min-w-0">
-                <p className={ORDER_SECTION_LABEL}>
-                  {audience === "particulier" ? "Choisissez votre benne" : "Choisissez votre forfait"}
-                </p>
-                <p className="mt-1 text-xs leading-snug text-muted-foreground">
+              <div
+                className={cn(
+                  "min-w-0",
+                  embedded && "text-center"
+                )}
+              >
+                <p
+                  className={cn(
+                    ORDER_SECTION_LABEL,
+                    embedded && "text-center text-[15px] sm:text-[16px]"
+                  )}
+                >
                   {audience === "particulier"
-                    ? "Comparez les volumes et les tarifs TTC. Le poids compris dans le tarif est précisé pour chaque benne."
-                    : "Prix H.T. Détail des déchets acceptés par forfait."}
+                    ? "Choisissez votre benne"
+                    : "Choisissez votre forfait"}
                 </p>
                 {audience === "particulier" ? (
-                  <>
-                    {particulierWasteId && family ? (
-                      <p className="mt-1.5 text-[13px] font-medium leading-snug text-brand-navy">
-                        Pour vos{" "}
-                        {tunnelFluxRecapName(
-                          family,
-                          particulierWasteId
-                        ).toLowerCase()}
-                      </p>
-                    ) : null}
-                    <p className="mt-1.5 text-[11px] leading-snug text-muted-foreground">
-                      Ne dépassez pas le bord de la benne. Au-delà du poids
-                      inclus, le supplément par tonne est indiqué sur chaque
-                      offre.
-                    </p>
-                  </>
-                ) : null}
-                {volumeHintM3 && audience === "particulier" ? (
-                  <div className="mt-2 space-y-1.5 rounded-lg border border-primary/12 bg-brand-warm-field/80 px-3 py-2.5">
-                    <p className="text-[12px] leading-snug text-brand-navy">
-                      {volumeHintOrigin === "estimated" ? (
-                        <>
-                          Votre volume estimé :{" "}
-                          <strong className="tabular-nums">
-                            {volumeHintM3} m³
-                          </strong>
-                        </>
-                      ) : volumeHintOrigin === "chosen" ? (
-                        <>
-                          Votre volume choisi :{" "}
-                          <strong className="tabular-nums">
-                            {volumeHintM3} m³
-                          </strong>
-                        </>
+                  <div
+                    className={cn(
+                      "mt-2 rounded-xl border border-primary/12 bg-brand-warm-field/80 px-3 py-2 text-center",
+                      embedded && "mx-auto max-w-md"
+                    )}
+                  >
+                    <p className="text-[12px] font-semibold leading-snug text-brand-navy">
+                      {particulierWasteId && family ? (
+                        tunnelForfaitIntroPhrase(family, particulierWasteId)
                       ) : (
-                        <>
-                          Volume indiqué pour votre projet :{" "}
-                          <strong className="tabular-nums">
-                            {volumeHintM3} m³
-                          </strong>
-                        </>
+                        "Comparez les offres"
                       )}
+                      {volumeHintM3 ? (
+                        <>
+                          {" "}
+                          ·{" "}
+                          <span className="tabular-nums font-bold">
+                            {volumeHintM3} m³
+                          </span>{" "}
+                          {volumeHintOrigin === "estimated"
+                            ? "estimés"
+                            : volumeHintOrigin === "chosen"
+                              ? "choisis"
+                              : "indiqués"}
+                        </>
+                      ) : null}
                     </p>
-                    <p className="text-[11px] leading-snug text-brand-muted">
-                      Le poids des déchets compte aussi dans le choix de votre
-                      benne.
+                    <p className="mt-1 text-[11px] leading-snug text-brand-muted">
+                      Tarifs TTC et poids inclus par benne. Ne dépassez pas le
+                      bord — supplément à la tonne sur chaque offre.
                     </p>
                   </div>
-                ) : volumeHintM3 ? (
-                  <p className="mt-2 rounded-lg border border-primary/12 bg-brand-warm-field/80 px-3 py-2 text-[12px] leading-snug text-brand-navy">
-                    Indication volume :{" "}
-                    <strong>{volumeHintM3} m³</strong> (estimation ou choix
-                    personnel, sans garantie).
+                ) : (
+                  <p
+                    className={cn(
+                      "mt-1.5 text-[11px] leading-snug text-muted-foreground",
+                      embedded && "mx-auto max-w-md text-center"
+                    )}
+                  >
+                    Prix H.T. — détail des déchets acceptés par forfait.
+                    {volumeHintM3 ? (
+                      <>
+                        {" "}
+                        Volume indicatif :{" "}
+                        <strong className="tabular-nums text-brand-navy">
+                          {volumeHintM3} m³
+                        </strong>
+                        .
+                      </>
+                    ) : null}
                   </p>
-                ) : null}
+                )}
               </div>
 
               {addressError && (
@@ -1297,7 +1756,7 @@ export function OrderWidget({
                     }
                     selected={selectedPrestationId === p.id}
                     recommended={
-                      volumeHintM3 !== null && p.volumeM3 === volumeHintM3
+                      volumeHintIsSuggestion && p.volumeM3 === volumeHintM3
                     }
                     onSelect={() => setSelectedPrestationId(p.id)}
                     delay={prefersReducedMotion ? 0 : i * 0.04}
@@ -1314,13 +1773,14 @@ export function OrderWidget({
                   embedded && ORDER_TUNNEL_STEP_NAV
                 )}
               >
-                <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+                <div className={ORDER_TUNNEL_STEP_ACTIONS}>
                   <Button
                     variant="outline"
                     type="button"
                     className={cn(
                       orderOutlineBtn(embedded),
-                      "border-primary/20 bg-transparent font-medium text-brand-muted hover:bg-primary/5 hover:text-brand-navy sm:flex-1",
+                      ORDER_TUNNEL_BTN_BACK,
+                      "border-primary/20 bg-transparent font-medium text-brand-muted hover:bg-primary/5 hover:text-brand-navy",
                       embedded && "order-tunnel-outline-btn"
                     )}
                     onClick={() => {
@@ -1334,48 +1794,52 @@ export function OrderWidget({
                   </Button>
                   <Button
                     type="button"
-                    className="h-11 w-full rounded-xl border-0 bg-[#35A238] px-3 text-sm font-semibold text-white shadow-lg shadow-[#35A238]/20 hover:bg-[#19752B] disabled:pointer-events-none disabled:bg-[#D0D5DD] disabled:text-white disabled:opacity-100 disabled:shadow-none sm:flex-1"
+                    className={cn(
+                      ORDER_TUNNEL_BTN_PRIMARY,
+                      "h-11 rounded-xl border-0 bg-[#35A238] px-3 text-sm font-semibold text-white shadow-lg shadow-[#35A238]/20 hover:bg-[#19752B] disabled:pointer-events-none disabled:bg-[#D0D5DD] disabled:text-white disabled:opacity-100 disabled:shadow-none"
+                    )}
                     disabled={!selectedPrestationId}
                     onClick={goToInfos}
                   >
-                    {audience === "particulier"
-                      ? "Continuer avec cette benne"
-                      : "Continuer avec ce forfait"}
+                    {audience === "particulier" ? "Continuer" : "Continuer avec ce forfait"}
                     <ChevronRight className="ml-2 size-4" />
                   </Button>
                 </div>
-                {audience === "particulier" ? (
-                  <p className="text-center text-[11px] leading-snug text-brand-muted">
-                    Vous choisirez ensuite vos dates et renseignerez vos
-                    coordonnées.
-                  </p>
-                ) : null}
               </div>
               </div>
             </motion.div>
           )}
 
-          {step === "infos" && (
+          {((audience === "particulier" &&
+            (step === "infos-dates" || step === "infos-contact")) ||
+            (audience === "professionnel" && step === "infos")) && (
             <motion.div
-              key="infos"
+              key={step === "infos-contact" ? "infos-contact" : "infos-dates"}
               initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 24 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
-              className="space-y-4"
+              className={cn(embedded && "order-tunnel-step--fill min-w-0")}
             >
+              <div
+                className={cn(
+                  embedded
+                    ? "order-tunnel-step__stack flex min-h-0 flex-1 flex-col gap-3"
+                    : "space-y-4"
+                )}
+              >
+              <div className={cn(embedded && "min-h-0 flex-1 space-y-4")}>
+              {(step === "infos-dates" || (audience === "professionnel" && step === "infos")) && (
               <div className="space-y-2.5">
-                <p className={ORDER_SECTION_LABEL}>
+                <p className={cn(ORDER_SECTION_LABEL, "text-center")}>
                   Organisons la livraison de votre benne
                 </p>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="space-y-1.5">
-                    <p
-                      id="order-delivery-date-label"
-                      className="text-xs font-semibold text-brand-navy"
-                    >
-                      Date de livraison&nbsp;*
-                    </p>
+                <div className="mx-auto grid w-full max-w-2xl grid-cols-2 gap-2.5 sm:gap-3">
+                  <OrderTunnelDateBlock
+                    kind="delivery"
+                    labelId="order-delivery-date-label"
+                    label={<>Date de livraison&nbsp;*</>}
+                  >
                     <OrderDateField
                       ref={deliveryDateRef}
                       id="order-delivery-date"
@@ -1383,7 +1847,8 @@ export function OrderWidget({
                       value={deliveryDate}
                       invalid={deliveryDateError !== null}
                       warmSurface={embedded}
-                      placeholder="Choisir la date de livraison"
+                      compact
+                      placeholder="Choisir la date"
                       onBeforeMin={() => {
                         setDeliveryDateError(DELIVERY_DATE_INVALID_MESSAGE)
                       }}
@@ -1404,26 +1869,24 @@ export function OrderWidget({
                         }
                       }}
                     />
-                    <p className={ORDER_HELP_TEXT}>
+                    <p className={cn(ORDER_HELP_TEXT, "justify-center text-center")}>
                       <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
                       <span>
-                        Choisissez la date qui vous convient parmi les disponibilités
-                        proposées, à partir du lendemain.
+                        Disponibilités à partir de demain.
                       </span>
                     </p>
                     {deliveryDateError ? (
-                      <p className="text-xs font-medium text-amber-800">
+                      <p className="text-center text-xs font-medium text-amber-800">
                         {deliveryDateError}
                       </p>
                     ) : null}
-                  </div>
-                  <div className="space-y-1.5">
-                    <p
-                      id="order-pickup-date-label"
-                      className="text-xs font-medium text-muted-foreground"
-                    >
-                      Date d’enlèvement&nbsp;— facultative
-                    </p>
+                  </OrderTunnelDateBlock>
+                  <OrderTunnelDateBlock
+                    kind="pickup"
+                    labelId="order-pickup-date-label"
+                    labelClassName="font-medium text-muted-foreground"
+                    label={<>Enlèvement (facultatif)</>}
+                  >
                     <OrderDateField
                       id="order-pickup-date"
                       min={
@@ -1433,7 +1896,8 @@ export function OrderWidget({
                       }
                       value={pickupDate}
                       warmSurface={embedded}
-                      placeholder="Choisir une date d’enlèvement"
+                      compact
+                      placeholder="Date d’enlèvement"
                       optionalHint="Optionnel"
                       onChange={(next) => {
                         const pickupMin =
@@ -1452,34 +1916,49 @@ export function OrderWidget({
                         setAddressError(null)
                       }}
                     />
-                    <p className={ORDER_HELP_TEXT}>
+                    <p className={cn(ORDER_HELP_TEXT, "justify-center text-center")}>
                       <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
-                      <span>
-                        À compléter si vous connaissez déjà la date souhaitée.
-                      </span>
+                      <span>Si vous connaissez déjà la date souhaitée.</span>
                     </p>
                     {pickupDate ? (
                       <button
                         type="button"
                         onClick={() => setPickupDate("")}
-                        className="ml-auto block rounded-md px-1 py-0.5 text-[11px] font-medium text-brand-muted underline-offset-2 transition-colors hover:text-brand-navy hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                        className="mx-auto block rounded-md px-1 py-0.5 text-[11px] font-medium text-brand-muted underline-offset-2 transition-colors hover:text-brand-navy hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                       >
                         Supprimer la date
                       </button>
                     ) : null}
-                  </div>
+                  </OrderTunnelDateBlock>
                 </div>
                 <TruckAccessSpaceDisclosure embedded={embedded} />
               </div>
+              )}
 
+              {(step === "infos-contact" || (audience === "professionnel" && step === "infos")) && (
               <div className="space-y-2.5">
-                <div className="space-y-1">
-                  <p className={ORDER_SECTION_LABEL}>
+                <div
+                  className={cn(
+                    "space-y-1",
+                    audience === "particulier" && "text-center"
+                  )}
+                >
+                  <p
+                    className={cn(
+                      ORDER_SECTION_LABEL,
+                      audience === "particulier" && "text-center"
+                    )}
+                  >
                     {audience === "professionnel"
                       ? "Votre entreprise"
                       : "Vos coordonnées pour préparer la livraison"}
                   </p>
-                  <p className={ORDER_HELP_TEXT}>
+                  <p
+                    className={cn(
+                      ORDER_HELP_TEXT,
+                      audience === "particulier" && "justify-center text-center"
+                    )}
+                  >
                     <span>
                       {audience === "professionnel"
                         ? "Ces informations nous permettent de confirmer votre demande et de vous contacter pour organiser la livraison."
@@ -1545,8 +2024,8 @@ export function OrderWidget({
                     </div>
                   </>
                 ) : (
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="space-y-1.5">
+                <div className="grid grid-cols-2 gap-2 min-w-0 sm:gap-3">
+                  <div className="min-w-0 space-y-1.5">
                     <label htmlFor="order-contact-firstname" className="text-xs font-semibold text-brand-navy">
                       Prénom&nbsp;*
                     </label>
@@ -1564,7 +2043,7 @@ export function OrderWidget({
                       )}
                     />
                   </div>
-                  <div className="space-y-1.5">
+                  <div className="min-w-0 space-y-1.5">
                     <label htmlFor="order-contact-lastname" className="text-xs font-semibold text-brand-navy">
                       Nom&nbsp;*
                     </label>
@@ -1588,19 +2067,15 @@ export function OrderWidget({
                   <label htmlFor="order-contact-phone" className="text-xs font-semibold text-brand-navy">
                     Téléphone&nbsp;*
                   </label>
-                  <Input
+                  <PhoneInputWithCountry
                     id="order-contact-phone"
-                    type="tel"
-                    autoComplete="tel"
                     value={contactPhone}
-                    onChange={(e) => {
-                      setContactPhone(e.target.value)
+                    onChange={(next) => {
+                      setContactPhone(next)
                       setAddressError(null)
                     }}
-                    className={cn(
-                      "h-11 rounded-xl border-2 border-primary/15 px-3",
-                      orderFieldBg(embedded)
-                    )}
+                    warmSurface={embedded}
+                    inputClassName={orderFieldBg(embedded)}
                   />
                   <p className={ORDER_HELP_TEXT}>
                     <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
@@ -1636,22 +2111,53 @@ export function OrderWidget({
                     </span>
                   </p>
                   </div>
+                {audience === "particulier" && step === "infos-contact" && prestation && selectedAddress ? (
+                  <DevisEmailCard
+                    embedded={embedded}
+                    email={contactEmail}
+                    existingCommandeId={draftCommandeId ?? undefined}
+                    onDraftCommandeId={setDraftCommandeId}
+                    canSend={
+                      contactFirstName.trim().length > 0 &&
+                      contactLastName.trim().length > 0 &&
+                      isValidContactPhone(contactPhone) &&
+                      deliveryDate.length > 0
+                    }
+                    payload={{
+                      prestationId: prestation.id,
+                      address: selectedAddress.label,
+                      selectedAddress,
+                      particulierWasteId,
+                      deliveryDate,
+                      pickupDate: pickupDate || undefined,
+                      contactFirstName,
+                      contactLastName,
+                      contactPhone,
+                    }}
+                  />
+                ) : null}
                 </div>
+              )}
 
               {addressError && (
                 <p className="text-center text-xs font-medium text-amber-800">
                   {addressError}
                 </p>
               )}
+              </div>
 
-              <div className="space-y-2 pt-0.5">
-                <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+              <div className={cn("space-y-2 pt-0.5", embedded && ORDER_TUNNEL_STEP_NAV)}>
+                <div className={ORDER_TUNNEL_STEP_ACTIONS}>
                   <Button
                     variant="outline"
                     type="button"
-                    className={cn(orderOutlineBtn(embedded), "sm:flex-1")}
+                    className={cn(orderOutlineBtn(embedded), ORDER_TUNNEL_BTN_BACK)}
                     onClick={() => {
                       setAddressError(null)
+                      if (audience === "particulier" && step === "infos-contact") {
+                        setStep("infos-dates")
+                        return
+                      }
                       setStep("forfait")
                     }}
                   >
@@ -1660,20 +2166,50 @@ export function OrderWidget({
                   </Button>
                   <Button
                     type="button"
-                    className="h-11 rounded-xl text-base font-semibold shadow-lg sm:flex-1"
-                    onClick={goToPayment}
+                    className={cn(
+                      ORDER_TUNNEL_BTN_PRIMARY,
+                      "h-11 rounded-xl text-base font-semibold shadow-lg"
+                    )}
+                    disabled={
+                      isSavingParticulierDraft &&
+                      audience === "particulier" &&
+                      step === "infos-contact"
+                    }
+                    onClick={
+                      audience === "particulier" && step === "infos-dates"
+                        ? goToInfosContact
+                        : goToPayment
+                    }
                   >
-                    {audience === "professionnel"
-                      ? "Vérifier ma demande"
-                      : "Vérifier ma commande"}
-                    <ChevronRight className="ml-2 size-4" />
+                    {isSavingParticulierDraft &&
+                    audience === "particulier" &&
+                    step === "infos-contact" ? (
+                      <>
+                        <Loader2 className="mr-2 size-4 animate-spin" />
+                        Enregistrement…
+                      </>
+                    ) : audience === "particulier" && step === "infos-dates" ? (
+                      "Continuer"
+                    ) : audience === "professionnel" ? (
+                      "Vérifier ma demande"
+                    ) : (
+                      "Vérifier ma commande"
+                    )}
+                    {!isSavingParticulierDraft ||
+                    audience !== "particulier" ||
+                    step !== "infos-contact" ? (
+                      <ChevronRight className="ml-2 size-4" />
+                    ) : null}
                   </Button>
                 </div>
-                <p className="text-center text-[11px] leading-snug text-brand-muted sm:text-[12px]">
-                  {audience === "professionnel"
-                    ? "Vous pourrez vérifier les détails avant d’envoyer votre demande."
-                    : "Vous pourrez vérifier les détails avant de passer au paiement."}
-                </p>
+                {audience === "particulier" && step === "infos-dates" ? null : (
+                  <p className="text-center text-[11px] leading-snug text-brand-muted sm:text-[12px]">
+                    {audience === "professionnel"
+                      ? "Vous pourrez vérifier les détails avant d’envoyer votre demande."
+                      : "Vous pourrez vérifier les détails avant de passer au paiement."}
+                  </p>
+                )}
+              </div>
               </div>
             </motion.div>
           )}
@@ -1685,18 +2221,16 @@ export function OrderWidget({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
               transition={t}
-              className="space-y-3"
+              className="space-y-4"
             >
               {audience === "particulier" ? (
-                <div className="space-y-1">
-                  <p className={ORDER_SECTION_LABEL}>
+                <div className="mx-auto max-w-md space-y-2 pb-0.5 text-center">
+                  <p className="text-[16px] font-semibold leading-snug text-brand-navy sm:text-[17px]">
                     Un dernier coup d&apos;œil avant le paiement
                   </p>
-                  <p className={ORDER_HELP_TEXT}>
-                    <span>
-                      Retrouvez les détails de votre commande et ajustez-les si besoin
-                      avant de continuer.
-                    </span>
+                  <p className="text-balance text-[13px] leading-relaxed text-brand-muted sm:text-[14px]">
+                    Retrouvez les détails de votre commande et ajustez-les si besoin
+                    avant de continuer.
                   </p>
                 </div>
               ) : (
@@ -1711,13 +2245,11 @@ export function OrderWidget({
                   )}
                 >
                   <div className="mb-1.5 flex items-center justify-between gap-2">
-                    <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                      Entreprise
-                    </h3>
+                    <h3 className={ORDER_RECAP_CARD_TITLE}>Entreprise</h3>
                     <button
                       type="button"
                       className="text-[11px] font-medium text-primary/70 hover:text-primary hover:underline"
-                      onClick={() => setStep("infos")}
+                      onClick={() => setStep(recapContactStep(audience))}
                     >
                       Modifier
                     </button>
@@ -1731,7 +2263,9 @@ export function OrderWidget({
                       <span className="text-muted-foreground">Contact : </span>
                       <span className="font-medium text-brand-navy">{proContactName.trim()}</span>
                     </li>
-                    <li className="text-brand-navy">{contactPhone}</li>
+                    <li className="text-brand-navy">
+                      {formatContactPhoneDisplay(contactPhone)}
+                    </li>
                     <li className="text-brand-navy">{contactEmail.trim()}</li>
                     {siret.replace(/\s/g, "") ? (
                       <li>
@@ -1743,133 +2277,151 @@ export function OrderWidget({
                 </section>
               ) : null}
 
-              <section
-                className={cn(
-                  embedded ? ORDER_TUNNEL_CARD : "rounded-2xl border border-primary/10 bg-white/95",
-                  "px-4 py-3"
-                )}
-              >
-                <div className="mb-1.5 flex items-center justify-between gap-2">
-                  <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    {audience === "professionnel" ? "Demande" : "La benne choisie"}
-                  </h3>
-                  <button
-                    type="button"
-                    className="text-[11px] font-medium text-primary/70 hover:text-primary hover:underline"
-                    onClick={() => setStep("forfait")}
-                  >
-                    {audience === "particulier" ? "Modifier la benne" : "Modifier"}
-                  </button>
+              <section className={ORDER_RECAP_SECTION(embedded)}>
+                <OrderRecapCardHead
+                  centered={audience === "particulier"}
+                  title={audience === "professionnel" ? "Demande" : "La benne choisie"}
+                  actionLabel={audience === "particulier" ? "Modifier la benne" : "Modifier"}
+                  onAction={() => setStep("forfait")}
+                />
+                <div
+                  className={cn(
+                    "flex gap-3.5",
+                    audience === "particulier"
+                      ? "flex-col items-center text-center"
+                      : "items-center"
+                  )}
+                >
+                  <div className="relative size-16 shrink-0 overflow-hidden rounded-lg border border-primary/10 bg-white p-1.5">
+                    <Image
+                      src={benneImageForVolume(prestation.volumeM3)}
+                      alt={benneVolumeImageAlt(prestation.volumeM3)}
+                      fill
+                      className="object-contain object-center"
+                      sizes="64px"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[15px] font-medium leading-snug text-brand-navy">
+                      {prestation.label}
+                    </p>
+                    {audience === "professionnel" ? (
+                      <p className="mt-0.5 text-sm text-muted-foreground">
+                        {systemLabel(prestation.system)}, {prestation.volumeM3} m³
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
-                <p className="font-medium text-brand-navy">{prestation.label}</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {audience === "particulier"
-                    ? `${prestation.volumeM3} m³`
-                    : `${systemLabel(prestation.system)}, ${prestation.volumeM3} m³`}
-                </p>
               </section>
 
-              <section
-                className={cn(
-                  embedded ? ORDER_TUNNEL_CARD : "rounded-2xl border border-primary/10 bg-white/95",
-                  "px-4 py-3"
+              <section className={ORDER_RECAP_SECTION(embedded)}>
+                <OrderRecapCardHead
+                  centered={audience === "particulier"}
+                  title={
+                    audience === "particulier" ? "Livraison et enlèvement" : "Livraison"
+                  }
+                  actionLabel="Modifier"
+                  onAction={() => {
+                    setStep("intent")
+                    setIntentPhase("waste")
+                  }}
+                />
+                {audience === "particulier" ? (
+                  <ul className="space-y-3.5">
+                    <OrderRecapField
+                      centered
+                      label="Adresse de livraison"
+                      value={selectedAddress.label}
+                    />
+                    {family ? (
+                      <OrderRecapField
+                        centered
+                        label="Déchets à évacuer"
+                        value={
+                          particulierWasteId
+                            ? tunnelFluxRecapName(family, particulierWasteId)
+                            : FAMILY_LABELS[family].title
+                        }
+                      />
+                    ) : null}
+                    <OrderRecapField
+                      centered
+                      label="Date de livraison"
+                      value={formatOrderDatePicker(deliveryDate)}
+                    />
+                    {pickupDate ? (
+                      <OrderRecapField
+                        centered
+                        label="Date d’enlèvement"
+                        value={formatOrderDatePicker(pickupDate)}
+                      />
+                    ) : null}
+                  </ul>
+                ) : (
+                  <ul className="space-y-1.5 text-sm">
+                    <li>
+                      <span className="text-muted-foreground">Adresse : </span>
+                      <span className="font-medium text-brand-navy">{selectedAddress.label}</span>
+                    </li>
+                    {family ? (
+                      <li>
+                        <span className="text-muted-foreground">Déchets : </span>
+                        <span className="font-medium text-brand-navy">
+                          {FAMILY_LABELS[family].title}
+                        </span>
+                      </li>
+                    ) : null}
+                    <li>
+                      <span className="text-muted-foreground">Livraison : </span>
+                      <span className="font-medium text-brand-navy">
+                        {formatOrderDatePicker(deliveryDate)}
+                      </span>
+                    </li>
+                    {pickupDate ? (
+                      <li>
+                        <span className="text-muted-foreground">Enlèvement : </span>
+                        <span className="font-medium text-brand-navy">
+                          {formatOrderDatePicker(pickupDate)}
+                        </span>
+                      </li>
+                    ) : null}
+                  </ul>
                 )}
-              >
-                <div className="mb-1.5 flex items-center justify-between gap-2">
-                  <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    {audience === "particulier"
-                      ? "Livraison et enlèvement"
-                      : "Livraison"}
-                  </h3>
+                {audience === "particulier" ? (
                   <button
                     type="button"
-                    className="text-[11px] font-medium text-primary/70 hover:text-primary hover:underline"
-                    onClick={() => {
-                      setStep("intent")
-                      setIntentPhase("waste")
-                    }}
+                    className={cn("mx-auto mt-3 block", ORDER_RECAP_MODIFY_BTN)}
+                    onClick={() => setStep(recapDatesStep(audience))}
                   >
-                    Modifier
+                    Modifier les dates
                   </button>
-                </div>
-                <ul className="space-y-1.5 text-sm">
-                  <li>
-                    <span className="text-muted-foreground">
-                      {audience === "particulier"
-                        ? "Adresse de livraison : "
-                        : "Adresse : "}
-                    </span>
-                    <span className="font-medium text-brand-navy">{selectedAddress.label}</span>
-                  </li>
-                  {family ? (
-                    <li>
-                      <span className="text-muted-foreground">
-                        {audience === "particulier"
-                          ? "Déchets à évacuer : "
-                          : "Déchets : "}
-                      </span>
-                      <span className="font-medium text-brand-navy">
-                        {audience === "particulier" && particulierWasteId
-                          ? tunnelFluxRecapName(family, particulierWasteId)
-                          : FAMILY_LABELS[family].title}
-                      </span>
-                    </li>
-                ) : null}
-                  <li>
-                    <span className="text-muted-foreground">
-                      {audience === "particulier"
-                        ? "Date de livraison : "
-                        : "Livraison : "}
-                    </span>
-                    <span className="font-medium text-brand-navy">
-                      {formatOrderDatePicker(deliveryDate)}
-                    </span>
-                  </li>
-                  {pickupDate ? (
-                    <li>
-                      <span className="text-muted-foreground">
-                        {audience === "particulier"
-                          ? "Date d’enlèvement : "
-                          : "Enlèvement : "}
-                      </span>
-                      <span className="font-medium text-brand-navy">
-                        {formatOrderDatePicker(pickupDate)}
-                      </span>
-                    </li>
-                  ) : null}
-                </ul>
-                <button
-                  type="button"
-                  className="mt-1.5 text-[11px] font-medium text-primary/70 hover:text-primary hover:underline"
-                  onClick={() => setStep("infos")}
-                >
-                  Modifier les dates
-                </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="mt-1.5 text-[12px] font-medium text-primary underline-offset-2 hover:text-primary hover:underline"
+                    onClick={() => setStep(recapDatesStep(audience))}
+                  >
+                    Modifier les dates
+                  </button>
+                )}
               </section>
 
               {audience === "particulier" ? (
-              <section
-                className={cn(
-                  embedded ? ORDER_TUNNEL_CARD : "rounded-2xl border border-primary/10 bg-white/95",
-                  "px-4 py-3"
-                )}
-              >
-                <div className="mb-1.5 flex items-center justify-between gap-2">
-                  <h3 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    Vos coordonnées
-                  </h3>
-                  <button
-                    type="button"
-                    className="text-[11px] font-medium text-primary/70 hover:text-primary hover:underline"
-                    onClick={() => setStep("infos")}
-                  >
-                    Modifier mes coordonnées
-                  </button>
-                </div>
-                <ul className="space-y-1.5 text-sm">
-                  <li className="font-medium text-brand-navy">{contactName}</li>
-                  <li className="text-brand-navy">{contactPhone}</li>
-                  <li className="text-brand-navy">{contactEmail.trim()}</li>
+              <section className={ORDER_RECAP_SECTION(embedded)}>
+                <OrderRecapCardHead
+                  centered
+                  title="Vos coordonnées"
+                  actionLabel="Modifier"
+                  onAction={() => setStep(recapContactStep(audience))}
+                />
+                <ul className="space-y-3.5">
+                  <OrderRecapField centered label="Nom" value={contactName.trim()} />
+                  <OrderRecapField
+                    centered
+                    label="Téléphone"
+                    value={formatContactPhoneDisplay(contactPhone)}
+                  />
+                  <OrderRecapField centered label="E-mail" value={contactEmail.trim()} />
                 </ul>
               </section>
               ) : null}
@@ -1877,24 +2429,20 @@ export function OrderWidget({
               {audience === "particulier" ? (
               <section
                 className={cn(
-                  embedded ? ORDER_TUNNEL_CARD : "rounded-2xl border border-primary/10 bg-white/95",
-                  "px-4 py-3"
+                  ORDER_RECAP_SECTION(embedded),
+                  "border-primary/20 bg-white/[0.98]"
                 )}
               >
                 {(() => {
                   const breakdown = priceBreakdownFromHt(prestation.priceHt)
                   return (
-                    <div className="flex items-end justify-between gap-3">
-                      <div>
-                        <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                          Total de votre commande
-                        </p>
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          dont TVA {fmtHt(breakdown.tva)}
-                        </p>
-                      </div>
-                      <p className="text-xl font-semibold tabular-nums text-primary">
+                    <div className="flex flex-col items-center gap-2 text-center">
+                      <p className={ORDER_RECAP_CARD_TITLE}>Total de votre commande</p>
+                      <p className="text-2xl font-semibold leading-none tabular-nums text-primary">
                         {fmtHt(breakdown.ttc)}
+                      </p>
+                      <p className="text-[13px] text-brand-muted">
+                        dont TVA {fmtHt(breakdown.tva)}
                       </p>
                     </div>
                   )
@@ -1903,20 +2451,25 @@ export function OrderWidget({
               ) : null}
 
               {audience === "particulier" ? (
-                <div className="space-y-2 pt-0.5">
-                  <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+                <div
+                  className={cn("space-y-2 pt-0.5", embedded && ORDER_TUNNEL_STEP_NAV)}
+                >
+                  <div className={ORDER_TUNNEL_STEP_ACTIONS}>
                     <Button
                       variant="outline"
                       type="button"
-                      className={cn(orderOutlineBtn(embedded), "sm:flex-1")}
-                      onClick={() => setStep("infos")}
+                      className={cn(orderOutlineBtn(embedded), ORDER_TUNNEL_BTN_BACK)}
+                      onClick={() => setStep(recapContactStep(audience))}
                     >
-                      <ArrowLeft className="mr-2 size-4" />
-                      Revenir à mes informations
+                      <ArrowLeft className="mr-1.5 size-3.5 shrink-0" />
+                      <span className="truncate">Revenir à mes infos</span>
                     </Button>
                     <Button
                       type="button"
-                      className="h-11 rounded-xl text-base font-semibold shadow-lg sm:flex-1"
+                      className={cn(
+                        ORDER_TUNNEL_BTN_PRIMARY,
+                        "h-11 rounded-xl text-base font-semibold shadow-lg"
+                      )}
                       onClick={() => setStep("payment")}
                     >
                       Passer au paiement
@@ -1929,24 +2482,34 @@ export function OrderWidget({
                   </p>
                 </div>
               ) : (
-                <div className="flex flex-col gap-2 pt-0.5 sm:flex-row sm:gap-3">
-                  <Button
-                    variant="outline"
-                    type="button"
-                    className={cn(orderOutlineBtn(embedded), "sm:flex-1")}
-                    onClick={() => setStep("infos")}
-                  >
-                    <ArrowLeft className="mr-2 size-4" />
-                    Retour
-                  </Button>
-                  <Button
-                    type="button"
-                    className="h-11 rounded-xl text-base font-semibold shadow-lg sm:flex-1"
-                    onClick={() => setStep("payment")}
-                  >
-                    Continuer
-                    <ChevronRight className="ml-2 size-4" />
-                  </Button>
+                <div
+                  className={cn(
+                    "space-y-2 pt-0.5",
+                    embedded && ORDER_TUNNEL_STEP_NAV
+                  )}
+                >
+                  <div className={ORDER_TUNNEL_STEP_ACTIONS}>
+                    <Button
+                      variant="outline"
+                      type="button"
+                      className={cn(orderOutlineBtn(embedded), ORDER_TUNNEL_BTN_BACK)}
+                      onClick={() => setStep(recapContactStep(audience))}
+                    >
+                      <ArrowLeft className="mr-2 size-4 shrink-0" />
+                      Retour
+                    </Button>
+                    <Button
+                      type="button"
+                      className={cn(
+                        ORDER_TUNNEL_BTN_PRIMARY,
+                        "h-11 rounded-xl text-base font-semibold shadow-lg"
+                      )}
+                      onClick={() => setStep("payment")}
+                    >
+                      Continuer
+                      <ChevronRight className="ml-2 size-4 shrink-0" />
+                    </Button>
+                  </div>
                 </div>
               )}
             </motion.div>

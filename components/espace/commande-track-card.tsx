@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { Radio } from "lucide-react"
+import { FilePenLine, Radio } from "lucide-react"
 
 import type { CommandeSnapshotRow } from "@/app/espace/commandes/actions"
 import {
@@ -14,6 +14,9 @@ import {
 import { prestationById } from "@/lib/prestations"
 import { formatOrderReference } from "@/lib/commande/reference"
 import { buildCommandeTimeline } from "@/lib/commande/status-timeline"
+import { formatCreneauFrShort } from "@/lib/planning/creneau"
+import { isResumableParticulierBrouillon } from "@/lib/espace/particulier-brouillon-shared"
+import { CommandeRepriseCta } from "@/components/espace/commande-reprise-cta"
 import { cn } from "@/lib/utils"
 
 function formatShortDate(isoDate: string | null) {
@@ -27,9 +30,16 @@ function formatShortDate(isoDate: string | null) {
 type Props = {
   commande: CommandeSnapshotRow
   variant?: "hero" | "compact"
+  resumeHref?: string
+  devisPdfHref?: string | null
 }
 
-export function CommandeTrackCard({ commande, variant = "compact" }: Props) {
+export function CommandeTrackCard({
+  commande,
+  variant = "compact",
+  resumeHref,
+  devisPdfHref = null,
+}: Props) {
   const volumeM3 =
     commande.prestation_id != null
       ? prestationById(commande.prestation_id)?.volumeM3 ?? commande.volume_m3
@@ -40,18 +50,27 @@ export function CommandeTrackCard({ commande, variant = "compact" }: Props) {
       : benneImageForVolume(commande.volume_m3)
   const imageAlt = benneImageAltForVolume(volumeM3)
 
+  const isDevisBrouillon = isResumableParticulierBrouillon(commande)
+
   const { steps, terminalLabel, isTerminalError } = buildCommandeTimeline(
     commande.statut,
     commande.payment_status
   )
 
   const isHero = variant === "hero"
+  const creneauConfirme = formatCreneauFrShort(commande.livraison_planifiee_at)
+
+  const statusBadgeLabel = isDevisBrouillon ? "À finaliser" : paymentStatusLabel(commande.payment_status)
+  const statusBadgeClass = isDevisBrouillon
+    ? "bg-[#ECF4E9] text-[#2d8a30] ring-1 ring-[#35A238]/30"
+    : paymentStatusBadgeClass(commande.payment_status)
 
   return (
     <article
       className={cn(
-        "overflow-hidden rounded-2xl border border-[#35A238]/25 bg-white shadow-sm transition-shadow",
-        isHero ? "shadow-md" : ""
+        "overflow-hidden rounded-2xl border bg-white shadow-sm transition-shadow",
+        isDevisBrouillon ? "border-[#35A238]/40 shadow-md" : "border-[#35A238]/25",
+        isHero && !isDevisBrouillon ? "shadow-md" : ""
       )}
     >
       <div className={cn("flex gap-4", isHero ? "flex-col sm:flex-row sm:p-5 p-4" : "p-4")}>
@@ -86,18 +105,42 @@ export function CommandeTrackCard({ commande, variant = "compact" }: Props) {
             <span
               className={cn(
                 "inline-flex shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium",
-                paymentStatusBadgeClass(commande.payment_status)
+                statusBadgeClass
               )}
             >
-              {paymentStatusLabel(commande.payment_status)}
+              {statusBadgeLabel}
             </span>
           </div>
 
-          <p className="text-xs text-muted-foreground">
-            Livraison : <strong className="text-brand-navy">{formatShortDate(commande.date_livraison)}</strong>
-          </p>
+          {creneauConfirme ? (
+            <p className="text-sm text-brand-navy">
+              Livraison confirmée : <strong>{creneauConfirme}</strong>
+            </p>
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              Livraison souhaitée :{" "}
+              <strong className="text-brand-navy">{formatShortDate(commande.date_livraison)}</strong>
+            </p>
+          )}
+          {!creneauConfirme &&
+          !isDevisBrouillon &&
+          (commande.statut === "confirmee" || commande.statut === "en_cours") ? (
+            <p className="text-xs text-brand-navy/85">
+              Un conseiller CORE vous contacte pour confirmer le créneau de livraison.
+            </p>
+          ) : null}
 
-          {terminalLabel ? (
+          {isDevisBrouillon ? (
+            <div className="flex gap-2 rounded-xl border border-[#35A238]/25 bg-[#ECF4E9]/60 px-3 py-2.5 text-sm text-brand-navy">
+              <FilePenLine className="mt-0.5 size-4 shrink-0 text-[#35A238]" aria-hidden />
+              <p>
+                Votre devis est prêt. Il reste à valider et payer en ligne. Reprenez le tunnel : vos
+                informations sont déjà enregistrées.
+              </p>
+            </div>
+          ) : null}
+
+          {!isDevisBrouillon && terminalLabel ? (
             <p
               className={cn(
                 "flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium",
@@ -108,7 +151,9 @@ export function CommandeTrackCard({ commande, variant = "compact" }: Props) {
             >
               {terminalLabel}
             </p>
-          ) : (
+          ) : null}
+
+          {!isDevisBrouillon && !terminalLabel && steps.length > 0 ? (
             <ol className="flex items-center gap-0 sm:gap-1" aria-label="Avancement">
               {steps.map((step, index) => {
                 const Icon = step.icon
@@ -157,15 +202,27 @@ export function CommandeTrackCard({ commande, variant = "compact" }: Props) {
                 )
               })}
             </ol>
-          )}
+          ) : null}
 
         </div>
       </div>
 
+      {isDevisBrouillon ? (
+        <div className="border-t border-[#35A238]/20 bg-[#ECF4E9]/50 px-4 py-3 sm:px-5">
+          <CommandeRepriseCta
+            commandeId={commande.id}
+            initialHref={resumeHref}
+            devisPdfHref={devisPdfHref}
+            showDevisPdf={false}
+            layout="footer"
+          />
+        </div>
+      ) : null}
+
       {commande.statut === "en_cours" ? (
         <div className="flex items-center gap-2 border-t border-[#35A238]/15 bg-[#ECF4E9]/80 px-4 py-2 text-xs text-brand-navy">
           <Radio className="size-3.5 animate-pulse text-[#35A238]" aria-hidden />
-          Suivi actif — nous mettons à jour votre commande
+          Suivi actif : nous mettons à jour votre commande
         </div>
       ) : null}
     </article>

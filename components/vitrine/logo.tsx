@@ -43,7 +43,7 @@ export function VitrineLogo({
       <span
         className={cn(
           "relative inline-flex shrink-0",
-          "h-10 w-[136px] sm:h-11 sm:w-[142px] lg:h-[46px] lg:w-[148px]",
+          "h-[2.375rem] w-[8.0625rem] sm:h-[2.6125rem] sm:w-[8.4375rem] lg:h-[2.73125rem] lg:w-[8.775rem]",
           className
         )}
       >

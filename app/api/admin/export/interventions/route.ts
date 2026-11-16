@@ -6,7 +6,8 @@ import {
 } from "@/lib/admin/interventions-data"
 import { buildExcelBuffer } from "@/lib/admin/admin-excel"
 import { requireAdmin } from "@/lib/auth/require-admin"
-import { matchesCommandeAudience, type CommandeAudienceFilter } from "@/lib/commande/audience"
+import type { CommandeAudienceFilter } from "@/lib/commande/audience"
+import { formatDateFr } from "@/lib/format/date"
 
 function parseAudience(raw: string | null): CommandeAudienceFilter {
   if (raw === "professionnel") return "professionnel"
@@ -30,6 +31,13 @@ export async function GET(request: Request) {
     { header: "Chantier / adresse", value: (r) => r.chantierLabel },
     { header: "Type", value: (r) => r.typeLabel },
     { header: "Statut", value: (r) => r.statutLabel },
+    {
+      header: "Devis",
+      value: (r) =>
+        r.kind === "commande" && r.commande?.devis_sent_at
+          ? `Devis envoyé (${formatDateFr(r.commande.devis_sent_at)})`
+          : "—",
+    },
     { header: "Date", value: (r) => r.dateSort.slice(0, 10) },
   ])
 

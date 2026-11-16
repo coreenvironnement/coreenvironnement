@@ -22,7 +22,8 @@ function RatingStars({ className }: { className?: string }) {
       {Array.from({ length: 5 }, (_, i) => (
         <Star
           key={i}
-          className="size-3.5 shrink-0 fill-amber-400 text-amber-400 sm:size-4"
+          strokeWidth={1}
+          className="size-3.5 shrink-0 fill-amber-400 stroke-brand-navy sm:size-4"
         />
       ))}
     </span>
@@ -42,6 +43,7 @@ export function GoogleRatingBadge({
   const isCard = variant === "card"
   const textPrimary = isCard ? "text-brand-navy" : "text-white"
   const textSecondary = isCard ? "text-brand-muted" : "text-white/85"
+  const compactMobile = compact
 
   return (
     <a
@@ -54,11 +56,18 @@ export function GoogleRatingBadge({
           ? "border-brand-navy/10 bg-white/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_6px_20px_-10px_rgba(14,32,16,0.25)] hover:border-brand-green/25 hover:bg-white/90"
           : "border-white/22 bg-white/[0.1] shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_28px_-14px_rgba(0,0,0,0.45)] hover:border-white/38 hover:bg-white/[0.14]",
         compact && !isCard && "gap-2 px-3 py-1.5 sm:gap-2.5 sm:px-3.5",
+        compactMobile &&
+          "max-lg:gap-1.5 max-lg:border-0 max-lg:bg-transparent max-lg:px-0 max-lg:py-0 max-lg:shadow-none max-lg:backdrop-blur-none hover:max-lg:border-0 hover:max-lg:bg-transparent",
         className
       )}
       aria-label={`Note Google ${ratingLabel} sur 5 — voir sur Google Maps`}
     >
-      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white p-1.5 shadow-sm sm:size-9">
+      <span
+        className={cn(
+          "flex size-8 shrink-0 items-center justify-center rounded-full bg-white p-1.5 shadow-sm sm:size-9",
+          compactMobile && "max-lg:hidden"
+        )}
+      >
         <Image
           src={SITE_GOOGLE_MAPS_PIN_SRC}
           alt=""
@@ -68,12 +77,30 @@ export function GoogleRatingBadge({
           aria-hidden
         />
       </span>
-      <span className="flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
-        <RatingStars />
+      <span
+        className={cn(
+          "flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center",
+          compactMobile && "max-lg:gap-1.5"
+        )}
+      >
+        <RatingStars
+          className={compactMobile ? "max-lg:[&_svg]:size-[1.125rem]" : undefined}
+        />
+        <span
+          className={cn(
+            "hidden max-lg:inline text-[12px] font-semibold leading-snug tracking-[-0.01em]",
+            textPrimary,
+            !compactMobile && "max-lg:hidden"
+          )}
+        >
+          Note Google
+          <span className={cn("font-medium", textSecondary)}> · {ratingLabel}</span>
+        </span>
         <span
           className={cn(
             "text-[13px] font-semibold leading-snug tracking-[-0.01em] sm:text-[14px]",
-            textPrimary
+            textPrimary,
+            compactMobile && "max-lg:hidden"
           )}
         >
           {ratingLabel} sur 5

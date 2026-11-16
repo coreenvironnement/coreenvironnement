@@ -67,6 +67,7 @@ export function ResetPasswordForm() {
           Nouveau mot de passe
         </label>
         <PasswordInput
+          variant="vitrine"
           id="new-password"
           autoComplete="new-password"
           required
@@ -95,6 +96,7 @@ export function ResetPasswordForm() {
           Confirmer le mot de passe
         </label>
         <PasswordInput
+          variant="vitrine"
           id="new-password-confirm"
           autoComplete="new-password"
           required

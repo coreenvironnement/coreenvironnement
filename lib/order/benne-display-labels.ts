@@ -25,6 +25,23 @@ export function subtitleFromPrestationLabel(label: string): string {
   return `Pour ${tail}`
 }
 
+/** Ligne d’intro étape forfait (« Pour votre… »), accord correct. */
+export function tunnelForfaitIntroPhrase(
+  family: BenneFamily,
+  wasteId?: ParticulierWasteOptionId | null
+): string {
+  if (wasteId === "terre_cailloux") {
+    return "Pour votre terre"
+  }
+  if (wasteId) {
+    const opt = particulierWasteOptionById(wasteId)
+    if (opt?.cardSubtitle) {
+      return opt.cardSubtitle.replace(/\s*\([^)]*\)\s*$/, "").trim()
+    }
+  }
+  return subtitleFromFamily(family)
+}
+
 /** Intitulé flux pour récap tunnel particulier (aligné sur le choix étape 2). */
 export function tunnelFluxRecapName(
   family: BenneFamily,

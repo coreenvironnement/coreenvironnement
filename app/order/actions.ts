@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
 
 import { priceTtcFromHt } from "@/lib/order/prestation-mapping"
@@ -31,6 +32,30 @@ import {
 export type OrderCheckoutResult =
   | { error: string }
   | { checkoutUrl: string }
+
+export type SaveParticulierDraftResult =
+  | { error: string }
+  | { commandeId: string }
+
+/** Enregistre la commande particulier en brouillon (coordonnées + forfait) pour suivi admin. */
+export async function saveParticulierCommandeDraft(
+  input: OrderCheckoutInput & { existingCommandeId?: string }
+): Promise<SaveParticulierDraftResult> {
+  const authSupabase = await createClient()
+  const {
+    data: { user },
+  } = await authSupabase.auth.getUser()
+  const prepared = await prepareParticulierOrder(input, user?.id ?? null)
+  if ("error" in prepared) {
+    return prepared
+  }
+  if (prepared.alreadyPaid) {
+    return { commandeId: prepared.commandeId }
+  }
+  revalidatePath("/admin/interventions")
+  revalidatePath(`/admin/interventions/${prepared.commandeId}`)
+  return { commandeId: prepared.commandeId }
+}
 
 function stripeCheckoutErrorMessage(error: unknown): string {
   if (error && typeof error === "object" && "message" in error) {

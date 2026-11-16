@@ -44,15 +44,15 @@
 @layer components {
   .vitrine-root {
     @apply bg-brand-bg font-[family-name:var(--font-body)] text-brand-text font-normal antialiased;
-    /* Header unique compact : 60px mobile, 68px desktop (voir vitrine-header.tsx). */
-    --vitrine-header-height: 3.75rem;
-    /* Hauteur réservée à la barre d’actions mobile (hors safe-area). */
-    --vitrine-action-bar-height: 3.75rem;
+    /* Header compact : −5 % vs base 60px mobile (≈ 57px), desktop ≈ 64.6px. */
+    --vitrine-header-height: calc(3.75rem * 0.95);
+    /* Barre d’actions mobile : hauteur réservée (hors safe-area). */
+    --vitrine-action-bar-height: 4.0625rem;
   }
 
   @media (min-width: 1024px) {
     .vitrine-root {
-      --vitrine-header-height: 4.25rem;
+      --vitrine-header-height: calc(4.25rem * 0.95);
     }
   }
 
@@ -133,7 +133,8 @@
   /* Typographie vitrine — hiérarchie unifiée (réf. cp-section) */
   :is(.vitrine-root) .vitrine-eyebrow-pill,
   :is(.vitrine-root) .section-eyebrow,
-  .cp-section .cp-eyebrow {
+  .cp-section .cp-eyebrow,
+  .cp-section .cp-category {
     display: inline-block;
     margin: 0 0 clamp(0.75rem, 1.2vw, 1rem);
     padding: 6px 12px;
@@ -422,8 +423,21 @@
     @apply text-brand-navy;
   }
 
+  .vitrine-root .auth-back-link {
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  .vitrine-root .auth-form-compact .space-y-2 {
+    @apply space-y-1.5;
+  }
+
+  .vitrine-root .auth-form-compact .space-y-4 {
+    @apply space-y-3;
+  }
+
   .vitrine-root .form-submit-btn {
-    @apply min-h-12 w-full rounded-xl text-[15px] font-semibold;
+    @apply min-h-12 h-12 w-full rounded-xl text-[15px] font-semibold shadow-[0_8px_24px_-10px_rgb(14_32_16/0.38)] transition-[transform,box-shadow,background-color] hover:shadow-[0_10px_28px_-10px_rgb(14_32_16/0.42)] active:scale-[0.99];
   }
 
   .vitrine-root .form-submit-btn[aria-busy="true"] {
@@ -526,7 +540,7 @@
   }
 
   .vitrine-root .vitrine-footer__columns {
-    @apply grid gap-9 text-center max-md:justify-items-center sm:grid-cols-2 sm:gap-10 lg:justify-items-stretch lg:text-left xl:grid-cols-4 xl:gap-8;
+    @apply mx-auto grid w-fit max-w-full grid-cols-1 gap-8 text-center justify-items-center md:grid-cols-3 md:gap-x-9 md:gap-y-8 md:justify-items-start md:text-left lg:justify-self-center;
   }
 
   .vitrine-root .vitrine-footer__column-title {
@@ -1112,8 +1126,21 @@
     0 12px 36px -10px rgb(14 32 16 / 0.18);
 }
 
-.vitrine-root .hero-order-card__footer {
+.vitrine-root .hero-order-card__footer--rule {
   border-top: 1px solid color-mix(in srgb, #35a238 12%, #e3e9e6);
+}
+
+@media (max-width: 1023px) {
+  .vitrine-root .hero-order-card__footer--price {
+    margin-top: -0.125rem;
+    padding-top: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .vitrine-root .hero-order-card__footer--price {
+    border-top: 1px solid color-mix(in srgb, #35a238 12%, #e3e9e6);
+  }
 }
 
 .vitrine-root .hero-order-card__lottie-banner {
@@ -1202,6 +1229,32 @@
   background: #fff;
 }
 
+/* Saisie adresse — bordure + icônes vertes (pin & loupe) */
+.vitrine-root
+  .hero-order-card
+  .hero-order-card__address:is(:focus-within, :has([data-slot="input"]:not(:placeholder-shown)))
+  > svg {
+  color: var(--color-brand-green);
+  transition: color 0.15s ease-out;
+}
+
+.vitrine-root
+  .hero-order-card
+  .hero-order-card__address:is(:focus-within, :has([data-slot="input"]:not(:placeholder-shown)))
+  [data-slot="input"] {
+  border-color: var(--color-brand-green);
+  background: #fff;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-brand-green) 22%, transparent);
+}
+
+.vitrine-root
+  .hero-order-card
+  .hero-order-card__address:is(:focus-within, :has([data-slot="input"]:not(:placeholder-shown)))
+  [data-slot="input"]:focus-visible {
+  border-color: var(--color-brand-green);
+  --tw-ring-color: color-mix(in srgb, var(--color-brand-green) 28%, transparent);
+}
+
 /*
  * Halo focus (ring-3 ≈ 3px) : padding interne sans déplacer le champ
  * (compense overflow-hidden sur #accueil et ancêtres hero).
@@ -1243,8 +1296,45 @@
   color: var(--color-brand-navy);
 }
 
-/* Tunnel commande — stepper desktop : tuiles blanches + icônes traits verts */
+/* Tunnel commande — stepper desktop : une ligne, pointillés, étape active encadrée */
 @media (min-width: 768px) {
+  .order-tunnel-stepper__track {
+    gap: 0;
+    justify-content: space-between;
+  }
+
+  .order-tunnel-stepper__connector {
+    flex: 1 1 0;
+    align-self: flex-start;
+    min-width: 0.35rem;
+    margin-top: 1.375rem;
+    height: 0;
+    border-top: 2px dotted color-mix(in srgb, #35a238 34%, transparent);
+    opacity: 0.92;
+  }
+
+  .order-tunnel-stepper__connector--done {
+    border-top-style: solid;
+    border-top-color: color-mix(in srgb, #35a238 52%, transparent);
+  }
+
+  .order-tunnel-stepper__cell {
+    min-width: 0;
+    padding: 0.2rem 0.35rem 0.35rem;
+    border-radius: 0.75rem;
+    transition:
+      box-shadow 0.28s ease,
+      background-color 0.28s ease;
+  }
+
+  .order-tunnel-stepper__cell--active {
+    background: color-mix(in srgb, #35a238 7%, #fff);
+    box-shadow:
+      0 0 0 2px #35a238,
+      0 6px 18px rgb(53 162 56 / 0.14),
+      inset 0 0 0 1px color-mix(in srgb, #35a238 12%, transparent);
+  }
+
   .order-tunnel-stepper__tile {
     display: inline-flex;
     flex-shrink: 0;
@@ -1304,6 +1394,48 @@
   }
 }
 
+/* Retour (35 %) + CTA principal (65 %) sur une ligne, tout le tunnel */
+.order-tunnel-date-visual canvas,
+.order-tunnel-date-visual svg {
+  margin-inline: auto;
+  max-height: 100%;
+  width: auto !important;
+}
+
+.order-tunnel-step-actions {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.order-tunnel-step-back {
+  width: 35%;
+  max-width: 35%;
+  flex: 0 0 35%;
+  min-width: 0;
+  padding-inline: 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.order-tunnel-step-primary {
+  flex: 1 1 65%;
+  min-width: 0;
+  width: auto;
+}
+
+@media (min-width: 640px) {
+  .order-tunnel-step-actions {
+    gap: 0.75rem;
+  }
+
+  .order-tunnel-step-back {
+    padding-inline: 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
 /* Tunnel commande — mobile : flex pleine hauteur, grille déchet scrollable, CTA ancré */
 @media (max-width: 1023.98px) {
   .order-tunnel-shell .order-tunnel-scroll {
@@ -1337,13 +1469,14 @@
     flex-direction: column;
     gap: 0.75rem;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .order-tunnel-shell
     .order-tunnel-step--fill:has(.order-tunnel-waste-grid)
     .order-tunnel-waste-grid {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
+    width: 100%;
     min-height: 0;
     overflow-x: hidden;
     overflow-y: auto;
@@ -1351,21 +1484,23 @@
     -webkit-overflow-scrolling: touch;
     align-content: start;
     align-items: stretch;
-    gap: 0.875rem;
-    grid-auto-rows: minmax(0, auto);
+    gap: 1rem;
+    row-gap: 1rem;
+    grid-auto-rows: max-content;
   }
 
   .order-tunnel-shell .order-tunnel-waste-card {
     height: auto;
     width: 100%;
-    min-height: 0;
+    min-height: unset;
     align-self: stretch;
+    contain: layout style;
   }
 
   .order-tunnel-shell .order-tunnel-waste-card__media {
+    position: relative;
     aspect-ratio: 4 / 3;
     flex: 0 0 auto;
-    height: auto;
     width: 100%;
     overflow: hidden;
   }
@@ -1432,6 +1567,10 @@
     font-size: 0.625rem;
   }
 
+  .order-tunnel-stepper .order-tunnel-stepper__connector {
+    margin-top: 1.25rem;
+  }
+
   .order-tunnel-scroll {
     display: flex;
     flex-direction: column;
@@ -1470,27 +1609,35 @@
     min-height: 0;
   }
 
-  /* Grille déchet : compact tunnel modal uniquement (pas vitrine #estimer-volume) */
+  /* Grille déchet : tuiles à hauteur naturelle (image 4/3 + texte lisible) */
   .order-tunnel-shell .order-tunnel-waste-grid {
-    flex: 1 1 auto;
-    align-content: stretch;
-    gap: clamp(0.5rem, min(2.2cqh, 1.8vmin), 0.875rem);
+    flex: 0 1 auto;
+    align-content: start;
+    gap: 0.75rem 1rem;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: max-content;
+    width: 100%;
+    max-width: 56rem;
+    margin-inline: auto;
     min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .order-tunnel-shell .order-tunnel-waste-card {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    min-height: 0;
+    height: auto;
+    min-height: unset;
+    width: 100%;
+    contain: layout style;
   }
 
   .order-tunnel-shell .order-tunnel-waste-card__media {
-    aspect-ratio: auto;
-    flex: 1 1 0;
-    min-height: 0;
+    aspect-ratio: 4 / 3;
+    flex: 0 0 auto;
+    height: auto;
     width: 100%;
     overflow: hidden;
   }
@@ -1538,26 +1685,23 @@
   .order-tunnel-shell .order-tunnel-waste-card__body {
     flex: 0 0 auto;
     flex-shrink: 0;
-    justify-content: center;
-    gap: 0.15rem;
+    justify-content: flex-start;
+    gap: 0.25rem;
     min-height: min-content;
     overflow: visible;
-    padding: clamp(0.3rem, min(0.95cqh, 0.85vmin), 0.5rem)
-      clamp(0.5rem, 1.2cqw, 0.75rem);
-    padding-bottom: clamp(0.35rem, min(1cqh, 0.9vmin), 0.55rem);
+    padding: 0.5rem 0.65rem 0.65rem;
   }
 
   .order-tunnel-shell .order-tunnel-waste-card__title {
-    font-size: clamp(0.75rem, min(1.6cqh, 1.4vmin), 0.8125rem);
+    font-size: 0.8125rem;
+    line-height: 1.3;
   }
 
   .order-tunnel-shell .order-tunnel-waste-card__description {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    overflow: hidden;
-    font-size: clamp(0.65rem, min(1.4cqh, 1.2vmin), 0.6875rem);
-    line-height: 1.25;
+    display: block;
+    overflow: visible;
+    font-size: 0.6875rem;
+    line-height: 1.35;
   }
 
   .order-tunnel-forfait-list {
@@ -1841,7 +1985,65 @@
   }
 
   .vitrine-root.vitrine--mobile-centered #parcours .parcours-lottie-card__caption {
-    @apply justify-start text-left;
+    @apply justify-center text-center;
+  }
+
+  /* Conseils — cartes empilées et centrées (accueil mobile) */
+  .vitrine-root.vitrine--mobile-centered #conseils .cp-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .vitrine-root.vitrine--mobile-centered #conseils .cp-card :is(.cp-category, h3, .cp-copy, .cp-note) {
+    width: 100%;
+    text-align: center;
+  }
+
+  .vitrine-root.vitrine--mobile-centered #conseils .cp-card .cp-art {
+    grid-column: unset;
+    grid-row: unset;
+    width: 100%;
+    max-width: min(100%, 360px);
+    margin: 14px auto;
+  }
+
+  .vitrine-root.vitrine--mobile-centered #conseils .cp-card .cp-button {
+    grid-column: unset;
+    grid-row: unset;
+    width: 100%;
+    max-width: min(100%, 360px);
+    margin-top: 12px;
+  }
+
+  .vitrine-root.vitrine--mobile-centered #conseils .cp-acces-encart {
+    text-align: center;
+  }
+
+  .vitrine-root.vitrine--mobile-centered #conseils .cp-acces-encart .cp-dimensions {
+    width: 100%;
+    max-width: min(100%, 400px);
+    margin-inline: auto;
+  }
+
+  .vitrine-root.vitrine--mobile-centered #conseils .cp-acces-encart .cp-street {
+    width: 100%;
+    max-width: min(100%, 400px);
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .vitrine-root.vitrine--mobile-centered #conseils .cp-acces-encart .cp-street > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .vitrine-root.vitrine--mobile-centered #conseils .cp-acces-encart .cp-link {
+    justify-content: center;
   }
 
   .vitrine-root.vitrine--mobile-centered #parcours .parcours-volume-link a,
@@ -1960,7 +2162,7 @@
 }
 .cp-section .cp-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.16fr) minmax(0, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 22px;
   align-items: stretch;
 }
@@ -1976,11 +2178,6 @@
 }
 .cp-section .cp-category {
   margin: 0 0 18px;
-  color: #28782a;
-  font-size: 12px;
-  line-height: 1.5;
-  font-weight: 800;
-  letter-spacing: 0.065em;
 }
 .cp-section .cp-copy {
   margin: 12px 0 0;
@@ -2065,6 +2262,109 @@
 }
 .cp-section .cp-button--outline:hover {
   background: #f0f6ef;
+}
+.cp-section .cp-link-secondary {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 14px;
+  color: #53616d;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.cp-section .cp-link-secondary:hover {
+  color: var(--cp-action);
+}
+.cp-section .cp-art--cover img.cp-poster {
+  object-fit: cover;
+}
+.cp-section .cp-price .cp-art {
+  margin-top: auto;
+}
+.cp-section .cp-acces-encart {
+  margin-top: 22px;
+  padding: 22px 24px;
+  border: 1px solid var(--cp-line);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(21, 42, 59, 0.055);
+}
+.cp-section .cp-acces-encart > h3 {
+  margin: 0 0 16px;
+  text-align: center;
+  font-size: clamp(20px, 1.6vw, 24px);
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+}
+.cp-section .cp-acces-encart__main {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.25fr);
+  gap: 18px;
+  align-items: center;
+}
+.cp-section .cp-acces-encart__main .cp-art {
+  margin: 0;
+  max-width: 360px;
+  justify-self: center;
+}
+.cp-section .cp-acces-encart__details .cp-street {
+  margin-top: 16px;
+}
+.cp-section .cp-acces-encart__help {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 18px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cp-line);
+  text-align: center;
+}
+.cp-section .cp-acces-encart__help > p {
+  margin: 0;
+  color: var(--cp-body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.cp-section .cp-acces-encart__advisor {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  color: var(--cp-ink);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.cp-section .cp-acces-encart__advisor:hover {
+  background: #f0f6ef;
+}
+.cp-section .cp-hub-cta {
+  margin: 22px 0 0;
+  text-align: center;
+}
+.cp-section .cp-hub-cta__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--cp-action);
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.cp-section .cp-hub-cta__link svg {
+  width: 18px;
+  height: 18px;
 }
 .cp-section .cp-button svg,
 .cp-section .cp-link svg {
@@ -2241,6 +2541,14 @@
     margin-left: auto;
     margin-right: auto;
   }
+  .cp-section .cp-acces-encart {
+    max-width: 620px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cp-section .cp-acces-encart__main {
+    grid-template-columns: 1fr;
+  }
   .cp-section .cp-dimensions dt {
     font-size: 27px;
   }
@@ -2263,7 +2571,6 @@
     border-radius: 20px;
   }
   .cp-section .cp-category {
-    font-size: 11px;
     margin-bottom: 14px;
   }
   .cp-section .cp-copy {
@@ -2308,7 +2615,49 @@
     grid-row: 4;
     margin-top: 18px;
   }
-  .cp-section .cp-access .cp-art {
+  .vitrine-root.vitrine--mobile-centered .cp-section .cp-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .vitrine-root.vitrine--mobile-centered .cp-section .cp-card :is(.cp-category, h3, .cp-copy, .cp-note, .cp-button) {
+    grid-column: auto;
+    grid-row: auto;
+    width: 100%;
+    text-align: center;
+  }
+  .vitrine-root.vitrine--mobile-centered .cp-section .cp-card .cp-art {
+    grid-column: auto;
+    grid-row: auto;
+    max-width: min(100%, 320px);
+    margin: 14px auto;
+  }
+  .vitrine-root.vitrine--mobile-centered .cp-section .cp-card .cp-note {
+    text-align: center;
+  }
+  .vitrine-root.vitrine--mobile-centered .cp-section .cp-acces-encart .cp-dimensions {
+    width: 100%;
+    max-width: min(100%, 400px);
+    margin-inline: auto;
+  }
+  .vitrine-root.vitrine--mobile-centered .cp-section .cp-acces-encart .cp-street {
+    width: 100%;
+    max-width: min(100%, 400px);
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .vitrine-root.vitrine--mobile-centered .cp-section .cp-acces-encart .cp-street > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .vitrine-root.vitrine--mobile-centered .cp-section .cp-acces-encart .cp-link {
+    justify-content: center;
+  }
+  .cp-section .cp-acces-encart .cp-art {
     margin: 8px 0 10px;
   }
   .cp-section .cp-space {

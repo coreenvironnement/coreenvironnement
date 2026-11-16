@@ -1,6 +1,17 @@
 "use client"
 
+import type { LucideIcon } from "lucide-react"
+import {
+  Calendar,
+  Contact,
+  LayoutList,
+  Mail,
+  MapPin,
+  Phone,
+  Radio,
+} from "lucide-react"
 import type { ReactNode } from "react"
+import Link from "next/link"
 import { motion, useReducedMotion } from "framer-motion"
 
 import { OrderEmailConfirmBlock } from "@/components/order/order-email-confirm-block"
@@ -9,7 +20,14 @@ import { LoaderCore } from "@/components/ui/loader-core"
 import { formatOrderReference } from "@/lib/commande/reference"
 import type { OrderCheckoutInput } from "@/lib/order/checkout-input"
 import { prestationById } from "@/lib/prestations"
+import {
+  downloadSiteContactVCard,
+  SITE_CONTACT_VCARD_PHONE_DISPLAY,
+  SITE_ORG_NAME,
+} from "@/lib/site"
 import { cn } from "@/lib/utils"
+
+const ICON_STROKE = 1.75
 
 function fmtTtcFromCents(cents: number) {
   return new Intl.NumberFormat("fr-FR", {
@@ -48,7 +66,7 @@ export function OrderConfirmingState({
 
   return (
     <motion.div
-      className="overflow-x-clip rounded-2xl border border-primary/15 bg-white px-3.5 py-4 text-center sm:px-5 sm:py-5"
+      className="order-tunnel-card overflow-x-clip px-3.5 py-4 text-center sm:px-5 sm:py-5"
       initial={reduce ? { opacity: 0 } : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration, ease }}
@@ -101,7 +119,7 @@ export function OrderConfirmingState({
       </p>
 
       {onClose && isFinalizing ? (
-        <div className="sticky bottom-0 mt-4 -mx-1 bg-gradient-to-t from-white via-white to-white/80 pt-2">
+        <div className="sticky bottom-0 mt-4 -mx-1 bg-gradient-to-t from-brand-warm-field via-brand-warm-field to-brand-warm-field/80 pt-2">
           <Button
             type="button"
             className="h-11 w-full min-h-11 rounded-xl text-base font-semibold shadow-lg"
@@ -149,7 +167,7 @@ export function OrderSuccessScreen({
 
   return (
     <motion.div
-      className="overflow-x-clip rounded-2xl border border-primary/15 bg-white px-3.5 py-4 text-center sm:px-5 sm:py-5"
+      className="order-tunnel-card overflow-x-clip px-3.5 py-4 text-center sm:px-5 sm:py-5"
       initial={reduce ? { opacity: 0 } : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration, ease }}
@@ -216,10 +234,16 @@ export function OrderSuccessScreen({
           <h3 className="text-[18px] font-semibold leading-tight text-brand-navy sm:text-[20px]">
             Commande confirmée
           </h3>
-          <p className="mt-2 text-[13px] leading-relaxed text-brand-navy/80 sm:text-sm">
-            Paiement reçu — votre commande est enregistrée. Livraison souhaitée le{" "}
-            {deliveryLabel} à {address}.
+          <p className="mt-1.5 text-[13px] font-medium text-brand-green sm:text-sm">
+            Paiement reçu — commande enregistrée.
           </p>
+          <ul className="mt-3 space-y-2 rounded-xl border border-brand-border/80 bg-brand-bg-alt/60 px-3 py-2.5 text-left">
+            <KeyFactRow icon={Calendar} label="Livraison souhaitée" value={deliveryLabel} />
+            {pickupLabel ? (
+              <KeyFactRow icon={Calendar} label="Enlèvement" value={pickupLabel} />
+            ) : null}
+            <KeyFactRow icon={MapPin} label="Adresse" value={address} />
+          </ul>
         </SuccessBlock>
 
         {contactEmail && (needsPasswordSetup || !emailConfirmed) ? (
@@ -234,19 +258,42 @@ export function OrderSuccessScreen({
 
         <SuccessBlock>
           <div className="rounded-xl border border-brand-border/80 bg-brand-bg-alt/80 px-3 py-3 text-left">
-            <p className="text-[12px] font-semibold uppercase tracking-wide text-brand-navy">
-              La suite de votre commande
+            <p className="text-center text-[12px] font-semibold uppercase tracking-wide text-brand-navy">
+              Prochaines étapes
             </p>
-            <ul className="mt-2 space-y-1.5 text-[13px] leading-snug text-brand-navy/80">
-              <li>Un e-mail récapitulatif vous a été envoyé.</li>
-              <li>
-                Notre équipe traite votre commande et vous tiendra informé par e-mail.
-              </li>
-              <li>
-                Un conseiller CORE Environnement pourra vous contacter pour valider les
-                derniers détails pratiques de livraison.
-              </li>
+            <ul className="mt-2.5 space-y-2.5">
+              <NextStepRow icon={Mail}>
+                E-mail récapitulatif envoyé à votre adresse.
+              </NextStepRow>
+              <NextStepRow icon={LayoutList}>
+                Suivi dans votre espace client ; facture après livraison.
+              </NextStepRow>
+              <NextStepRow icon={Phone}>
+                {input.audience !== "professionnel"
+                  ? "Un conseiller CORE vous contacte pour le créneau de livraison et la pose."
+                  : "Un conseiller CORE vous contacte pour confirmer le créneau de pose."}
+              </NextStepRow>
             </ul>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+              <Link
+                href="/espace/commandes"
+                className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-[#35A238]/35 bg-white px-3 text-sm font-medium text-brand-navy hover:bg-[#ECF4E9]"
+              >
+                <Radio className="size-4 shrink-0 text-brand-green" strokeWidth={ICON_STROKE} aria-hidden />
+                Suivre ma commande
+              </Link>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9 gap-1.5 rounded-lg border-[#35A238]/35 bg-white px-3 text-sm font-medium text-brand-navy hover:bg-[#ECF4E9]"
+                aria-label={`Ajouter ${SITE_ORG_NAME} à vos contacts, téléphone ${SITE_CONTACT_VCARD_PHONE_DISPLAY}`}
+                onClick={downloadSiteContactVCard}
+              >
+                <Contact className="size-4 shrink-0 text-brand-green" strokeWidth={ICON_STROKE} aria-hidden />
+                Nous ajouter à vos contacts
+              </Button>
+            </div>
           </div>
         </SuccessBlock>
 
@@ -260,6 +307,9 @@ export function OrderSuccessScreen({
         </SuccessBlock>
 
         <SuccessBlock>
+          <p className="mb-1.5 text-left text-[12px] font-semibold uppercase tracking-wide text-brand-navy">
+            Récapitulatif
+          </p>
           <dl className="space-y-1.5 rounded-xl border border-brand-border/70 px-3 py-3 text-left text-[13px]">
             <RecapRow label="Benne" value={benneRecapLabel(input.prestationId)} />
             <RecapRow label="Livraison" value={deliveryLabel} />
@@ -274,7 +324,7 @@ export function OrderSuccessScreen({
         </SuccessBlock>
 
         <SuccessBlock>
-          <div className="sticky bottom-0 -mx-1 bg-gradient-to-t from-white via-white to-white/80 pt-2">
+          <div className="sticky bottom-0 -mx-1 bg-gradient-to-t from-brand-warm-field via-brand-warm-field to-brand-warm-field/80 pt-2">
             <Button
               type="button"
               className="h-11 w-full min-h-11 rounded-xl text-base font-semibold shadow-lg"
@@ -286,6 +336,52 @@ export function OrderSuccessScreen({
         </SuccessBlock>
       </motion.div>
     </motion.div>
+  )
+}
+
+function KeyFactRow({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: LucideIcon
+  label: string
+  value: string
+}) {
+  return (
+    <li className="flex gap-2.5">
+      <span
+        className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand-green/10 text-brand-green"
+        aria-hidden
+      >
+        <Icon className="size-4" strokeWidth={ICON_STROKE} />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+          {label}
+        </p>
+        <p className="text-[13px] font-medium leading-snug text-brand-navy">{value}</p>
+      </div>
+    </li>
+  )
+}
+
+function NextStepRow({
+  icon: Icon,
+  children,
+}: {
+  icon: LucideIcon
+  children: ReactNode
+}) {
+  return (
+    <li className="flex gap-2.5">
+      <Icon
+        className="mt-0.5 size-4 shrink-0 text-brand-green"
+        strokeWidth={ICON_STROKE}
+        aria-hidden
+      />
+      <p className="min-w-0 text-[13px] leading-snug text-brand-navy/85">{children}</p>
+    </li>
   )
 }
 

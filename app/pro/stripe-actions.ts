@@ -3,7 +3,7 @@
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
-import { ABONNEMENT_PRO_HT } from "@/lib/cdc/referentiels"
+import { ABONNEMENT_PRO_LABEL } from "@/lib/cdc/referentiels"
 import { subscriptionQuantityForCompte } from "@/lib/compte-pro/seats"
 import { createClient } from "@/lib/supabase/server"
 import {
@@ -17,7 +17,7 @@ import {
 export async function startProSubscription(): Promise<{ error: string } | never> {
   if (!isStripeConfigured()) {
     return {
-      error: `Abonnement ${ABONNEMENT_PRO_HT} € HT / mois : paiement Stripe en cours de configuration.`,
+      error: `Abonnement ${ABONNEMENT_PRO_LABEL} : paiement Stripe en cours de configuration.`,
     }
   }
 
@@ -103,7 +103,9 @@ export async function startProSubscription(): Promise<{ error: string } | never>
   redirect(session.url)
 }
 
-export async function openBillingPortal(): Promise<{ error: string } | never> {
+export async function openBillingPortal(
+  returnPath = "/espace/factures"
+): Promise<{ error: string } | never> {
   if (!isStripeConfigured()) {
     return { error: "Portail de facturation indisponible." }
   }
@@ -131,9 +133,11 @@ export async function openBillingPortal(): Promise<{ error: string } | never> {
   const headersList = await headers()
   const origin = getAppOrigin(headersList.get("origin"))
 
+  const safePath = returnPath.startsWith("/") ? returnPath : "/espace/factures"
+
   const session = await stripe.billingPortal.sessions.create({
     customer: compte.stripe_customer_id,
-    return_url: `${origin}/espace/factures`,
+    return_url: `${origin}${safePath}`,
   })
 
   redirect(session.url)

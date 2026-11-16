@@ -88,3 +88,11 @@ export function buildParcoursStepImageAlt(
 export function benneVolumeImageAlt(volumeM3: number): string {
   return `Benne de location de ${volumeM3} m³`
 }
+
+export function benneImageForVolume(volumeM3: number): string {
+  const volumes = SITE_IMAGES.benneByVolume
+  if (volumeM3 in volumes) {
+    return volumes[volumeM3 as keyof typeof volumes]
+  }
+  return SITE_IMAGES.benneDefault
+}

@@ -22,6 +22,7 @@ import {
 } from "@/lib/seo/local-copy"
 
 import { FloatingHelpBubble } from "./floating-help-bubble"
+import { VitrineDevisReprise } from "./vitrine-devis-reprise"
 import { VitrineHero } from "./vitrine-hero"
 import { VitrineCityGuide } from "./vitrine-city-guide"
 import { VitrineDepartmentGuide } from "./vitrine-department-guide"
@@ -32,6 +33,7 @@ import { VitrineLocationHub } from "./vitrine-location-hub"
 import { VitrineLongtailIntro } from "./vitrine-longtail-intro"
 import { VitrineSeoPricingSection } from "./vitrine-seo-pricing-section"
 import { GoogleReviewsReassurance } from "./google-reviews-reassurance"
+import type { OrderDemoMode } from "@/lib/order/dev-order-demo"
 
 function OrderBanner({ orderParam }: { orderParam?: string }) {
   const { openOrder } = useVitrineOrder()
@@ -68,12 +70,16 @@ function OrderBanner({ orderParam }: { orderParam?: string }) {
 
 export function VitrineHomeClient({
   orderParam,
+  repriseToken,
+  orderDemo,
   seoVariant,
   localSeoData,
   hubPage,
   heroBackdrop,
 }: {
   orderParam?: string
+  repriseToken?: string
+  orderDemo?: OrderDemoMode | null
   seoVariant: SeoVariant
   localSeoData?: LocalPage
   hubPage?: boolean
@@ -86,7 +92,7 @@ export function VitrineHomeClient({
   })
 
   return (
-    <VitrineOrderProvider>
+    <VitrineOrderProvider initialOrderDemo={orderDemo ?? null}>
       <div
         className={`vitrine-root vitrine--with-action-bar min-h-screen${particulierHome ? " vitrine--mobile-centered vitrine--particulier-home-desktop-centered" : ""}`}
       >
@@ -98,6 +104,7 @@ export function VitrineHomeClient({
         </a>
 
         <VitrineHeader />
+        <VitrineDevisReprise repriseToken={repriseToken} />
         <OrderBanner orderParam={orderParam} />
 
         <main id="contenu" className="relative">

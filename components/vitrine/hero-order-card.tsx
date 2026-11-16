@@ -16,6 +16,7 @@ import { useOrderAudienceSession } from "@/lib/auth/use-order-audience-session"
 import { getEntryPriceTtcParticulier } from "@/lib/seo/pricing-snapshot"
 import { cn } from "@/lib/utils"
 
+import { GoogleRatingBadge } from "./google-rating-badge"
 import { HeroFormulaireLivraisonLottie } from "./hero-formulaire-livraison-lottie"
 import { useVitrineOrder } from "./order-context"
 
@@ -101,7 +102,7 @@ export function HeroOrderCard({
   return (
     <div
       className={cn(
-        "hero-order-card order-tunnel-form relative z-20 flex w-full flex-col gap-5 p-5 max-lg:items-center max-lg:text-center sm:gap-5 sm:p-6 lg:items-stretch lg:text-left",
+        "hero-order-card order-tunnel-form relative z-20 flex w-full flex-col gap-5 p-5 max-lg:items-center max-lg:gap-3 max-lg:text-center sm:gap-5 sm:p-6 lg:items-stretch lg:text-left",
         className
       )}
       aria-labelledby="hero-order-card-title"
@@ -203,19 +204,28 @@ export function HeroOrderCard({
 
       <div
         className={cn(
-          "hero-order-card__footer pt-4 text-center leading-snug",
+          "hero-order-card__footer text-center leading-snug",
           isPro
-            ? "text-[11px] text-brand-muted sm:text-xs"
-            : "text-[15px] font-semibold text-brand-navy sm:text-base"
+            ? "hero-order-card__footer--rule pt-4 text-[11px] text-brand-muted sm:text-xs"
+            : "hero-order-card__footer--price max-lg:-mt-0.5 max-lg:pt-0 lg:pt-4 lg:text-[15px] lg:font-semibold lg:text-brand-navy lg:text-base"
         )}
       >
-        <p>
-          {isPro
-            ? "Les modalités d’intervention et de règlement sont précisées avec notre équipe."
-            : minTtcLabel
-              ? `Dès ${minTtcLabel} € TTC`
-              : "Le tarif dépend de votre adresse, des déchets et de la benne choisie."}
-        </p>
+        {isPro ? (
+          <p>
+            Les modalités d’intervention et de règlement sont précisées avec notre équipe.
+          </p>
+        ) : (
+          <>
+            <div className="flex justify-center lg:hidden">
+              <GoogleRatingBadge variant="card" compact />
+            </div>
+            <p className="hidden lg:block">
+              {minTtcLabel
+                ? `Dès ${minTtcLabel} € TTC`
+                : "Le tarif dépend de votre adresse, des déchets et de la benne choisie."}
+            </p>
+          </>
+        )}
       </div>
     </div>
   )

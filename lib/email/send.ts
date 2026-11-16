@@ -15,11 +15,17 @@ function getResend(): Resend {
   return resendClient
 }
 
+export type EmailAttachment = {
+  filename: string
+  content: Buffer | Uint8Array
+}
+
 export type SendEmailInput = {
   to: string
   subject: string
   html: string
   text: string
+  attachments?: EmailAttachment[]
 }
 
 export async function sendEmail(input: SendEmailInput): Promise<{ sent: boolean; error?: string }> {
@@ -34,12 +40,18 @@ export async function sendEmail(input: SendEmailInput): Promise<{ sent: boolean;
   }
 
   try {
+    const attachments = input.attachments?.map((a) => ({
+      filename: a.filename,
+      content: Buffer.isBuffer(a.content) ? a.content : Buffer.from(a.content),
+    }))
+
     const { error } = await getResend().emails.send({
       from: getEmailFrom(),
       to,
       subject: input.subject,
       html: input.html,
       text: input.text,
+      ...(attachments?.length ? { attachments } : {}),
     })
 
     if (error) {

@@ -34,6 +34,16 @@ export function audienceCommandeLabel(code: string | null): string {
   return "—"
 }
 
+export function commandeDevisEnvoye(devisSentAt: string | null | undefined): boolean {
+  return Boolean(devisSentAt)
+}
+
+export function commandeDevisEnvoyeBadgeClass(sent: boolean): string {
+  return sent
+    ? "bg-[#ECF4E9] text-brand-green-dark ring-1 ring-[#35A238]/25"
+    : "bg-muted/40 text-muted-foreground"
+}
+
 export function paymentStatusBadgeClass(code: string | null): string {
   switch (code) {
     case "paid":

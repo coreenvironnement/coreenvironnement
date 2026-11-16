@@ -68,7 +68,31 @@ const MOBILE_LINK_CLASS =
  * arrondi = token `--radius-btn` (aligné sur `.btn`), focus clavier visible.
  */
 const MOBILE_HEADER_TOUCH_CLASS =
-  "inline-flex h-11 min-h-11 items-center justify-center rounded-[var(--radius-btn)] border transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+  "inline-flex h-[calc(2.75rem*0.95)] min-h-[calc(2.75rem*0.95)] items-center justify-center rounded-[var(--radius-btn)] border transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+
+const MOBILE_HEADER_TOUCH_WIDTH_CLASS = "w-[calc(2.75rem*0.95)] shrink-0"
+
+/** Libellé compact (44 px) — équilibre avec le bouton menu ; le libellé complet reste en aria-label. */
+function AudienceMobileHeaderLabel({ isProPage }: { isProPage: boolean }) {
+  const lineClass =
+    "w-full text-center text-[8px] font-semibold leading-[1.05] tracking-tight"
+  if (isProPage) {
+    return (
+      <span className="flex w-full flex-col items-center justify-center gap-px text-center leading-none">
+        <span className={lineClass}>Go</span>
+        <span className={lineClass}>page</span>
+        <span className={lineClass}>partic.</span>
+      </span>
+    )
+  }
+  return (
+    <span className="flex w-full flex-col items-center justify-center gap-px text-center leading-none">
+      <span className={lineClass}>Go</span>
+      <span className={lineClass}>page</span>
+      <span className={lineClass}>pro</span>
+    </span>
+  )
+}
 
 /** Voile sombre prolongé sous la barre pour éviter une couture nette sur le hero. */
 const HEADER_HERO_FADE_CLASS =
@@ -168,15 +192,13 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
   }
 
   const audienceLink = isProPage
-    ? { label: "Page particulier", href: "/" }
-    : { label: "Page pro", href: "/professionnels" }
+    ? { label: "Go page particulier", href: "/" }
+    : { label: "Go page pro", href: "/professionnels" }
 
-  const audienceAriaLabel = isProPage
-    ? "Aller à la page particulier"
-    : "Aller à la page pro"
+  const audienceAriaLabel = audienceLink.label
 
   const audienceUnderLogoClass = cn(
-    "min-w-[148px] w-max max-w-[11.5rem] whitespace-nowrap rounded-full px-2.5 py-0.5 text-center text-[11px] font-semibold leading-tight transition-colors",
+    "min-w-fit w-max max-w-[15rem] whitespace-nowrap rounded-full px-2.5 py-0.5 text-center text-[11px] font-semibold leading-tight transition-colors",
     isProPage
       ? solid
         ? "border border-brand-border bg-white text-brand-navy hover:border-brand-green/40"
@@ -198,8 +220,14 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
           )}
         >
           {!solid ? <div aria-hidden className={HEADER_HERO_FADE_CLASS} /> : null}
-          <div className="container-x relative z-[1] grid h-[var(--vitrine-header-height)] grid-cols-3 items-center gap-3 lg:flex lg:justify-between lg:gap-4">
-            <div className="flex min-w-0 items-center justify-start gap-2">
+          <div className="container-x relative z-[1] flex h-[var(--vitrine-header-height)] items-center justify-between gap-3 lg:gap-4">
+            <div
+              className={cn(
+                "relative z-[2] flex shrink-0 items-center justify-start gap-2 lg:z-auto lg:w-auto lg:min-w-0",
+                MOBILE_HEADER_TOUCH_WIDTH_CLASS,
+                "lg:w-auto"
+              )}
+            >
               <button
                 type="button"
                 onClick={() => setMenuOpen(!menuOpen)}
@@ -208,15 +236,16 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
                 aria-controls="vitrine-mobile-menu"
                 className={cn(
                   MOBILE_HEADER_TOUCH_CLASS,
-                  "w-11 shrink-0 lg:hidden",
+                  MOBILE_HEADER_TOUCH_WIDTH_CLASS,
+                  "lg:hidden",
                   solid
-                    ? "border-brand-border bg-white text-brand-navy hover:bg-brand-warm-field"
+                    ? "border-brand-border/70 bg-transparent text-brand-navy hover:bg-brand-warm-field/90"
                     : "border-white/20 bg-white/[0.06] text-white backdrop-blur-md hover:bg-white/[0.12]"
                 )}
               >
                 <HugeiconsIcon
                   icon={menuOpen ? Cancel01Icon : Menu01Icon}
-                  size={20}
+                  size={19}
                   strokeWidth={VITRINE_ICON_STROKE}
                 />
               </button>
@@ -240,11 +269,11 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
               </div>
             </div>
 
-            <div className="flex min-w-0 justify-center lg:hidden">
+            <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center lg:hidden">
               <Link
                 href={logoHref}
                 aria-label="CORE ENVIRONNEMENT — Accueil"
-                className="shrink-0"
+                className="pointer-events-auto shrink-0"
                 onClick={closeMenu}
               >
                 <VitrineLogo priority variant="header" transparent={!solid} />
@@ -282,20 +311,27 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
               <VitrineAccountLinks solid={solid} variant="desktop" />
             </div>
 
-            <div className="flex items-center justify-end gap-2 lg:hidden">
+            <div
+              className={cn(
+                "relative z-[2] flex shrink-0 items-center justify-end lg:hidden",
+                MOBILE_HEADER_TOUCH_WIDTH_CLASS
+              )}
+            >
               <Link
                 href={audienceLink.href}
                 onClick={closeMenu}
                 aria-label={audienceAriaLabel}
+                title={audienceLink.label}
                 className={cn(
                   MOBILE_HEADER_TOUCH_CLASS,
-                  "min-w-fit max-w-[9.25rem] shrink px-3 text-[12px] font-semibold leading-tight sm:text-[13px]",
+                  MOBILE_HEADER_TOUCH_WIDTH_CLASS,
+                  "flex-col gap-0 px-1 text-center",
                   solid
-                    ? "border-brand-green/30 bg-white text-brand-green-dark hover:border-brand-green"
+                    ? "border-brand-green/35 bg-transparent text-brand-green-dark hover:border-brand-green hover:bg-brand-warm-field/90"
                     : "border-white/30 bg-white/10 text-white backdrop-blur-md hover:bg-white/15"
                 )}
               >
-                {audienceLink.label}
+                <AudienceMobileHeaderLabel isProPage={isProPage} />
               </Link>
             </div>
           </div>

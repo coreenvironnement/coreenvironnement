@@ -2,34 +2,51 @@ import Link from "next/link"
 
 import { LogoutButton } from "@/components/auth/logout-button"
 import { EspacePageHeader, EspacePanel } from "@/components/espace/espace-panel"
+import { EspaceProfilForm, type ProfilFormInitial } from "@/components/espace/espace-profil-form"
+import { ProfilPaymentPanel } from "@/components/espace/profil-payment-panel"
 
 type Props = {
-  displayName: string
-  email: string
+  formInitial: ProfilFormInitial
   hasComptePro: boolean
   hasChantier: boolean
+  stripeBillingAvailable: boolean
+  hasStripeCustomer: boolean
+  isParticulier: boolean
 }
 
 export function EspaceProfilView({
-  displayName,
-  email,
+  formInitial,
   hasComptePro,
   hasChantier,
+  stripeBillingAvailable,
+  hasStripeCustomer,
+  isParticulier,
 }: Props) {
   return (
-    <div className="mx-auto max-w-lg space-y-5">
-      <EspacePageHeader title="Mon compte" meta="Session et déconnexion" />
+    <div className="mx-auto max-w-2xl space-y-5">
+      <EspacePageHeader
+        title="Mon compte"
+        meta={isParticulier ? "Coordonnées" : "Coordonnées et moyens de paiement"}
+      />
 
-      <EspacePanel className="space-y-4">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Connecté en tant que
-          </p>
-          <p className="mt-1 text-lg font-semibold text-brand-navy">{displayName}</p>
-          <p className="mt-0.5 text-sm text-muted-foreground">{email}</p>
-        </div>
+      <EspacePanel>
+        <EspaceProfilForm initial={formInitial} />
+      </EspacePanel>
 
-        <ul className="space-y-2 border-t border-[#35A238]/12 pt-4 text-sm">
+      {!isParticulier ? (
+        <EspacePanel>
+          <ProfilPaymentPanel
+            stripeBillingAvailable={stripeBillingAvailable}
+            hasStripeCustomer={hasStripeCustomer}
+          />
+        </EspacePanel>
+      ) : null}
+
+      <EspacePanel className="space-y-3">
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          Raccourcis
+        </p>
+        <ul className="space-y-2 text-sm">
           <li>
             <Link href="/espace/commandes" className="font-medium text-[#35A238] hover:underline">
               Mes commandes

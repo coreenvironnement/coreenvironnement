@@ -17,6 +17,8 @@ type OrderDateFieldProps = {
   warmSurface?: boolean
   invalid?: boolean
   optionalHint?: string
+  /** Champ plus compact (tunnel dates côte à côte). */
+  compact?: boolean
 }
 
 export const OrderDateField = forwardRef<HTMLDivElement, OrderDateFieldProps>(
@@ -31,6 +33,7 @@ export const OrderDateField = forwardRef<HTMLDivElement, OrderDateFieldProps>(
       warmSurface = false,
       invalid = false,
       optionalHint,
+      compact = false,
     },
     ref
   ) {
@@ -94,7 +97,8 @@ export const OrderDateField = forwardRef<HTMLDivElement, OrderDateFieldProps>(
           aria-haspopup="dialog"
           onClick={openPicker}
           className={cn(
-            "flex h-12 w-full items-center gap-2.5 rounded-xl border-2 px-3.5 text-left shadow-sm transition-colors",
+            "flex w-full items-center rounded-xl border-2 text-left shadow-sm transition-colors",
+            compact ? "h-10 gap-2 px-2.5" : "h-12 gap-2.5 px-3.5",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-navy/25 focus-visible:ring-offset-1",
             warmSurface ? "bg-brand-warm-field" : "bg-white",
             invalid
@@ -105,18 +109,24 @@ export const OrderDateField = forwardRef<HTMLDivElement, OrderDateFieldProps>(
         >
           <span
             className={cn(
-              "flex size-9 shrink-0 items-center justify-center rounded-lg",
+              "flex shrink-0 items-center justify-center rounded-lg",
+              compact ? "size-8" : "size-9",
               value ? "bg-primary/12 text-primary" : "bg-brand-green/[0.06] text-brand-navy/45"
             )}
             aria-hidden
           >
-            <Calendar className="size-[1.05rem]" />
+            <Calendar className={compact ? "size-4" : "size-[1.05rem]"} />
           </span>
-          <span className="min-w-0 flex-1">
-            <span className="block truncate text-[15px] font-semibold leading-snug">
+          <span className="min-w-0 flex-1 text-center">
+            <span
+              className={cn(
+                "block leading-snug font-semibold",
+                compact ? "text-[13px]" : "truncate text-[15px]"
+              )}
+            >
               {display || placeholder}
             </span>
-            {value ? (
+            {value && !compact ? (
               <span className="mt-0.5 block text-[11px] font-medium text-brand-muted">
                 Appuyez pour modifier
               </span>

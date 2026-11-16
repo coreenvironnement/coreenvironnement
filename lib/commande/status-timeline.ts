@@ -37,26 +37,7 @@ export function buildCommandeTimeline(
 
   if (statut === "brouillon") {
     return {
-      steps: [
-        {
-          code: "brouillon",
-          label: "En préparation",
-          icon: CheckCircle2,
-          state: "current",
-        },
-        {
-          code: "en_cours",
-          label: HAPPY_PATH[1].label,
-          icon: HAPPY_PATH[1].icon,
-          state: "upcoming",
-        },
-        {
-          code: "livree",
-          label: HAPPY_PATH[2].label,
-          icon: HAPPY_PATH[2].icon,
-          state: "upcoming",
-        },
-      ],
+      steps: [],
       terminalLabel: null,
       isTerminalError: false,
     }

@@ -24,6 +24,7 @@ import {
   commentCaFonctionne,
   professionnelsCommentCaFonctionne,
 } from "@/lib/cdc/contenu-vitrine"
+import { ABONNEMENT_PRO_LABEL } from "@/lib/cdc/referentiels"
 import {
   SITE_IMAGES,
   buildParcoursStepImageAlt,
@@ -90,7 +91,7 @@ const PRO_ACCOUNT_STEPS: Step[] = [
   {
     num: "02",
     label: "VALIDATION ET ABONNEMENT",
-    text: "Notre service financier valide votre dossier sous 24 h. Vous activez ensuite l'abonnement espace client (35 € HT / mois) et accédez au suivi de vos chantiers.",
+    text: `Notre service financier valide votre dossier sous 24 h. Vous activez ensuite l'abonnement espace client (${ABONNEMENT_PRO_LABEL}) et accédez au suivi de vos chantiers.`,
     icon: Timer02Icon,
   },
 ]

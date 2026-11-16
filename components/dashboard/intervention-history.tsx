@@ -2,6 +2,7 @@ import Link from "next/link"
 
 import { DocumentDownloadButton } from "@/components/dashboard/document-download-button"
 import { formatDateFr } from "@/lib/format/date"
+import { formatCreneauFrShort } from "@/lib/planning/creneau"
 import type { InterventionHistoryRow } from "@/lib/dashboard/chantier-data"
 import { COLONNES_HISTORIQUE, TYPES_DOCUMENTS } from "@/lib/cdc/referentiels"
 
@@ -48,7 +49,9 @@ export function InterventionHistoryTable({ rows }: Props) {
                   <td className="px-3 py-3">{row.contenantLabel}</td>
                   <td className="px-3 py-3">{row.dechetNom}</td>
                   <td className="px-3 py-3 whitespace-nowrap">
-                    {formatDateFr(row.dateSouhaitee)}
+                    {row.planifieeLe
+                      ? formatCreneauFrShort(row.planifieeLe)
+                      : formatDateFr(row.dateSouhaitee)}
                   </td>
                   <td className="px-3 py-3">{row.statutLabel}</td>
                   <td className="px-3 py-3 whitespace-nowrap">

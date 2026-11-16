@@ -16,6 +16,9 @@ import {
   isValidDeliveryDate,
   isValidPickupDate,
 } from "@/lib/order/delivery-dates"
+import { BROUILLON_COMMANDE_SUPPRIME_MESSAGE } from "@/lib/order/brouillon-errors"
+import { buildParticulierTunnelResumeFromCheckout } from "@/lib/order/particulier-tunnel-resume"
+import { isValidContactPhone } from "@/lib/phone/phone-value"
 
 export type PreparedParticulierOrder = {
   commandeId: string
@@ -88,8 +91,7 @@ export async function prepareParticulierOrder(
   }
 
   const phone = input.contactPhone?.trim() ?? ""
-  const phoneDigits = phone.replace(/\D/g, "")
-  if (phoneDigits.length < 10) {
+  if (!isValidContactPhone(phone)) {
     return { error: "Indiquez un numéro de téléphone valide." }
   }
 
@@ -113,11 +115,54 @@ export async function prepareParticulierOrder(
   const supabase = createServiceClient()
   const amountTtcCents = priceTtcFromHt(prestation.priceHt)
 
+  const dechetCode = dechetCodeForFamily(prestation.family)
+  const { data: dechetType, error: dechetError } = await supabase
+    .from("dechets_types")
+    .select("id")
+    .eq("code", dechetCode)
+    .maybeSingle()
+
+  if (dechetError) {
+    console.error("[prepareParticulierOrder] dechets_types lookup:", dechetCode, dechetError)
+    return { error: "Type de déchet indisponible. Réessayez plus tard." }
+  }
+
+  if (!dechetType) {
+    return {
+      error:
+        "Type de déchet indisponible (catalogue non initialisé). Contactez-nous par téléphone.",
+    }
+  }
+
+  const tunnelResumeSnapshot = buildParticulierTunnelResumeFromCheckout(input)
+
+  const draftRow = {
+    adresse_complete: address,
+    type_dechet_id: dechetType.id,
+    statut: "brouillon" as const,
+    payment_status: "pending" as const,
+    audience: "particulier" as const,
+    prestation_id: prestation.id,
+    prestation_label: prestation.label,
+    volume_m3: prestation.volumeM3,
+    price_ht: prestation.priceHt,
+    date_livraison: input.deliveryDate,
+    date_enlevement: input.pickupDate?.length ? input.pickupDate : null,
+    departement_code: deptCode,
+    contact_email: email,
+    contact_nom: input.contactName?.trim() || null,
+    contact_telephone: phone,
+    client_id: loggedInClientId ?? null,
+    ...(tunnelResumeSnapshot
+      ? { tunnel_resume_snapshot: tunnelResumeSnapshot as Record<string, unknown> }
+      : {}),
+  }
+
   if (input.existingCommandeId) {
     const { data: existing } = await supabase
       .from("commandes")
       .select(
-        "id, payment_status, statut, contact_email, prestation_id, price_ht, stripe_payment_intent_id, audience"
+        "id, payment_status, statut, stripe_payment_intent_id, audience"
       )
       .eq("id", input.existingCommandeId)
       .maybeSingle()
@@ -143,27 +188,19 @@ export async function prepareParticulierOrder(
         }
       }
 
-      const sameDraft =
-        existing.payment_status === "pending" &&
-        existing.contact_email === email &&
-        existing.prestation_id === prestation.id
+      const editableDraft =
+        existing.payment_status === "pending" && existing.statut === "brouillon"
 
-      if (sameDraft) {
-        const draftPatch: Record<string, unknown> = {
-          adresse_complete: address,
-          date_livraison: input.deliveryDate,
-          date_enlevement: input.pickupDate?.length ? input.pickupDate : null,
-          contact_nom: input.contactName?.trim() || null,
-          contact_telephone: phone,
-          departement_code: deptCode,
-          price_ht: prestation.priceHt,
-          audience: "particulier",
-        }
-        if (loggedInClientId) {
-          draftPatch.client_id = loggedInClientId
-        }
+      if (editableDraft) {
+        const { error: updateError } = await supabase
+          .from("commandes")
+          .update(draftRow)
+          .eq("id", existing.id)
 
-        await supabase.from("commandes").update(draftPatch).eq("id", existing.id)
+        if (updateError) {
+          console.error("[prepareParticulierOrder] update draft:", updateError)
+          return { error: "Impossible d'enregistrer la commande. Réessayez." }
+        }
 
         return {
           commandeId: existing.id,
@@ -176,48 +213,19 @@ export async function prepareParticulierOrder(
           stripePaymentIntentId: existing.stripe_payment_intent_id ?? null,
         }
       }
+
+      return {
+        error:
+          "Cette commande ne peut plus être mise à jour. Recommencez votre demande depuis le début.",
+      }
     }
-  }
 
-  const dechetCode = dechetCodeForFamily(prestation.family)
-  const { data: dechetType, error: dechetError } = await supabase
-    .from("dechets_types")
-    .select("id")
-    .eq("code", dechetCode)
-    .maybeSingle()
-
-  if (dechetError) {
-    console.error("[prepareParticulierOrder] dechets_types lookup:", dechetCode, dechetError)
-    return { error: "Type de déchet indisponible. Réessayez plus tard." }
-  }
-
-  if (!dechetType) {
-    return {
-      error:
-        "Type de déchet indisponible (catalogue non initialisé). Contactez-nous par téléphone.",
-    }
+    return { error: BROUILLON_COMMANDE_SUPPRIME_MESSAGE }
   }
 
   const { data: commande, error: insertError } = await supabase
     .from("commandes")
-    .insert({
-      adresse_complete: address,
-      type_dechet_id: dechetType.id,
-      statut: "brouillon",
-      payment_status: "pending",
-      audience: "particulier",
-      prestation_id: prestation.id,
-      prestation_label: prestation.label,
-      volume_m3: prestation.volumeM3,
-      price_ht: prestation.priceHt,
-      date_livraison: input.deliveryDate,
-      date_enlevement: input.pickupDate?.length ? input.pickupDate : null,
-      departement_code: deptCode,
-      contact_email: email,
-      contact_nom: input.contactName?.trim() || null,
-      contact_telephone: phone,
-      client_id: loggedInClientId ?? null,
-    })
+    .insert(draftRow)
     .select("id")
     .single()
 

@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react"
 
 import { submitComptePro } from "@/app/pro/actions"
 import { comptePro } from "@/lib/cdc/contenu-vitrine"
-import { ABONNEMENT_PRO_HT } from "@/lib/cdc/referentiels"
+import { ABONNEMENT_PRO_LABEL } from "@/lib/cdc/referentiels"
 import { EntrepriseLookupFields } from "@/components/forms/entreprise-lookup-fields"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -63,7 +63,7 @@ export function CompteProForm({ defaultEmail, isResubmit, previousNotes }: Props
       ) : null}
 
       <p className="text-sm text-muted-foreground">
-        Abonnement espace client pro : <strong>{ABONNEMENT_PRO_HT} € HT / mois</strong>{" "}
+        Abonnement espace client pro : <strong>{ABONNEMENT_PRO_LABEL}</strong>{" "}
         (activation par Stripe après validation de votre dossier).
       </p>
 

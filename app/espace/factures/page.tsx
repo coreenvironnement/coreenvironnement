@@ -18,7 +18,7 @@ export default async function EspaceFacturesPage() {
     supabase
       .from("commandes")
       .select(
-        "id, date_creation, prestation_label, price_ht, payment_status, audience, stripe_payment_intent_id, statut"
+        "id, date_creation, prestation_label, price_ht, payment_status, audience, stripe_payment_intent_id, statut, livree_at, invoice_storage_path"
       )
       .eq("client_id", user.id)
       .in("payment_status", ["paid", "waived", "pending"])

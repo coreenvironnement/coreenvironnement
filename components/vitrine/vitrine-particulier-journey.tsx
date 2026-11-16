@@ -55,8 +55,23 @@ export function VitrineParticulierJourney() {
           })}
         </ol>
 
+        <div className="parcours-cta mt-6 md:mt-8">
+          <button
+            type="button"
+            onClick={() => openOrder({ intentStart: "waste" })}
+            className="group flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#35A238] px-4 py-3 font-[family-name:var(--font-body)] text-[15px] font-semibold leading-snug text-white shadow-[0_8px_24px_-8px_rgb(14_32_16/0.45)] transition-colors hover:bg-brand-green-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2 sm:text-base md:mx-auto md:max-w-sm lg:max-w-md"
+          >
+            <span className="min-w-0 flex-1 text-center">{parcours.cta}</span>
+            <ChevronRight
+              className="size-5 shrink-0 transition-transform group-hover:translate-x-0.5"
+              strokeWidth={2.25}
+              aria-hidden
+            />
+          </button>
+        </div>
+
         {lien ? (
-          <p className="parcours-volume-link mt-6 text-center md:mt-8">
+          <p className="parcours-volume-link mt-5 text-center md:mt-6">
             {"action" in lien && lien.action === "volume-estimator" ? (
               <button
                 type="button"
@@ -75,21 +90,6 @@ export function VitrineParticulierJourney() {
             )}
           </p>
         ) : null}
-
-        <div className="parcours-cta mt-8 md:mt-10">
-          <button
-            type="button"
-            onClick={() => openOrder({ intentStart: "waste" })}
-            className="group flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#35A238] px-4 py-3 font-[family-name:var(--font-body)] text-[15px] font-semibold leading-snug text-white shadow-[0_8px_24px_-8px_rgb(14_32_16/0.45)] transition-colors hover:bg-brand-green-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2 sm:text-base md:mx-auto md:max-w-sm lg:max-w-md"
-          >
-            <span className="min-w-0 flex-1 text-center">{parcours.cta}</span>
-            <ChevronRight
-              className="size-5 shrink-0 transition-transform group-hover:translate-x-0.5"
-              strokeWidth={2.25}
-              aria-hidden
-            />
-          </button>
-        </div>
       </div>
     </section>
   )

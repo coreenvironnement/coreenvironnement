@@ -4,11 +4,15 @@ import { ArrowLeft } from "lucide-react"
 
 import { createInterventionFromCommande, updateCommandeStatut } from "@/app/admin/actions"
 import { AdminCommandeOps } from "@/components/admin/admin-commande-ops"
+import { AdminCommandePlanificationCard } from "@/components/admin/admin-commande-planification-card"
+import { AdminDeleteBrouillonButton } from "@/components/admin/admin-delete-brouillon-button"
 import { AdminCommandeStatutSelect } from "@/components/admin/admin-commande-statut-select"
 import { requireAdmin } from "@/lib/auth/require-admin"
 import { canCreateInterventionFromCommande } from "@/lib/commande/intervention-from-commande"
 import {
   audienceCommandeLabel,
+  commandeDevisEnvoye,
+  commandeDevisEnvoyeBadgeClass,
   commandeMailtoHref,
   commandeTelHref,
   isCommandeNouvelle,
@@ -90,6 +94,14 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
   const reference = formatOrderReference(commande.id)
   const paidStillCaptured =
     commande.statut === "annulee" && commande.payment_status === "paid"
+  const isDeletableBrouillon =
+    commande.statut === "brouillon" &&
+    (commande.payment_status === "pending" || commande.payment_status == null)
+  const canPlanLivraison =
+    (commande.payment_status === "paid" || commande.payment_status === "waived") &&
+    commande.statut !== "livree" &&
+    commande.statut !== "annulee"
+  const returnTo = `/admin/interventions/${id}`
 
   return (
     <div className="space-y-8">
@@ -126,6 +138,21 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
           >
             Paiement : {paymentStatusLabel(commande.payment_status)}
           </span>
+          {commandeDevisEnvoye(commande.devis_sent_at as string | null) ? (
+            <span
+              className={cn(
+                "rounded-full px-2 py-0.5 text-xs font-medium",
+                commandeDevisEnvoyeBadgeClass(true)
+              )}
+              title={
+                commande.devis_sent_at
+                  ? `Devis envoyé le ${formatDateFr(commande.devis_sent_at as string)}`
+                  : undefined
+              }
+            >
+              Devis envoyé
+            </span>
+          ) : null}
           {commande.audience ? (
             <span className="text-muted-foreground">
               {audienceCommandeLabel(commande.audience)}
@@ -145,6 +172,11 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
           succès.
         </p>
       ) : null}
+      {okParam === "deleted" ? (
+        <p className="rounded-lg border border-[#35A238]/30 bg-[#ECF4E9] px-4 py-3 text-sm text-brand-navy">
+          Brouillon supprimé.
+        </p>
+      ) : null}
       {okParam === "cancelled" ? (
         <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
           Commande annulée.
@@ -160,6 +192,16 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
           Le paiement était déjà remboursé côté Stripe. La commande a été synchronisée.
         </p>
       ) : null}
+      {okParam === "planned" ? (
+        <p className="rounded-lg border border-[#35A238]/30 bg-[#ECF4E9] px-4 py-3 text-sm text-brand-navy">
+          Créneau enregistré. Le client a reçu un e-mail de confirmation.
+        </p>
+      ) : null}
+      {okParam === "rescheduled" ? (
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+          Livraison reportée. Le client a été informé par e-mail.
+        </p>
+      ) : null}
       {paidStillCaptured ? (
         <p className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950">
           Annulée — paiement toujours encaissé
@@ -170,6 +212,18 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
           Remboursement en cours. Le badge « Remboursée » n’apparaîtra qu’après confirmation
           Stripe.
         </p>
+      ) : null}
+
+      {canPlanLivraison ? (
+        <AdminCommandePlanificationCard
+          commandeId={id}
+          reference={reference}
+          telephone={commande.contact_telephone as string | null}
+          dateLivraison={commande.date_livraison as string | null}
+          livraisonPlanifieeAt={(commande.livraison_planifiee_at as string | null) ?? null}
+          canPlan={canPlanLivraison}
+          returnTo={returnTo}
+        />
       ) : null}
 
       <Card>
@@ -220,6 +274,12 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
             statut={commande.statut}
             paymentStatus={commande.payment_status ?? ""}
           />
+          {isDeletableBrouillon ? (
+            <AdminDeleteBrouillonButton
+              commandeId={id}
+              returnTo="/admin/interventions?vue=brouillon"
+            />
+          ) : null}
         </CardContent>
       </Card>
 

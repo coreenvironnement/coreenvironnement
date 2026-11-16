@@ -34,6 +34,12 @@ export type LegalSection = {
   paragraphs: readonly LegalParagraph[]
 }
 
+export function legalParagraphText(block: LegalParagraph): string {
+  if (typeof block === "string") return block
+  if (block.type === "link") return block.label
+  return ""
+}
+
 export const mentionsLegalesSections: readonly LegalSection[] = [
   {
     title: "Éditeur du site",
@@ -81,7 +87,7 @@ export const mentionsLegalesSections: readonly LegalSection[] = [
 ]
 
 /** Conditions Générales de Vente officielles — texte fourni par le client, sans modification de fond. */
-export const cgvSections = [
+export const cgvSections: readonly LegalSection[] = [
   {
     title: "ARTICLE\u00A01 – IDENTIFICATION DE LA SOCIÉTÉ",
     paragraphs: [

@@ -11,6 +11,7 @@
     "test": "npx --yes tsx scripts/test-local-seo.ts",
     "test:city-guide": "npx --yes tsx scripts/test-city-guide.ts",
     "test:department-guide": "npx --yes tsx scripts/test-department-guide.ts",
+    "test:devis-resume": "npx --yes tsx scripts/test-devis-resume.ts",
     "test:prestation-mesh-lot1": "npx --yes tsx scripts/test-prestation-mesh-lot1.ts",
     "optimize:images": "node scripts/optimize-site-images.mjs",
     "verify:gravats-sprite": "node scripts/verify-gravats-sprite.mjs",
@@ -20,6 +21,7 @@
     "db:apply-admin-v2": "node scripts/apply-migration-019-remote.mjs",
     "qa:admin-routes": "node scripts/qa-admin-routes.mjs",
     "verify:resend": "node scripts/verify-resend-config.mjs",
+    "qa:particulier-tunnel": "npx --yes tsx scripts/qa-particulier-tunnel.ts",
     "stripe": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1",
     "stripe:login": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1 login",
     "stripe:listen": "powershell -ExecutionPolicy Bypass -File ./scripts/stripe-cli.ps1 listen --forward-to localhost:3001/api/stripe/webhook"

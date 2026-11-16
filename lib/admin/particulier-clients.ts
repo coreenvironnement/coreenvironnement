@@ -14,7 +14,7 @@ export async function loadParticulierClients(
 ): Promise<ParticulierClientRow[]> {
   const { data: commandes } = await supabase
     .from("commandes")
-    .select("id, client_id, contact_email, contact_nom, date_creation, audience")
+    .select("id, client_id, contact_email, contact_nom, date_creation, audience, statut")
     .eq("audience", "particulier")
     .order("date_creation", { ascending: false })
 
@@ -25,20 +25,23 @@ export async function loadParticulierClients(
     const key = c.client_id ?? (email || `anon-${c.id}`)
     const existing = map.get(key)
     const created = c.date_creation ?? ""
+    const isBrouillon = c.statut === "brouillon"
     if (!existing) {
       map.set(key, {
         key,
         profileId: c.client_id,
         email: email || "—",
         nom: c.contact_nom,
-        commandeCount: 1,
-        lastCommandeAt: created,
+        commandeCount: isBrouillon ? 0 : 1,
+        lastCommandeAt: isBrouillon ? "" : created,
       })
     } else {
-      existing.commandeCount += 1
-      if (created > existing.lastCommandeAt) {
-        existing.lastCommandeAt = created
-        if (c.contact_nom) existing.nom = c.contact_nom
+      if (!isBrouillon) {
+        existing.commandeCount += 1
+        if (created > existing.lastCommandeAt) {
+          existing.lastCommandeAt = created
+          if (c.contact_nom) existing.nom = c.contact_nom
+        }
       }
     }
   }
@@ -63,5 +66,7 @@ export async function loadParticulierClients(
     }
   }
 
-  return [...map.values()].sort((a, b) => b.lastCommandeAt.localeCompare(a.lastCommandeAt))
+  return [...map.values()]
+    .filter((r) => r.commandeCount > 0 || r.lastCommandeAt.length > 0)
+    .sort((a, b) => b.lastCommandeAt.localeCompare(a.lastCommandeAt))
 }

@@ -36,6 +36,7 @@ export type InterventionHistoryRow = {
   contenantLabel: string
   dechetNom: string
   dateSouhaitee: string | null
+  planifieeLe: string | null
   statut: string
   statutLabel: string
   dateReelle: string | null
@@ -187,7 +188,7 @@ export async function loadChantierInterventions(
     .from("interventions")
     .select(
       `
-      id, numero, statut, date_demande, date_souhaitee, date_reelle, commentaire,
+      id, numero, statut, date_demande, date_souhaitee, planifiee_le, date_reelle, commentaire,
       types_intervention(label),
       types_contenants(label),
       dechets_types(nom),
@@ -214,6 +215,7 @@ export async function loadChantierInterventions(
         (row.types_contenants as unknown as { label: string } | null)?.label ?? "—",
       dechetNom: (row.dechets_types as unknown as { nom: string } | null)?.nom ?? "—",
       dateSouhaitee: row.date_souhaitee,
+      planifieeLe: row.planifiee_le as string | null,
       statut: row.statut,
       statutLabel: statutLabels[row.statut] ?? row.statut,
       dateReelle: row.date_reelle,

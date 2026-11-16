@@ -89,7 +89,7 @@ export const testimonials: Testimonial[] = [
     id: "google-ines-loulou",
     quote:
       "Très satisfaite des services de CORE ENVIRONNEMENT ! Entreprise sérieuse, professionnelle et réactive. Le service de location de bennes est au top, avec un travail efficace et des prestations de qualité. Équipe sympathique et à l'écoute des besoins du client. Je recommande vivement cette entreprise pour son sérieux et son professionnalisme !",
-    author: "inès loulou",
+    author: "Inès loulou",
     role: "Particulier · Avis Google",
     segment: "particulier",
   },

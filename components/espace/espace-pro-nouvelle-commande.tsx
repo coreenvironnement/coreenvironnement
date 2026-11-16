@@ -1,9 +1,25 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 
-import { OrderWidget } from "@/components/order-widget"
+const OrderWidget = dynamic(
+  () => import("@/components/order-widget").then((m) => ({ default: m.OrderWidget })),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="flex min-h-[280px] items-center justify-center rounded-xl border border-[#35A238]/15 bg-white/80"
+        role="status"
+        aria-live="polite"
+        aria-busy
+      >
+        <p className="text-sm text-muted-foreground">Préparation du tunnel…</p>
+      </div>
+    ),
+  }
+)
 import { EspacePageHeader, EspacePanel } from "@/components/espace/espace-panel"
 import { VitrineOrderProvider, useVitrineOrder } from "@/components/vitrine/order-context"
 import type { ProReorderPrefill, ProReorderSeed } from "@/lib/espace/pro-reorder-prefill"

@@ -91,14 +91,14 @@ export function ParcoursLottieStepCard({
           />
         )}
       </div>
-      <div className="parcours-lottie-card__caption flex min-h-[3.25rem] items-center gap-2.5 border-t border-[#e8ece9] bg-white px-3.5 py-3 sm:gap-3 sm:px-4 sm:py-3.5">
+      <div className="parcours-lottie-card__caption flex min-h-[3.25rem] items-center justify-center gap-2.5 border-t border-[#e8ece9] bg-white px-3.5 py-3 text-center sm:gap-3 sm:px-4 sm:py-3.5">
         <span
           className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#E9F1EC] font-[family-name:var(--font-body)] text-[13px] font-semibold tabular-nums text-brand-muted"
           aria-hidden
         >
           {num}
         </span>
-        <h3 className="vitrine-h3">
+        <h3 className="vitrine-h3 text-center">
           {titre}
         </h3>
       </div>

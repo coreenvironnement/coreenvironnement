@@ -19,7 +19,7 @@ export function isSignUpDuplicate(
 }
 
 export const SIGNUP_EXISTING_EMAIL_MESSAGE =
-  "Un compte existe déjà pour cet e-mail (par exemple après une commande). Utilisez « Mot de passe oublié ? » sur la page de connexion pour choisir votre mot de passe."
+  "Un compte existe déjà pour cet e-mail."
 
 export function signUpErrorLooksLikeDuplicate(message: string): boolean {
   return /already|registered|exists/i.test(message)

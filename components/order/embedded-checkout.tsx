@@ -45,6 +45,7 @@ type EmbeddedCheckoutProps = {
   onBack: () => void
   onClose?: () => void
   deliveryDate: string
+  onPostPaymentUiChange?: (active: boolean) => void
 }
 
 export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
@@ -182,6 +183,11 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
 
   const showSuccessUi = success
 
+  useEffect(() => {
+    props.onPostPaymentUiChange?.(showSuccessUi)
+    return () => props.onPostPaymentUiChange?.(false)
+  }, [showSuccessUi, props.onPostPaymentUiChange])
+
   return (
     <div className="space-y-3.5">
       {showSuccessUi ? null : (
@@ -270,12 +276,21 @@ function PaymentErrorState({
   return (
     <div className="order-tunnel-card space-y-3 border-amber-200/80 px-4 py-5 text-center">
       <p className="text-sm font-medium text-amber-900">{message}</p>
-      <div className="flex flex-col gap-2 sm:flex-row">
-        <Button variant="outline" type="button" className="h-10 rounded-xl sm:flex-1" onClick={onBack}>
+      <div className="order-tunnel-step-actions">
+        <Button
+          variant="outline"
+          type="button"
+          className="order-tunnel-step-back h-10 rounded-xl"
+          onClick={onBack}
+        >
           Retour
         </Button>
         {onRetry ? (
-          <Button type="button" className="h-10 rounded-xl sm:flex-1" onClick={onRetry}>
+          <Button
+            type="button"
+            className="order-tunnel-step-primary h-10 rounded-xl"
+            onClick={onRetry}
+          >
             Réessayer
           </Button>
         ) : null}
@@ -493,7 +508,7 @@ function CheckoutFields({
 
       <div
         className={cn(
-          "flex flex-col gap-2 pt-0.5 sm:flex-row sm:justify-between",
+          "order-tunnel-step-actions pt-0.5",
           reassuranceVariant === "particulier" &&
             "max-md:sticky max-md:bottom-0 max-md:z-20 max-md:-mx-1 max-md:border-t max-md:border-primary/10 max-md:bg-gradient-to-t max-md:from-brand-warm max-md:via-brand-warm/98 max-md:to-brand-warm/85 max-md:px-1 max-md:pb-[max(0.5rem,env(safe-area-inset-bottom))] max-md:pt-2.5"
         )}
@@ -501,7 +516,7 @@ function CheckoutFields({
         <Button
           variant="outline"
           type="button"
-          className="h-11 rounded-xl sm:min-w-[7.5rem]"
+          className="order-tunnel-step-back h-11 rounded-xl"
           disabled={busy}
           onClick={onBack}
         >
@@ -509,7 +524,7 @@ function CheckoutFields({
         </Button>
         <Button
           type="button"
-          className="order-embedded-pay-btn h-11 min-h-11 flex-1 rounded-xl border-0 bg-[#35A238] px-4 text-[15px] font-semibold tracking-[-0.01em] text-white shadow-lg shadow-[#35A238]/20 hover:bg-[#19752B] disabled:pointer-events-none disabled:bg-[#D0D5DD] disabled:text-white disabled:opacity-100 disabled:shadow-none"
+          className="order-embedded-pay-btn order-tunnel-step-primary h-11 min-h-11 rounded-xl border-0 bg-[#35A238] px-4 text-[15px] font-semibold tracking-[-0.01em] text-white shadow-lg shadow-[#35A238]/20 hover:bg-[#19752B] disabled:pointer-events-none disabled:bg-[#D0D5DD] disabled:text-white disabled:opacity-100 disabled:shadow-none"
           disabled={!stripe || !elements || busy || !cgvAccepted}
           onClick={() => void confirm()}
         >
@@ -518,7 +533,7 @@ function CheckoutFields({
       </div>
 
       {reassuranceVariant === "particulier" ? (
-        <CheckoutParticulierTrackingNote className="mt-1 max-md:mt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] max-md:pb-[max(6.5rem,calc(5.75rem+env(safe-area-inset-bottom,0px)))]" />
+        <CheckoutParticulierTrackingNote className="mt-1 max-md:mt-2.5 max-md:mb-[calc(4.5rem+env(safe-area-inset-bottom,0px))]" />
       ) : null}
     </div>
   )

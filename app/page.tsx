@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 
 import { VitrineJsonLd } from "@/components/seo/vitrine-json-ld"
 import { VitrineHome } from "@/components/vitrine/vitrine-home"
+import { parseOrderDemoParam } from "@/lib/order/dev-order-demo"
 import {
   getShareOpenGraphImages,
   getShareTwitterImages,
@@ -16,7 +17,12 @@ const HOME_PAGE_META_DESCRIPTION =
 const HOME_PAGE_SITE_NAME = "Core Environnement"
 
 type PageProps = {
-  searchParams: Promise<{ order?: string; intent?: string }>
+  searchParams: Promise<{
+    order?: string
+    intent?: string
+    reprise?: string
+    demo?: string
+  }>
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -51,7 +57,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage({ searchParams }: PageProps) {
-  const { order: orderParam } = await searchParams
+  const { order: orderParam, reprise: repriseToken, demo: demoRaw } =
+    await searchParams
+  const orderDemo = parseOrderDemoParam(demoRaw)
 
   return (
     <>
@@ -60,7 +68,11 @@ export default async function HomePage({ searchParams }: PageProps) {
         websiteName={HOME_PAGE_SITE_NAME}
         description={HOME_PAGE_META_DESCRIPTION}
       />
-      <VitrineHome orderParam={orderParam} />
+      <VitrineHome
+        orderParam={orderParam}
+        repriseToken={repriseToken}
+        orderDemo={orderDemo}
+      />
     </>
   )
 }

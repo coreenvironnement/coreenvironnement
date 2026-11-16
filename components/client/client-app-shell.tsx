@@ -3,22 +3,20 @@
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState } from "react"
 import {
   Building2,
   FolderOpen,
   LineChart,
-  Menu,
+  LogOut,
   Package,
   Plus,
-  Receipt,
+  FileText,
+  LifeBuoy,
   User,
-  X,
   type LucideIcon,
 } from "lucide-react"
 
 import { LogoutButton } from "@/components/auth/logout-button"
-import { Button } from "@/components/ui/button"
 import { resolveEspaceNavId } from "@/lib/client/espace-active"
 import {
   ESPACE_WARM_BG,
@@ -31,8 +29,9 @@ const NAV_ICONS: Record<ClientNavId, LucideIcon> = {
   commandes: Package,
   chantier: LineChart,
   documents: FolderOpen,
-  factures: Receipt,
+  factures: FileText,
   compte: Building2,
+  aide: LifeBuoy,
   profil: User,
 }
 
@@ -45,12 +44,10 @@ type Props = {
 function NavItemLink({
   item,
   isActive,
-  onNavigate,
   className,
 }: {
   item: ClientNavItem
   isActive: boolean
-  onNavigate?: () => void
   className?: string
 }) {
   const Icon = NAV_ICONS[item.id]
@@ -59,7 +56,6 @@ function NavItemLink({
       href={item.href}
       prefetch
       scroll={false}
-      onClick={onNavigate}
       className={cn(
         "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
         isActive
@@ -79,6 +75,15 @@ function NavItemLink({
   )
 }
 
+function mobileWelcomeLabel(userLabel: string): string {
+  const trimmed = userLabel.trim()
+  if (!trimmed || trimmed === "Mon compte" || trimmed.includes("@")) {
+    return "Bienvenue"
+  }
+  const firstName = trimmed.split(/\s+/)[0]
+  return firstName ? `Bienvenue ${firstName}` : "Bienvenue"
+}
+
 function ShellSessionFooter({ userLabel }: { userLabel: string }) {
   return (
     <div className="shrink-0 border-t border-[#35A238]/15 bg-white/80 p-3">
@@ -93,8 +98,9 @@ function ShellSessionFooter({ userLabel }: { userLabel: string }) {
 export function ClientAppShell({ children, navItems, userLabel }: Props) {
   const pathname = usePathname()
   const active = resolveEspaceNavId(pathname)
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
-  const mobileTabItems = navItems.filter((item) => item.id !== "profil")
+  const mobileTabItems = navItems
+  const mobileTabOverflow = mobileTabItems.length > 5
+  const mobileWelcome = mobileWelcomeLabel(userLabel)
 
   return (
     <div className="min-h-screen text-brand-navy" style={{ backgroundColor: ESPACE_WARM_BG }}>
@@ -121,7 +127,7 @@ export function ClientAppShell({ children, navItems, userLabel }: Props) {
             ))}
             <div className="mt-3 border-t border-[#35A238]/15 pt-3">
               <Link
-                href="/"
+                href="/espace/commandes/nouvelle"
                 className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-brand-navy/70 hover:bg-[#ECF4E9]"
               >
                 <Plus className="size-[18px] text-[#35A238]" aria-hidden />
@@ -134,38 +140,31 @@ export function ClientAppShell({ children, navItems, userLabel }: Props) {
 
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 flex h-[3.75rem] items-center justify-between gap-3 border-b border-[#35A238]/15 bg-[#ECF4E9]/95 px-4 backdrop-blur-md md:px-6">
-            <div className="flex items-center gap-2 md:hidden">
-              <button
-                type="button"
-                onClick={() => setMobileNavOpen(true)}
-                className="inline-flex size-10 items-center justify-center rounded-xl border border-[#35A238]/25 bg-white"
-                aria-label="Ouvrir le menu"
-              >
-                <Menu className="size-5 text-[#35A238]" />
-              </button>
-              <span className="text-sm font-semibold">
-                {navItems.find((n) => n.id === active)?.label ?? "Mon espace"}
-              </span>
-            </div>
-            <div className="hidden text-sm font-medium text-brand-navy/80 md:block">
-              Mon espace
+            <div className="flex min-w-0 flex-1 items-center md:flex-none">
+              <p className="truncate text-sm font-medium text-brand-navy md:hidden" title={mobileWelcome}>
+                {mobileWelcome}
+              </p>
+              <div className="hidden text-sm font-medium text-brand-navy/80 md:block">
+                Mon espace
+              </div>
             </div>
             <div className="flex items-center gap-2">
-              <Link
-                href="/espace/profil"
-                className="inline-flex size-10 items-center justify-center rounded-xl border border-[#35A238]/25 bg-white"
-                aria-label="Mon compte"
-              >
-                <User className="size-5 text-[#35A238]" aria-hidden />
-              </Link>
-              <Link href="/" className="hidden sm:inline-flex">
-                <Button
-                  size="sm"
-                  className="border-0 bg-[#35A238] text-white hover:bg-[#2d8a30]"
+              <form action="/auth/logout" method="post" className="inline-flex shrink-0 sm:hidden">
+                <button
+                  type="submit"
+                  className="inline-flex size-10 items-center justify-center rounded-xl border border-[#35A238]/25 bg-white transition-colors hover:bg-white/80"
+                  aria-label="Se déconnecter"
                 >
-                  Commander
-                </Button>
-              </Link>
+                  <LogOut className="size-5 text-[#35A238]" aria-hidden />
+                </button>
+              </form>
+              <div className="hidden shrink-0 sm:block [&_form]:w-auto">
+                <LogoutButton
+                  variant="outline"
+                  size="sm"
+                  className="h-9 border-[#35A238]/25 bg-white px-3"
+                />
+              </div>
             </div>
           </header>
 
@@ -179,10 +178,15 @@ export function ClientAppShell({ children, navItems, userLabel }: Props) {
       </div>
 
       <nav
-        className="fixed inset-x-0 bottom-0 z-30 flex border-t border-[#35A238]/20 bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(25,55,35,0.08)] md:hidden"
+        className={cn(
+          "fixed inset-x-0 bottom-0 z-30 border-t border-[#35A238]/20 bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(25,55,35,0.08)] md:hidden",
+          mobileTabOverflow
+            ? "flex overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            : "flex"
+        )}
         aria-label="Navigation rapide"
       >
-        {mobileTabItems.slice(0, 5).map((item) => {
+        {mobileTabItems.map((item) => {
           const isActive = item.id === active
           const Icon = NAV_ICONS[item.id]
           return (
@@ -192,66 +196,28 @@ export function ClientAppShell({ children, navItems, userLabel }: Props) {
               prefetch
               scroll={false}
               className={cn(
-                "flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium",
-                isActive ? "text-[#35A238]" : "text-brand-navy/55"
+                "flex min-h-[44px] flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium leading-tight",
+                mobileTabOverflow
+                  ? "min-w-[4.75rem] shrink-0 px-1.5"
+                  : "min-w-0 flex-1",
+                isActive
+                  ? "text-[#35A238] font-semibold"
+                  : "text-brand-navy/55"
               )}
+              aria-current={isActive ? "page" : undefined}
             >
-              <Icon className="size-5" strokeWidth={2} aria-hidden />
-              {item.label}
+              <Icon
+                className={cn("size-5 shrink-0", isActive && "text-[#35A238]")}
+                strokeWidth={2}
+                aria-hidden
+              />
+              <span className="max-w-[4.5rem] truncate text-center">{item.label}</span>
             </Link>
           )
         })}
       </nav>
 
       <div className="h-[4.25rem] md:hidden" aria-hidden />
-
-      {mobileNavOpen ? (
-        <div className="fixed inset-0 z-40 md:hidden">
-          <button
-            type="button"
-            className="absolute inset-0 bg-brand-navy/35"
-            aria-label="Fermer le menu"
-            onClick={() => setMobileNavOpen(false)}
-          />
-          <div
-            className="absolute inset-y-0 left-0 flex w-[min(88vw,300px)] flex-col bg-white shadow-xl"
-            style={{ backgroundColor: ESPACE_WARM_BG }}
-          >
-            <div className="flex h-[3.75rem] items-center justify-between border-b border-[#35A238]/15 bg-white px-4">
-              <span className="font-semibold">Menu</span>
-              <button
-                type="button"
-                onClick={() => setMobileNavOpen(false)}
-                className="inline-flex size-10 items-center justify-center rounded-xl border bg-white"
-                aria-label="Fermer"
-              >
-                <X className="size-5" />
-              </button>
-            </div>
-            <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto p-3">
-              {navItems.map((item) => (
-                <NavItemLink
-                  key={item.id}
-                  item={item}
-                  isActive={item.id === active}
-                  onNavigate={() => setMobileNavOpen(false)}
-                />
-              ))}
-              <div className="mt-3 border-t border-[#35A238]/15 pt-3">
-                <Link
-                  href="/"
-                  onClick={() => setMobileNavOpen(false)}
-                  className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-brand-navy/70 hover:bg-[#ECF4E9]"
-                >
-                  <Plus className="size-[18px] text-[#35A238]" aria-hidden />
-                  Commander
-                </Link>
-              </div>
-            </nav>
-            <ShellSessionFooter userLabel={userLabel} />
-          </div>
-        </div>
-      ) : null}
     </div>
   )
 }

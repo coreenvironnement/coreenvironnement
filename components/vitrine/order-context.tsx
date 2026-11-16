@@ -4,15 +4,23 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react"
+
+import {
+  parseOrderDemoParam,
+  type OrderDemoMode,
+} from "@/lib/order/dev-order-demo"
 
 import { HOME_VOLUME_ESTIMATOR_HASH } from "@/lib/seo/early-local-links"
 
 import type { OrderAudience } from "@/components/order/order-audience-toggle"
 import type { AddressGeocodeHit } from "@/lib/geo/ban-api"
+import type { ParticulierTunnelResume } from "@/lib/order/particulier-tunnel-resume"
 import type { ParticulierWasteOptionId } from "@/lib/order/particulier-waste-options"
 import type { BenneFamily } from "@/lib/prestations"
 
@@ -57,6 +65,11 @@ type OrderContextValue = {
   /** Menu mobile du header ouvert (masque la barre d’actions basse). */
   headerMenuOpen: boolean
   setHeaderMenuOpen: (open: boolean) => void
+  /** Reprise tunnel depuis e-mail devis (consommé une fois à l’ouverture). */
+  queueTunnelResume: (resume: ParticulierTunnelResume) => void
+  takeTunnelResume: () => ParticulierTunnelResume | null
+  /** Prévisualisation post-paiement (`?demo=…`, développement uniquement). */
+  orderDemo: OrderDemoMode | null
 }
 
 const OrderContext = createContext<OrderContextValue | null>(null)
@@ -86,12 +99,41 @@ function scrollToVolumeEstimatorSection() {
   }
 }
 
-export function VitrineOrderProvider({ children }: { children: ReactNode }) {
-  const [open, setOpen] = useState(false)
+export function VitrineOrderProvider({
+  children,
+  initialOrderDemo = null,
+}: {
+  children: ReactNode
+  initialOrderDemo?: OrderDemoMode | null
+}) {
+  const [open, setOpen] = useState(Boolean(initialOrderDemo))
   const [draft, setDraft] = useState<OrderDraft>(defaultDraft)
   const [intentStart, setIntentStart] = useState<OrderIntentStart>("auto")
   const [volumeEstimatorRequestId, setVolumeEstimatorRequestId] = useState(0)
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
+  const [orderDemo, setOrderDemo] = useState<OrderDemoMode | null>(
+    initialOrderDemo ?? null
+  )
+  const tunnelResumeRef = useRef<ParticulierTunnelResume | null>(null)
+
+  useEffect(() => {
+    const demo = parseOrderDemoParam(
+      new URLSearchParams(window.location.search).get("demo")
+    )
+    if (!demo) return
+    setOrderDemo(demo)
+    setOpen(true)
+  }, [])
+
+  const queueTunnelResume = useCallback((resume: ParticulierTunnelResume) => {
+    tunnelResumeRef.current = resume
+  }, [])
+
+  const takeTunnelResume = useCallback(() => {
+    const value = tunnelResumeRef.current
+    tunnelResumeRef.current = null
+    return value
+  }, [])
 
   const patchDraft = useCallback((patch: Partial<OrderDraft>) => {
     setDraft((prev) => ({ ...prev, ...patch }))
@@ -127,6 +169,9 @@ export function VitrineOrderProvider({ children }: { children: ReactNode }) {
       openVolumeEstimator,
       headerMenuOpen,
       setHeaderMenuOpen,
+      queueTunnelResume,
+      takeTunnelResume,
+      orderDemo,
     }),
     [
       open,
@@ -139,6 +184,9 @@ export function VitrineOrderProvider({ children }: { children: ReactNode }) {
       volumeEstimatorRequestId,
       openVolumeEstimator,
       headerMenuOpen,
+      queueTunnelResume,
+      takeTunnelResume,
+      orderDemo,
     ]
   )
 

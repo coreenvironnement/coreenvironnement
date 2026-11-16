@@ -14,9 +14,15 @@ const POLL_MS = 30_000
 
 type Props = {
   initial: CommandeSnapshotRow[]
+  resumeByCommandeId?: Record<string, string>
+  devisPdfByCommandeId?: Record<string, string>
 }
 
-export function CommandesParticulierLive({ initial }: Props) {
+export function CommandesParticulierLive({
+  initial,
+  resumeByCommandeId = {},
+  devisPdfByCommandeId = {},
+}: Props) {
   const [rows, setRows] = useState(initial)
   const [lastSync, setLastSync] = useState(() => Date.now())
   const [syncing, setSyncing] = useState(false)
@@ -80,9 +86,22 @@ export function CommandesParticulierLive({ initial }: Props) {
       </div>
 
       <div key={pulseKey} className="space-y-3">
-        {hero ? <CommandeTrackCard commande={hero} variant="hero" /> : null}
+        {hero ? (
+          <CommandeTrackCard
+            commande={hero}
+            variant="hero"
+            resumeHref={resumeByCommandeId[hero.id]}
+            devisPdfHref={devisPdfByCommandeId[hero.id]}
+          />
+        ) : null}
         {rest.map((c) => (
-          <CommandeTrackCard key={c.id} commande={c} variant="compact" />
+          <CommandeTrackCard
+            key={c.id}
+            commande={c}
+            variant="compact"
+            resumeHref={resumeByCommandeId[c.id]}
+            devisPdfHref={devisPdfByCommandeId[c.id]}
+          />
         ))}
       </div>
     </section>

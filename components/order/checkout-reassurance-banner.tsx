@@ -142,30 +142,29 @@ export function CheckoutParticulierTrackingNote({ className }: { className?: str
   return (
     <aside
       className={cn(
-        "mx-auto w-full max-w-lg font-[family-name:var(--font-body)] rounded-xl border border-[#c5cfc9]/90 bg-[#f7faf8] px-3.5 py-3 shadow-[0_1px_2px_rgb(14_32_16/0.03)] sm:px-4 sm:py-3.5",
+        "mx-auto flex w-full max-w-lg flex-col items-center justify-center gap-2 text-center font-[family-name:var(--font-body)]",
+        "rounded-xl border border-[#c5cfc9]/90 bg-[#f7faf8] px-3.5 py-3 shadow-[0_1px_2px_rgb(14_32_16/0.03)] sm:gap-2.5 sm:px-4 sm:py-3.5",
         className
       )}
       aria-label="Suivi de livraison"
     >
-      <div className="flex items-start gap-2.5 text-left max-md:flex-col max-md:items-center max-md:gap-2 max-md:text-center">
-        <span
-          className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#35A238]/12 sm:mt-0.5"
-          aria-hidden
-        >
-          <MapPinned
-            className="size-[17px] text-[#35A238] sm:size-[18px]"
-            strokeWidth={1.75}
-          />
-        </span>
-        <div className="min-w-0 space-y-1 max-md:space-y-0.5">
-          <p className="text-pretty text-[13px] font-semibold leading-snug tracking-[-0.01em] text-[#142018] sm:text-[14px]">
-            Retrouvez votre commande dans votre espace client
-          </p>
-          <p className="text-pretty text-[12px] font-medium leading-snug text-[#3d4f45] sm:text-[13px]">
-            Votre espace client est créé après la réservation. Consultez-y l’état de
-            votre commande et la date de livraison prévue.
-          </p>
-        </div>
+      <span
+        className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#35A238]/12"
+        aria-hidden
+      >
+        <MapPinned
+          className="size-[17px] text-[#35A238] sm:size-[18px]"
+          strokeWidth={1.75}
+        />
+      </span>
+      <div className="min-w-0 max-w-md space-y-1">
+        <p className="text-pretty text-[13px] font-semibold leading-snug tracking-[-0.01em] text-[#142018] sm:text-[14px]">
+          Retrouvez votre commande dans votre espace client
+        </p>
+        <p className="text-pretty text-[12px] font-medium leading-snug text-[#3d4f45] sm:text-[13px]">
+          Votre espace client est créé après la réservation. Consultez-y l’état de votre
+          commande et la date de livraison prévue.
+        </p>
       </div>
     </aside>
   )

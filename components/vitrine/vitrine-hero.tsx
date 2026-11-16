@@ -121,14 +121,10 @@ export function VitrineHero({
           >
             {isParticulier ? (
               <div
-                className="animate-fade-up mb-4 max-lg:flex max-lg:justify-center sm:mb-5 lg:mb-5 lg:block"
+                className="animate-fade-up mb-3 hidden sm:mb-5 lg:mb-5 lg:block lg:self-start"
                 style={{ animationDelay: "80ms" }}
               >
-                <GoogleRatingBadge
-                  variant="hero"
-                  compact
-                  className="lg:self-start"
-                />
+                <GoogleRatingBadge variant="hero" compact className="lg:self-start" />
               </div>
             ) : null}
 

@@ -13,13 +13,17 @@ const MOBILE_BAR_ICON_SRC = {
   compte: "/images/mobile-bar/mon-compte.webp",
 } as const
 
-function MobileBarRasterIcon({ src, className }: MobileBarIconProps & { src: string }) {
+function MobileBarRasterIcon({
+  src,
+  className,
+  rasterSize = 20,
+}: MobileBarIconProps & { src: string; rasterSize?: number }) {
   return (
     <img
       src={src}
       alt=""
-      width={20}
-      height={20}
+      width={rasterSize}
+      height={rasterSize}
       decoding="async"
       aria-hidden
       className={cn(ICON_BASE, className)}
@@ -34,7 +38,13 @@ export function MobileBarEstimateIcon({ className }: MobileBarIconProps) {
 
 /** Benne de chantier — action Commander (blanc sur CTA vert) */
 export function MobileBarCommanderIcon({ className }: MobileBarIconProps) {
-  return <MobileBarRasterIcon src={MOBILE_BAR_ICON_SRC.commander} className={className} />
+  return (
+    <MobileBarRasterIcon
+      src={MOBILE_BAR_ICON_SRC.commander}
+      className={className}
+      rasterSize={24}
+    />
+  )
 }
 
 /** Combiné + onde — action Appeler */

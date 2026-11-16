@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 
 import { updateInterventionStatutAdmin } from "@/app/admin/actions"
+import { AdminInterventionPlanificationCard } from "@/components/admin/admin-intervention-planification-card"
 import { AdminAuditLogPanel } from "@/components/admin/admin-audit-log-panel"
 import { DocumentUploadRow } from "@/components/admin/document-upload-row"
 import { requireAdmin } from "@/lib/auth/require-admin"
@@ -88,6 +89,20 @@ export async function AdminInterventionChantierFiche({
   const updateBound = updateInterventionStatutAdmin.bind(null, interventionId, chantierId)
   const audit = await loadAuditLog(supabase, "intervention", interventionId)
 
+  let contactPhone: string | null = null
+  if (intervention.commande_id) {
+    const { data: cmd } = await supabase
+      .from("commandes")
+      .select("contact_telephone")
+      .eq("id", intervention.commande_id as string)
+      .maybeSingle()
+    contactPhone = cmd?.contact_telephone ?? null
+  }
+
+  const returnTo = `/admin/interventions/${interventionId}`
+  const canPlan =
+    intervention.statut === "en_cours_programmation" || intervention.statut === "programme"
+
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
@@ -117,6 +132,16 @@ export async function AdminInterventionChantierFiche({
       {ok === "statut" ? (
         <p className="rounded-lg border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-brand-navy">
           Intervention mise à jour.
+        </p>
+      ) : null}
+      {ok === "planned" ? (
+        <p className="rounded-lg border border-[#35A238]/30 bg-[#ECF4E9] px-4 py-3 text-sm text-brand-navy">
+          Intervention planifiée — e-mail envoyé aux contacts chantier.
+        </p>
+      ) : null}
+      {ok === "rescheduled" ? (
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+          Intervention reportée — contacts notifiés.
         </p>
       ) : null}
       {tonnageAlert ? (
@@ -159,6 +184,19 @@ export async function AdminInterventionChantierFiche({
           </CardContent>
         </Card>
       </div>
+
+      {canPlan ? (
+        <AdminInterventionPlanificationCard
+          interventionId={interventionId}
+          chantierId={chantierId}
+          reference={intervention.numero}
+          telephone={contactPhone}
+          dateSouhaitee={intervention.date_souhaitee as string | null}
+          planifieeLe={(intervention.planifiee_le as string | null) ?? null}
+          canPlan={intervention.statut === "en_cours_programmation"}
+          returnTo={returnTo}
+        />
+      ) : null}
 
       <Card>
         <CardHeader>

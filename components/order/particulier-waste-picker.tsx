@@ -17,7 +17,7 @@ export function ParticulierWastePicker({
 }) {
   return (
     <div
-      className="order-tunnel-waste-grid grid grid-cols-2 gap-3.5 sm:gap-4 lg:grid-cols-3 lg:gap-4"
+      className="order-tunnel-waste-grid grid grid-cols-2 items-stretch gap-4 sm:gap-4 md:grid-cols-3 md:gap-3 lg:gap-4"
       role="radiogroup"
       aria-label="Que souhaitez-vous jeter ?"
     >
@@ -32,20 +32,20 @@ export function ParticulierWastePicker({
             data-waste-id={option.id}
             onClick={() => onChange(option.id)}
             className={cn(
-              "order-tunnel-waste-card flex flex-col overflow-hidden rounded-xl border bg-white text-left shadow-sm outline-none transition-[border-color,box-shadow]",
+              "order-tunnel-waste-card flex h-auto w-full flex-col self-start overflow-hidden rounded-xl border bg-white text-left shadow-sm outline-none transition-[border-color,box-shadow]",
               "focus-visible:ring-2 focus-visible:ring-brand-green/40 focus-visible:ring-offset-2",
               selected
                 ? "border-brand-green ring-1 ring-brand-green/25"
                 : "border-[#E4E7EC] hover:border-brand-green/35"
             )}
           >
-            <div className="order-tunnel-waste-card__media relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-[#F2F4F7]">
+            <div className="order-tunnel-waste-card__media relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-t-xl bg-[#F2F4F7]">
               <Image
                 src={option.imageSrc}
                 alt={option.imageAlt}
                 fill
                 className="object-cover"
-                sizes="(max-width: 540px) 44vw, 220px"
+                sizes="(max-width: 640px) 46vw, (max-width: 1024px) 30vw, 220px"
               />
               <span
                 className={cn(
@@ -63,7 +63,7 @@ export function ParticulierWastePicker({
               <span className="order-tunnel-waste-card__title text-[13px] font-bold leading-snug text-brand-navy sm:text-[14px]">
                 {option.title}
               </span>
-              <span className="order-tunnel-waste-card__description text-[11px] leading-snug text-brand-muted sm:text-[12px]">
+              <span className="order-tunnel-waste-card__description text-[11px] leading-relaxed text-brand-muted sm:text-[12px]">
                 {option.description}
               </span>
             </div>

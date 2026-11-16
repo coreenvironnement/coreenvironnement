@@ -104,6 +104,8 @@ const STEP_ICON_BY_ID: Record<
   intent: OrderTunnelStepIconDemande,
   forfait: OrderTunnelStepIconBenne,
   infos: OrderTunnelStepIconInformations,
+  "infos-dates": OrderTunnelStepIconInformations,
+  "infos-contact": OrderTunnelStepIconInformations,
   recap: OrderTunnelStepIconRecapitulatif,
   payment: OrderTunnelStepIconPaiement,
 }

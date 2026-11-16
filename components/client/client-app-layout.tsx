@@ -1,9 +1,12 @@
 import { redirect } from "next/navigation"
 
 import { ClientAppShell } from "@/components/client/client-app-shell"
-import { getClientNavContext } from "@/lib/auth/client-nav-context"
+import {
+  getAuthUser,
+  getCachedClientNavContext,
+  getEspaceProfile,
+} from "@/lib/auth/espace-session"
 import { buildClientNavItems } from "@/lib/client/nav-items"
-import { createClient } from "@/lib/supabase/server"
 
 type Props = {
   children: React.ReactNode
@@ -11,26 +14,20 @@ type Props = {
 }
 
 export async function ClientAppLayout({ children, loginNext = "/espace" }: Props) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getAuthUser()
 
   if (!user) {
     redirect(`/login?next=${encodeURIComponent(loginNext)}`)
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("full_name, email, role")
-    .eq("id", user.id)
-    .maybeSingle()
+  const [profile, ctx] = await Promise.all([
+    getEspaceProfile(user.id),
+    getCachedClientNavContext(user.id),
+  ])
 
   if (profile?.role === "admin") {
     redirect("/admin/interventions")
   }
-
-  const ctx = await getClientNavContext(supabase, user.id)
 
   const userLabel =
     profile?.full_name?.trim() ||

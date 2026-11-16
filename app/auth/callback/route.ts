@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 
+import { ensureProSignupDraftFromMetadata } from "@/app/auth/signup-actions"
 import { getPostLoginRedirectPath } from "@/lib/auth/post-login-path"
 import { createClient } from "@/lib/supabase/server"
 
@@ -15,6 +16,12 @@ export async function GET(request: Request) {
       const {
         data: { user },
       } = await supabase.auth.getUser()
+      if (
+        user?.user_metadata?.pro_signup_draft ||
+        user?.user_metadata?.signup_phone
+      ) {
+        await ensureProSignupDraftFromMetadata()
+      }
       const destination = user
         ? await getPostLoginRedirectPath(supabase, user.id, rawNext)
         : rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//")
