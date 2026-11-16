@@ -1,7 +1,16 @@
 import type { ReactNode } from "react"
 
+import Image from "next/image"
 import Link from "next/link"
 
+import {
+  VOLUME_GUIDE_IMAGE_HEIGHT,
+  VOLUME_GUIDE_IMAGE_SIZES,
+  VOLUME_GUIDE_IMAGE_WIDTH,
+  VOLUME_GUIDE_PACK_ALTS,
+  VOLUME_GUIDE_PACK_CAPTIONS,
+  VOLUME_GUIDE_PACK_IMAGES,
+} from "@/lib/media/volume-guide-pack"
 import {
   VOLUME_GUIDE_COMMUNES_HREF,
   VOLUME_GUIDE_ESTIMATEUR_HREF,
@@ -33,6 +42,39 @@ const CALLOUT_CLASS =
   "mt-4 rounded-xl border border-brand-green/12 bg-brand-warm px-4 py-3 text-sm leading-relaxed text-brand-muted"
 const SECONDARY_LINK_CLASS =
   "font-semibold text-brand-navy underline-offset-2 hover:text-brand-green hover:underline"
+
+const GUIDE_FIGURE_CLASS =
+  "overflow-hidden rounded-[var(--radius-card)] border border-brand-border bg-brand-bg-alt"
+
+const GUIDE_FIGURE_CAPTION_CLASS =
+  "border-t border-brand-border/80 px-4 py-2.5 text-[12px] leading-relaxed text-brand-muted"
+
+function VolumeGuideFigure({
+  src,
+  alt,
+  caption,
+  className = "mt-6",
+}: {
+  src: string
+  alt: string
+  caption: string
+  className?: string
+}) {
+  return (
+    <figure className={`${className} ${GUIDE_FIGURE_CLASS}`}>
+      <Image
+        src={src}
+        alt={alt}
+        width={VOLUME_GUIDE_IMAGE_WIDTH}
+        height={VOLUME_GUIDE_IMAGE_HEIGHT}
+        sizes={VOLUME_GUIDE_IMAGE_SIZES}
+        loading="lazy"
+        className="h-auto w-full object-contain"
+      />
+      <figcaption className={GUIDE_FIGURE_CAPTION_CLASS}>{caption}</figcaption>
+    </figure>
+  )
+}
 
 function GuideParagraph({ children }: { children: string }) {
   return <p className={BODY_CLASS}>{children}</p>
@@ -85,6 +127,13 @@ export function VitrineVolumeGuide() {
                 {VOLUME_GUIDE_INTRO}
               </p>
 
+              <VolumeGuideFigure
+                className="mt-8"
+                src={VOLUME_GUIDE_PACK_IMAGES.comparatifBennes}
+                alt={VOLUME_GUIDE_PACK_ALTS.comparatifBennes}
+                caption={VOLUME_GUIDE_PACK_CAPTIONS.comparatifBennes}
+              />
+
               <nav aria-label="Dans ce guide" className="mt-8 rounded-[var(--radius-card)] border border-brand-border bg-brand-bg-alt px-4 py-4 sm:px-5">
                 <p className="text-sm font-semibold text-brand-navy">Dans ce guide</p>
                 <ul className="mt-3 space-y-2 text-sm">
@@ -111,6 +160,11 @@ export function VitrineVolumeGuide() {
                   différemment. Pour les déchets lourds, comme le béton ou la terre, le poids peut
                   limiter le chargement avant que la benne soit entièrement remplie.
                 </GuideParagraph>
+                <VolumeGuideFigure
+                  src={VOLUME_GUIDE_PACK_IMAGES.volumePoids}
+                  alt={VOLUME_GUIDE_PACK_ALTS.volumePoids}
+                  caption={VOLUME_GUIDE_PACK_CAPTIONS.volumePoids}
+                />
                 <GuideCallout>
                   Pour comparer les offres, regardez ensemble le volume en m³, le poids compris dans le
                   forfait et les conditions de chargement.
@@ -135,6 +189,11 @@ export function VitrineVolumeGuide() {
                     Un tas de 4 m de long, 2 m de large et 1,2 m de haut représente environ 9,6 m³.
                   </p>
                 </GuideCallout>
+                <VolumeGuideFigure
+                  src={VOLUME_GUIDE_PACK_IMAGES.calculTas}
+                  alt={VOLUME_GUIDE_PACK_ALTS.calculTas}
+                  caption={VOLUME_GUIDE_PACK_CAPTIONS.calculTas}
+                />
                 <GuideParagraph>
                   Ce calcul donne un ordre de grandeur. La forme du tas et la disposition des déchets
                   influencent la précision de l’estimation.
@@ -147,6 +206,11 @@ export function VitrineVolumeGuide() {
                 <GuideCallout>
                   40 sacs de 100 litres entièrement remplis représentent environ 4 m³.
                 </GuideCallout>
+                <VolumeGuideFigure
+                  src={VOLUME_GUIDE_PACK_IMAGES.equivalenceSacs}
+                  alt={VOLUME_GUIDE_PACK_ALTS.equivalenceSacs}
+                  caption={VOLUME_GUIDE_PACK_CAPTIONS.equivalenceSacs}
+                />
                 <GuideParagraph>
                   Cette méthode aide à estimer l’espace occupé. Pour des gravats, vérifiez également le
                   poids : le volume des sacs ne suffit pas à choisir la benne.
