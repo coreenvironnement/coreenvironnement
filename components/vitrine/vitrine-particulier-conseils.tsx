@@ -13,6 +13,7 @@ import {
 import { HOME_VOLUME_ESTIMATOR_HASH } from "@/lib/seo/early-local-links"
 import { SITE_PHONE_HREF } from "@/lib/site"
 
+import { VITRINE_SCROLL_MARGIN_CLASS } from "./header-layout"
 import { PreparationLottieArt } from "./preparation-lottie-art"
 import { useVitrineOrder } from "./order-context"
 import { VitrineVolumeEstimator } from "./vitrine-volume-estimator"
@@ -245,22 +246,19 @@ export function VitrineParticulierConseils() {
           </Link>
         </p>
 
-        {volumeExpanded ? (
-          <div
-            id={HOME_VOLUME_ESTIMATOR_HASH}
-            className="cp-estimator scroll-mt-[calc(var(--vitrine-header-height)+1rem)]"
-          >
-            <VitrineVolumeEstimator
-              compactTop
-              launchId={volumeEstimatorRequestId}
-            />
-          </div>
-        ) : (
-          <div
-            id={HOME_VOLUME_ESTIMATOR_HASH}
-            className="scroll-mt-[calc(var(--vitrine-header-height)+1rem)]"
-          />
-        )}
+        <div
+          id={HOME_VOLUME_ESTIMATOR_HASH}
+          className={`cp-estimator-anchor ${VITRINE_SCROLL_MARGIN_CLASS}`}
+        >
+          {volumeExpanded ? (
+            <div className="cp-estimator">
+              <VitrineVolumeEstimator
+                compactTop
+                launchId={volumeEstimatorRequestId}
+              />
+            </div>
+          ) : null}
+        </div>
       </div>
     </section>
   )

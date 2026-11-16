@@ -505,6 +505,8 @@ export function ParticulierVolumeStep({
               : ""
 
   const isVolumeIntentChoice = view === "choice" && !estimateOnly
+  const stepEnter = embedded ? { opacity: 0 } : { opacity: 0, y: 8 }
+  const stepExit = embedded ? { opacity: 0 } : { opacity: 0, y: -6 }
 
   return (
     <div className={cn(!embedded && "space-y-4")}>
@@ -540,7 +542,7 @@ export function ParticulierVolumeStep({
       {!estimateOnly && view === "known" ? <VolumeDisclaimer /> : null}
       {view === "result" ? <VolumeDisclaimer /> : null}
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode={embedded ? "sync" : "wait"}>
         {view === "choice" ? (
           <div
             key="choice"
@@ -571,9 +573,9 @@ export function ParticulierVolumeStep({
         {view === "known" ? (
           <motion.div
             key="known"
-            initial={{ opacity: 0, y: 8 }}
+            initial={stepEnter}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
+            exit={stepExit}
             className="space-y-3"
           >
             <p className="text-[13px] text-brand-muted">
@@ -602,7 +604,7 @@ export function ParticulierVolumeStep({
         {view === "estimator-mode" ? (
           <motion.div
             key="est-mode"
-            initial={{ opacity: 0, y: 8 }}
+            initial={stepEnter}
             animate={{ opacity: 1, y: 0 }}
             className={cn(
               "flex flex-col gap-2 sm:grid sm:grid-cols-3 sm:gap-3",
@@ -631,7 +633,7 @@ export function ParticulierVolumeStep({
         {view === "estimator-form" ? (
           <motion.div
             key="est-form"
-            initial={{ opacity: 0, y: 8 }}
+            initial={stepEnter}
             animate={{ opacity: 1, y: 0 }}
             className="space-y-4"
           >
@@ -688,7 +690,7 @@ export function ParticulierVolumeStep({
         {view === "result" && result ? (
           <motion.div
             key="result"
-            initial={{ opacity: 0, y: 10 }}
+            initial={embedded ? { opacity: 0 } : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className="order-tunnel-volume-result space-y-4"
           >

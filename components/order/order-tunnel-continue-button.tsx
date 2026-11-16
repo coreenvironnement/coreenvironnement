@@ -9,6 +9,7 @@ type OrderTunnelContinueButtonProps = {
   children?: ReactNode
   disabled?: boolean
   onClick: () => void
+  onMouseDown?: React.MouseEventHandler<HTMLButtonElement>
   className?: string
 }
 
@@ -17,6 +18,7 @@ export function OrderTunnelContinueButton({
   children = "Continuer",
   disabled,
   onClick,
+  onMouseDown,
   className,
 }: OrderTunnelContinueButtonProps) {
   return (
@@ -24,6 +26,7 @@ export function OrderTunnelContinueButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
+      onMouseDown={onMouseDown}
       className={cn(
         "group flex min-h-12 w-full items-stretch overflow-hidden rounded-xl text-left text-[15px] font-semibold leading-snug shadow-sm transition-colors",
         disabled

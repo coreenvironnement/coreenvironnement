@@ -10,6 +10,7 @@ import {
   type ParticulierWasteOptionId,
 } from "@/lib/order/particulier-waste-options"
 import type { BenneFamily } from "@/lib/prestations"
+import { cn } from "@/lib/utils"
 
 import { useVitrineOrder } from "./order-context"
 
@@ -29,6 +30,7 @@ export function VitrineVolumeEstimator({
     if (!id) return null
     return particulierWasteOptionById(id)?.family ?? null
   })
+  const showVolumeStep = Boolean(family && particulierWasteId)
 
   const beginEstimate = (wasteId: ParticulierWasteOptionId | null = particulierWasteId) => {
     if (!wasteId) return
@@ -57,43 +59,72 @@ export function VitrineVolumeEstimator({
     openOrder({ intentStart: "estimator" })
   }
 
-  if (family && particulierWasteId) {
-    return (
-      <div className={compactTop ? "text-left" : "mt-5 text-left"}>
-        <ParticulierVolumeStep
-          family={family}
-          wasteId={particulierWasteId}
-          addressPending
-          estimateOnly
-          onBackToWaste={() => setFamily(null)}
-          onContinue={handleContinueOrder}
-        />
-      </div>
-    )
+  const requestVolumeStep = () => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur()
+    }
+    beginEstimate()
   }
 
   return (
     <div
-      className={
-        compactTop ? "space-y-3 text-left" : "mt-5 space-y-3 text-left"
-      }
+      className={cn(
+        "vitrine-volume-estimator text-left",
+        !compactTop && "mt-5"
+      )}
     >
-      <h3 className="text-[16px] font-semibold leading-snug text-brand-navy sm:text-[17px]">
-        Quel type de déchets souhaitez-vous évacuer ?
-      </h3>
-      <ParticulierWastePicker
-        value={particulierWasteId}
-        onChange={(id) => {
-          setParticulierWasteId(id)
-          setFamily(null)
-        }}
-      />
-      <OrderTunnelContinueButton
-        disabled={!particulierWasteId}
-        onClick={() => beginEstimate()}
+      <div
+        className="vitrine-volume-estimator__stage"
+        data-step={showVolumeStep ? "volume" : "waste"}
       >
-        Estimer mon volume
-      </OrderTunnelContinueButton>
+        <div
+          className={cn(
+            "vitrine-volume-estimator__pane vitrine-volume-estimator__pane--waste space-y-3",
+            showVolumeStep && "vitrine-volume-estimator__pane--inactive"
+          )}
+          aria-hidden={showVolumeStep}
+          inert={showVolumeStep ? true : undefined}
+        >
+          <h3 className="text-[16px] font-semibold leading-snug text-brand-navy sm:text-[17px]">
+            Quel type de déchets souhaitez-vous évacuer ?
+          </h3>
+          <ParticulierWastePicker
+            value={particulierWasteId}
+            onChange={(id) => {
+              setParticulierWasteId(id)
+              setFamily(null)
+            }}
+          />
+          <OrderTunnelContinueButton
+            disabled={!particulierWasteId}
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={requestVolumeStep}
+          >
+            Estimer mon volume
+          </OrderTunnelContinueButton>
+        </div>
+
+        {family && particulierWasteId ? (
+          <div
+            className={cn(
+              "vitrine-volume-estimator__pane vitrine-volume-estimator__pane--volume",
+              !showVolumeStep && "vitrine-volume-estimator__pane--inactive"
+            )}
+            aria-hidden={!showVolumeStep}
+            inert={!showVolumeStep ? true : undefined}
+          >
+            <ParticulierVolumeStep
+              embedded
+              family={family}
+              wasteId={particulierWasteId}
+              addressPending
+              estimateOnly
+              onBackToWaste={() => setFamily(null)}
+              onContinue={handleContinueOrder}
+            />
+          </div>
+        ) : null}
+      </div>
     </div>
   )
 }

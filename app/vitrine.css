@@ -2540,13 +2540,69 @@
   margin-left: auto;
   white-space: nowrap;
 }
-.cp-section .cp-estimator {
+.cp-section .cp-estimator-anchor {
   margin-top: 24px;
+  scroll-margin-top: calc(var(--vitrine-header-height) + 1rem);
+}
+
+@media (max-width: 1023px) {
+  .vitrine-root.vitrine--with-action-bar .cp-section .cp-estimator-anchor {
+    scroll-margin-bottom: calc(
+      var(--vitrine-action-bar-height) + env(safe-area-inset-bottom, 0px) + 0.5rem
+    );
+  }
+}
+
+.cp-section .cp-estimator {
   padding: 20px 22px;
   border: 1px solid var(--cp-line);
   border-radius: 22px;
   background: #fff;
   box-shadow: 0 8px 20px rgba(21, 42, 59, 0.055);
+}
+
+.vitrine-volume-estimator__stage {
+  display: grid;
+  align-items: start;
+}
+
+.vitrine-volume-estimator__pane {
+  grid-area: 1 / 1;
+  min-width: 0;
+  transition-property: opacity;
+  transition-duration: 220ms;
+  transition-timing-function: ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vitrine-volume-estimator__pane {
+    transition-duration: 0ms;
+  }
+}
+
+.vitrine-volume-estimator__pane--inactive {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.vitrine-volume-estimator__stage[data-step="waste"]
+  .vitrine-volume-estimator__pane--waste:not(.vitrine-volume-estimator__pane--inactive),
+.vitrine-volume-estimator__stage[data-step="volume"]
+  .vitrine-volume-estimator__pane--volume:not(.vitrine-volume-estimator__pane--inactive) {
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (max-width: 1023px) {
+  .cp-section .cp-estimator,
+  .vitrine-volume-estimator__stage[data-step="waste"] {
+    min-height: 26.5rem;
+  }
+
+  .vitrine-volume-estimator__stage[data-step="volume"] {
+    min-height: 22rem;
+  }
 }
 .cp-section .cp-sr-only {
   position: absolute;
