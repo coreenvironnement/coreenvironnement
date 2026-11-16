@@ -1,6 +1,8 @@
 import Image from "next/image"
 import type { Metadata } from "next"
 
+import { LEGAL_COMPANY } from "@/lib/legal"
+
 export const metadata: Metadata = {
   title: "Site en cours de refonte",
   robots: { index: false, follow: false },
@@ -44,10 +46,10 @@ export default function MaintenancePage() {
         </div>
 
         <a
-          href="mailto:contact@coreenvironnement.fr"
+          href={`mailto:${LEGAL_COMPANY.email}`}
           className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-white/90 transition hover:text-white"
         >
-          contact@coreenvironnement.fr
+          {LEGAL_COMPANY.email}
         </a>
       </div>
 

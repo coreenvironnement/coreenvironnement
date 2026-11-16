@@ -1,5 +1,7 @@
+import { LEGAL_COMPANY } from "@/lib/legal"
+
 /** Destinataire interne unique si ORDER_NOTIFICATION_EMAIL est absent. */
-export const ORDER_NOTIFICATION_EMAIL_FALLBACK = "contact@coreenvironnement.fr"
+export const ORDER_NOTIFICATION_EMAIL_FALLBACK = LEGAL_COMPANY.email
 
 export function isEmailConfigured(): boolean {
   return Boolean(process.env.RESEND_API_KEY?.trim())
