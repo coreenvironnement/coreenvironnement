@@ -15,6 +15,14 @@ import {
 } from "@/lib/phone/phone-value"
 import { cn } from "@/lib/utils"
 
+function countryFlagEmoji(iso2: string): string {
+  if (iso2.length !== 2) return ""
+  const upper = iso2.toUpperCase()
+  return String.fromCodePoint(
+    ...[...upper].map((char) => 0x1f1e6 - 65 + char.charCodeAt(0))
+  )
+}
+
 type PhoneInputWithCountryProps = {
   id: string
   value: string
@@ -93,9 +101,10 @@ export function PhoneInputWithCountry({
     <div ref={rootRef} className={cn("relative", className)}>
       <div
         className={cn(
-          "flex w-full overflow-hidden rounded-xl",
+          "flex w-full overflow-hidden",
+          vitrine ? "rounded-2xl" : "rounded-xl",
           vitrine
-            ? "h-12 border border-brand-green/18 bg-white shadow-sm focus-within:border-brand-green focus-within:shadow-[0_0_0_3px_rgb(53_162_56/0.2)]"
+            ? "h-11 min-h-11 border border-[#35A238]/18 bg-white shadow-sm focus-within:border-[#35A238] focus-within:shadow-[0_0_0_3px_rgb(53_162_56/0.2)] sm:h-12"
             : cn(
                 "h-11 border-2 border-primary/15",
                 warmSurface ? "bg-brand-warm-field" : "bg-white",
@@ -108,13 +117,18 @@ export function PhoneInputWithCountry({
           type="button"
           className={cn(
             "flex shrink-0 items-center gap-0.5 border-r px-2.5 text-sm font-semibold text-brand-navy",
-            vitrine ? "border-brand-green/18 hover:bg-[#f7faf8]" : "border-primary/15 hover:bg-white/40"
+            vitrine
+              ? "min-h-11 border-[#35A238]/18 hover:bg-[#ECF4E9]/40 sm:min-h-12"
+              : "border-primary/15 hover:bg-white/40"
           )}
           aria-haspopup="listbox"
           aria-expanded={open}
           aria-controls={listId}
           onClick={() => setOpen((v) => !v)}
         >
+          <span className="text-base leading-none" aria-hidden>
+            {countryFlagEmoji(selected.iso2)}
+          </span>
           <span className="tabular-nums">+{selected.dial}</span>
           <ChevronDown className="size-4 opacity-60" aria-hidden />
         </button>

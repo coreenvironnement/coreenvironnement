@@ -411,6 +411,62 @@
     box-shadow: 0 0 0 3px var(--form-error-halo, rgb(220 38 38 / 0.2));
   }
 
+  /* Espace client — carte Coordonnées (h-11, Manrope via vitrine tokens) */
+  .espace-profil-form :is(input.form-field-input, [data-slot="input"].form-field-input) {
+    @apply h-11 w-full rounded-xl border border-brand-green/18 bg-white px-3.5 font-[family-name:var(--font-display)] text-[15px] text-brand-navy shadow-sm outline-none placeholder:text-brand-muted/70;
+    border-width: 1px;
+    transition-property: color, border-color, box-shadow;
+    transition-duration: 150ms;
+    transition-timing-function: ease-out;
+  }
+
+  .espace-profil-form
+    :is(input.form-field-input, [data-slot="input"].form-field-input):focus-visible {
+    --tw-ring-shadow: 0 0 #0000;
+    border-color: var(--form-focus-border, var(--color-brand-green));
+    box-shadow: 0 0 0 3px var(--form-focus-halo, rgb(53 162 56 / 0.2));
+  }
+
+  .espace-profil-form
+    :is(input.form-field-input, [data-slot="input"].form-field-input).espace-profil-input--readonly,
+  .espace-profil-form
+    :is(input.form-field-input, [data-slot="input"].form-field-input):disabled {
+    @apply cursor-not-allowed border-brand-green/14 bg-[#f0f5f1] text-brand-navy/80 opacity-100 shadow-none;
+  }
+
+  .espace-profil-form textarea.form-field-input,
+  .espace-profil-form textarea.espace-profil-textarea {
+    @apply w-full min-h-[5.5rem] resize-y rounded-xl border border-brand-green/18 bg-white px-3.5 py-2.5 font-[family-name:var(--font-display)] text-[15px] leading-snug text-brand-navy shadow-sm outline-none placeholder:text-brand-muted/70;
+    transition-property: color, border-color, box-shadow;
+    transition-duration: 150ms;
+  }
+
+  .espace-profil-form textarea.espace-profil-textarea:focus-visible {
+    --tw-ring-shadow: 0 0 #0000;
+    border-color: var(--form-focus-border, var(--color-brand-green));
+    box-shadow: 0 0 0 3px var(--form-focus-halo, rgb(53 162 56 / 0.2));
+  }
+
+  .espace-profil-form .espace-profil-phone > div:first-child {
+    @apply !h-11;
+  }
+
+  .espace-profil-form .form-field-message {
+    @apply text-sm leading-snug;
+  }
+
+  .espace-profil-form .form-field-message--status {
+    @apply text-brand-navy;
+  }
+
+  .espace-profil-form.auth-form-compact .space-y-2 {
+    @apply space-y-1.5;
+  }
+
+  .espace-profil-form.auth-form-compact .space-y-4 {
+    @apply space-y-3;
+  }
+
   .vitrine-root .form-field-message {
     @apply text-sm leading-snug;
   }

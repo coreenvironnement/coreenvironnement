@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState, useTransition } from "react"
-import { Loader2 } from "lucide-react"
+import { Loader2, Mail, User } from "lucide-react"
 
 import {
   saveProfilCompteProContact,
@@ -12,15 +12,27 @@ import {
   type DeliveryAddressParts,
 } from "@/lib/espace/delivery-address"
 import { profilPrefillFingerprint, type ProfilPrefill } from "@/lib/espace/profil-prefill"
+import { AuthIconField } from "@/components/auth/auth-icon-field"
+import { PhoneInputWithCountry } from "@/components/forms/phone-input-with-country"
 import { AddressAutocomplete } from "@/components/order/address-autocomplete"
 import type { AddressGeocodeHit } from "@/lib/geo/ban-api"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { authFieldInputClass } from "@/lib/form/auth-field-styles"
+import {
+  espaceFieldHintClass,
+  espaceFieldLabelClass,
+  espaceProfilInputClass,
+  espaceProfilReadonlyInputClass,
+} from "@/lib/form/auth-field-styles"
 import { cn } from "@/lib/utils"
 
-const textareaClass =
-  "w-full min-h-20 rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+const profilTextareaClass = "espace-profil-textarea"
+
+const addressInputClassName = cn(
+  espaceProfilInputClass,
+  "!h-11 min-h-0 !rounded-xl !border-brand-green/18 !bg-white !pl-11 !pr-10 !text-[15px] !shadow-sm",
+  "!ring-0 focus-visible:!border-[#35A238] focus-visible:!shadow-[0_0_0_3px_rgb(53_162_56/0.2)]"
+)
 
 export type ProfilFormInitial = ProfilPrefill & {
   compte: {
@@ -67,12 +79,12 @@ function Field({
   hint?: string
 }) {
   return (
-    <div className="space-y-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-brand-navy">
+    <div className="space-y-2">
+      <label htmlFor={id} className={espaceFieldLabelClass}>
         {label}
       </label>
       {children}
-      {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
+      {hint ? <p className={espaceFieldHintClass}>{hint}</p> : null}
     </div>
   )
 }
@@ -142,42 +154,62 @@ export function EspaceProfilForm({ initial }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form
+      onSubmit={handleSubmit}
+      className="espace-profil-form auth-form-compact space-y-4"
+    >
       {error ? (
-        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <p
+          className="form-field-message form-field-message--error rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2.5"
+          role="alert"
+        >
           {error}
         </p>
       ) : null}
       {saved ? (
-        <p className="rounded-lg border border-[#35A238]/30 bg-[#ECF4E9] px-3 py-2 text-sm text-brand-navy">
+        <p
+          className="form-field-message form-field-message--status rounded-xl border border-[#35A238]/30 bg-[#ECF4E9] px-3 py-2.5"
+          role="status"
+        >
           Modifications enregistrées.
         </p>
       ) : null}
 
-      <Field id="email" label="E-mail de connexion" hint="Pour changer d'e-mail, contactez le support.">
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          value={initial.email}
-          readOnly
-          disabled
-          className={authFieldInputClass}
-        />
+      <Field
+        id="email"
+        label="E-mail de connexion"
+        hint="Cet e-mail sert à vous connecter. Pour le modifier, contactez le support."
+      >
+        <AuthIconField icon={Mail}>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            value={initial.email}
+            readOnly
+            disabled
+            tabIndex={-1}
+            className={cn(espaceProfilReadonlyInputClass, "pl-11")}
+            autoComplete="email"
+          />
+        </AuthIconField>
       </Field>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-3 max-[320px]:grid-cols-1">
         <Field id="prenom" label="Prénom">
-          <Input
-            id="prenom"
-            name="prenom"
-            required
-            minLength={1}
-            value={fields.prenom}
-            onChange={(e) => patchFields({ prenom: e.target.value })}
-            className={authFieldInputClass}
-            autoComplete="given-name"
-          />
+          <AuthIconField icon={User}>
+            <Input
+              id="prenom"
+              name="prenom"
+              required
+              minLength={1}
+              value={fields.prenom}
+              onChange={(e) => patchFields({ prenom: e.target.value })}
+              className={cn(espaceProfilInputClass, "pl-11")}
+              autoComplete="given-name"
+              placeholder="Votre prénom"
+            />
+          </AuthIconField>
         </Field>
         <Field id="nom" label="Nom">
           <Input
@@ -185,27 +217,38 @@ export function EspaceProfilForm({ initial }: Props) {
             name="nom"
             value={fields.nom}
             onChange={(e) => patchFields({ nom: e.target.value })}
-            className={authFieldInputClass}
+            className={espaceProfilInputClass}
             autoComplete="family-name"
+            placeholder="Votre nom"
           />
         </Field>
       </div>
 
-      <Field id="phone" label="Téléphone">
-        <Input
+      <Field
+        id="phone"
+        label="Téléphone"
+        hint="Facultatif — utile pour le suivi de vos livraisons."
+      >
+        <PhoneInputWithCountry
           id="phone"
-          name="phone"
-          type="tel"
           value={fields.phone}
-          onChange={(e) => patchFields({ phone: e.target.value })}
-          className={authFieldInputClass}
-          autoComplete="tel"
+          onChange={(next) => patchFields({ phone: next })}
+          variant="vitrine"
+          warmSurface={false}
+          className="espace-profil-phone"
         />
+        <input type="hidden" name="phone" value={fields.phone} />
       </Field>
 
       {!isPro ? (
         <div className="space-y-4 border-t border-[#35A238]/12 pt-4">
-          <p className="text-sm font-medium text-brand-navy">Adresse de livraison par défaut</p>
+          <div className="space-y-1">
+            <p className={espaceFieldLabelClass}>Adresse de livraison par défaut</p>
+            <p className={espaceFieldHintClass}>
+              Utilisée pour préremplir vos prochaines commandes. Vous pouvez la modifier à chaque
+              commande.
+            </p>
+          </div>
           <Field
             id="adresse_livraison_ligne"
             label="Rue et complément"
@@ -227,13 +270,11 @@ export function EspaceProfilForm({ initial }: Props) {
               onSelect={handleDeliveryAddressSelect}
               onClearSelection={() => {}}
               placeholder="Numéro, rue, code postal ou ville"
-              inputClassName={cn(
-                authFieldInputClass,
-                "h-auto min-h-0 rounded-lg border border-input bg-transparent pl-10 pr-10 text-sm shadow-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-              )}
+              warmSurface={false}
+              inputClassName={addressInputClassName}
             />
           </Field>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-3 max-[320px]:grid-cols-1">
             <Field id="adresse_livraison_code_postal" label="Code postal">
               <Input
                 id="adresse_livraison_code_postal"
@@ -242,8 +283,9 @@ export function EspaceProfilForm({ initial }: Props) {
                 maxLength={5}
                 value={fields.delivery.codePostal}
                 onChange={(e) => patchDelivery({ codePostal: e.target.value })}
-                className={authFieldInputClass}
+                className={espaceProfilInputClass}
                 autoComplete="postal-code"
+                placeholder="75001"
               />
             </Field>
             <Field id="adresse_livraison_ville" label="Ville">
@@ -252,35 +294,34 @@ export function EspaceProfilForm({ initial }: Props) {
                 name="adresse_livraison_ville"
                 value={fields.delivery.ville}
                 onChange={(e) => patchDelivery({ ville: e.target.value })}
-                className={authFieldInputClass}
+                className={espaceProfilInputClass}
                 autoComplete="address-level2"
+                placeholder="Paris"
               />
             </Field>
           </div>
-          <p className="text-xs text-muted-foreground">
-            Utilisée pour préremplir vos prochaines commandes. Vous pouvez la modifier à chaque commande.
-          </p>
         </div>
       ) : null}
 
       {isPro && initial.compte ? (
         <div className="space-y-4 border-t border-[#35A238]/12 pt-4">
-          <div>
-            <p className="text-sm font-medium text-brand-navy">Entreprise</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">
+          <div className="space-y-1">
+            <p className={espaceFieldLabelClass}>Entreprise</p>
+            <p className={espaceFieldHintClass}>
               {initial.compte.status === "approved"
                 ? "Raison sociale et SIRET : modifiez le dossier depuis Entreprise & abonnement si besoin."
                 : "Dossier en cours — vous pouvez aussi compléter le formulaire sur la page Entreprise."}
             </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-3 max-[320px]:grid-cols-1">
             <Field id="raison_sociale_ro" label="Raison sociale">
               <Input
                 id="raison_sociale_ro"
                 value={initial.compte.raison_sociale}
                 readOnly
                 disabled
-                className={authFieldInputClass}
+                tabIndex={-1}
+                className={espaceProfilReadonlyInputClass}
               />
             </Field>
             <Field id="siret_ro" label="SIRET">
@@ -289,7 +330,8 @@ export function EspaceProfilForm({ initial }: Props) {
                 value={initial.compte.siret ?? ""}
                 readOnly
                 disabled
-                className={authFieldInputClass}
+                tabIndex={-1}
+                className={espaceProfilReadonlyInputClass}
               />
             </Field>
           </div>
@@ -298,20 +340,22 @@ export function EspaceProfilForm({ initial }: Props) {
             <textarea
               id="adresse_siege"
               name="adresse_siege"
-              className={textareaClass}
+              className={profilTextareaClass}
               defaultValue={initial.compte.adresse_siege ?? ""}
               rows={3}
+              placeholder="Numéro, rue, code postal, ville"
             />
           </Field>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-3 max-[320px]:grid-cols-1">
             <Field id="contact_nom" label="Nom du contact">
               <Input
                 id="contact_nom"
                 name="contact_nom"
                 required
                 defaultValue={initial.compte.contact_nom ?? ""}
-                className={authFieldInputClass}
+                className={espaceProfilInputClass}
+                placeholder="Nom du référent"
               />
             </Field>
             <Field id="contact_fonction" label="Fonction">
@@ -319,7 +363,8 @@ export function EspaceProfilForm({ initial }: Props) {
                 id="contact_fonction"
                 name="contact_fonction"
                 defaultValue={initial.compte.contact_fonction ?? ""}
-                className={authFieldInputClass}
+                className={espaceProfilInputClass}
+                placeholder="Ex. responsable chantier"
               />
             </Field>
             <Field id="contact_telephone" label="Téléphone contact">
@@ -328,18 +373,24 @@ export function EspaceProfilForm({ initial }: Props) {
                 name="contact_telephone"
                 type="tel"
                 defaultValue={initial.compte.contact_telephone ?? ""}
-                className={authFieldInputClass}
+                className={espaceProfilInputClass}
+                autoComplete="tel"
+                placeholder="6 12 34 56 78"
               />
             </Field>
             <Field id="contact_email" label="E-mail professionnel">
-              <Input
-                id="contact_email"
-                name="contact_email"
-                type="email"
-                required
-                defaultValue={initial.compte.contact_email}
-                className={authFieldInputClass}
-              />
+              <AuthIconField icon={Mail}>
+                <Input
+                  id="contact_email"
+                  name="contact_email"
+                  type="email"
+                  required
+                  defaultValue={initial.compte.contact_email}
+                  className={cn(espaceProfilInputClass, "pl-11")}
+                  autoComplete="work email"
+                  placeholder="contact@entreprise.fr"
+                />
+              </AuthIconField>
             </Field>
           </div>
         </div>
@@ -348,7 +399,7 @@ export function EspaceProfilForm({ initial }: Props) {
       <Button
         type="submit"
         disabled={isPending}
-        className="h-11 w-full bg-[#35A238] hover:bg-[#2d8a30] sm:w-auto sm:min-w-40"
+        className="form-submit-btn h-11 w-full bg-[#35A238] font-[family-name:var(--font-display)] hover:bg-[#2d8a30] sm:w-auto sm:min-w-40"
       >
         {isPending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
         Enregistrer

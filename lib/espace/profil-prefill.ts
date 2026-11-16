@@ -5,7 +5,7 @@ import {
   parseDeliveryAddressComplete,
   type DeliveryAddressParts,
 } from "@/lib/espace/delivery-address"
-import { formatContactPhoneDisplay } from "@/lib/phone/phone-value"
+import { normalizeContactPhoneForStorage } from "@/lib/phone/phone-value"
 
 export type ProfilPrefill = {
   email: string
@@ -130,7 +130,7 @@ export async function loadProfilPrefill(
     email,
     prenom,
     nom,
-    phone: phoneRaw ? formatContactPhoneDisplay(phoneRaw) : "",
+    phone: phoneRaw ? normalizeContactPhoneForStorage(phoneRaw) : "",
     delivery,
     updatedAt: profile?.updated_at ?? null,
   }

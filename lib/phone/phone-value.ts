@@ -37,9 +37,10 @@ export function parseContactPhone(value: string): ParsedContactPhone {
   if (trimmed.startsWith("+") && digits.length > 0) {
     const match = parseDialFromDigits(digits)
     if (match) {
+      const national = nationalDigitsForStorage(match.dial, match.national)
       return {
         dial: match.dial,
-        national: formatNationalForDisplay(match.dial, match.national),
+        national: formatNationalForDisplay(match.dial, national),
       }
     }
   }
@@ -47,9 +48,10 @@ export function parseContactPhone(value: string): ParsedContactPhone {
   if (digits.startsWith("00") && digits.length > 4) {
     const intl = parseDialFromDigits(digits.slice(2))
     if (intl) {
+      const national = nationalDigitsForStorage(intl.dial, intl.national)
       return {
         dial: intl.dial,
-        national: formatNationalForDisplay(intl.dial, intl.national),
+        national: formatNationalForDisplay(intl.dial, national),
       }
     }
   }
@@ -86,4 +88,12 @@ export function formatContactPhoneDisplay(value: string): string {
   const parsed = parseContactPhone(trimmed)
   if (!parsed.national) return trimmed
   return `+${parsed.dial} ${parsed.national}`
+}
+
+/** Format E.164 canonique pour formulaires (`+33612345678`). */
+export function normalizeContactPhoneForStorage(value: string): string {
+  const trimmed = value.trim()
+  if (!trimmed) return ""
+  const parsed = parseContactPhone(trimmed)
+  return buildInternationalPhone(parsed.dial, parsed.national)
 }
