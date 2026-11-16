@@ -376,6 +376,8 @@ export function VitrineHowItWorks({
   professionnelsPageLayout = false,
 }: VitrineHowItWorksProps = {}) {
   const [profile, setProfile] = useState<Profile>(defaultProfile)
+  const showProfileToggle = !professionnelsPageLayout
+  const activeProfile: Profile = professionnelsPageLayout ? "professionnel" : profile
 
   const sectionTitle = professionnelsPageLayout
     ? professionnelsCommentCaFonctionne.titre
@@ -402,19 +404,23 @@ export function VitrineHowItWorks({
           <p className="vitrine-section-intro">
             {sectionIntro}
           </p>
-          <div className="mt-8 sm:mt-9">
-            <ProfileToggle profile={profile} onChange={setProfile} />
-          </div>
+          {showProfileToggle ? (
+            <div className="mt-8 sm:mt-9">
+              <ProfileToggle profile={profile} onChange={setProfile} />
+            </div>
+          ) : null}
         </div>
 
         <div
           id="how-panel"
-          role="tabpanel"
-          aria-labelledby={`tab-${profile}`}
-          className="how-panel-wrap mx-auto mt-10 max-w-5xl sm:mt-12 lg:max-w-6xl"
+          role={showProfileToggle ? "tabpanel" : undefined}
+          aria-labelledby={showProfileToggle ? `tab-${activeProfile}` : undefined}
+          className={`how-panel-wrap mx-auto max-w-5xl lg:max-w-6xl ${
+            showProfileToggle ? "mt-10 sm:mt-12" : "mt-8 sm:mt-9"
+          }`}
         >
-          <div key={profile} className="how-panel-enter">
-            {profile === "particulier" ? (
+          <div key={activeProfile} className="how-panel-enter">
+            {activeProfile === "particulier" ? (
               <ParticulierPanel />
             ) : (
               <ProfessionnelPanel professionnelsPageLayout={professionnelsPageLayout} />
