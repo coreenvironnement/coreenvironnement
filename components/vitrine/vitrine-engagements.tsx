@@ -13,6 +13,7 @@ import { engagements } from "@/lib/cdc/contenu-vitrine"
 import { cn } from "@/lib/utils"
 
 import { VITRINE_ICON_STROKE } from "./icons"
+import { TrackdechetsLogoMark } from "./trackdechets-official-badge"
 
 const STEP_META = [
   { verb: "INTERVENIR", icon: AlarmClockCheckIcon },
@@ -124,6 +125,7 @@ function EngagementStep({
   reduced,
   mobileReveal,
   scrollFocus,
+  showTrackdechetsOnTracerStep,
 }: {
   item: (typeof engagements)[number]
   index: number
@@ -133,6 +135,7 @@ function EngagementStep({
   reduced: boolean
   mobileReveal: boolean
   scrollFocus: boolean
+  showTrackdechetsOnTracerStep?: boolean
 }) {
   const step = STEP_META[index]
   const isDigital = item.titre.toLowerCase().includes("suivi de la commande")
@@ -145,32 +148,42 @@ function EngagementStep({
       data-step={index}
       className={cn(
         "engagements-step relative",
+        isDigital && "engagements-step--digital",
         focusReady &&
           (isActive ? "engagements-step--active" : "engagements-step--inactive"),
         mobileReveal && !shown && !reduced && "engagements-step--awaiting-reveal",
         mobileReveal && shown && !reduced && "engagements-step--revealed"
       )}
     >
-      <article className="engagements-step__card grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 sm:gap-x-5">
-        <span
-          className={cn(
-            "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-brand-green/12 bg-brand-warm-field transition-[border-color,box-shadow,color] duration-300 sm:h-[3.25rem] sm:w-[3.25rem]",
-            isActive
-              ? "border-[#35A238]/35 text-brand-navy shadow-[0_3px_14px_-4px_rgba(53,162,56,0.22)]"
-              : "border-[#d5ddd9] text-brand-navy/75 shadow-[0_2px_10px_-4px_rgba(14,32,16,0.1)]",
-            isDigital && !isActive && "border-brand-green/25 text-brand-green/80"
-          )}
-        >
-          <HugeiconsIcon
-            icon={step.icon}
-            size={21}
-            strokeWidth={VITRINE_ICON_STROKE}
-            aria-hidden
-          />
-        </span>
+      <article
+        className={cn(
+          "engagements-step__card grid grid-cols-1 gap-y-3 sm:grid-cols-[minmax(3.25rem,auto)_minmax(0,1fr)] sm:gap-x-5 sm:gap-y-0"
+        )}
+      >
+        <div className="engagements-step__marker flex flex-col items-center gap-2 sm:items-start">
+          <span className="engagements-step__icon">
+            <HugeiconsIcon
+              icon={step.icon}
+              size={20}
+              strokeWidth={VITRINE_ICON_STROKE}
+              aria-hidden
+            />
+          </span>
+          <p
+            className="engagements-step__kicker"
+            aria-label={`Étape ${index + 1} : ${step.verb.charAt(0) + step.verb.slice(1).toLowerCase()}`}
+          >
+            <span className="engagements-step__kicker-num">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span className="engagements-step__kicker-rule" aria-hidden />
+            <span className="engagements-step__kicker-verb">{step.verb}</span>
+          </p>
+        </div>
 
         <div
           className={cn(
+            "engagements-step__body min-w-0",
             isLast ? "pb-0" : "pb-10 sm:pb-12 lg:pb-14",
             "transition-colors duration-300 ease-out"
           )}
@@ -180,29 +193,9 @@ function EngagementStep({
               : undefined
           }
         >
-          <p className="vitrine-label flex flex-wrap items-center gap-x-2 transition-colors duration-300">
-            <span
-              className={cn(
-                isActive ? "text-[#35A238]" : "text-brand-navy/45 lg:text-brand-muted"
-              )}
-            >
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <span aria-hidden className="text-brand-border">
-              —
-            </span>
-            <span
-              className={cn(
-                "tracking-[0.16em] transition-colors duration-300",
-                isActive ? "text-[#35A238]/90" : "text-brand-muted"
-              )}
-            >
-              {step.verb}
-            </span>
-          </p>
           <h3
             className={cn(
-              "vitrine-h3 mt-2 transition-colors duration-300",
+              "vitrine-h3 transition-colors duration-300",
               isActive ? "text-[#152a3b]" : "text-[#152a3b]/72"
             )}
           >
@@ -211,13 +204,37 @@ function EngagementStep({
           <p className="mt-3 text-sm leading-relaxed text-brand-muted sm:text-[15px] sm:leading-[1.72]">
             <EngagementText text={item.texte} />
           </p>
+          {showTrackdechetsOnTracerStep && index === 2 ? (
+            <div
+              className={cn(
+                "mt-5 flex max-w-[28rem] flex-col gap-3 rounded-2xl border border-brand-green/12 bg-white/65 px-4 py-3.5 sm:flex-row sm:items-center sm:gap-4 sm:px-5",
+                !isActive && "lg:opacity-90"
+              )}
+            >
+              <TrackdechetsLogoMark size="md" className="mx-auto sm:mx-0" />
+              <p className="text-center text-[12px] leading-relaxed text-brand-muted sm:text-left sm:text-[13px]">
+                Édition des{" "}
+                <strong className="font-medium text-brand-text">
+                  Bordereaux de Suivi de Déchets (BSD)
+                </strong>{" "}
+                via la plateforme officielle Trackdéchets.
+              </p>
+            </div>
+          ) : null}
         </div>
       </article>
     </li>
   )
 }
 
-export function VitrineEngagements() {
+type VitrineEngagementsProps = {
+  /** Bloc 03 TRACER : logo officiel (page professionnels). */
+  showTrackdechetsOnTracerStep?: boolean
+}
+
+export function VitrineEngagements({
+  showTrackdechetsOnTracerStep = false,
+}: VitrineEngagementsProps) {
   const reduced = usePrefersReducedMotion()
   const isDesktop = useDesktopEngagements()
   const listRef = useRef<HTMLOListElement>(null)
@@ -335,6 +352,7 @@ export function VitrineEngagements() {
                   reduced={reduced}
                   mobileReveal={!isDesktop}
                   scrollFocus={scrollFocus}
+                  showTrackdechetsOnTracerStep={showTrackdechetsOnTracerStep}
                 />
               )
             })}

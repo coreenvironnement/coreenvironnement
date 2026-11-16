@@ -39,7 +39,7 @@ export function VitrineProfessionnelsHomeClient({
             heroBackdrop={heroBackdrop}
           />
           <VitrineServices />
-          <VitrineEngagements />
+          <VitrineEngagements showTrackdechetsOnTracerStep />
           <VitrineHowItWorks defaultProfile="professionnel" professionnelsPageLayout />
           <TestimonialsSection vitrine proOnly />
           <VitrineFaq professionnelsPage />

@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils"
 
 import { GoogleRatingBadge } from "./google-rating-badge"
 import { HeroFormulaireLivraisonLottie } from "./hero-formulaire-livraison-lottie"
+import { TrackdechetsOfficialBadge } from "./trackdechets-official-badge"
 import { useVitrineOrder } from "./order-context"
 
 type HeroOrderCardProps = {
@@ -180,6 +181,13 @@ export function HeroOrderCard({
           </p>
         )}
       </div>
+
+      {isPro ? (
+        <div className="flex w-full flex-wrap items-center justify-center gap-2.5 max-lg:gap-2 sm:gap-3 lg:justify-start">
+          <GoogleRatingBadge variant="card" compact className="max-lg:justify-center" />
+          <TrackdechetsOfficialBadge variant="card" compact className="max-lg:justify-center" />
+        </div>
+      ) : null}
 
       <button
         type="button"

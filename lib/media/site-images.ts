@@ -2,12 +2,18 @@ import type { LocalPage } from "@/lib/seo/local-copy"
 import { geoPrepositionalPhrase } from "@/lib/seo/local-copy"
 
 /** Chemins stables (noms descriptifs, WebP). */
+export const TRACKDECHETS_LOGO_ALT = "Logo Trackdéchets"
+
 export const SITE_IMAGES = {
   logo: {
     /** Logo bleu/navy — header vitrine (hero transparent + barre scrollée). */
     headerBrand: "/images/stickyheaderlogo.png",
     /** Version claire — footer vitrine et fonds sombres. */
     headerOnDark: "/images/core-environnement-logo-header-transparent.png",
+  },
+  brand: {
+    /** Signature officielle (Marianne + pisteurs), PNG transparent — FAQ Trackdéchets. */
+    trackdechetsLogo: "/images/trackdechets-logo-officiel.png",
   },
   hero: {
     mobile: "/images/location-benne-camion-idf-hero-mobile.webp",

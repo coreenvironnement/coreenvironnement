@@ -54,3 +54,5 @@ export const SITE_GOOGLE_REVIEW_COUNT = 12
 export const SITE_GOOGLE_SAMPLE_REVIEW_BODY =
   "Entreprise très sympathique, sérieuse et professionnelle. Service de location au top, je recommande vivement !"
 export const SITE_GOOGLE_SAMPLE_REVIEW_AUTHOR = "Client Google"
+
+export const SITE_TRACKDECHETS_URL = "https://trackdechets.beta.gouv.fr/"
