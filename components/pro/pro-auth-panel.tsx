@@ -8,6 +8,13 @@ import { Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { PasswordInput } from "@/components/ui/password-input"
+import {
+  isSignUpDuplicate,
+  isValidSignupEmail,
+  normalizeSignupEmail,
+  SIGNUP_EXISTING_EMAIL_MESSAGE,
+  signUpErrorLooksLikeDuplicate,
+} from "@/lib/auth/signup-validation"
 import { createClient } from "@/lib/supabase/client"
 
 export function ProAuthPanel() {
@@ -42,8 +49,15 @@ export function ProAuthPanel() {
       return
     }
 
-    const { error: signUpError } = await supabase.auth.signUp({
-      email: email.trim(),
+    const normalizedEmail = normalizeSignupEmail(email)
+    if (!isValidSignupEmail(normalizedEmail)) {
+      setLoading(false)
+      setError("Indiquez une adresse e-mail valide.")
+      return
+    }
+
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email: normalizedEmail,
       password,
       options: {
         data: { full_name: fullName.trim() || null },
@@ -53,7 +67,16 @@ export function ProAuthPanel() {
     setLoading(false)
 
     if (signUpError) {
+      if (signUpErrorLooksLikeDuplicate(signUpError.message ?? "")) {
+        setInfo(SIGNUP_EXISTING_EMAIL_MESSAGE)
+        return
+      }
       setError(signUpError.message)
+      return
+    }
+
+    if (isSignUpDuplicate(data)) {
+      setInfo(SIGNUP_EXISTING_EMAIL_MESSAGE)
       return
     }
 

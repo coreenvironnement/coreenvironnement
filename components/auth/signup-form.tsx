@@ -18,6 +18,13 @@ import {
 } from "@/lib/auth/signup-type"
 import { finalizeSignupProfile } from "@/app/auth/signup-actions"
 import { safeNextPath } from "@/lib/auth/post-login-path"
+import {
+  isSignUpDuplicate,
+  isValidSignupEmail,
+  normalizeSignupEmail,
+  SIGNUP_EXISTING_EMAIL_MESSAGE,
+  signUpErrorLooksLikeDuplicate,
+} from "@/lib/auth/signup-validation"
 import { authFieldInputClass, fieldMessageId } from "@/lib/form/auth-field-styles"
 import { createClient } from "@/lib/supabase/client"
 
@@ -84,6 +91,16 @@ export function SignupForm() {
       return
     }
 
+    const normalizedEmail = normalizeSignupEmail(email)
+    if (!normalizedEmail) {
+      setFormError("Indiquez votre adresse e-mail.")
+      return
+    }
+    if (!isValidSignupEmail(normalizedEmail)) {
+      setFormError("Indiquez une adresse e-mail valide.")
+      return
+    }
+
     setLoading(true)
     const supabase = createClient()
     const next =
@@ -93,7 +110,7 @@ export function SignupForm() {
     const fullName = [prenom.trim(), nom.trim()].filter(Boolean).join(" ") || null
 
     const { data, error: signUpError } = await supabase.auth.signUp({
-      email: email.trim(),
+      email: normalizedEmail,
       password,
       options: {
         emailRedirectTo: redirectTo,
@@ -108,13 +125,16 @@ export function SignupForm() {
 
     if (signUpError) {
       const msg = signUpError.message ?? ""
-      if (/already|registered|exists/i.test(msg)) {
-        setInfo(
-          "Un compte existe déjà pour cet e-mail (par exemple après une commande). Utilisez « Mot de passe oublié ? » sur la page de connexion pour choisir votre mot de passe."
-        )
+      if (signUpErrorLooksLikeDuplicate(msg)) {
+        setInfo(SIGNUP_EXISTING_EMAIL_MESSAGE)
         return
       }
       setFormError("Impossible de créer le compte. Vérifiez vos informations.")
+      return
+    }
+
+    if (isSignUpDuplicate(data)) {
+      setInfo(SIGNUP_EXISTING_EMAIL_MESSAGE)
       return
     }
 
