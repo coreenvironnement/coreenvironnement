@@ -84,13 +84,13 @@ function buildParticulierSteps(): Step[] {
 const PRO_ACCOUNT_STEPS: Step[] = [
   {
     num: "01",
-    label: "OUVRIR VOTRE DOSSIER",
+    label: "Ouvrir votre dossier",
     text: "Sur /pro, créez un accès et déposez KBIS, RIB et les informations de votre entreprise.",
     icon: UserAdd01Icon,
   },
   {
     num: "02",
-    label: "VALIDATION ET ABONNEMENT",
+    label: "Validation et abonnement",
     text: `Notre service financier valide votre dossier sous 24 h. Vous activez ensuite l'abonnement espace client (${ABONNEMENT_PRO_LABEL}) et accédez au suivi de vos chantiers.`,
     icon: Timer02Icon,
   },
@@ -192,7 +192,7 @@ function StepCard({
             <span className="how-step-kicker__rule" aria-hidden />
             <span className="how-step-kicker__title">{label}</span>
           </div>
-          <p className="col-start-2 min-w-0 text-[12px] leading-snug text-brand-muted sm:text-[12.5px] sm:leading-[1.5]">
+          <p className="col-start-2 min-w-0 text-left text-[13px] leading-[1.55] text-brand-muted sm:text-[13.5px] sm:leading-[1.6]">
             {text}
           </p>
         </div>
@@ -241,7 +241,7 @@ function StepsGrid({
   dense?: boolean
 }) {
   const gridClass = dense
-    ? "how-steps-grid how-steps-grid--dense grid grid-cols-2 gap-2 sm:gap-3"
+    ? "how-steps-grid how-steps-grid--dense grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3"
     : "how-steps-grid grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 sm:gap-4"
 
   return (
@@ -413,11 +413,19 @@ function ProSidePanel() {
 
 function buildProOrderStepsForProfessionnelsPage(): Step[] {
   const { envoiDemande } = professionnelsCommentCaFonctionne
+  const compactOrderLabels: Record<string, string> = {
+    "03": "Flux",
+    "04": "Volume",
+    "05": "Date & lieu",
+  }
   return [
-    ...PRO_ORDER_STEPS,
+    ...PRO_ORDER_STEPS.map((step) => ({
+      ...step,
+      label: compactOrderLabels[step.num] ?? step.label,
+    })),
     {
       num: "06",
-      label: envoiDemande.label,
+      label: "Envoi de la demande",
       text: envoiDemande.text,
       icon: MailSend01Icon,
     },
