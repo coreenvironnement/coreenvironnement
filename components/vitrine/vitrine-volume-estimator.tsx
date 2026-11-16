@@ -90,7 +90,7 @@ export function VitrineVolumeEstimator({
       />
       <OrderTunnelContinueButton
         disabled={!particulierWasteId}
-        onClick={beginEstimate}
+        onClick={() => beginEstimate()}
       >
         Estimer mon volume
       </OrderTunnelContinueButton>
