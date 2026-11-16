@@ -32,6 +32,9 @@ export function TrackdechetsOfficialBadge({
         compact && "gap-2 px-3 py-1.5 sm:gap-2.5 sm:px-3.5",
         compact &&
           "max-lg:gap-1.5 max-lg:border-0 max-lg:bg-transparent max-lg:px-0 max-lg:py-0 max-lg:shadow-none max-lg:backdrop-blur-none hover:max-lg:border-0 hover:max-lg:bg-transparent",
+        compact &&
+          isCard &&
+          "max-lg:min-h-[1.75rem] max-lg:items-center max-lg:py-0",
         className
       )}
       aria-label="Traçabilité officielle Trackdéchets — ouvrir le site Trackdéchets"
@@ -43,19 +46,32 @@ export function TrackdechetsOfficialBadge({
         height={119}
         className={cn(
           "h-9 w-auto shrink-0 object-contain sm:h-10",
-          compact && "max-lg:h-8 sm:h-9"
+          compact && "max-lg:h-7 sm:h-9"
         )}
         aria-hidden
       />
       <span
         className={cn(
-          "min-w-0 text-left text-[12px] font-semibold leading-snug tracking-[-0.01em] sm:text-[13px]",
+          "min-w-0 text-left text-[12px] font-semibold leading-none tracking-[-0.01em] sm:text-[13px]",
           textPrimary,
-          compact && "max-lg:text-[11.5px]"
+          compact && "max-lg:text-[11px]"
         )}
       >
-        Traçabilité officielle
-        <span className={cn("block font-medium", textSecondary)}>Trackdéchets</span>
+        <span className={cn(compact && "max-lg:hidden")}>
+          Traçabilité officielle
+          <span className={cn("block font-medium leading-snug", textSecondary)}>
+            Trackdéchets
+          </span>
+        </span>
+        <span
+          className={cn(
+            "hidden font-semibold leading-none",
+            textPrimary,
+            compact && "max-lg:inline"
+          )}
+        >
+          Trackdéchets
+        </span>
       </span>
     </a>
   )

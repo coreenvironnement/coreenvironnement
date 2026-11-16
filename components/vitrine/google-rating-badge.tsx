@@ -58,6 +58,9 @@ export function GoogleRatingBadge({
         compact && !isCard && "gap-2 px-3 py-1.5 sm:gap-2.5 sm:px-3.5",
         compactMobile &&
           "max-lg:gap-1.5 max-lg:border-0 max-lg:bg-transparent max-lg:px-0 max-lg:py-0 max-lg:shadow-none max-lg:backdrop-blur-none hover:max-lg:border-0 hover:max-lg:bg-transparent",
+        compactMobile &&
+          isCard &&
+          "max-lg:min-h-[1.75rem] max-lg:items-center max-lg:py-0",
         className
       )}
       aria-label={`Note Google ${ratingLabel} sur 5 — voir sur Google Maps`}
@@ -80,7 +83,7 @@ export function GoogleRatingBadge({
       <span
         className={cn(
           "flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center",
-          compactMobile && "max-lg:gap-1.5"
+          compactMobile && "max-lg:flex-nowrap max-lg:gap-1.5 max-lg:gap-y-0"
         )}
       >
         <RatingStars
@@ -88,13 +91,23 @@ export function GoogleRatingBadge({
         />
         <span
           className={cn(
-            "hidden max-lg:inline text-[12px] font-semibold leading-snug tracking-[-0.01em]",
+            "hidden max-lg:inline text-[12px] font-semibold leading-none tracking-[-0.01em]",
             textPrimary,
-            !compactMobile && "max-lg:hidden"
+            !compactMobile && "max-lg:hidden",
+            compactMobile && isCard && "max-lg:text-[11px]"
           )}
         >
-          Note Google
-          <span className={cn("font-medium", textSecondary)}> · {ratingLabel}</span>
+          {compactMobile && isCard ? (
+            <>
+              Google
+              <span className={cn("font-medium", textSecondary)}> {ratingLabel}</span>
+            </>
+          ) : (
+            <>
+              Note Google
+              <span className={cn("font-medium", textSecondary)}> · {ratingLabel}</span>
+            </>
+          )}
         </span>
         <span
           className={cn(

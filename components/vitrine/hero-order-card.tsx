@@ -183,9 +183,26 @@ export function HeroOrderCard({
       </div>
 
       {isPro ? (
-        <div className="flex w-full flex-wrap items-center justify-center gap-2.5 max-lg:gap-2 sm:gap-3 lg:justify-start">
-          <GoogleRatingBadge variant="card" compact className="max-lg:justify-center" />
-          <TrackdechetsOfficialBadge variant="card" compact className="max-lg:justify-center" />
+        <div
+          className={cn(
+            "hero-order-card__trust-badges flex w-full max-lg:flex-nowrap items-center justify-center gap-2 sm:gap-3 lg:flex-wrap lg:justify-start",
+            "max-lg:max-w-full max-lg:gap-2 max-lg:rounded-full max-lg:border max-lg:border-brand-navy/10 max-lg:bg-white/75 max-lg:px-3 max-lg:py-1.5 max-lg:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_4px_14px_-8px_rgb(14_32_16/0.2)] max-lg:backdrop-blur-md"
+          )}
+        >
+          <GoogleRatingBadge
+            variant="card"
+            compact
+            className="max-lg:min-h-0 max-lg:shrink max-lg:justify-center"
+          />
+          <span
+            className="hero-order-card__trust-sep hidden h-[1.125rem] w-px shrink-0 bg-brand-navy/15 opacity-45 max-lg:block"
+            aria-hidden
+          />
+          <TrackdechetsOfficialBadge
+            variant="card"
+            compact
+            className="max-lg:min-h-0 max-lg:shrink max-lg:justify-center"
+          />
         </div>
       ) : null}
 
