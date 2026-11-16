@@ -865,6 +865,50 @@
       0 8px 20px -6px rgb(53 162 56 / 0.1);
   }
 
+  .vitrine-root .how-step-card--compact {
+    @apply shadow-[0_1px_2px_rgb(14_32_16/0.03)];
+  }
+
+  .vitrine-root .how-step-card--compact:hover {
+    box-shadow:
+      0 2px 5px rgb(14 32 16 / 0.035),
+      0 6px 16px -6px rgb(53 162 56 / 0.08);
+  }
+
+  .vitrine-root .how-step-kicker {
+    @apply flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5;
+  }
+
+  .vitrine-root .how-step-kicker__num {
+    @apply font-[family-name:var(--font-display)] text-[11px] font-bold tabular-nums tracking-[0.04em] text-brand-green;
+  }
+
+  .vitrine-root .how-step-kicker__rule {
+    @apply h-3 w-px shrink-0 bg-brand-green/35;
+  }
+
+  .vitrine-root .how-step-kicker__title {
+    @apply font-[family-name:var(--font-display)] text-[10.5px] font-semibold uppercase leading-tight tracking-[0.05em] text-brand-navy sm:text-[11px];
+  }
+
+  .vitrine-root .how-main-card--pro-page .how-step-phase {
+    @apply font-semibold;
+  }
+
+  .vitrine-root .how-after-panel--compact .how-after-panel__intro {
+    @apply mx-auto lg:mx-0;
+  }
+
+  .vitrine-root .how-after-panel--compact .how-after-tags--compact {
+    @apply mx-auto w-full max-w-[19.5rem] lg:max-w-none;
+  }
+
+  @media (max-width: 639px) {
+    .vitrine-root .how-main-card--pro-page .how-steps-grid--dense > li {
+      min-width: 0;
+    }
+  }
+
   .vitrine-root .how-after-panel {
     background: linear-gradient(165deg, #f0faf2 0%, #e8f5ec 48%, #eef8f0 100%);
   }
@@ -1026,6 +1070,92 @@
   transition:
     opacity 320ms ease-out,
     transform 320ms ease-out;
+}
+
+/* Marqueur étape — icône + kicker premium (01 — VERBE) */
+.vitrine-root #engagements .engagements-step__icon {
+  display: inline-flex;
+  height: 3rem;
+  width: 3rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgb(53 162 56 / 0.35);
+  background-color: var(--color-brand-warm-field);
+  color: var(--color-brand-navy);
+  box-shadow: 0 3px 14px -4px rgb(53 162 56 / 0.22);
+  transition:
+    border-color 360ms ease,
+    box-shadow 360ms ease,
+    color 360ms ease;
+}
+
+@media (min-width: 640px) {
+  .vitrine-root #engagements .engagements-step__icon {
+    height: 3.25rem;
+    width: 3.25rem;
+  }
+}
+
+.vitrine-root #engagements .engagements-step--inactive .engagements-step__icon {
+  border-color: #d5ddd9;
+  color: rgb(23 32 51 / 0.75);
+  box-shadow: 0 2px 10px -4px rgb(14 32 16 / 0.1);
+}
+
+.vitrine-root #engagements .engagements-step--digital.engagements-step--inactive .engagements-step__icon {
+  border-color: rgb(53 162 56 / 0.25);
+  color: rgb(53 162 56 / 0.8);
+}
+
+.vitrine-root #engagements .engagements-step__kicker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.25;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.vitrine-root #engagements .engagements-step__kicker-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+  color: var(--color-brand-green);
+  transition: color 360ms ease;
+}
+
+.vitrine-root #engagements .engagements-step__kicker-rule::before {
+  content: "—";
+  color: var(--color-brand-border);
+  font-weight: 400;
+  letter-spacing: normal;
+}
+
+.vitrine-root #engagements .engagements-step__kicker-verb {
+  letter-spacing: 0.16em;
+  color: rgb(53 162 56 / 0.9);
+  transition: color 360ms ease;
+}
+
+.vitrine-root #engagements .engagements-step--inactive .engagements-step__kicker-num {
+  color: rgb(23 32 51 / 0.45);
+}
+
+@media (min-width: 1024px) {
+  .vitrine-root #engagements .engagements-step--inactive .engagements-step__kicker-num {
+    color: var(--color-brand-muted);
+  }
+}
+
+.vitrine-root #engagements .engagements-step--inactive .engagements-step__kicker-verb {
+  color: var(--color-brand-muted);
 }
 
 .vitrine-root #engagements .engagements-step__card {
@@ -2280,7 +2410,7 @@
     @apply grid-cols-1 justify-items-center text-center;
   }
 
-  .vitrine-root.vitrine--pro-home-mobile-centered #engagements .engagements-step .vitrine-label {
+  .vitrine-root.vitrine--pro-home-mobile-centered #engagements .engagements-step .engagements-step__kicker {
     @apply justify-center;
   }
 
@@ -2289,16 +2419,49 @@
     @apply text-center;
   }
 
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-panel > div:first-child {
-    @apply justify-center;
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-panel__head {
+    @apply mx-auto justify-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-panel--compact .how-after-panel__intro {
+    @apply mx-auto;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-tags--compact {
+    @apply mx-auto max-w-[19rem] justify-items-stretch;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-tag--compact {
+    @apply text-center;
   }
 
   .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-card .flex.flex-1.flex-col {
     @apply items-center text-center;
   }
 
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-card--compact .how-step-card--compact__inner {
+    @apply justify-items-center text-center;
+    grid-template-columns: 1fr;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-card--compact .how-step-icon-circle--compact {
+    @apply col-start-1 row-start-1 mx-auto;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-card--compact .how-step-kicker {
+    @apply col-start-1 justify-center;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-card--compact p.col-start-2 {
+    @apply col-start-1;
+  }
+
   .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-icon-circle {
     @apply mx-auto;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-icon-circle--compact {
+    @apply row-span-1;
   }
 
   .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-tags {

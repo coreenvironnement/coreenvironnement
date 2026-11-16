@@ -527,7 +527,7 @@ export const professionnelsCommentCaFonctionne = {
     text: "Vérifiez les informations, puis transmettez votre demande. Notre équipe vous recontacte pour confirmer l’intervention et les modalités de règlement.",
   },
   suite:
-    "Après l’envoi, notre équipe reprend les informations de votre demande avec vous pour préparer l’intervention et préciser les modalités de règlement.",
+    "Notre équipe confirme votre demande, valide l’intervention et précise le règlement avec vous.",
 } as const
 
 export const professionnelsFaqModalitesPaiement =

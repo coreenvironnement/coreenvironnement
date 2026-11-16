@@ -168,7 +168,38 @@ function ProfileToggle({
   )
 }
 
-function StepCard({ num, label, text, icon, imageSrc, imageAlt }: Step) {
+function StepCard({
+  num,
+  label,
+  text,
+  icon,
+  imageSrc,
+  imageAlt,
+  variant = "default",
+}: Step & { variant?: "default" | "compact" }) {
+  if (variant === "compact") {
+    return (
+      <article className="how-step-card how-step-card--compact h-full overflow-hidden rounded-[0.75rem] border border-brand-green/12 bg-brand-warm-field">
+        <div className="how-step-card--compact__inner grid grid-cols-[2.35rem_minmax(0,1fr)] items-start gap-x-2.5 gap-y-1 p-3 sm:p-3.5">
+          <span className="how-step-icon-circle how-step-icon-circle--compact row-span-2 mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-green/[0.08] text-brand-green">
+            <HugeiconsIcon icon={icon} size={17} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />
+          </span>
+          <div
+            className="how-step-kicker min-w-0"
+            aria-label={`Étape ${Number.parseInt(num, 10)} : ${label}`}
+          >
+            <span className="how-step-kicker__num">{num}</span>
+            <span className="how-step-kicker__rule" aria-hidden />
+            <span className="how-step-kicker__title">{label}</span>
+          </div>
+          <p className="col-start-2 min-w-0 text-[12px] leading-snug text-brand-muted sm:text-[12.5px] sm:leading-[1.5]">
+            {text}
+          </p>
+        </div>
+      </article>
+    )
+  }
+
   return (
     <article className="how-step-card flex h-full flex-col overflow-hidden rounded-[0.875rem] border border-brand-green/12 bg-brand-warm-field">
       {imageSrc ? (
@@ -198,45 +229,119 @@ function StepCard({ num, label, text, icon, imageSrc, imageAlt }: Step) {
   )
 }
 
-function StepsGrid({ steps, className = "" }: { steps: Step[]; className?: string }) {
+function StepsGrid({
+  steps,
+  className = "",
+  variant = "default",
+  dense = false,
+}: {
+  steps: Step[]
+  className?: string
+  variant?: "default" | "compact"
+  dense?: boolean
+}) {
+  const gridClass = dense
+    ? "how-steps-grid how-steps-grid--dense grid grid-cols-2 gap-2 sm:gap-3"
+    : "how-steps-grid grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 sm:gap-4"
+
   return (
-    <ol className={`how-steps-grid grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 sm:gap-4 ${className}`}>
+    <ol className={`${gridClass} ${className}`}>
       {steps.map((step) => (
         <li key={step.num}>
-          <StepCard {...step} />
+          <StepCard {...step} variant={variant} />
         </li>
       ))}
     </ol>
   )
 }
 
-function AfterPanel({ description }: { description: string }) {
+function ProFlowBridge() {
   return (
-    <aside className="how-after-panel flex h-full flex-col border-t border-brand-green/10 p-6 sm:p-8 lg:border-t-0 lg:border-l lg:p-8 xl:p-10">
-      <div className="flex items-center gap-2.5">
-        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-green/[0.12] text-brand-green">
-          <HugeiconsIcon icon={Leaf01Icon} size={18} strokeWidth={VITRINE_ICON_STROKE} aria-hidden />
+    <div
+      className="how-pro-flow-bridge my-4 flex flex-col items-center gap-1.5 sm:my-5"
+      role="separator"
+      aria-label="Étape suivante : passer une commande"
+    >
+      <span className="rounded-full border border-brand-green/25 bg-brand-green/[0.06] px-2.5 py-0.5 font-[family-name:var(--font-display)] text-[10px] font-semibold uppercase tracking-[0.1em] text-brand-green-dark">
+        Compte validé
+      </span>
+      <HugeiconsIcon
+        icon={ArrowRight01Icon}
+        size={14}
+        strokeWidth={VITRINE_ICON_STROKE}
+        className="rotate-90 text-brand-border sm:rotate-0"
+        aria-hidden
+      />
+      <p className="vitrine-label text-[11px] tracking-[0.12em] text-brand-navy/70">Passer une commande</p>
+    </div>
+  )
+}
+
+function AfterPanel({
+  description,
+  compact = false,
+}: {
+  description: string
+  compact?: boolean
+}) {
+  const tagsGridClass = compact
+    ? "how-after-tags how-after-tags--compact mt-3.5 grid grid-cols-2 gap-1.5 sm:mt-4 sm:gap-2 lg:mt-6 lg:gap-2.5"
+    : "how-after-tags mt-6 grid grid-cols-1 gap-2.5 min-[480px]:grid-cols-2 sm:gap-3"
+
+  const lastItemClass = compact ? "col-span-2" : "min-[480px]:col-span-2"
+
+  const tagClass = compact
+    ? "how-after-tag how-after-tag--compact flex items-center justify-center gap-1 rounded-lg bg-white/55 px-1.5 py-1.5 font-[family-name:var(--font-display)] text-[9.5px] font-semibold uppercase leading-tight tracking-[0.035em] text-brand-navy shadow-[0_1px_2px_rgb(14_32_16/0.05)] sm:text-[10px] lg:justify-start lg:gap-2 lg:rounded-[0.625rem] lg:border lg:border-brand-green/15 lg:bg-brand-warm lg:px-3 lg:py-2 lg:text-[10.5px] lg:leading-snug lg:tracking-[0.05em] lg:shadow-none"
+    : "how-after-tag flex items-center gap-2 rounded-[0.625rem] border border-brand-green/15 bg-brand-warm px-3 py-2.5 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase leading-snug tracking-[0.05em] text-brand-navy sm:text-[11.5px]"
+
+  return (
+    <aside
+      className={`how-after-panel flex h-full flex-col border-t border-brand-green/10 lg:border-t-0 lg:border-l ${
+        compact
+          ? "how-after-panel--compact p-4 sm:p-6 lg:p-8 xl:p-10"
+          : "p-6 sm:p-8 lg:p-8 xl:p-10"
+      }`}
+    >
+      <div className="how-after-panel__head inline-flex items-center gap-2 sm:gap-2.5">
+        <span
+          className={`inline-flex shrink-0 items-center justify-center rounded-full bg-brand-green/[0.12] text-brand-green ${
+            compact ? "h-8 w-8 sm:h-9 sm:w-9" : "h-9 w-9"
+          }`}
+        >
+          <HugeiconsIcon
+            icon={Leaf01Icon}
+            size={compact ? 16 : 18}
+            strokeWidth={VITRINE_ICON_STROKE}
+            aria-hidden
+          />
         </span>
-        <p className="font-[family-name:var(--font-display)] text-lg font-semibold tracking-[-0.02em] text-brand-navy">
+        <p
+          className={`font-[family-name:var(--font-display)] font-semibold tracking-[-0.02em] text-brand-navy ${
+            compact ? "text-base sm:text-lg" : "text-lg"
+          }`}
+        >
           Et après ?
         </p>
       </div>
-      <p className="mt-4 text-sm leading-relaxed text-brand-muted sm:text-[15px] sm:leading-[1.72]">
+      <p
+        className={
+          compact
+            ? "how-after-panel__intro mt-2 max-w-sm text-[13px] leading-snug text-brand-muted/90 sm:mt-2.5 sm:text-sm sm:leading-relaxed lg:mt-4 lg:max-w-none lg:text-[15px] lg:leading-[1.72] lg:text-brand-muted"
+            : "mt-4 text-sm leading-relaxed text-brand-muted sm:text-[15px] sm:leading-[1.72]"
+        }
+      >
         {description}
       </p>
-      <ul
-        aria-label="Suite du parcours après commande"
-        className="how-after-tags mt-6 grid grid-cols-1 gap-2.5 min-[480px]:grid-cols-2 sm:gap-3"
-      >
+      <ul aria-label="Suite du parcours après commande" className={tagsGridClass}>
         {AFTER_FLOW.map((step, index) => (
           <li
             key={step}
-            className={index === AFTER_FLOW.length - 1 ? "min-[480px]:col-span-2" : undefined}
+            className={index === AFTER_FLOW.length - 1 ? lastItemClass : undefined}
           >
-            <span className="how-after-tag flex items-center gap-2 rounded-[0.625rem] border border-brand-green/15 bg-brand-warm px-3 py-2.5 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase leading-snug tracking-[0.05em] text-brand-navy sm:text-[11.5px]">
+            <span className={tagClass}>
               <HugeiconsIcon
                 icon={Tick02Icon}
-                size={14}
+                size={compact ? 11 : 14}
                 strokeWidth={VITRINE_ICON_STROKE}
                 className="shrink-0 text-brand-green"
                 aria-hidden
@@ -324,38 +429,78 @@ function ProfessionnelPanel({ professionnelsPageLayout = false }: { professionne
     ? buildProOrderStepsForProfessionnelsPage()
     : PRO_ORDER_STEPS
 
+  const stepVariant = professionnelsPageLayout ? "compact" : "default"
+
   return (
-    <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(14_32_16/0.03),0_12px_32px_-8px_rgb(14_32_16/0.1)]">
+    <div
+      className={`how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(14_32_16/0.03),0_12px_32px_-8px_rgb(14_32_16/0.1)]${
+        professionnelsPageLayout ? " how-main-card--pro-page" : ""
+      }`}
+    >
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
-        <div className="how-panel-main p-6 sm:p-8 lg:p-9 xl:p-10">
-          <h3 className="vitrine-h3">
-            {commentCaFonctionne.professionnel.accroche}
-          </h3>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-brand-muted sm:text-[15px]">
-            {commentCaFonctionne.professionnel.etapesIntro}
+        <div
+          className={`how-panel-main ${
+            professionnelsPageLayout
+              ? "how-panel-main--pro-page p-5 sm:p-8 lg:p-9 xl:p-10"
+              : "p-6 sm:p-8 lg:p-9 xl:p-10"
+          }`}
+        >
+          {professionnelsPageLayout ? (
+            <p className="how-pro-page-lead max-w-2xl text-[13px] leading-snug text-brand-muted sm:text-sm sm:leading-[1.55]">
+              <span className="font-semibold text-brand-navy">Compte PRO :</span>{" "}
+              paiement à 30&nbsp;jours et facturation centralisée. Ouvrez votre dossier, puis préparez
+              votre demande de benne en ligne.
+            </p>
+          ) : (
+            <>
+              <h3 className="vitrine-h3">{commentCaFonctionne.professionnel.accroche}</h3>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-brand-muted sm:text-[15px]">
+                {commentCaFonctionne.professionnel.etapesIntro}
+              </p>
+            </>
+          )}
+
+          <p
+            className={`vitrine-label text-brand-green ${
+              professionnelsPageLayout ? "how-step-phase mt-5 text-[11px] tracking-[0.12em]" : "mt-8"
+            }`}
+          >
+            {professionnelsPageLayout ? "Ouverture du compte" : "OUVERTURE DU COMPTE"}
           </p>
+          <StepsGrid
+            steps={PRO_ACCOUNT_STEPS}
+            className={professionnelsPageLayout ? "mt-2.5" : "mt-4"}
+            variant={stepVariant}
+            dense={professionnelsPageLayout}
+          />
 
-          <p className="vitrine-label mt-8 text-brand-green">OUVERTURE DU COMPTE</p>
-          <StepsGrid steps={PRO_ACCOUNT_STEPS} className="mt-4" />
+          {professionnelsPageLayout ? (
+            <ProFlowBridge />
+          ) : (
+            <div className="my-7 flex flex-col items-center gap-2 sm:my-8">
+              <span className="rounded-full border border-brand-green/25 bg-brand-green/[0.06] px-3 py-1 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-green-dark">
+                COMPTE VALIDÉ
+              </span>
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={16}
+                strokeWidth={VITRINE_ICON_STROKE}
+                className="rotate-90 text-brand-border sm:rotate-0"
+                aria-hidden
+              />
+              <p className="vitrine-label text-brand-navy/70">PASSER UNE COMMANDE</p>
+            </div>
+          )}
 
-          <div className="my-7 flex flex-col items-center gap-2 sm:my-8">
-            <span className="rounded-full border border-brand-green/25 bg-brand-green/[0.06] px-3 py-1 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-green-dark">
-              COMPTE VALIDÉ
-            </span>
-            <HugeiconsIcon
-              icon={ArrowRight01Icon}
-              size={16}
-              strokeWidth={VITRINE_ICON_STROKE}
-              className="rotate-90 text-brand-border sm:rotate-0"
-              aria-hidden
-            />
-            <p className="vitrine-label text-brand-navy/70">PASSER UNE COMMANDE</p>
-          </div>
-
-          <StepsGrid steps={orderSteps} />
+          <StepsGrid
+            steps={orderSteps}
+            className={professionnelsPageLayout ? "mt-0" : undefined}
+            variant={stepVariant}
+            dense={professionnelsPageLayout}
+          />
         </div>
         {professionnelsPageLayout ? (
-          <AfterPanel description={professionnelsCommentCaFonctionne.suite} />
+          <AfterPanel description={professionnelsCommentCaFonctionne.suite} compact />
         ) : (
           <ProSidePanel />
         )}
