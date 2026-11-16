@@ -123,6 +123,7 @@ function EngagementStep({
   isEntering,
   reduced,
   mobileReveal,
+  scrollFocus,
 }: {
   item: (typeof engagements)[number]
   index: number
@@ -131,29 +132,26 @@ function EngagementStep({
   isEntering: boolean
   reduced: boolean
   mobileReveal: boolean
+  scrollFocus: boolean
 }) {
   const step = STEP_META[index]
   const isDigital = item.titre.toLowerCase().includes("suivi de la commande")
   const { ref, shown } = useStepReveal(reduced, mobileReveal)
+  const focusReady = scrollFocus && (!mobileReveal || shown || reduced)
 
   return (
     <li
       ref={ref}
       data-step={index}
-      className="engagements-step relative"
-      style={
-        mobileReveal && !shown && !reduced
-          ? { opacity: 0, transform: "translateY(10px)" }
-          : mobileReveal && shown && !reduced
-            ? {
-                opacity: 1,
-                transform: "translateY(0)",
-                transition: "opacity 320ms ease-out, transform 320ms ease-out",
-              }
-            : undefined
-      }
+      className={cn(
+        "engagements-step relative",
+        focusReady &&
+          (isActive ? "engagements-step--active" : "engagements-step--inactive"),
+        mobileReveal && !shown && !reduced && "engagements-step--awaiting-reveal",
+        mobileReveal && shown && !reduced && "engagements-step--revealed"
+      )}
     >
-      <article className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 sm:gap-x-5">
+      <article className="engagements-step__card grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 sm:gap-x-5">
         <span
           className={cn(
             "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-brand-green/12 bg-brand-warm-field transition-[border-color,box-shadow,color] duration-300 sm:h-[3.25rem] sm:w-[3.25rem]",
@@ -174,8 +172,7 @@ function EngagementStep({
         <div
           className={cn(
             isLast ? "pb-0" : "pb-10 sm:pb-12 lg:pb-14",
-            "transition-opacity duration-300 ease-out",
-            !isActive && "lg:opacity-[0.62]"
+            "transition-colors duration-300 ease-out"
           )}
           style={
             isEntering && !reduced
@@ -228,34 +225,59 @@ export function VitrineEngagements() {
   const [enterIndex, setEnterIndex] = useState<number | null>(null)
   const hasMountedRef = useRef(false)
 
+  const scrollFocus = !reduced
+
   useEffect(() => {
-    if (!isDesktop || reduced) return
+    if (!scrollFocus) return
 
     const nodes = listRef.current?.querySelectorAll<HTMLElement>("[data-step]")
     if (!nodes?.length) return
 
+    const inFocusBand = new Map<number, DOMRectReadOnly>()
+
+    const syncActiveFromBand = () => {
+      if (inFocusBand.size === 0) return
+
+      const viewportCenter = window.innerHeight * 0.5
+      let bestIndex = 0
+      let bestDistance = Number.POSITIVE_INFINITY
+
+      inFocusBand.forEach((rect, idx) => {
+        const stepCenter = rect.top + rect.height * 0.5
+        const distance = Math.abs(stepCenter - viewportCenter)
+        if (distance < bestDistance) {
+          bestDistance = distance
+          bestIndex = idx
+        }
+      })
+
+      setActiveIndex(bestIndex)
+    }
+
+    const rootMargin = isDesktop ? "-42% 0px -42% 0px" : "-36% 0px -36% 0px"
+
     const io = new IntersectionObserver(
       (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
-
-        if (visible.length > 0) {
-          const idx = Number(visible[0].target.getAttribute("data-step"))
-          if (!Number.isNaN(idx)) {
-            setActiveIndex(idx)
+        entries.forEach((entry) => {
+          const idx = Number(entry.target.getAttribute("data-step"))
+          if (Number.isNaN(idx)) return
+          if (entry.isIntersecting) {
+            inFocusBand.set(idx, entry.boundingClientRect)
+          } else {
+            inFocusBand.delete(idx)
           }
-        }
+        })
+        syncActiveFromBand()
       },
-      { rootMargin: "-42% 0px -42% 0px", threshold: 0 }
+      { rootMargin, threshold: [0, 0.12, 0.35, 0.6, 1] }
     )
 
     nodes.forEach((node) => io.observe(node))
     return () => io.disconnect()
-  }, [isDesktop, reduced])
+  }, [isDesktop, scrollFocus])
 
   useEffect(() => {
-    if (!isDesktop || reduced) return
+    if (!scrollFocus) return
     if (!hasMountedRef.current) {
       hasMountedRef.current = true
       return
@@ -263,7 +285,7 @@ export function VitrineEngagements() {
     setEnterIndex(activeIndex)
     const timer = window.setTimeout(() => setEnterIndex(null), 320)
     return () => window.clearTimeout(timer)
-  }, [activeIndex, isDesktop, reduced])
+  }, [activeIndex, scrollFocus])
 
   return (
     <section id="engagements" className="vitrine-section-warm py-16 sm:py-20 lg:py-[5.5rem]">
@@ -286,8 +308,7 @@ export function VitrineEngagements() {
           <ol ref={listRef} className="engagements-steps mt-12 lg:mt-0">
             {engagements.map((item, index) => {
               const isLast = index === engagements.length - 1
-              const scrollEnhanced = isDesktop && !reduced
-              const isActive = scrollEnhanced ? activeIndex === index : true
+              const isActive = scrollFocus ? activeIndex === index : true
 
               return (
                 <EngagementStep
@@ -299,6 +320,7 @@ export function VitrineEngagements() {
                   isEntering={enterIndex === index}
                   reduced={reduced}
                   mobileReveal={!isDesktop}
+                  scrollFocus={scrollFocus}
                 />
               )
             })}
