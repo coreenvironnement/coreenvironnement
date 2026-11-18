@@ -1,7 +1,8 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useCallback } from "react"
 
+import { useDebouncedInvalidField } from "@/lib/forms/use-debounced-invalid-field"
 import { CONTACT_PHONE_INVALID_MESSAGE } from "@/lib/phone/contact-phone-messages"
 import { isValidContactPhone } from "@/lib/phone/phone-value"
 
@@ -15,32 +16,25 @@ export type ContactPhoneFieldState = {
   markSubmitted: () => void
 }
 
-/** Affiche l’erreur après blur, submit ou collage international invalide — pas au simple focus vide. */
+/** Erreur après pause de saisie (~500 ms), blur, submit ou collage international invalide. */
 export function useContactPhoneField(value: string): ContactPhoneFieldState {
-  const [touched, setTouched] = useState(false)
-  const [submitPing, setSubmitPing] = useState(false)
+  const { showError, invalid, onBlur, markSubmitted } = useDebouncedInvalidField(
+    value,
+    isValidContactPhone
+  )
 
-  const invalid = !isValidContactPhone(value)
-  const showError = (touched || submitPing) && invalid
-
-  const onBlur = useCallback(() => {
-    setTouched(true)
-  }, [])
-
-  const onInternationalInput = useCallback((international: string) => {
-    if (!isValidContactPhone(international)) {
-      setSubmitPing(true)
-    }
-  }, [])
-
-  const markSubmitted = useCallback(() => {
-    setTouched(true)
-    setSubmitPing(true)
-  }, [])
+  const onInternationalInput = useCallback(
+    (international: string) => {
+      if (!isValidContactPhone(international)) {
+        markSubmitted()
+      }
+    },
+    [markSubmitted]
+  )
 
   return {
     showError,
-    invalid: showError,
+    invalid,
     onBlur,
     onInternationalInput,
     markSubmitted,

@@ -118,6 +118,11 @@ import {
   isValidContactPhone,
 } from "@/lib/phone/phone-value"
 import {
+  CONTACT_EMAIL_INVALID_MESSAGE,
+  isValidContactEmailInput,
+  useContactEmailField,
+} from "@/lib/forms/contact-email-field"
+import {
   CONTACT_PHONE_INVALID_MESSAGE,
   useContactPhoneField,
 } from "@/lib/phone/contact-phone-field"
@@ -206,6 +211,7 @@ const ORDER_TUNNEL_STEP_ACTIONS = "order-tunnel-step-actions"
 const ORDER_TUNNEL_BTN_BACK = "order-tunnel-step-back"
 const ORDER_TUNNEL_BTN_PRIMARY = "order-tunnel-step-primary"
 const ORDER_CONTACT_PHONE_ERROR_ID = "order-contact-phone-error"
+const ORDER_CONTACT_EMAIL_ERROR_ID = "order-contact-email-error"
 
 function orderFieldBg(embedded: boolean) {
   return embedded ? "bg-brand-warm-field text-brand-navy" : "bg-white"
@@ -363,6 +369,7 @@ export function OrderWidget({
   const [contactPhone, setContactPhone] = useState("")
   const contactPhoneField = useContactPhoneField(contactPhone)
   const [contactEmail, setContactEmail] = useState("")
+  const contactEmailField = useContactEmailField(contactEmail)
   const [draftCommandeId, setDraftCommandeId] = useState<string | null>(null)
   const lastParticulierAutosaveRef = useRef<string | null>(null)
   const particulierAutosaveInFlightRef = useRef(false)
@@ -781,11 +788,11 @@ export function OrderWidget({
       contactPhoneField.markSubmitted()
       return
     }
-    const email = contactEmail.trim()
-    if (!email.length || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setAddressError("Indiquez une adresse e-mail valide.")
+    if (!isValidContactEmailInput(contactEmail)) {
+      contactEmailField.markSubmitted()
       return
     }
+    const email = normalizeSignupEmail(contactEmail)
     setAddressError(null)
 
     if (audience === "particulier") {
@@ -2120,13 +2127,30 @@ export function OrderWidget({
                       value={contactEmail}
                       onChange={(e) => {
                         setContactEmail(e.target.value)
-                      setAddressError(null)
-                    }}
-                    className={cn(
-                      "h-11 rounded-xl border-2 border-primary/15 px-3",
-                      orderFieldBg(embedded)
-                    )}
+                        setAddressError(null)
+                      }}
+                      onBlur={contactEmailField.onBlur}
+                      aria-invalid={contactEmailField.invalid ? true : undefined}
+                      aria-describedby={
+                        contactEmailField.showError ? ORDER_CONTACT_EMAIL_ERROR_ID : undefined
+                      }
+                      className={cn(
+                        "h-11 rounded-xl border-2 border-primary/15 px-3",
+                        orderFieldBg(embedded)
+                      )}
                     />
+                  {contactEmailField.showError ? (
+                    <p
+                      id={ORDER_CONTACT_EMAIL_ERROR_ID}
+                      className={cn(
+                        "text-xs font-medium text-red-600",
+                        embedded && "form-field-message form-field-message--error"
+                      )}
+                      role="alert"
+                    >
+                      {CONTACT_EMAIL_INVALID_MESSAGE}
+                    </p>
+                  ) : null}
                   <p className={ORDER_HELP_TEXT}>
                     <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
                     <span>

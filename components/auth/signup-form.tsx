@@ -38,6 +38,11 @@ import {
 import { authFieldInputClass, fieldMessageId } from "@/lib/form/auth-field-styles"
 import { emailPlaceholderFromNames } from "@/lib/form/email-placeholder"
 import {
+  CONTACT_EMAIL_INVALID_MESSAGE,
+  isValidContactEmailInput,
+  useContactEmailField,
+} from "@/lib/forms/contact-email-field"
+import {
   CONTACT_PHONE_INVALID_MESSAGE,
   useContactPhoneField,
 } from "@/lib/phone/contact-phone-field"
@@ -125,6 +130,7 @@ export function SignupForm() {
   const [fonction, setFonction] = useState("")
 
   const [email, setEmail] = useState("")
+  const emailField = useContactEmailField(email)
   const [password, setPassword] = useState("")
   const [passwordConfirm, setPasswordConfirm] = useState("")
   const [prenom, setPrenom] = useState("")
@@ -141,6 +147,8 @@ export function SignupForm() {
   const passwordConfirmErrorId = fieldMessageId("signup-password-confirm")
   const signupPhoneProErrorId = fieldMessageId("signup-phone-pro")
   const signupPhoneErrorId = fieldMessageId("signup-phone")
+  const signupEmailProErrorId = fieldMessageId("signup-email-pro")
+  const signupEmailErrorId = fieldMessageId("signup-email")
   const emailPlaceholder = useMemo(
     () => emailPlaceholderFromNames(prenom, nom),
     [prenom, nom]
@@ -198,6 +206,7 @@ export function SignupForm() {
   }
 
   async function handleEmailBlur() {
+    emailField.onBlur()
     const normalizedEmail = normalizeSignupEmail(email)
     if (!normalizedEmail || !isValidSignupEmail(normalizedEmail)) {
       resetEmailAccountExists()
@@ -226,11 +235,11 @@ export function SignupForm() {
       setFormError("Indiquez votre prénom et votre nom.")
       return
     }
-    const normalizedEmail = normalizeSignupEmail(email)
-    if (!normalizedEmail || !isValidSignupEmail(normalizedEmail)) {
-      setFormError("Indiquez une adresse e-mail valide.")
+    if (!isValidContactEmailInput(email)) {
+      emailField.markSubmitted()
       return
     }
+    const normalizedEmail = normalizeSignupEmail(email)
     if (!isValidContactPhone(phone)) {
       phoneField.markSubmitted()
       return
@@ -261,11 +270,11 @@ export function SignupForm() {
         setFormError("Indiquez votre prénom et votre nom.")
         return
       }
-      const normalizedEmail = normalizeSignupEmail(email)
-      if (!normalizedEmail || !isValidSignupEmail(normalizedEmail)) {
-        setFormError("Indiquez une adresse e-mail valide.")
+      if (!isValidContactEmailInput(email)) {
+        emailField.markSubmitted()
         return
       }
+      const normalizedEmail = normalizeSignupEmail(email)
       if (!isValidContactPhone(phone)) {
         phoneField.markSubmitted()
         return
@@ -301,15 +310,13 @@ export function SignupForm() {
       return
     }
 
+    if (!isValidContactEmailInput(email)) {
+      emailField.markSubmitted()
+      if (accountType === "particulier") setParticulierStep(1)
+      if (accountType === "professionnel") setProStep(2)
+      return
+    }
     const normalizedEmail = normalizeSignupEmail(email)
-    if (!normalizedEmail) {
-      setFormError("Indiquez votre adresse e-mail.")
-      return
-    }
-    if (!isValidSignupEmail(normalizedEmail)) {
-      setFormError("Indiquez une adresse e-mail valide.")
-      return
-    }
     if (!isValidContactPhone(phone)) {
       phoneField.markSubmitted()
       if (accountType === "particulier") setParticulierStep(1)
@@ -534,10 +541,23 @@ export function SignupForm() {
                   onBlur={() => void handleEmailBlur()}
                   placeholder={emailPlaceholder}
                   className={cn(authFieldInputClass, "pl-11")}
-                  aria-invalid={emailAccountExists ? true : undefined}
-                  aria-describedby={emailAccountExists ? EXISTING_EMAIL_STATUS_ID : undefined}
+                  aria-invalid={emailField.invalid || emailAccountExists ? true : undefined}
+                  aria-describedby={
+                    [emailField.showError ? signupEmailProErrorId : null, emailAccountExists ? EXISTING_EMAIL_STATUS_ID : null]
+                      .filter(Boolean)
+                      .join(" ") || undefined
+                  }
                 />
               </AuthIconField>
+              {emailField.showError ? (
+                <p
+                  id={signupEmailProErrorId}
+                  className="form-field-message form-field-message--error"
+                  role="alert"
+                >
+                  {CONTACT_EMAIL_INVALID_MESSAGE}
+                </p>
+              ) : null}
             </div>
             <div className="space-y-2">
               <label htmlFor="signup-phone-pro" className="text-sm font-medium text-brand-navy">
@@ -692,14 +712,27 @@ export function SignupForm() {
                   onBlur={() => void handleEmailBlur()}
                   placeholder={emailPlaceholder}
                   className={cn(authFieldInputClass, "pl-11")}
-                  aria-invalid={emailAccountExists || formError ? true : undefined}
+                  aria-invalid={emailField.invalid || emailAccountExists ? true : undefined}
                   aria-describedby={
-                    [emailAccountExists ? EXISTING_EMAIL_STATUS_ID : null, formError ? FORM_ERROR_ID : null]
+                    [
+                      emailField.showError ? signupEmailErrorId : null,
+                      emailAccountExists ? EXISTING_EMAIL_STATUS_ID : null,
+                      formError ? FORM_ERROR_ID : null,
+                    ]
                       .filter(Boolean)
                       .join(" ") || undefined
                   }
                 />
               </AuthIconField>
+              {emailField.showError ? (
+                <p
+                  id={signupEmailErrorId}
+                  className="form-field-message form-field-message--error"
+                  role="alert"
+                >
+                  {CONTACT_EMAIL_INVALID_MESSAGE}
+                </p>
+              ) : null}
             </div>
             <div className="space-y-2">
               <label htmlFor="signup-phone" className="text-sm font-medium text-brand-navy">
