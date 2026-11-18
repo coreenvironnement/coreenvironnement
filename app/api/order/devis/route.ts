@@ -14,6 +14,7 @@ import {
 import { priceBreakdownFromHt } from "@/lib/order/prestation-mapping"
 import { prestationById } from "@/lib/prestations"
 import { isValidSignupEmail, normalizeSignupEmail } from "@/lib/auth/signup-validation"
+import { CONTACT_PHONE_INVALID_MESSAGE } from "@/lib/phone/contact-phone-messages"
 import { isValidContactPhone } from "@/lib/phone/phone-value"
 import { createServiceClient, getSupabaseServiceConfigError } from "@/lib/supabase/service"
 import type { AddressGeocodeHit } from "@/lib/geo/ban-api"
@@ -78,7 +79,7 @@ export async function POST(request: Request) {
 
   const contactPhone = String(body.contactPhone ?? "").trim()
   if (!isValidContactPhone(contactPhone)) {
-    return NextResponse.json({ error: "Téléphone invalide." }, { status: 400 })
+    return NextResponse.json({ error: CONTACT_PHONE_INVALID_MESSAGE }, { status: 400 })
   }
 
   const first = String(body.contactFirstName ?? "").trim()

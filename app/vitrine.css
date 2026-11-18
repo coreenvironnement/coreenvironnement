@@ -451,6 +451,18 @@
     @apply !h-11;
   }
 
+  .vitrine-root .phone-input-with-country[data-invalid="true"] > div:first-child,
+  .espace-profil-form .phone-input-with-country[data-invalid="true"] > div:first-child {
+    border-color: var(--form-error-border, #dc2626);
+    box-shadow: 0 0 0 3px var(--form-error-halo, rgb(220 38 38 / 0.14));
+  }
+
+  .vitrine-root .phone-input-with-country[data-invalid="true"] > div:first-child:focus-within,
+  .espace-profil-form .phone-input-with-country[data-invalid="true"] > div:first-child:focus-within {
+    border-color: var(--form-error-border, #dc2626);
+    box-shadow: 0 0 0 3px var(--form-error-halo, rgb(220 38 38 / 0.2));
+  }
+
   .espace-profil-form .form-field-message {
     @apply text-sm leading-snug;
   }

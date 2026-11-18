@@ -23,7 +23,12 @@ import {
   espaceFieldLabelClass,
   espaceProfilInputClass,
   espaceProfilReadonlyInputClass,
+  fieldMessageId,
 } from "@/lib/form/auth-field-styles"
+import {
+  CONTACT_PHONE_INVALID_MESSAGE,
+  useContactPhoneField,
+} from "@/lib/phone/contact-phone-field"
 import { isValidContactPhone } from "@/lib/phone/phone-value"
 import { cn } from "@/lib/utils"
 
@@ -97,6 +102,8 @@ export function EspaceProfilForm({ initial }: Props) {
   const [isPending, startTransition] = useTransition()
 
   const [fields, setFields] = useState<FormFields>(() => fieldStateFromInitial(initial))
+  const phoneField = useContactPhoneField(fields.phone)
+  const phoneErrorId = fieldMessageId("phone")
   const [deliveryAddressQuery, setDeliveryAddressQuery] = useState(
     () => initial.delivery.ligne
   )
@@ -140,7 +147,8 @@ export function EspaceProfilForm({ initial }: Props) {
     setSaved(false)
 
     if (!isValidContactPhone(fields.phone)) {
-      setError("Indiquez un numéro de téléphone valide.")
+      phoneField.markSubmitted()
+      setError(null)
       return
     }
 
@@ -243,7 +251,20 @@ export function EspaceProfilForm({ initial }: Props) {
           variant="espace"
           warmSurface={false}
           className="espace-profil-phone"
+          invalid={phoneField.invalid}
+          onBlur={phoneField.onBlur}
+          onInternationalInput={phoneField.onInternationalInput}
+          aria-describedby={phoneField.showError ? phoneErrorId : undefined}
         />
+        {phoneField.showError ? (
+          <p
+            id={phoneErrorId}
+            className="form-field-message form-field-message--error"
+            role="alert"
+          >
+            {CONTACT_PHONE_INVALID_MESSAGE}
+          </p>
+        ) : null}
         <input type="hidden" name="phone" value={fields.phone} />
       </Field>
 

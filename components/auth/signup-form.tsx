@@ -37,6 +37,10 @@ import {
 } from "@/lib/auth/signup-validation"
 import { authFieldInputClass, fieldMessageId } from "@/lib/form/auth-field-styles"
 import { emailPlaceholderFromNames } from "@/lib/form/email-placeholder"
+import {
+  CONTACT_PHONE_INVALID_MESSAGE,
+  useContactPhoneField,
+} from "@/lib/phone/contact-phone-field"
 import { isValidContactPhone } from "@/lib/phone/phone-value"
 import { cn } from "@/lib/utils"
 import { createClient } from "@/lib/supabase/client"
@@ -110,6 +114,7 @@ export function SignupForm() {
   const [proStep, setProStep] = useState<1 | 2 | 3>(1)
   const [particulierStep, setParticulierStep] = useState<1 | 2>(1)
   const [phone, setPhone] = useState("")
+  const phoneField = useContactPhoneField(phone)
   const [raisonSociale, setRaisonSociale] = useState("")
   const [siret, setSiret] = useState("")
   const [codeNaf, setCodeNaf] = useState("")
@@ -134,6 +139,8 @@ export function SignupForm() {
 
   const passwordErrorId = fieldMessageId("signup-password")
   const passwordConfirmErrorId = fieldMessageId("signup-password-confirm")
+  const signupPhoneProErrorId = fieldMessageId("signup-phone-pro")
+  const signupPhoneErrorId = fieldMessageId("signup-phone")
   const emailPlaceholder = useMemo(
     () => emailPlaceholderFromNames(prenom, nom),
     [prenom, nom]
@@ -225,7 +232,7 @@ export function SignupForm() {
       return
     }
     if (!isValidContactPhone(phone)) {
-      setFormError("Indiquez un numéro de téléphone valide.")
+      phoneField.markSubmitted()
       return
     }
     const available = await verifyEmailNotRegistered(normalizedEmail)
@@ -260,7 +267,7 @@ export function SignupForm() {
         return
       }
       if (!isValidContactPhone(phone)) {
-        setFormError("Indiquez un numéro de téléphone valide.")
+        phoneField.markSubmitted()
         return
       }
       const available = await verifyEmailNotRegistered(normalizedEmail)
@@ -304,7 +311,7 @@ export function SignupForm() {
       return
     }
     if (!isValidContactPhone(phone)) {
-      setFormError("Indiquez un numéro de téléphone valide.")
+      phoneField.markSubmitted()
       if (accountType === "particulier") setParticulierStep(1)
       if (accountType === "professionnel") setProStep(2)
       return
@@ -542,7 +549,22 @@ export function SignupForm() {
                 onChange={setPhone}
                 variant="vitrine"
                 warmSurface={false}
+                invalid={phoneField.invalid}
+                onBlur={phoneField.onBlur}
+                onInternationalInput={phoneField.onInternationalInput}
+                aria-describedby={
+                  phoneField.showError ? signupPhoneProErrorId : undefined
+                }
               />
+              {phoneField.showError ? (
+                <p
+                  id={signupPhoneProErrorId}
+                  className="form-field-message form-field-message--error"
+                  role="alert"
+                >
+                  {CONTACT_PHONE_INVALID_MESSAGE}
+                </p>
+              ) : null}
             </div>
           </>
         ) : null}
@@ -689,7 +711,20 @@ export function SignupForm() {
                 onChange={setPhone}
                 variant="vitrine"
                 warmSurface={false}
+                invalid={phoneField.invalid}
+                onBlur={phoneField.onBlur}
+                onInternationalInput={phoneField.onInternationalInput}
+                aria-describedby={phoneField.showError ? signupPhoneErrorId : undefined}
               />
+              {phoneField.showError ? (
+                <p
+                  id={signupPhoneErrorId}
+                  className="form-field-message form-field-message--error"
+                  role="alert"
+                >
+                  {CONTACT_PHONE_INVALID_MESSAGE}
+                </p>
+              ) : null}
             </div>
           </>
         ) : null}

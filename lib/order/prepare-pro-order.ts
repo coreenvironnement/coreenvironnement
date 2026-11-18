@@ -17,6 +17,7 @@ import {
   isValidPickupDate,
 } from "@/lib/order/delivery-dates"
 import { BROUILLON_COMMANDE_SUPPRIME_MESSAGE } from "@/lib/order/brouillon-errors"
+import { CONTACT_PHONE_INVALID_MESSAGE } from "@/lib/phone/contact-phone-messages"
 import { isValidContactPhone } from "@/lib/phone/phone-value"
 
 export type PreparedProOrder = {
@@ -128,7 +129,7 @@ export async function prepareProOrderForEmbeddedPayment(
 
   const phone = input.contactPhone?.trim() ?? ""
   if (!isValidContactPhone(phone)) {
-    return { error: "Indiquez un numéro de téléphone valide." }
+    return { error: CONTACT_PHONE_INVALID_MESSAGE }
   }
 
   const companyName = input.companyName?.trim() ?? ""

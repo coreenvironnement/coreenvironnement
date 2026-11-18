@@ -118,6 +118,10 @@ import {
   isValidContactPhone,
 } from "@/lib/phone/phone-value"
 import {
+  CONTACT_PHONE_INVALID_MESSAGE,
+  useContactPhoneField,
+} from "@/lib/phone/contact-phone-field"
+import {
   buildParticulierTunnelDraftInput,
   particulierTunnelDraftReady,
 } from "@/lib/order/particulier-tunnel-draft"
@@ -201,6 +205,7 @@ const ORDER_TUNNEL_STEP_NAV = "order-tunnel-step-nav"
 const ORDER_TUNNEL_STEP_ACTIONS = "order-tunnel-step-actions"
 const ORDER_TUNNEL_BTN_BACK = "order-tunnel-step-back"
 const ORDER_TUNNEL_BTN_PRIMARY = "order-tunnel-step-primary"
+const ORDER_CONTACT_PHONE_ERROR_ID = "order-contact-phone-error"
 
 function orderFieldBg(embedded: boolean) {
   return embedded ? "bg-brand-warm-field text-brand-navy" : "bg-white"
@@ -356,6 +361,7 @@ export function OrderWidget({
   const [proContactName, setProContactName] = useState("")
   const [siret, setSiret] = useState("")
   const [contactPhone, setContactPhone] = useState("")
+  const contactPhoneField = useContactPhoneField(contactPhone)
   const [contactEmail, setContactEmail] = useState("")
   const [draftCommandeId, setDraftCommandeId] = useState<string | null>(null)
   const lastParticulierAutosaveRef = useRef<string | null>(null)
@@ -772,7 +778,7 @@ export function OrderWidget({
       }
     }
     if (!isValidContactPhone(contactPhone)) {
-      setAddressError("Indiquez un numéro de téléphone valide.")
+      contactPhoneField.markSubmitted()
       return
     }
     const email = contactEmail.trim()
@@ -2075,8 +2081,27 @@ export function OrderWidget({
                       setAddressError(null)
                     }}
                     warmSurface={embedded}
+                    variant={embedded ? "vitrine" : "default"}
                     inputClassName={orderFieldBg(embedded)}
+                    invalid={contactPhoneField.invalid}
+                    onBlur={contactPhoneField.onBlur}
+                    onInternationalInput={contactPhoneField.onInternationalInput}
+                    aria-describedby={
+                      contactPhoneField.showError ? ORDER_CONTACT_PHONE_ERROR_ID : undefined
+                    }
                   />
+                  {contactPhoneField.showError ? (
+                    <p
+                      id={ORDER_CONTACT_PHONE_ERROR_ID}
+                      className={cn(
+                        "text-xs font-medium text-red-600",
+                        embedded && "form-field-message form-field-message--error"
+                      )}
+                      role="alert"
+                    >
+                      {CONTACT_PHONE_INVALID_MESSAGE}
+                    </p>
+                  ) : null}
                   <p className={ORDER_HELP_TEXT}>
                     <Info className="mt-0.5 size-3.5 shrink-0 opacity-55" aria-hidden />
                     <span>

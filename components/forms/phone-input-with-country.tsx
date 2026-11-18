@@ -11,6 +11,7 @@ import {
 } from "@/lib/phone/calling-codes"
 import {
   buildInternationalPhone,
+  inputLooksLikeInternational,
   parseContactPhone,
   resolvePhoneNationalFieldInput,
 } from "@/lib/phone/phone-value"
@@ -36,6 +37,12 @@ type PhoneInputWithCountryProps = {
   warmSurface?: boolean
   /** Champs auth vitrine (`form-field-input`) ou profil espace (pilule indicatif premium). */
   variant?: "default" | "vitrine" | "espace"
+  /** Bloc entier en erreur (bordure + halo accessibles). */
+  invalid?: boolean
+  "aria-describedby"?: string
+  onBlur?: () => void
+  /** Collage / saisie internationale (+33, E.164…) dans le champ national. */
+  onInternationalInput?: (international: string) => void
 }
 
 export function PhoneInputWithCountry({
@@ -48,6 +55,10 @@ export function PhoneInputWithCountry({
   disabled,
   warmSurface = true,
   variant = "default",
+  invalid = false,
+  "aria-describedby": ariaDescribedBy,
+  onBlur,
+  onInternationalInput,
 }: PhoneInputWithCountryProps) {
   const vitrineShell = variant === "vitrine" || variant === "espace"
   const espace = variant === "espace"
@@ -93,10 +104,15 @@ export function PhoneInputWithCountry({
   }
 
   function onNationalChange(next: string) {
+    const internationalPaste = inputLooksLikeInternational(next)
     const resolved = resolvePhoneNationalFieldInput(next, dial)
     setDial(resolved.dial)
     setNational(resolved.national)
+    const built = buildInternationalPhone(resolved.dial, resolved.national)
     emit(resolved.dial, resolved.national)
+    if (internationalPaste && onInternationalInput) {
+      onInternationalInput(built)
+    }
   }
 
   function pickCode(nextDial: string) {
@@ -106,18 +122,34 @@ export function PhoneInputWithCountry({
     emit(nextDial, national)
   }
 
+  const vitrineShellValid =
+    "border border-[#35A238]/18 bg-white shadow-sm focus-within:border-[#35A238] focus-within:shadow-[0_0_0_3px_rgb(53_162_56/0.2)]"
+  const vitrineShellInvalid =
+    "border border-[var(--form-error-border,#dc2626)] shadow-[0_0_0_3px_var(--form-error-halo,rgb(220_38_38/0.14))] focus-within:border-[var(--form-error-border,#dc2626)] focus-within:shadow-[0_0_0_3px_var(--form-error-halo,rgb(220_38_38/0.2))]"
+
+  const defaultShellValid =
+    "border-2 border-primary/15 focus-within:border-ring focus-within:ring-[3px] focus-within:ring-[var(--form-focus-halo,color-mix(in_srgb,var(--ring)_22%,transparent))]"
+  const defaultShellInvalid =
+    "border-2 border-destructive focus-within:border-destructive focus-within:ring-[3px] focus-within:ring-destructive/25 dark:focus-within:ring-destructive/40"
+
   return (
-    <div ref={rootRef} className={cn("relative", className)}>
+    <div
+      ref={rootRef}
+      className={cn("phone-input-with-country relative", className)}
+      data-invalid={invalid ? "true" : undefined}
+    >
       <div
         className={cn(
           "flex w-full overflow-hidden",
           vitrineShell ? "rounded-2xl" : "rounded-xl",
+          vitrineShell ? "h-11 min-h-11 sm:h-12" : "h-11",
           vitrineShell
-            ? "h-11 min-h-11 border border-[#35A238]/18 bg-white shadow-sm focus-within:border-[#35A238] focus-within:shadow-[0_0_0_3px_rgb(53_162_56/0.2)] sm:h-12"
+            ? invalid
+              ? vitrineShellInvalid
+              : vitrineShellValid
             : cn(
-                "h-11 border-2 border-primary/15",
                 warmSurface ? "bg-brand-warm-field" : "bg-white",
-                "focus-within:border-ring focus-within:ring-[3px] focus-within:ring-[var(--form-focus-halo,color-mix(in_srgb,var(--ring)_22%,transparent))]"
+                invalid ? defaultShellInvalid : defaultShellValid
               ),
           espace && "items-center gap-0.5 pl-1",
           disabled && "pointer-events-none opacity-50"
@@ -132,7 +164,10 @@ export function PhoneInputWithCountry({
               : cn(
                   "gap-0.5 border-r px-2.5",
                   vitrineShell
-                    ? "min-h-11 border-[#35A238]/18 hover:bg-[#ECF4E9]/40 sm:min-h-12"
+                    ? cn(
+                        "min-h-11 sm:min-h-12",
+                        invalid ? "border-[var(--form-error-border,#dc2626)]/25" : "border-[#35A238]/18 hover:bg-[#ECF4E9]/40"
+                      )
                     : "border-primary/15 hover:bg-white/40"
                 )
           )}
@@ -176,6 +211,9 @@ export function PhoneInputWithCountry({
             value={national}
             placeholder={dial === "33" ? "6 12 34 56 78" : "Numéro"}
             onChange={(e) => onNationalChange(e.target.value)}
+            onBlur={onBlur}
+            aria-invalid={invalid ? true : undefined}
+            aria-describedby={ariaDescribedBy}
             className={cn(
               "form-field-input !h-full min-h-0 flex-1 !rounded-none !border-0 !bg-transparent !px-3 !shadow-none",
               espace && "!pl-2.5 !text-[15px]",
@@ -194,6 +232,9 @@ export function PhoneInputWithCountry({
             value={national}
             placeholder={dial === "33" ? "6 12 34 56 78" : "Numéro"}
             onChange={(e) => onNationalChange(e.target.value)}
+            onBlur={onBlur}
+            aria-invalid={invalid ? true : undefined}
+            aria-describedby={ariaDescribedBy}
             className={cn(
               "h-full min-h-0 flex-1 rounded-none border-0 bg-transparent px-3 shadow-none ring-0",
               "placeholder:text-muted-foreground/80",

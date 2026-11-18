@@ -15,6 +15,7 @@ import {
   systemLabel,
   type BenneFamily,
 } from "@/lib/prestations"
+import { CONTACT_PHONE_INVALID_MESSAGE } from "@/lib/phone/contact-phone-messages"
 import { isValidContactPhone } from "@/lib/phone/phone-value"
 
 export type ProfessionalBenneRequestInput = {
@@ -86,7 +87,7 @@ export function prepareProfessionalBenneRequest(
 
   const contactPhone = input.contactPhone.trim()
   if (!isValidContactPhone(contactPhone)) {
-    return { error: "Indiquez un numéro de téléphone valide." }
+    return { error: CONTACT_PHONE_INVALID_MESSAGE }
   }
 
   const contactEmail = input.contactEmail.trim()

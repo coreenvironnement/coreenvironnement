@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 import { isValidFrenchPostcode } from "@/lib/espace/delivery-address"
 import { profilFullName } from "@/lib/espace/profil-prefill"
 import { createClient } from "@/lib/supabase/server"
+import { CONTACT_PHONE_INVALID_MESSAGE } from "@/lib/phone/contact-phone-messages"
 import { isValidContactPhone } from "@/lib/phone/phone-value"
 
 export type SaveProfilResult = { ok: true } | { error: string }
@@ -40,7 +41,7 @@ function validateParticulierFields(fields: ReturnType<typeof readParticulierFiel
   }
 
   if (!isValidContactPhone(fields.phoneRaw)) {
-    return "Indiquez un numéro de téléphone valide."
+    return CONTACT_PHONE_INVALID_MESSAGE
   }
 
   const hasPartialAddress =
