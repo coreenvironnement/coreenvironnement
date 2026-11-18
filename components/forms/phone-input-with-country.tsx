@@ -12,6 +12,7 @@ import {
 import {
   buildInternationalPhone,
   parseContactPhone,
+  resolvePhoneNationalFieldInput,
 } from "@/lib/phone/phone-value"
 import { cn } from "@/lib/utils"
 
@@ -91,6 +92,13 @@ export function PhoneInputWithCountry({
     onChange(buildInternationalPhone(d, n))
   }
 
+  function onNationalChange(next: string) {
+    const resolved = resolvePhoneNationalFieldInput(next, dial)
+    setDial(resolved.dial)
+    setNational(resolved.national)
+    emit(resolved.dial, resolved.national)
+  }
+
   function pickCode(nextDial: string) {
     setDial(nextDial)
     setOpen(false)
@@ -167,11 +175,7 @@ export function PhoneInputWithCountry({
             disabled={disabled}
             value={national}
             placeholder={dial === "33" ? "6 12 34 56 78" : "Numéro"}
-            onChange={(e) => {
-              const next = e.target.value
-              setNational(next)
-              emit(dial, next)
-            }}
+            onChange={(e) => onNationalChange(e.target.value)}
             className={cn(
               "form-field-input !h-full min-h-0 flex-1 !rounded-none !border-0 !bg-transparent !px-3 !shadow-none",
               espace && "!pl-2.5 !text-[15px]",
@@ -189,11 +193,7 @@ export function PhoneInputWithCountry({
             disabled={disabled}
             value={national}
             placeholder={dial === "33" ? "6 12 34 56 78" : "Numéro"}
-            onChange={(e) => {
-              const next = e.target.value
-              setNational(next)
-              emit(dial, next)
-            }}
+            onChange={(e) => onNationalChange(e.target.value)}
             className={cn(
               "h-full min-h-0 flex-1 rounded-none border-0 bg-transparent px-3 shadow-none ring-0",
               "placeholder:text-muted-foreground/80",
