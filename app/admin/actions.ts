@@ -80,12 +80,17 @@ export async function createChantier(formData: FormData): Promise<void> {
   if (!nom) {
     redirect(`/admin/chantiers?error=${encodeURIComponent("Le nom du chantier est obligatoire.")}`)
   }
+  if (!adresse) {
+    redirect(
+      `/admin/chantiers?error=${encodeURIComponent("L’adresse du chantier est obligatoire.")}`
+    )
+  }
 
   const { data, error } = await supabase
     .from("chantiers")
     .insert({
       nom,
-      adresse: adresse || null,
+      adresse,
       code_affaire: code_affaire || null,
     })
     .select("id")

@@ -164,7 +164,7 @@ export async function loadAdminDashboardMetrics(
     aTraiter.push({
       id: `poids-${i.id}`,
       kind: "tonnage_vide",
-      label: `${i.numero} — tonnage réalisé non renseigné`,
+      label: `${i.numero}, tonnage réalisé non renseigné`,
       href: `/admin/interventions/${i.id}`,
     })
   }
@@ -173,7 +173,7 @@ export async function loadAdminDashboardMetrics(
     aTraiter.push({
       id: `date-${i.id}`,
       kind: "date_depassee",
-      label: `${i.numero} — date souhaitée dépassée`,
+      label: `${i.numero}, date souhaitée dépassée`,
       href: `/admin/interventions/${i.id}`,
     })
   }

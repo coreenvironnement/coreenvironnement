@@ -7,6 +7,7 @@ export type UnifiedClientRow = {
   kind: "particulier" | "professionnel"
   label: string
   email: string
+  phone: string | null
   siret: string | null
   chantiersCount: number
   interventionsHint: number
@@ -20,7 +21,7 @@ export async function loadUnifiedClients(
 
   const { data: comptes } = await supabase
     .from("comptes_pro")
-    .select("id, raison_sociale, status, created_at, siret, contact_email")
+    .select("id, raison_sociale, status, created_at, siret, contact_email, contact_telephone")
     .order("created_at", { ascending: false })
 
   const rows: UnifiedClientRow[] = particuliers.map((p) => ({
@@ -28,6 +29,7 @@ export async function loadUnifiedClients(
     kind: "particulier",
     label: p.nom ?? p.email,
     email: p.email,
+    phone: p.phone,
     siret: null,
     chantiersCount: 0,
     interventionsHint: p.commandeCount,
@@ -40,6 +42,7 @@ export async function loadUnifiedClients(
       kind: "professionnel",
       label: c.raison_sociale ?? "Compte pro",
       email: c.contact_email ?? "—",
+      phone: c.contact_telephone?.trim() || null,
       siret: c.siret ?? null,
       chantiersCount: 0,
       interventionsHint: 0,

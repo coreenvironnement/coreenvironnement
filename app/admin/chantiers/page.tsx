@@ -1,18 +1,7 @@
-import Link from "next/link"
-import { Plus } from "lucide-react"
-
-import { createChantier } from "@/app/admin/actions"
+import { attachPremierCompteTelephone } from "@/lib/admin/chantiers-list-phones"
 import { requireAdmin } from "@/lib/auth/require-admin"
-import { Button, buttonVariants } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
+import { AdminChantierCreateSection } from "@/components/admin/admin-chantier-create-section"
+import { AdminChantiersList } from "@/components/admin/admin-chantiers-list"
 
 export const metadata = {
   title: "Chantiers · Admin",
@@ -21,105 +10,37 @@ export const metadata = {
 export default async function AdminChantiersPage() {
   const { supabase } = await requireAdmin()
 
-  const { data: chantiers } = await supabase
+  const { data: chantiersRaw } = await supabase
     .from("chantiers")
     .select("id, nom, adresse, code_affaire, is_active, created_at")
     .order("nom")
 
+  const chantiers = await attachPremierCompteTelephone(supabase, chantiersRaw ?? [])
+
+  const count = chantiers.length
+
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
-      <div>
+    <div className="mx-auto max-w-6xl overflow-hidden rounded-2xl border border-[#35A238]/18 bg-white text-sm text-card-foreground shadow-sm ring-1 ring-foreground/10">
+      <header className="border-b border-[#35A238]/12 bg-gradient-to-r from-[#ECF4E9]/80 via-white to-white px-4 py-5 text-center sm:px-6">
         <h2 className="text-xl font-bold text-brand-navy">Chantiers</h2>
-        <p className="text-sm text-muted-foreground">
+        <p className="mx-auto mt-1 max-w-2xl text-sm text-muted-foreground">
           Créez un chantier et liez les e-mails des clients qui y auront accès.
         </p>
-      </div>
+      </header>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Plus className="size-4" aria-hidden />
-            Nouveau chantier
-          </CardTitle>
-          <CardDescription>Nom obligatoire · adresse et code affaire optionnels</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form action={createChantier} className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2 sm:col-span-2">
-              <label htmlFor="nom" className="text-sm font-medium">
-                Nom du chantier *
-              </label>
-              <Input id="nom" name="nom" required placeholder="Rénovation — Paris 15e" />
-            </div>
-            <div className="space-y-2 sm:col-span-2">
-              <label htmlFor="adresse" className="text-sm font-medium">
-                Adresse
-              </label>
-              <Input id="adresse" name="adresse" placeholder="12 rue Example, 75015 Paris" />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="code_affaire" className="text-sm font-medium">
-                Code affaire
-              </label>
-              <Input id="code_affaire" name="code_affaire" placeholder="AFF-2026-001" />
-            </div>
-            <div className="flex items-end">
-              <Button type="submit">Créer le chantier</Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+      <AdminChantierCreateSection />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Liste des chantiers</CardTitle>
-          <CardDescription>{chantiers?.length ?? 0} chantier(s)</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {chantiers?.length ? (
-            <ul className="divide-y divide-border/60">
-              {chantiers.map((c) => (
-                <li key={c.id} className="flex flex-wrap items-center justify-between gap-3 py-4">
-                  <div>
-                    <Link
-                      href={`/admin/chantiers/${c.id}`}
-                      className="font-semibold text-brand-navy hover:text-primary"
-                    >
-                      {c.nom}
-                    </Link>
-                    {c.adresse ? (
-                      <p className="text-sm text-muted-foreground">{c.adresse}</p>
-                    ) : null}
-                    {c.code_affaire ? (
-                      <p className="text-xs text-muted-foreground">Code : {c.code_affaire}</p>
-                    ) : null}
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={cn(
-                        "rounded-full px-2.5 py-0.5 text-xs font-medium",
-                        c.is_active
-                          ? "bg-primary/12 text-primary"
-                          : "bg-muted text-muted-foreground"
-                      )}
-                    >
-                      {c.is_active ? "Actif" : "Inactif"}
-                    </span>
-                    <Link
-                      href={`/admin/chantiers/${c.id}`}
-                      className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-                    >
-                      Gérer
-                    </Link>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-muted-foreground">Aucun chantier pour le moment.</p>
-          )}
-        </CardContent>
-      </Card>
+      <section>
+        <header className="border-b border-[#35A238]/10 bg-gradient-to-r from-white via-[#F7FAF5]/50 to-[#F7FAF5]/70 px-4 py-4 text-center sm:px-6">
+          <h3 className="text-base font-semibold text-brand-navy">Liste des chantiers</h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {count} chantier{count === 1 ? "" : "s"} enregistré{count === 1 ? "" : "s"}
+          </p>
+        </header>
+        <div className="bg-[#F7FAF5]/60 px-4 py-4 sm:px-6 sm:py-5">
+          <AdminChantiersList chantiers={chantiers} />
+        </div>
+      </section>
     </div>
   )
 }

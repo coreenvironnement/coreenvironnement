@@ -13,6 +13,7 @@ import {
   Users,
   Wrench,
   X,
+  Home,
   type LucideIcon,
 } from "lucide-react"
 
@@ -107,15 +108,62 @@ function AdminNavGroup({
       className={cn(!isFirst && "border-t border-[#35A238]/15 pt-4")}
       aria-labelledby={sectionId}
     >
-      <h2
-        id={sectionId}
-        className="mb-2 flex items-center gap-2 px-2 text-[11px] font-bold uppercase leading-none tracking-[0.12em] text-brand-navy"
-      >
-        <span className="h-3.5 w-[3px] shrink-0 rounded-full bg-[#35A238]" aria-hidden />
-        {title}
+      <h2 id={sectionId} className="mb-2.5 px-0.5">
+        <span className="flex items-center gap-2.5 rounded-lg bg-[#F4F6F8] px-2.5 py-2 shadow-[inset_0_0_0_1px_rgba(30,58,95,0.1)]">
+          <span
+            className="h-[1.125rem] w-1 shrink-0 rounded-full bg-gradient-to-b from-brand-navy/85 to-brand-navy/55"
+            aria-hidden
+          />
+          <span className="text-[13px] font-bold uppercase leading-none tracking-[0.06em] text-brand-navy">
+            {title}
+          </span>
+        </span>
       </h2>
       <div className="flex flex-col gap-0.5">{children}</div>
     </section>
+  )
+}
+
+function AdminBrandHeader({ onNavigate }: { onNavigate?: () => void }) {
+  return (
+    <div className="flex h-[3.75rem] shrink-0 items-center justify-center border-b border-[#35A238]/15 bg-white/95 px-4">
+      <Link
+        href="/admin"
+        prefetch
+        onClick={onNavigate}
+        className="flex items-center gap-2.5"
+        aria-label="CORE Environnement — administration"
+      >
+        <span className="relative block h-8 w-[118px] shrink-0">
+          <Image
+            src="/images/stickyheaderlogo.png"
+            alt="CORE Environnement"
+            fill
+            sizes="118px"
+            className="object-contain object-center"
+          />
+        </span>
+        <span className="rounded-lg border border-[#19752b]/25 bg-[#35A238] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-white shadow-[0_1px_0_rgba(25,117,43,0.35)]">
+          Admin
+        </span>
+      </Link>
+    </div>
+  )
+}
+
+function AdminVitrineHomeLink({ onNavigate }: { onNavigate?: () => void }) {
+  return (
+    <div className="mt-1 border-t border-[#35A238]/15 pt-3">
+      <Link
+        href="/"
+        prefetch
+        onClick={onNavigate}
+        className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium leading-snug text-brand-navy/70 hover:bg-[#ECF4E9] hover:text-brand-navy"
+      >
+        <Home className="size-[18px] shrink-0 text-[#35A238]" strokeWidth={2} aria-hidden />
+        <span className="min-w-0">Voir l&apos;accueil du site</span>
+      </Link>
+    </div>
   )
 }
 
@@ -141,20 +189,7 @@ export function AdminAppShell({ children, navGroups, navItems, userLabel }: Prop
     <div className="min-h-screen text-brand-navy" style={{ backgroundColor: ADMIN_WARM_BG }}>
       <div className="mx-auto flex min-h-screen max-w-[1600px]">
         <aside className="sticky top-0 hidden h-screen w-[248px] shrink-0 flex-col border-r border-[#35A238]/20 bg-white/90 backdrop-blur-sm lg:flex">
-          <div className="flex h-[3.75rem] items-center border-b border-[#35A238]/15 px-4">
-            <Link href="/admin" className="relative h-8 w-[140px]">
-              <Image
-                src="/images/stickyheaderlogo.png"
-                alt="CORE Environnement"
-                fill
-                sizes="140px"
-                className="object-contain object-left"
-              />
-            </Link>
-          </div>
-          <p className="border-b border-[#35A238]/10 px-4 pb-3 pt-3 text-[10px] font-medium uppercase tracking-[0.14em] text-brand-navy/45">
-            Espace administration
-          </p>
+          <AdminBrandHeader />
           <nav className="flex flex-1 flex-col gap-5 overflow-y-auto p-3 pt-4" aria-label="Administration">
             {navGroups.map((group, index) => (
               <AdminNavGroup
@@ -168,34 +203,38 @@ export function AdminAppShell({ children, navGroups, navItems, userLabel }: Prop
                 ))}
               </AdminNavGroup>
             ))}
-            <div className="mt-1 border-t border-[#35A238]/15 pt-3">
-              <Link
-                href="/"
-                className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-brand-navy/70 hover:bg-[#ECF4E9]"
-              >
-                Site vitrine
-              </Link>
-            </div>
+            <AdminVitrineHomeLink />
           </nav>
           <AdminSessionFooter userLabel={userLabel} />
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 flex h-[3.75rem] items-center justify-between gap-3 border-b border-[#35A238]/15 bg-[#ECF4E9]/95 px-4 backdrop-blur-md">
-            <div className="flex items-center gap-2 lg:hidden">
+            <div className="flex min-w-0 flex-1 items-center gap-2 lg:hidden">
               <button
                 type="button"
                 onClick={() => setMobileNavOpen(true)}
-                className="inline-flex size-10 items-center justify-center rounded-xl border border-[#35A238]/25 bg-white"
+                className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl border border-[#35A238]/25 bg-white"
                 aria-label="Ouvrir le menu"
               >
                 <Menu className="size-5 text-[#35A238]" />
               </button>
-              <span className="text-sm font-semibold">Admin</span>
+              <Link href="/admin" className="flex min-w-0 items-center gap-2">
+                <span className="relative block h-7 w-[96px] shrink-0">
+                  <Image
+                    src="/images/stickyheaderlogo.png"
+                    alt="CORE Environnement"
+                    fill
+                    sizes="96px"
+                    className="object-contain object-left"
+                  />
+                </span>
+                <span className="shrink-0 rounded-md bg-[#35A238] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
+                  Admin
+                </span>
+              </Link>
             </div>
-            <div className="hidden text-sm font-medium text-brand-navy/80 lg:block">
-              Back-office CORE
-            </div>
+            <p className="hidden text-sm font-medium text-brand-navy/80 lg:block">Back-office CORE</p>
             <div className="flex items-center gap-2">
               <p className="hidden max-w-[12rem] truncate text-xs text-muted-foreground sm:block">
                 {userLabel}
@@ -283,12 +322,12 @@ export function AdminAppShell({ children, navGroups, navItems, userLabel }: Prop
             className="absolute inset-y-0 left-0 flex w-[min(88vw,300px)] flex-col bg-white shadow-xl"
             style={{ backgroundColor: ADMIN_WARM_BG }}
           >
-            <div className="flex h-[3.75rem] items-center justify-between border-b bg-white px-4">
-              <span className="font-semibold">Menu admin</span>
+            <div className="relative border-b bg-white">
+              <AdminBrandHeader onNavigate={() => setMobileNavOpen(false)} />
               <button
                 type="button"
                 onClick={() => setMobileNavOpen(false)}
-                className="inline-flex size-10 items-center justify-center rounded-xl border bg-white"
+                className="absolute right-3 top-1/2 inline-flex size-10 -translate-y-1/2 items-center justify-center rounded-xl border border-[#35A238]/20 bg-white"
                 aria-label="Fermer"
               >
                 <X className="size-5" />
@@ -312,6 +351,7 @@ export function AdminAppShell({ children, navGroups, navItems, userLabel }: Prop
                   ))}
                 </AdminNavGroup>
               ))}
+              <AdminVitrineHomeLink onNavigate={() => setMobileNavOpen(false)} />
             </nav>
             <AdminSessionFooter userLabel={userLabel} />
           </div>

@@ -128,10 +128,12 @@ export default async function AdminPrestataireFichePage({ params, searchParams }
               {documents.map((d) => (
                 <li key={d.id} className="flex justify-between gap-3">
                   <span>
-                    {d.document_kind} · {d.file_name ?? "—"}
+                    {d.document_kind} · {d.file_name?.trim() || "Nom de fichier non renseigné"}
                   </span>
                   <span className="text-muted-foreground">
-                    {d.expires_at ? `expire ${d.expires_at}` : "—"}
+                    {d.expires_at
+                      ? `Expire le ${d.expires_at}`
+                      : "Date d&apos;expiration non renseignée"}
                   </span>
                 </li>
               ))}
@@ -148,12 +150,32 @@ export default async function AdminPrestataireFichePage({ params, searchParams }
         <CardHeader>
           <CardTitle>Prestations & zones</CardTitle>
         </CardHeader>
-        <CardContent className="text-sm text-muted-foreground">
-          Départements :{" "}
-          {(prestataire.departements as string[] | null)?.join(", ") || "—"}
-          <br />
-          Déchets acceptés :{" "}
-          {(prestataire.dechets_acceptes as string[] | null)?.join(", ") || "—"}
+        <CardContent className="space-y-4 text-sm">
+          <dl className="space-y-3">
+            <div>
+              <dt className="font-medium text-brand-navy">Départements couverts</dt>
+              <dd className="mt-1 text-muted-foreground">
+                {(() => {
+                  const deps =
+                    (prestataire.departements as string[] | null)?.filter((d) => d?.trim()) ?? []
+                  return deps.length ? deps.join(", ") : "Aucun département renseigné"
+                })()}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-medium text-brand-navy">Déchets acceptés</dt>
+              <dd className="mt-1 text-muted-foreground">
+                {(() => {
+                  const dechets =
+                    (prestataire.dechets_acceptes as string[] | null)?.filter((d) => d?.trim()) ??
+                    []
+                  return dechets.length
+                    ? dechets.join(", ")
+                    : "Aucune typologie de déchet renseignée"
+                })()}
+              </dd>
+            </div>
+          </dl>
         </CardContent>
       </Card>
 

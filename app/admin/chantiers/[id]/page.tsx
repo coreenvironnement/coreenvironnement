@@ -16,6 +16,7 @@ import {
   type AdminRotationDemandeRow,
 } from "@/components/admin/chantier-rotation-queue"
 import { ChantierTarifLines } from "@/components/admin/chantier-tarif-lines"
+import { ChantierAdresseField } from "@/components/admin/chantier-adresse-field"
 import { DocumentUploadRow } from "@/components/admin/document-upload-row"
 import { requireAdmin } from "@/lib/auth/require-admin"
 import { loadChantierDashboard } from "@/lib/dashboard/chantier-data"
@@ -251,7 +252,12 @@ export default async function AdminChantierDetailPage({
               <label htmlFor="adresse" className="text-sm font-medium">
                 Adresse
               </label>
-              <Input id="adresse" name="adresse" defaultValue={chantier.adresse ?? ""} />
+              <ChantierAdresseField
+                id="adresse"
+                name="adresse"
+                defaultValue={chantier.adresse ?? ""}
+                placeholder="Numéro, rue, code postal ou ville"
+              />
             </div>
             <div className="space-y-2">
               <label htmlFor="code_affaire" className="text-sm font-medium">

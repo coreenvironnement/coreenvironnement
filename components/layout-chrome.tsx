@@ -19,7 +19,8 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
     pathname === "/maintenance" ||
     pathname.startsWith("/professionnels") ||
     pathname.startsWith("/blog") ||
-    pathname.startsWith("/location-benne")
+    pathname.startsWith("/location-benne") ||
+    pathname.startsWith("/preview")
 
   if (isStandalone) {
     return <>{children}</>

@@ -19,10 +19,8 @@ import {
   CheckoutParticulierTrackingNote,
   CheckoutReassuranceBanner,
 } from "@/components/order/checkout-reassurance-banner"
-import {
-  OrderConfirmingState,
-  OrderSuccessScreen,
-} from "@/components/order/order-success-screen"
+import { OrderConfirmingState } from "@/components/order/order-success-screen"
+import { OrderReceiptConfirmation } from "@/components/order/order-receipt-confirmation"
 import { cn } from "@/lib/utils"
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -203,7 +201,7 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
         />
       ) : showSuccessUi ? (
         serverConfirmed ? (
-          <OrderSuccessScreen
+          <OrderReceiptConfirmation
             input={props.input}
             commandeId={commandeId}
             amountTtcCents={amountTtcCents}
@@ -213,6 +211,14 @@ export function EmbeddedCheckout(props: EmbeddedCheckoutProps) {
             needsPasswordSetup={needsPasswordSetup}
             passwordSetupEmailSent={passwordSetupEmailSent}
             onClose={props.onClose ?? props.onBack}
+            mode={
+              props.input.audience === "professionnel"
+                ? "professionnel_paid"
+                : "particulier_paid"
+            }
+            embedded
+            autoPlay
+            soundsEnabled
           />
         ) : (
           <OrderConfirmingState

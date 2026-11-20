@@ -1,14 +1,13 @@
-import Link from "next/link"
-
-import { AdminDeletePrestataireButton } from "@/components/admin/admin-delete-prestataire-button"
 import { AdminPrestataireCreateDialog } from "@/components/admin/admin-prestataire-create-dialog"
+import { AdminPrestatairesList } from "@/components/admin/admin-prestataires-list"
+import {
+  buildPrestataireTauxSummaries,
+  type PrestataireTauxRow,
+} from "@/lib/admin/prestataire-taux-summary"
 import { requireAdmin } from "@/lib/auth/require-admin"
-import { buttonVariants } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -30,6 +29,16 @@ export default async function AdminPrestatairesPage({ searchParams }: PageProps)
     .select("id, nom, raison_sociale, is_active, ville, email, telephone")
     .order("nom")
 
+  const anneeTaux = new Date().getFullYear()
+  const { data: tauxRows } = await supabase
+    .from("prestataire_taux_valorisation")
+    .select("prestataire_id, annee, taux_pct, dechets_types(code, nom)")
+
+  const tauxSummaries = buildPrestataireTauxSummaries(
+    (tauxRows ?? []) as unknown as PrestataireTauxRow[],
+    anneeTaux
+  )
+
   const { data: docsExpiring } = await supabase
     .from("prestataire_documents")
     .select("prestataire_id, expires_at")
@@ -46,7 +55,7 @@ export default async function AdminPrestatairesPage({ searchParams }: PageProps)
         <div>
           <h2 className="text-xl font-bold text-brand-navy">Prestataires</h2>
           <p className="text-sm text-muted-foreground">
-            Filières d&apos;élimination et transport — {prestataires?.length ?? 0} prestataire
+            Filières d&apos;élimination et transport · {prestataires?.length ?? 0} prestataire
             {(prestataires?.length ?? 0) === 1 ? "" : "s"}
           </p>
         </div>
@@ -65,45 +74,15 @@ export default async function AdminPrestatairesPage({ searchParams }: PageProps)
       ) : null}
 
       <Card>
-        <CardHeader>
-          <CardTitle>Liste</CardTitle>
+        <CardHeader className="place-items-center text-center">
+          <CardTitle className="text-xl font-bold text-brand-navy">Liste</CardTitle>
         </CardHeader>
-        <CardContent>
-          {prestataires?.length ? (
-            <ul className="divide-y divide-border/60">
-              {prestataires.map((p) => {
-                const label = p.raison_sociale ?? p.nom
-                const exp = expiringByPrest.get(p.id)
-                return (
-                  <li key={p.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
-                    <div>
-                      <p className="font-medium text-brand-navy">{label}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {p.ville ?? "—"} · {p.email ?? p.telephone ?? "—"}
-                        {!p.is_active ? " · inactif" : null}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {exp ? (
-                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-900">
-                          {exp} doc{exp > 1 ? "s" : ""} à surveiller
-                        </span>
-                      ) : null}
-                      <Link
-                        href={`/admin/prestataires/${p.id}`}
-                        className={cn(buttonVariants({ size: "sm", variant: "outline" }))}
-                      >
-                        Fiche
-                      </Link>
-                      <AdminDeletePrestataireButton prestataireId={p.id} label={label} />
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
-          ) : (
-            <p className="text-sm text-muted-foreground">Aucun prestataire.</p>
-          )}
+        <CardContent className="px-3 pb-4 sm:px-4">
+          <AdminPrestatairesList
+            prestataires={prestataires ?? []}
+            tauxById={tauxSummaries}
+            expiringDocsById={expiringByPrest}
+          />
         </CardContent>
       </Card>
     </div>

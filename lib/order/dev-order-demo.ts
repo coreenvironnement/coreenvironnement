@@ -1,4 +1,4 @@
-import type { OrderSuccessScreenProps } from "@/components/order/order-success-screen"
+import type { OrderSuccessScreenProps } from "@/components/order/order-receipt-confirmation"
 import { priceTtcFromHt } from "@/lib/order/prestation-mapping"
 import type { OrderCheckoutInput } from "@/lib/order/checkout-input"
 import { prestationById } from "@/lib/prestations"

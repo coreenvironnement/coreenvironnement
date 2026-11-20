@@ -69,9 +69,9 @@ export default async function AdminHomePage() {
             </p>
             <Link
               href="/admin/interventions?vue=a-planifier"
-              className="mt-2 inline-block text-sm text-primary hover:underline"
+              className={cn(buttonVariants({ size: "sm" }), "mt-3 w-full")}
             >
-              Voir à planifier →
+              Voir à planifier
             </Link>
           </CardContent>
         </Card>
@@ -91,8 +91,11 @@ export default async function AdminHomePage() {
                 / {metrics.comptesProActifs}
               </span>
             </p>
-            <Link href="/admin/comptes-pro" className="mt-2 inline-block text-sm text-primary hover:underline">
-              Voir les dossiers →
+            <Link
+              href="/admin/comptes-pro"
+              className={cn(buttonVariants({ size: "sm" }), "mt-3 w-full")}
+            >
+              Voir les dossiers
             </Link>
           </CardContent>
         </Card>
@@ -108,9 +111,9 @@ export default async function AdminHomePage() {
             <p className="text-3xl font-bold text-brand-navy">{metrics.brouillons}</p>
             <Link
               href="/admin/interventions?vue=brouillon"
-              className="mt-2 inline-block text-sm text-primary hover:underline"
+              className={cn(buttonVariants({ size: "sm" }), "mt-3 w-full")}
             >
-              Voir les brouillons →
+              Voir les brouillons
             </Link>
           </CardContent>
         </Card>

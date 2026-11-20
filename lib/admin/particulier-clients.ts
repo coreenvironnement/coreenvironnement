@@ -5,6 +5,7 @@ export type ParticulierClientRow = {
   profileId: string | null
   email: string
   nom: string | null
+  phone: string | null
   commandeCount: number
   lastCommandeAt: string
 }
@@ -14,7 +15,9 @@ export async function loadParticulierClients(
 ): Promise<ParticulierClientRow[]> {
   const { data: commandes } = await supabase
     .from("commandes")
-    .select("id, client_id, contact_email, contact_nom, date_creation, audience, statut")
+    .select(
+      "id, client_id, contact_email, contact_nom, contact_telephone, date_creation, audience, statut"
+    )
     .eq("audience", "particulier")
     .order("date_creation", { ascending: false })
 
@@ -32,6 +35,7 @@ export async function loadParticulierClients(
         profileId: c.client_id,
         email: email || "—",
         nom: c.contact_nom,
+        phone: c.contact_telephone?.trim() || null,
         commandeCount: isBrouillon ? 0 : 1,
         lastCommandeAt: isBrouillon ? "" : created,
       })
@@ -41,6 +45,9 @@ export async function loadParticulierClients(
         if (created > existing.lastCommandeAt) {
           existing.lastCommandeAt = created
           if (c.contact_nom) existing.nom = c.contact_nom
+          if (c.contact_telephone?.trim()) {
+            existing.phone = c.contact_telephone.trim()
+          }
         }
       }
     }
@@ -53,7 +60,7 @@ export async function loadParticulierClients(
   if (profileIds.length > 0) {
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("id, email, full_name")
+      .select("id, email, full_name, phone")
       .in("id", profileIds)
 
     for (const p of profiles ?? []) {
@@ -61,6 +68,7 @@ export async function loadParticulierClients(
         if (row.profileId === p.id) {
           row.email = p.email
           if (p.full_name) row.nom = p.full_name
+          if (p.phone?.trim()) row.phone = p.phone.trim()
         }
       }
     }
