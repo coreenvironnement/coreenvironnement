@@ -1,9 +1,9 @@
 /**
- * Contenu page d'accueil — source : cahier des charges client.
+ * Contenu page d'accueil - source : cahier des charges client.
  * Mois 3 : intégration UI. Fichier posé dès maintenant comme référence unique.
  */
 
-import { ABONNEMENT_PRO_LABEL } from "@/lib/cdc/referentiels"
+import { ABONNEMENT_PRO_HT, ABONNEMENT_PRO_LABEL } from "@/lib/cdc/referentiels"
 
 export const hero = {
   titre1Ligne1: "Location de Benne en Île-de-France :",
@@ -15,57 +15,178 @@ export const hero = {
     "Camion transportant une benne avec Paris et la Tour Eiffel en arrière-plan",
 } as const
 
-export const servicesSection = {
+/** Section #services - page pro : « Pourquoi nous choisir » (3 cartes). */
+export const pourquoiNousChoisirSection = {
+  eyebrow: "Pourquoi nous choisir",
+  titre: "Moins de gestion. Plus de temps pour vos chantiers.",
   intro:
-    "De la mise à disposition d'une benne au traitement de déchets spécifiques, CORE ENVIRONNEMENT simplifie la gestion de vos déchets avec un interlocuteur unique en Île-de-France.",
+    "Un partenaire pour coordonner vos bennes, vos interventions et leur suivi en Île-de-France.",
 } as const
 
-export const services = [
+export const versoGrilleIconIds = [
+  "benne",
+  "recycle",
+  "shield",
+  "construction",
+] as const
+
+export type VersoGrilleIconId = (typeof versoGrilleIconIds)[number]
+
+export type VersoGrilleItem = {
+  readonly icon: VersoGrilleIconId
+  readonly titre: string
+  readonly sousTitre: string
+}
+
+export const versoLignesIconIds = ["contact", "terrain", "logistique"] as const
+
+export type VersoLignesIconId = (typeof versoLignesIconIds)[number]
+
+export type VersoLignesItem = {
+  readonly icon: VersoLignesIconId
+  readonly titre: string
+  readonly description: string
+}
+
+export const versoDocumentsIconIds = [
+  "cerfa",
+  "pesee",
+  "intervention",
+  "valorisation",
+] as const
+
+export type VersoDocumentsIconId = (typeof versoDocumentsIconIds)[number]
+
+export type VersoDocumentsItem = {
+  readonly icon: VersoDocumentsIconId
+  readonly titre: string
+}
+
+export const pourquoiNousChoisir = [
   {
-    titre: "Location de benne déchets non dangereux",
-    accroche:
-      "Mise à disposition et enlèvement, avec un interlocuteur unique de la première dépose jusqu'au traitement.",
+    titre: "Tous vos déchets. Un seul partenaire.",
+    eyebrowVerso: "NOS SOLUTIONS",
+    titreVerso: "À chaque déchet, sa solution.",
+    sousTitreFront: "Bennes, déchetteries et solutions adaptées à vos chantiers.",
+    sousTitreVerso: "Des solutions adaptées aux contraintes de vos chantiers.",
+    phraseVerso:
+      "Un besoin particulier ? Nous étudions la solution adaptée.",
+    versoGrille: [
+      {
+        icon: "benne",
+        titre: "Bennes 8 à 30 m³",
+        sousTitre: "DIB, gravats, bois, plâtre…",
+      },
+      {
+        icon: "recycle",
+        titre: "Déchetteries pro",
+        sousTitre: "Accès pour vos apports",
+      },
+      {
+        icon: "shield",
+        titre: "Flux réglementés",
+        sousTitre: "Prise en charge adaptée",
+      },
+      {
+        icon: "construction",
+        titre: "Débarras & manutention",
+        sousTitre: "Sur chantier ou en locaux",
+      },
+    ] satisfies readonly VersoGrilleItem[],
     points: [
-      "de 8 m³ à 30 m³",
-      "DIB, Gravats, Bois, Végétaux, Plâtres etc.",
-      "Intervention en 24h",
-      "Commander en 3 minutes",
-      "Toute l'Île-de-France",
+      "Bennes 8 à 30 m³ : DIB, gravats, bois, végétaux, plâtres…",
+      "Accès déchetteries professionnelles : tarif unique, sans rendez-vous",
+      "Déchets dangereux : contenants ADR, CAP et trackdéchets",
+      "Débarras chantier, bureaux et locaux sur mesure",
+      "Intervention sous 24 h et suivi jusqu'au traitement",
     ],
   },
   {
-    titre: "Accès aux déchetteries professionnelles",
-    accroche:
-      "Un accès simple à un réseau de centres professionnels, sans rendez-vous, avec un tarif unique et un contact unique.",
-    points: [
-      "Tarif unique",
-      "5 déchetteries (en cours de développement)",
-      "Ouverts de 7h à 15h30",
-      "Sans rendez-vous",
-      "Contact unique",
-    ],
+    titre: "Un interlocuteur dédié, même sur le terrain.",
+    sousTitreFront:
+      "Un contact qui coordonne vos interventions et peut venir directement sur vos chantiers.",
+    eyebrowVerso: "CONCRÈTEMENT",
+    titreVerso:
+      "Vous savez qui appeler.\nOn s'occupe de coordonner.",
+    phraseVerso: "Moins d'intermédiaires. Plus de simplicité.",
+    versoLignes: [
+      {
+        icon: "contact",
+        titre: "Un seul contact",
+        description: "Pour toutes vos demandes, même sur plusieurs chantiers.",
+      },
+      {
+        icon: "terrain",
+        titre: "Présent sur le terrain",
+        description:
+          "Un déplacement possible pour étudier vos contraintes sur place.",
+      },
+      {
+        icon: "logistique",
+        titre: "Une logistique coordonnée",
+        description:
+          "Déposes, rotations et enlèvements organisés selon vos besoins.",
+      },
+    ] satisfies readonly VersoLignesItem[],
   },
   {
-    titre: "Traitement des déchets dangereux",
-    accroche:
-      "Collecte, conditionnement et traitement sécurisés, avec conformité administrative et traçabilité exigées.",
-    points: [
-      "Location contenants ADR",
-      "Aérosols, Emballages souillés, Huiles noires etc.",
-      "Gestion administrative, CAP, trackdéchets",
-    ],
-  },
-  {
-    titre: "Opérations sur mesure",
-    accroche:
-      "Des interventions calibrées à vos contraintes de site, d'équipe et de planning — au-delà de la simple benne.",
-    points: [
-      "Débarras de chantier, bureaux, locaux etc.",
-      "Mise à disposition de manutentionnaire",
-    ],
+    titre: "Une benne pleine ? Une rotation en un clic.",
+    sousTitreFront:
+      "Gérez vos rotations et suivez vos commandes depuis votre espace pro.",
+    eyebrowVerso: "VOTRE SUIVI DIGITAL",
+    titreVerso: "Vos documents, toujours à portée de main.",
+    sousTitreVerso:
+      "Consultez vos justificatifs depuis votre mobile ou votre ordinateur.",
+    phraseVerso: "Mobile & ordinateur",
+    versoDocuments: [
+      {
+        icon: "cerfa",
+        titre: "Bordereaux de suivi des déchets (Cerfa)",
+      },
+      {
+        icon: "pesee",
+        titre: "Bons de pesée",
+      },
+      {
+        icon: "intervention",
+        titre: "Bons d'intervention",
+      },
+      {
+        icon: "valorisation",
+        titre: "Attestations de valorisation sur demande",
+      },
+    ] satisfies readonly VersoDocumentsItem[],
   },
 ] as const
 
+/** Section #engagements - page /professionnels (3 cartes + CTA devis). */
+export const professionnelsEngagementsSection = {
+  eyebrow: "NOS ENGAGEMENTS",
+  titre: "Des engagements concrets pour vos chantiers.",
+  cartes: [
+    {
+      id: "j1",
+      titre: "J+1",
+      titreAsterisque: true as const,
+      texte: "Intervention possible dès le lendemain",
+    },
+    {
+      id: "tracabilite",
+      titre: "Traçabilité",
+      texte: "Justificatifs et suivi réglementaire",
+    },
+    {
+      id: "valorisation",
+      titre: "Valorisation",
+      texte: "Filières de traitement adaptées",
+    },
+  ],
+  noteJ1:
+    "Sous réserve de disponibilité et de faisabilité, pour les commandes avant midi, hors week-ends et jours fériés.",
+  cta: "Parlons de vos chantiers",
+} as const
+
+/** Archive CDC - détail rédactionnel (non affiché sur la vitrine pro actuelle). */
 export const engagements = [
   {
     titre: "Réactivité et intervention en 24h",
@@ -320,11 +441,11 @@ export const espaceClient = {
   apresSelection: [
     "Diagramme : tonnage et % par typologie de déchets",
     "Camemberts : % valorisation et % élimination",
-    "Bouton vers l'historique des prestations (export Excel/PDF — Mois 2)",
+    "Bouton vers l'historique des prestations (export Excel/PDF - Mois 2)",
   ],
 } as const
 
-/** Parcours particulier — accueil court (hero inchangé). */
+/** Parcours particulier - accueil court (hero inchangé). */
 export const particulierAccueil = {
   parcours: {
     eyebrow: "Comment ça se passe",
@@ -517,17 +638,57 @@ export const professionnelsPage = {
     "Services, volumes, conformité et suivi : l’offre CORE ENVIRONNEMENT pour les entreprises et artisans en Île-de-France. Commande en ligne sans paiement immédiat ou espace pro en préparation.",
 } as const
 
-/** Copy section « Comment ça fonctionne » — page /professionnels uniquement. */
+/** Libellés grille « exemple de demande » — alignés sur le tunnel pro (intent + récap). */
+export const PRO_TUNNEL_EXEMPLE_DEMANDE_CHAMPS = [
+  { id: "dechets" as const, label: "Déchets", valeur: "DIB" },
+  { id: "volume" as const, label: "Volume", valeur: "15 m³" },
+  { id: "lieu" as const, label: "Lieu", valeur: "Paris 11e" },
+  { id: "date" as const, label: "Date", valeur: "À préciser" },
+] as const
+
+/** Copy section « Comment ça marche » - page /professionnels uniquement. */
 export const professionnelsCommentCaFonctionne = {
-  titre: "Préparez votre demande de benne en ligne",
+  eyebrow: "COMMENT ÇA MARCHE ?",
+  titre: "Un compte pro. Vos bennes à la demande.",
   intro:
-    "Indiquez les besoins de votre chantier et consultez les offres proposées. Vous pourrez vérifier le récapitulatif avant de transmettre votre demande à notre équipe.",
-  envoiDemande: {
-    label: "ENVOI DE LA DEMANDE",
-    text: "Vérifiez les informations, puis transmettez votre demande. Notre équipe vous recontacte pour confirmer l’intervention et les modalités de règlement.",
+    "Ouvrez votre compte, choisissez vos bennes et gérez vos chantiers en toute simplicité.",
+  etapes: [
+    {
+      num: "01",
+      id: "compte",
+      titre: "Créez votre compte pro",
+      texte:
+        "Vos informations d'entreprise, Kbis et RIB. C'est tout pour constituer votre dossier.",
+    },
+    {
+      num: "02",
+      id: "dossier",
+      titre: "On étudie votre dossier",
+      texte:
+        "Paiement à 30 jours si accordé. Sinon, d'autres modalités pour commander.",
+    },
+    {
+      num: "03",
+      id: "commande",
+      titre: "Commandez selon vos besoins",
+      texte:
+        "Choisissez votre benne, votre adresse et votre date. Notre équipe confirme l'intervention.",
+    },
+  ],
+  exempleDemande: {
+    titre: "Exemple de demande",
+    champs: PRO_TUNNEL_EXEMPLE_DEMANDE_CHAMPS,
   },
-  suite:
-    "Notre équipe confirme votre demande, valide l’intervention et précise le règlement avec vous.",
+  documents: {
+    titre: "Vos documents en ligne",
+    texte: "Justificatifs accessibles sur mobile et ordinateur.",
+    prixMontant: `${ABONNEMENT_PRO_HT} € HT`,
+    prixUnite: "/mois/utilisateur",
+    badge: "OPTIONNEL",
+  },
+  cta: "Ouvrir mon compte professionnel",
+  ctaHref: "/pro",
+  footnote: "Sans abonnement obligatoire pour commander",
 } as const
 
 export const professionnelsFaqModalitesPaiement =
@@ -564,6 +725,6 @@ export const espaceClientVitrine = {
     "Documents transmis par l'équipe",
   ],
   reassurance: "L'aperçu à droite est illustratif. L'accès client n'est pas ouvert.",
-  ctaPrimary: "Espace client — bientôt disponible",
+  ctaPrimary: "Espace client - bientôt disponible",
   ctaSecondary: "Appeler",
 } as const

@@ -408,7 +408,7 @@ function DashboardMock({ reduced }: { reduced: boolean }) {
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="font-[family-name:var(--font-display)] text-[13.5px] font-semibold tracking-[-0.01em] text-brand-text">
-                    Rotation — Benne 15 m³
+                    Rotation - Benne 15 m³
                   </p>
                   <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-[family-name:var(--font-body)] text-[12px] text-brand-muted">
                     <span className="flex items-center gap-1.5">
@@ -521,7 +521,7 @@ function DashboardMock({ reduced }: { reduced: boolean }) {
                       </span>
                     ) : (
                       <span className="font-[family-name:var(--font-body)] text-[12.5px] text-[#c2cad6]">
-                        —
+                        -
                       </span>
                     )}
                   </td>
@@ -549,7 +549,7 @@ function DashboardMock({ reduced }: { reduced: boolean }) {
                 <MetaCell label="Déchets" value={row.waste} />
                 <MetaCell
                   label="Documents"
-                  value={row.doc ? "Télécharger" : "—"}
+                  value={row.doc ? "Télécharger" : "-"}
                   withIcon={row.doc}
                 />
               </div>
@@ -560,7 +560,7 @@ function DashboardMock({ reduced }: { reduced: boolean }) {
         <div className="mt-3 flex items-center justify-between gap-3 border-t border-brand-border pt-3.5">
           <span className="inline-flex items-center gap-2 font-[family-name:var(--font-body)] text-[10.5px] text-brand-muted/80">
             <HugeiconsIcon icon={Recycle03Icon} size={13} strokeWidth={VITRINE_ICON_STROKE} />
-            Aperçu illustratif — données de démonstration
+            Aperçu illustratif - données de démonstration
           </span>
           <span className="inline-flex shrink-0 items-center gap-1.5 font-[family-name:var(--font-display)] text-[12px] font-semibold text-brand-navy">
             Voir tout l&apos;historique

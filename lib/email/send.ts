@@ -30,7 +30,7 @@ export type SendEmailInput = {
 
 export async function sendEmail(input: SendEmailInput): Promise<{ sent: boolean; error?: string }> {
   if (!isEmailConfigured()) {
-    console.warn("[email] RESEND_API_KEY absente — e-mail non envoyé:", input.subject)
+    console.warn("[email] RESEND_API_KEY absente - e-mail non envoyé:", input.subject)
     return { sent: false, error: "Email non configuré." }
   }
 

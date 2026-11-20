@@ -83,13 +83,13 @@ export function ChantierRotationQueue({
                     <tr key={d.id} className="border-b border-border/40 align-top">
                       <td className="py-3 pr-3">{formatParis(d.souhaiteLe)}</td>
                       <td className="py-3 pr-3">
-                        {d.contenantLabel ?? "—"}
+                        {d.contenantLabel ?? "-"}
                         {d.dechetNom ? ` · ${d.dechetNom}` : null}
                         {d.commentaire ? (
                           <p className="mt-1 text-xs text-muted-foreground">{d.commentaire}</p>
                         ) : null}
                       </td>
-                      <td className="py-3 pr-3 text-xs">{d.profileEmail ?? "—"}</td>
+                      <td className="py-3 pr-3 text-xs">{d.profileEmail ?? "-"}</td>
                       <td className="py-3 pr-3 text-xs">
                         {statutLabel[d.statut] ?? d.statut}
                       </td>
@@ -108,7 +108,7 @@ export function ChantierRotationQueue({
                             </form>
                           </div>
                         ) : (
-                          <span className="text-xs text-muted-foreground">—</span>
+                          <span className="text-xs text-muted-foreground">-</span>
                         )}
                       </td>
                     </tr>

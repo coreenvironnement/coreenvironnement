@@ -7,7 +7,7 @@ export const CORE_FAVICON_SRC = "/images/faviconcore-environnement.png"
 type FaviconIconProps = {
   size?: number
   className?: string
-  /** Icône décorative (aria-hidden, alt vide) — défaut true */
+  /** Icône décorative (aria-hidden, alt vide) - défaut true */
   decorative?: boolean
   alt?: string
 }

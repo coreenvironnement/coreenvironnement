@@ -46,7 +46,7 @@ export function ChantierTarifLines({ chantierId, lignes }: Props) {
       <CardHeader>
         <CardTitle>Lignes tarifaires</CardTitle>
         <CardDescription>
-          Traitement, transport et location — marges calculées à la volée (admin uniquement).
+          Traitement, transport et location - marges calculées à la volée (admin uniquement).
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

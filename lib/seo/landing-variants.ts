@@ -18,7 +18,7 @@ export type SeoVariant = {
   departementLink?: SeoLink
 }
 
-/** Contenu homepage — source unique. Aucune variante commerciale. */
+/** Contenu homepage - source unique. Aucune variante commerciale. */
 export const DEFAULT_VARIANT: SeoVariant = {
   intent: "default",
   title: "Location de benne en Île-de-France",

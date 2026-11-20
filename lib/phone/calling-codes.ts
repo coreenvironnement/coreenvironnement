@@ -4,7 +4,7 @@ export type CallingCode = {
   dial: string
 }
 
-/** Indicatifs courants (France en premier) — sans lib externe. */
+/** Indicatifs courants (France en premier) - sans lib externe. */
 export const CALLING_CODES: CallingCode[] = [
   { iso2: "FR", name: "France", dial: "33" },
   { iso2: "BE", name: "Belgique", dial: "32" },

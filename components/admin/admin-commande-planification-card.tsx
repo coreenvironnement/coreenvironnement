@@ -48,7 +48,7 @@ export function AdminCommandePlanificationCard({
         <CardDescription>
           {creneauLabel
             ? `Créneau confirmé : ${creneauLabel}`
-            : "Choisissez la date et l'heure — le client sera notifié par e-mail."}
+            : "Choisissez la date et l'heure - le client sera notifié par e-mail."}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-wrap items-center gap-3">

@@ -4,7 +4,7 @@ type CustomOperationsIconProps = {
   className?: string
 }
 
-/** Icône opérations sur mesure — services vitrine */
+/** Icône opérations sur mesure - services vitrine */
 export function CustomOperationsIcon({ className }: CustomOperationsIconProps) {
   return (
     <svg

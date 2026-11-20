@@ -119,7 +119,7 @@ export function WasteCharts({ tonnages, valorisation, prestataireNom, anneeTaux 
           <CardDescription>
             {prestataireNom
               ? `Calcul ${anneeTaux} · prestataire ${prestataireNom}`
-              : "Aucun prestataire associé au chantier — taux à 0 %"}
+              : "Aucun prestataire associé au chantier - taux à 0 %"}
           </CardDescription>
         </CardHeader>
         <CardContent className="h-[320px]">
@@ -176,7 +176,7 @@ export function WasteCharts({ tonnages, valorisation, prestataireNom, anneeTaux 
                 <tbody>
                   {valorisation.details.map((d) => (
                     <tr key={d.dechetTypeId} className="border-b border-border/40">
-                      <td className="py-2 pr-3">{d.dechetNom ?? "—"}</td>
+                      <td className="py-2 pr-3">{d.dechetNom ?? "-"}</td>
                       <td className="py-2 pr-3">{d.tonnageT} t</td>
                       <td className="py-2 pr-3">{d.partPct} %</td>
                       <td className="py-2 pr-3">{d.tauxPct} %</td>

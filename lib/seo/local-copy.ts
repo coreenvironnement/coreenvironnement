@@ -11,7 +11,7 @@ import {
 
 export type LocalPageType = "departement" | "ville" | "longtail"
 
-/** Dataset géo uniquement — aucun texte commercial ville par ville. */
+/** Dataset géo uniquement - aucun texte commercial ville par ville. */
 export type LocalPage = {
   slug: string
   type: LocalPageType

@@ -31,7 +31,7 @@ export function buildDevisParticulierEmail(data: DevisParticulierEmailData) {
           [
             `<p style="margin:0 0 8px;font-size:16px;font-weight:700;color:#172033">Votre benne vous attend</p>`,
             `<p style="margin:0 0 4px;font-size:14px;line-height:1.55;color:#475467">Tout est déjà enregistré : benne, adresse, dates et vos coordonnées. Il ne reste qu’à <strong>vérifier le récapitulatif</strong> et payer en toute sécurité.</p>`,
-            `<p style="margin:8px 0 0;font-size:13px;color:#667085">Pas besoin de tout ressaisir — un clic vous ramène exactement où vous en étiez.</p>`,
+            `<p style="margin:8px 0 0;font-size:13px;color:#667085">Pas besoin de tout ressaisir - un clic vous ramène exactement où vous en étiez.</p>`,
           ].join("")
         ),
         emailButton(data.resumeUrl, "Reprendre ma commande"),
@@ -79,10 +79,10 @@ export function buildDevisParticulierEmail(data: DevisParticulierEmailData) {
   ].filter(Boolean)
 
   return {
-    subject: `Votre devis CORE Environnement — ${data.reference}`,
+    subject: `Votre devis CORE Environnement - ${data.reference}`,
     html: emailLayout(fullHtml, {
       preheader: data.resumeUrl
-        ? "Reprenez votre commande en 1 clic — benne, adresse et dates déjà enregistrées."
+        ? "Reprenez votre commande en 1 clic - benne, adresse et dates déjà enregistrées."
         : "Devis benne + CGV en pièces jointes.",
     }),
     text: textLines.join("\n"),

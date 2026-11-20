@@ -1,5 +1,5 @@
 /**
- * Calcul du taux de valorisation global — règle client
+ * Calcul du taux de valorisation global - règle client
  *
  * 1. tonnage_valorisé(type) = tonnage(type) × taux_prestataire(type) / 100
  * 2. total_valorisé = somme des tonnages valorisés

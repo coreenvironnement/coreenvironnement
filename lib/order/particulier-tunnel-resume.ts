@@ -89,11 +89,11 @@ function splitContactFromCheckout(input: OrderCheckoutInput): {
 } {
   const first = input.contactFirstName?.trim() ?? ""
   const last = input.contactLastName?.trim() ?? ""
-  if (first || last) return { contactFirstName: first, contactLastName: last || "—" }
+  if (first || last) return { contactFirstName: first, contactLastName: last || "-" }
   const name = input.contactName?.trim() ?? ""
   if (!name) return { contactFirstName: "", contactLastName: "" }
   const parts = name.split(/\s+/)
-  if (parts.length === 1) return { contactFirstName: parts[0], contactLastName: "—" }
+  if (parts.length === 1) return { contactFirstName: parts[0], contactLastName: "-" }
   return { contactFirstName: parts[0], contactLastName: parts.slice(1).join(" ") }
 }
 

@@ -182,7 +182,7 @@ export default async function AdminClientsPage({ searchParams }: PageProps) {
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    {c.lastActivity ? formatDateFr(c.lastActivity.slice(0, 10)) : "—"}
+                    {c.lastActivity ? formatDateFr(c.lastActivity.slice(0, 10)) : "-"}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <Link

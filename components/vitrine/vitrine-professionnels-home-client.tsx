@@ -13,7 +13,7 @@ import { VitrineFooter } from "./vitrine-footer"
 import { VitrineHeader } from "./vitrine-header"
 import { VitrineMobileActionBar } from "./vitrine-mobile-action-bar"
 import { VitrineHero } from "./vitrine-hero"
-import { VitrineHowItWorks } from "./vitrine-how-it-works"
+import { VitrineCommentCaMarchePro } from "./vitrine-comment-ca-marche-pro"
 import { VitrineServices } from "./vitrine-sections"
 
 export function VitrineProfessionnelsHomeClient({
@@ -39,8 +39,8 @@ export function VitrineProfessionnelsHomeClient({
             heroBackdrop={heroBackdrop}
           />
           <VitrineServices />
-          <VitrineEngagements showTrackdechetsOnTracerStep />
-          <VitrineHowItWorks defaultProfile="professionnel" professionnelsPageLayout />
+          <VitrineEngagements />
+          <VitrineCommentCaMarchePro />
           <TestimonialsSection vitrine proOnly />
           <VitrineFaq professionnelsPage />
           <VitrineFinalCta />

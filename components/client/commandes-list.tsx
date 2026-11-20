@@ -19,7 +19,7 @@ export type CommandeListRow = {
 }
 
 function formatShortDate(isoDate: string | null) {
-  if (!isoDate) return "—"
+  if (!isoDate) return "-"
   return new Date(`${isoDate}T12:00:00`).toLocaleDateString("fr-FR", {
     day: "2-digit",
     month: "short",

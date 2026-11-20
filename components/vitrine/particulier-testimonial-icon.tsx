@@ -4,7 +4,7 @@ type ParticulierTestimonialIconProps = {
   className?: string
 }
 
-/** Icône en-tête carte témoignage particulier — bulle utilisateur */
+/** Icône en-tête carte témoignage particulier - bulle utilisateur */
 export function ParticulierTestimonialIcon({
   className,
 }: ParticulierTestimonialIconProps) {

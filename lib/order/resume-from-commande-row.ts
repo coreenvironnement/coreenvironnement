@@ -48,7 +48,7 @@ function splitContactName(raw: string | null | undefined): {
   }
   const parts = trimmed.split(/\s+/)
   if (parts.length === 1) {
-    return { contactFirstName: parts[0], contactLastName: "—" }
+    return { contactFirstName: parts[0], contactLastName: "-" }
   }
   return {
     contactFirstName: parts[0],
@@ -72,11 +72,11 @@ function resolveContactFields(
     contactLastName = fb.contactLastName
   }
   if (contactFirstName && !contactLastName) {
-    contactLastName = "—"
+    contactLastName = "-"
   }
   if (!contactFirstName) {
     contactFirstName = "Client"
-    contactLastName = contactLastName || "—"
+    contactLastName = contactLastName || "-"
   }
 
   const email = normalizeSignupEmail(

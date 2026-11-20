@@ -68,7 +68,7 @@ function stripeCheckoutErrorMessage(error: unknown): string {
   return "Impossible d'initialiser le paiement Stripe. Réessayez ou contactez-nous."
 }
 
-/** Fallback Checkout particulier — conservé, non exposé dans l’UI étape 5. */
+/** Fallback Checkout particulier - conservé, non exposé dans l’UI étape 5. */
 export async function startOrderCheckout(
   input: OrderCheckoutInput
 ): Promise<OrderCheckoutResult> {

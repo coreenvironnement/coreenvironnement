@@ -62,7 +62,7 @@ export default async function AdminComptesProPage() {
                     <p>{c.contact_nom}</p>
                     <p className="text-xs text-muted-foreground">{c.contact_email}</p>
                   </td>
-                  <td className="px-3 py-3 font-mono text-xs">{c.siret ?? "—"}</td>
+                  <td className="px-3 py-3 font-mono text-xs">{c.siret ?? "-"}</td>
                   <td className="px-3 py-3">
                     <span
                       className={cn(

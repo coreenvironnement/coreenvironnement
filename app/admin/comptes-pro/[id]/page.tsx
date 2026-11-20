@@ -145,18 +145,18 @@ export default async function AdminCompteProDetailPage({ params }: PageProps) {
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p>
-              <span className="text-muted-foreground">SIRET :</span> {compte.siret ?? "—"}
+              <span className="text-muted-foreground">SIRET :</span> {compte.siret ?? "-"}
             </p>
             <p>
-              <span className="text-muted-foreground">NAF :</span> {compte.code_naf ?? "—"}
+              <span className="text-muted-foreground">NAF :</span> {compte.code_naf ?? "-"}
             </p>
             <p>
               <span className="text-muted-foreground">Siège :</span>{" "}
-              {compte.adresse_siege ?? "—"}
+              {compte.adresse_siege ?? "-"}
             </p>
             <p>
               <span className="text-muted-foreground">Compte auth :</span>{" "}
-              {profile?.email ?? "—"}
+              {profile?.email ?? "-"}
             </p>
           </CardContent>
         </Card>
@@ -167,9 +167,9 @@ export default async function AdminCompteProDetailPage({ params }: PageProps) {
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p>{compte.contact_nom}</p>
-            <p className="text-muted-foreground">{compte.contact_fonction ?? "—"}</p>
+            <p className="text-muted-foreground">{compte.contact_fonction ?? "-"}</p>
             <p>{compte.contact_email}</p>
-            <p>{compte.contact_telephone ?? "—"}</p>
+            <p>{compte.contact_telephone ?? "-"}</p>
           </CardContent>
         </Card>
       </div>

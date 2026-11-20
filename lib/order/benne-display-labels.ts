@@ -5,7 +5,7 @@ import {
   type ParticulierWasteOptionId,
 } from "@/lib/order/particulier-waste-options"
 
-const LABEL_SEPARATORS = [", ", " — "] as const
+const LABEL_SEPARATORS = [", ", " - ", " \u2014 "] as const
 
 /** Partie « flux » d’un libellé forfait catalogue (ex. « gravats mélangés »). */
 export function wasteTailFromPrestationLabel(label: string): string {

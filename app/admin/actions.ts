@@ -1300,7 +1300,7 @@ export async function acceptRotationDemande(
     `Demande client : rotation souhaitée le ${wishLabel} (Europe/Paris).`,
   ]
     .filter(Boolean)
-    .join(" — ")
+    .join(" - ")
 
   const { data: intervention, error: interventionError } = await supabase
     .from("interventions")

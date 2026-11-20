@@ -12,7 +12,6 @@ import {
   Leaf01Icon,
   Login01Icon,
   Location01Icon,
-  MailSend01Icon,
   PackageDimensions01Icon,
   Recycle03Icon,
   Tick02Icon,
@@ -20,10 +19,7 @@ import {
   UserAdd01Icon,
 } from "@hugeicons/core-free-icons"
 
-import {
-  commentCaFonctionne,
-  professionnelsCommentCaFonctionne,
-} from "@/lib/cdc/contenu-vitrine"
+import { commentCaFonctionne } from "@/lib/cdc/contenu-vitrine"
 import { ABONNEMENT_PRO_LABEL } from "@/lib/cdc/referentiels"
 import {
   SITE_IMAGES,
@@ -255,30 +251,6 @@ function StepsGrid({
   )
 }
 
-function ProFlowBridge() {
-  return (
-    <div
-      className="how-pro-flow-bridge my-4 flex flex-col items-center gap-1.5 sm:my-5"
-      role="separator"
-      aria-label="Étape suivante : passer une commande"
-    >
-      <span className="rounded-full border border-brand-green/25 bg-brand-green/[0.06] px-2.5 py-0.5 font-[family-name:var(--font-display)] text-[10px] font-semibold uppercase tracking-[0.1em] text-brand-green-dark">
-        Compte validé
-      </span>
-      <HugeiconsIcon
-        icon={ArrowRight01Icon}
-        size={14}
-        strokeWidth={VITRINE_ICON_STROKE}
-        className="rotate-90 text-brand-border sm:rotate-0"
-        aria-hidden
-      />
-      <p className="vitrine-label how-step-phase text-[11px] tracking-[0.12em] text-brand-green">
-        Passer une commande
-      </p>
-    </div>
-  )
-}
-
 function AfterPanel({
   description,
   compact = false,
@@ -413,135 +385,51 @@ function ProSidePanel() {
   )
 }
 
-function buildProOrderStepsForProfessionnelsPage(): Step[] {
-  const { envoiDemande } = professionnelsCommentCaFonctionne
-  const compactOrderLabels: Record<string, string> = {
-    "03": "Flux",
-    "04": "Volume",
-    "05": "Date & lieu",
-  }
-  return [
-    ...PRO_ORDER_STEPS.map((step) => ({
-      ...step,
-      label: compactOrderLabels[step.num] ?? step.label,
-    })),
-    {
-      num: "06",
-      label: "Envoi de la demande",
-      text: envoiDemande.text,
-      icon: MailSend01Icon,
-    },
-  ]
-}
-
-function ProfessionnelPanel({ professionnelsPageLayout = false }: { professionnelsPageLayout?: boolean }) {
-  const orderSteps = professionnelsPageLayout
-    ? buildProOrderStepsForProfessionnelsPage()
-    : PRO_ORDER_STEPS
-
-  const stepVariant = professionnelsPageLayout ? "compact" : "default"
-
+function ProfessionnelPanel() {
   return (
-    <div
-      className={`how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(14_32_16/0.03),0_12px_32px_-8px_rgb(14_32_16/0.1)]${
-        professionnelsPageLayout ? " how-main-card--pro-page" : ""
-      }`}
-    >
+    <div className="how-main-card overflow-hidden rounded-[var(--radius-card)] border border-brand-green/14 bg-brand-warm-field shadow-[0_2px_4px_rgb(14_32_16/0.03),0_12px_32px_-8px_rgb(14_32_16/0.1)]">
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,22rem)] xl:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)]">
-        <div
-          className={`how-panel-main ${
-            professionnelsPageLayout
-              ? "how-panel-main--pro-page p-5 sm:p-8 lg:p-9 xl:p-10"
-              : "p-6 sm:p-8 lg:p-9 xl:p-10"
-          }`}
-        >
-          {professionnelsPageLayout ? (
-            <p className="how-pro-page-lead max-w-2xl text-[13px] leading-snug text-brand-muted sm:text-sm sm:leading-[1.55]">
-              <span className="font-semibold text-brand-navy">Compte PRO :</span>{" "}
-              paiement à 30&nbsp;jours et facturation centralisée. Ouvrez votre dossier, puis préparez
-              votre demande de benne en ligne.
-            </p>
-          ) : (
-            <>
-              <h3 className="vitrine-h3">{commentCaFonctionne.professionnel.accroche}</h3>
-              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-brand-muted sm:text-[15px]">
-                {commentCaFonctionne.professionnel.etapesIntro}
-              </p>
-            </>
-          )}
-
-          <p
-            className={`vitrine-label text-brand-green ${
-              professionnelsPageLayout ? "how-step-phase mt-5 text-[11px] tracking-[0.12em]" : "mt-8"
-            }`}
-          >
-            {professionnelsPageLayout ? "Ouverture du compte" : "OUVERTURE DU COMPTE"}
+        <div className="how-panel-main p-6 sm:p-8 lg:p-9 xl:p-10">
+          <h3 className="vitrine-h3">{commentCaFonctionne.professionnel.accroche}</h3>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-brand-muted sm:text-[15px]">
+            {commentCaFonctionne.professionnel.etapesIntro}
           </p>
-          <StepsGrid
-            steps={PRO_ACCOUNT_STEPS}
-            className={
-              professionnelsPageLayout ? "how-steps-grid--pro-account mt-2.5" : "mt-4"
-            }
-            variant={stepVariant}
-            dense={professionnelsPageLayout}
-          />
 
-          {professionnelsPageLayout ? (
-            <ProFlowBridge />
-          ) : (
-            <div className="my-7 flex flex-col items-center gap-2 sm:my-8">
-              <span className="rounded-full border border-brand-green/25 bg-brand-green/[0.06] px-3 py-1 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-green-dark">
-                COMPTE VALIDÉ
-              </span>
-              <HugeiconsIcon
-                icon={ArrowRight01Icon}
-                size={16}
-                strokeWidth={VITRINE_ICON_STROKE}
-                className="rotate-90 text-brand-border sm:rotate-0"
-                aria-hidden
-              />
-              <p className="vitrine-label text-brand-navy/70">PASSER UNE COMMANDE</p>
-            </div>
-          )}
+          <p className="vitrine-label mt-8 text-brand-green">OUVERTURE DU COMPTE</p>
+          <StepsGrid steps={PRO_ACCOUNT_STEPS} className="mt-4" />
 
-          <StepsGrid
-            steps={orderSteps}
-            className={professionnelsPageLayout ? "mt-0" : undefined}
-            variant={stepVariant}
-            dense={professionnelsPageLayout}
-          />
+          <div className="my-7 flex flex-col items-center gap-2 sm:my-8">
+            <span className="rounded-full border border-brand-green/25 bg-brand-green/[0.06] px-3 py-1 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-green-dark">
+              COMPTE VALIDÉ
+            </span>
+            <HugeiconsIcon
+              icon={ArrowRight01Icon}
+              size={16}
+              strokeWidth={VITRINE_ICON_STROKE}
+              className="rotate-90 text-brand-border sm:rotate-0"
+              aria-hidden
+            />
+            <p className="vitrine-label text-brand-navy/70">PASSER UNE COMMANDE</p>
+          </div>
+
+          <StepsGrid steps={PRO_ORDER_STEPS} />
         </div>
-        {professionnelsPageLayout ? (
-          <AfterPanel description={professionnelsCommentCaFonctionne.suite} compact />
-        ) : (
-          <ProSidePanel />
-        )}
+        <ProSidePanel />
       </div>
     </div>
   )
 }
 
 type VitrineHowItWorksProps = {
-  /** Présélectionne l’onglet (ex. page /professionnels). */
+  /** Présélectionne l’onglet professionnel sur la page d’accueil. */
   defaultProfile?: Profile
-  /** Textes « Comment ça fonctionne » de la page /professionnels. */
-  professionnelsPageLayout?: boolean
 }
 
 export function VitrineHowItWorks({
   defaultProfile = "particulier",
-  professionnelsPageLayout = false,
 }: VitrineHowItWorksProps = {}) {
   const [profile, setProfile] = useState<Profile>(defaultProfile)
-  const showProfileToggle = !professionnelsPageLayout
-  const activeProfile: Profile = professionnelsPageLayout ? "professionnel" : profile
-
-  const sectionTitle = professionnelsPageLayout
-    ? professionnelsCommentCaFonctionne.titre
-    : commentCaFonctionne.titre
-  const sectionIntro = professionnelsPageLayout
-    ? professionnelsCommentCaFonctionne.intro
-    : commentCaFonctionne.intro
+  const activeProfile = profile
 
   return (
     <section id="fonctionnement" className="bg-[#F3F6FB] pb-16 pt-16 max-sm:pt-[5.75rem] sm:py-20 lg:py-[5.5rem]">
@@ -549,38 +437,26 @@ export function VitrineHowItWorks({
         <div className="mx-auto max-w-3xl text-center">
           <p className="section-eyebrow">Comment ça fonctionne</p>
           <h2 className="section-title">
-            {professionnelsPageLayout ? (
-              sectionTitle
-            ) : (
-              <>
-                Louez votre benne
-                <span className="block">en 3 minutes chrono</span>
-              </>
-            )}
+            Louez votre benne
+            <span className="block">en 3 minutes chrono</span>
           </h2>
-          <p className="vitrine-section-intro">
-            {sectionIntro}
-          </p>
-          {showProfileToggle ? (
-            <div className="mt-8 sm:mt-9">
-              <ProfileToggle profile={profile} onChange={setProfile} />
-            </div>
-          ) : null}
+          <p className="vitrine-section-intro">{commentCaFonctionne.intro}</p>
+          <div className="mt-8 sm:mt-9">
+            <ProfileToggle profile={profile} onChange={setProfile} />
+          </div>
         </div>
 
         <div
           id="how-panel"
-          role={showProfileToggle ? "tabpanel" : undefined}
-          aria-labelledby={showProfileToggle ? `tab-${activeProfile}` : undefined}
-          className={`how-panel-wrap mx-auto max-w-5xl lg:max-w-6xl ${
-            showProfileToggle ? "mt-10 sm:mt-12" : "mt-8 sm:mt-9"
-          }`}
+          role="tabpanel"
+          aria-labelledby={`tab-${activeProfile}`}
+          className="how-panel-wrap mx-auto mt-10 max-w-5xl sm:mt-12 lg:max-w-6xl"
         >
           <div key={activeProfile} className="how-panel-enter">
             {activeProfile === "particulier" ? (
               <ParticulierPanel />
             ) : (
-              <ProfessionnelPanel professionnelsPageLayout={professionnelsPageLayout} />
+              <ProfessionnelPanel />
             )}
           </div>
         </div>

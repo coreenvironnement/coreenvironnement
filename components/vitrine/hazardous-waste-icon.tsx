@@ -4,7 +4,7 @@ type HazardousWasteIconProps = {
   className?: string
 }
 
-/** Icône traitement des déchets dangereux — services vitrine */
+/** Icône traitement des déchets dangereux - services vitrine */
 export function HazardousWasteIcon({ className }: HazardousWasteIconProps) {
   return (
     <svg

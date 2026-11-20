@@ -250,8 +250,43 @@
   }
 
   /* Accueil particulier — « Pourquoi Core » */
+  .vitrine-root .pourquoi-core__grid {
+    width: 100%;
+    max-width: min(100%, 22.5rem);
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root .pourquoi-core__grid {
+      max-width: min(100%, 26rem);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .vitrine-root .pourquoi-core__grid {
+      max-width: 64rem;
+    }
+  }
+
+  /* Page pro — section #engagements (3 cartes) */
+  .vitrine-root .pro-engagements__grid {
+    width: 100%;
+    max-width: min(100%, 22.5rem);
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root .pro-engagements__grid {
+      max-width: min(100%, 26rem);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .vitrine-root .pro-engagements__grid {
+      max-width: 64rem;
+    }
+  }
+
   .vitrine-root .pourquoi-core-card {
-    @apply flex flex-row items-start gap-4 border-[#dce5df] bg-white p-5 shadow-[0_1px_3px_rgb(14_32_16/0.05)] sm:gap-5 sm:p-6;
+    @apply flex flex-col items-center gap-4 border-[#dce5df] bg-white p-5 text-center shadow-[0_1px_3px_rgb(14_32_16/0.05)] sm:gap-5 sm:p-6;
   }
 
   .vitrine-root .pourquoi-core-card__icon-wrap {
@@ -263,7 +298,7 @@
   }
 
   .vitrine-root .pourquoi-core-card__body {
-    @apply min-w-0 flex-1 pt-0.5;
+    @apply flex w-full flex-col items-center pt-0.5;
   }
 
   .vitrine-root .pourquoi-core-card__title {
@@ -274,15 +309,16 @@
     font-weight: 800;
     line-height: 1.22;
     letter-spacing: -0.035em;
+    @apply mx-auto max-w-[19rem] text-center;
   }
 
   .vitrine-root .pourquoi-core-card__text {
-    @apply mt-2 font-[family-name:var(--font-body)] text-[14px] leading-relaxed sm:text-[15px];
+    @apply mx-auto mt-2 max-w-[21rem] text-center font-[family-name:var(--font-body)] text-[14px] leading-relaxed sm:text-[15px];
   }
 
   @media (min-width: 1024px) {
     .vitrine-root .pourquoi-core-card {
-      @apply flex-col items-center gap-0 px-6 pb-7 pt-8 text-center;
+      @apply gap-0 px-6 pb-7 pt-8;
     }
 
     .vitrine-root .pourquoi-core-card__icon-wrap {
@@ -294,15 +330,15 @@
     }
 
     .vitrine-root .pourquoi-core-card__body {
-      @apply mt-5 flex w-full flex-1 flex-col pt-0;
+      @apply mt-5 flex-1 pt-0;
     }
 
     .vitrine-root .pourquoi-core-card__title {
-      @apply mx-auto flex min-h-[4.25rem] max-w-[16.5rem] items-end justify-center;
+      @apply flex min-h-[4.25rem] max-w-[16.5rem] items-end justify-center;
     }
 
     .vitrine-root .pourquoi-core-card__text {
-      @apply mx-auto mt-3 max-w-[17.5rem] text-[15px];
+      @apply mt-3 max-w-[17.5rem] text-[15px];
     }
   }
 
@@ -736,12 +772,12 @@
       @apply min-h-12 min-w-[10.75rem] px-5 text-sm;
     }
 
-    .vitrine-root #services .service-flip-front .vitrine-h3 {
+    .vitrine-root #services .service-flip-front .service-flip-front-title {
       display: -webkit-box;
       min-height: 0;
       overflow: hidden;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 2;
     }
 
     .vitrine-root #services .service-flip-front > .service-flip-front-accroche {
@@ -756,6 +792,394 @@
     /* Featured : accroche plus longue — hauteur min. légèrement supérieure */
     .vitrine-root #services .service-flip-card--featured {
       min-height: 22rem;
+    }
+
+    .vitrine-root #services .service-flip-card--featured:has(.service-flip-front-points) {
+      min-height: 23rem;
+    }
+
+    .vitrine-root #services .service-flip-card--featured:has(.solutions-chantier-illustration):not(
+        .service-flip-card--featured-illustration
+      ) {
+      min-height: 25.5rem;
+    }
+
+    .vitrine-root #services .service-flip-card--featured-illustration {
+      min-height: 0;
+    }
+
+    .vitrine-root #services .service-flip-card--featured-illustration .service-flip-front {
+      overflow: visible;
+    }
+  }
+
+  /* Illustration carte 01 — solutions chantier (raster statique) */
+  .vitrine-root .solutions-chantier-illustration {
+    width: 100%;
+    max-width: 18.75rem;
+    margin: 0;
+    margin-inline: auto;
+  }
+
+  .vitrine-root .solutions-chantier-illustration__picture {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1024 / 576;
+  }
+
+  .vitrine-root .solutions-chantier-illustration__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    aspect-ratio: 1024 / 576;
+    object-fit: contain;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root .solutions-chantier-illustration {
+      max-width: 100%;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .vitrine-root #services .service-flip-card--featured:has(.solutions-chantier-illustration):not(
+        .service-flip-card--featured-illustration
+      ) {
+      min-height: 20rem;
+    }
+  }
+
+  /* Illustration carte 02 — interlocuteur terrain (art direction mobile / desktop) */
+  .vitrine-root .contact-chantier-illustration {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    margin-inline: auto;
+  }
+
+  .vitrine-root .contact-chantier-illustration__picture {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 1;
+  }
+
+  .vitrine-root .contact-chantier-illustration__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    aspect-ratio: 2 / 1;
+    object-fit: cover;
+    border-radius: 1rem;
+  }
+
+  @media (max-width: 640px) {
+    .vitrine-root .contact-chantier-illustration__picture,
+    .vitrine-root .contact-chantier-illustration__img {
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  /* Carte 03 recto — encart démo rotation (UI maquette) */
+  .vitrine-root .service-flip-demo-rotation {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    margin-inline: auto;
+    border-radius: 0.875rem;
+    background: #fff;
+    padding: 0.625rem;
+    text-align: left;
+    box-shadow:
+      0 4px 18px rgb(15 36 51 / 0.08),
+      0 1px 3px rgb(15 36 51 / 0.06);
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root .service-flip-demo-rotation {
+      padding: 0.75rem;
+    }
+  }
+
+  .vitrine-root .service-flip-demo-rotation__media {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 0.5rem;
+  }
+
+  .vitrine-root .service-flip-demo-rotation__picture {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+  }
+
+  .vitrine-root .service-flip-demo-rotation__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 0.5rem;
+  }
+
+  @media (max-width: 430px) {
+    .vitrine-root .service-flip-demo-rotation__picture,
+    .vitrine-root .service-flip-demo-rotation__img {
+      aspect-ratio: 5 / 3;
+    }
+  }
+
+  .vitrine-root .service-flip-demo-rotation__meta-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.625rem;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root .service-flip-demo-rotation__meta-row {
+      margin-top: 0.75rem;
+    }
+  }
+
+  .vitrine-root .service-flip-demo-rotation__chantier {
+    margin: 0;
+    font-family: Manrope, var(--font-body), ui-sans-serif, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.018em;
+    color: #0f2433;
+  }
+
+  .vitrine-root .service-flip-demo-rotation__spec {
+    margin: 0.125rem 0 0;
+    font-family: Manrope, var(--font-body), ui-sans-serif, sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--color-brand-muted);
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root .service-flip-demo-rotation__spec {
+      font-size: 0.75rem;
+    }
+  }
+
+  .vitrine-root .service-flip-demo-rotation__badge {
+    flex-shrink: 0;
+    border-radius: 999px;
+    background: rgb(53 162 56 / 0.14);
+    padding: 0.1875rem 0.5rem;
+    font-family: Manrope, var(--font-body), ui-sans-serif, sans-serif;
+    font-size: 0.625rem;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--color-brand-green);
+    white-space: nowrap;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root .service-flip-demo-rotation__badge {
+      font-size: 0.6875rem;
+      padding: 0.25rem 0.5625rem;
+    }
+  }
+
+  .vitrine-root .service-flip-demo-rotation__mock-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    margin-top: 0.625rem;
+    width: 100%;
+    border-radius: 0.5rem;
+    background: rgb(53 162 56 / 0.11);
+    padding: 0.5625rem 0.75rem;
+    font-family: Manrope, var(--font-body), ui-sans-serif, sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.012em;
+    color: var(--color-brand-green);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root .service-flip-demo-rotation__mock-action {
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      padding: 0.625rem 0.875rem;
+    }
+  }
+
+  .vitrine-root .service-flip-demo-rotation__mock-action-icon {
+    color: currentColor;
+  }
+
+  .vitrine-root #services .service-flip-card--carte-digital .service-flip-front-footer--illustration {
+    margin-top: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-card--carte-digital .service-flip-front-footer--illustration {
+      margin-top: 1.125rem;
+    }
+  }
+
+  /*
+   * Carte 01 featured — flip 3D avec hauteur = max(recto, verso) :
+   * les deux faces partagent la même cellule de grille pour mesurer le contenu.
+   */
+  .vitrine-root #services .service-flip-card--featured-illustration {
+    min-height: 0;
+  }
+
+  .vitrine-root #services .service-flip-card--featured-illustration .service-flip-inner {
+    display: grid;
+    grid-template-areas: "stack";
+    height: auto;
+    min-height: 0;
+  }
+
+  .vitrine-root #services .service-flip-card--featured-illustration .service-flip-face {
+    position: relative;
+    inset: auto;
+    grid-area: stack;
+    height: auto;
+    min-height: 0;
+  }
+
+  .vitrine-root #services .service-flip-card--featured-illustration .service-flip-front--illustration {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: visible;
+    box-sizing: border-box;
+  }
+
+  .vitrine-root #services .service-flip-card--featured-illustration .service-flip-icon-wrap {
+    margin-top: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-card--featured-illustration .service-flip-icon-wrap {
+      margin-top: 0.625rem;
+    }
+  }
+
+  .vitrine-root #services .service-flip-card--featured-illustration .service-flip-front-headline {
+    margin-top: 0.5rem;
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-card--featured-illustration .service-flip-front-headline {
+      margin-top: 0.625rem;
+    }
+  }
+
+  .vitrine-root #services .service-flip-card--featured-illustration .service-flip-front-illustration {
+    margin-top: 0.625rem;
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-card--featured-illustration .service-flip-front-illustration {
+      margin-top: 0.75rem;
+    }
+  }
+
+  .vitrine-root #services .service-flip-card--featured-illustration .service-flip-front-footer--illustration {
+    width: 100%;
+    margin-top: 1.25rem;
+    padding-top: 0;
+    padding-bottom: 0.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-card--featured-illustration .service-flip-front-footer--illustration {
+      margin-top: 1.5rem;
+    }
+  }
+
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .vitrine-root #services .service-flip-card--featured-illustration .service-flip-front {
+      overflow: visible;
+    }
+  }
+
+  .vitrine-root #services .service-flip-card--featured-illustration .solutions-chantier-illustration__picture,
+  .vitrine-root #services .service-flip-card--featured-illustration .solutions-chantier-illustration__img,
+  .vitrine-root #services .service-flip-card--featured-illustration .contact-chantier-illustration__picture,
+  .vitrine-root #services .service-flip-card--featured-illustration .contact-chantier-illustration__img,
+  .vitrine-root #services .service-flip-card--featured-illustration .service-flip-demo-rotation,
+  .vitrine-root #services .service-flip-card--featured-illustration .service-flip-demo-rotation__picture,
+  .vitrine-root #services .service-flip-card--featured-illustration .service-flip-demo-rotation__img {
+    overflow: visible;
+  }
+
+  .vitrine-root #services .service-flip-front-headline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .vitrine-root #services .service-flip-front-title {
+    font-size: clamp(1.125rem, 1.2vw, 1.3125rem);
+    line-height: 1.18;
+    letter-spacing: -0.032em;
+  }
+
+  .vitrine-root #services .service-flip-card--featured .service-flip-front-title {
+    color: #0f2433;
+  }
+
+  .vitrine-root #services .service-flip-front-subtitle {
+    margin: 0;
+    color: var(--color-brand-muted);
+    font-family: Manrope, var(--font-body), ui-sans-serif, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  .vitrine-root #services .service-flip-front-point-icon {
+    margin-top: 0.12rem;
+    height: 0.9375rem;
+    width: 0.9375rem;
+    flex-shrink: 0;
+    color: rgb(53 162 56 / 0.58);
+  }
+
+  .vitrine-root #services .service-flip-front-point-label {
+    font-family: Manrope, var(--font-body), ui-sans-serif, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.012em;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-front-point-label {
+      font-size: 0.875rem;
+      line-height: 1.38;
+    }
+
+    .vitrine-root #services .service-flip-front-subtitle {
+      font-size: 0.875rem;
     }
   }
 
@@ -804,7 +1228,7 @@
     }
 
     .vitrine-root #services .service-flip-card:not(.is-flipped):hover .service-flip-action-icon {
-      transform: rotate(90deg);
+      transform: translateX(2px);
     }
   }
 
@@ -827,6 +1251,13 @@
     transition:
       opacity 420ms ease,
       visibility 420ms ease;
+  }
+
+  .vitrine-root #services .service-flip-card--featured-illustration.service-flip-card--reduced .service-flip-face {
+    position: relative;
+    grid-area: stack;
+    height: auto;
+    min-height: 0;
   }
 
   .vitrine-root .service-flip-card--reduced.is-flipped .service-flip-back {
@@ -900,7 +1331,7 @@
   }
 
   .vitrine-root .how-step-kicker__rule::before {
-    content: "—";
+    content: "-";
     color: var(--color-brand-border);
     font-weight: 400;
     letter-spacing: normal;
@@ -957,11 +1388,525 @@
     }
   }
 
+  /* Page /professionnels — section Comment ça marche (timeline 3 étapes) */
+  .vitrine-root .pro-comment-marche__header .section-eyebrow {
+    @apply mb-3 bg-transparent p-0 font-[family-name:var(--font-display)] text-[11px] font-bold uppercase tracking-[0.14em] text-brand-green;
+    border-radius: 0;
+  }
+
+  .vitrine-root .pro-comment-marche__header .section-title {
+    @apply font-[family-name:var(--font-display)] text-[1.35rem] font-bold tracking-[-0.03em] text-brand-navy sm:text-[1.5rem] lg:text-[1.65rem];
+  }
+
+  .vitrine-root .pro-comment-marche__header .vitrine-section-intro {
+    @apply mt-3 text-[14px] leading-relaxed sm:text-[15px];
+  }
+
+  .vitrine-root .pro-comment-marche__connector {
+    pointer-events: none;
+  }
+
+  .vitrine-root .pro-comment-marche__step-icon,
+  .vitrine-root .pro-comment-marche__docs-icon {
+    box-shadow: inset 0 0 0 1px rgb(53 162 56 / 0.06);
+  }
+
+  .vitrine-root .pro-comment-marche__docs {
+    box-shadow: inset 0 0 0 1px rgb(197 207 201 / 0.35);
+  }
+
   .vitrine-root #services .service-flip-card.is-flipped .service-flip-back {
     @apply border-brand-green/15;
     box-shadow:
       0 2px 4px rgb(14 32 16 / 0.035),
       0 10px 28px -8px rgb(14 32 16 / 0.09);
+  }
+
+  /* Carte 01 — verso grille « NOS SOLUTIONS » */
+  .vitrine-root #services .service-flip-verso-solutions__title {
+    color: #0f2433;
+  }
+
+  .vitrine-root #services .service-flip-verso-solutions__subtitle {
+    max-width: 18.5rem;
+    margin-inline: auto;
+  }
+
+  .vitrine-root #services .service-flip-verso-grid {
+    display: grid;
+    width: 100%;
+    margin-top: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-grid {
+      margin-top: 1.125rem;
+      gap: 0.625rem;
+    }
+  }
+
+  .vitrine-root #services .service-flip-verso-tile {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    border-radius: 0.75rem;
+    background: rgb(247 249 248);
+    padding: 0.625rem 0.6875rem 0.75rem;
+    text-align: left;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-tile {
+      padding: 0.75rem 0.8125rem 0.875rem;
+    }
+  }
+
+  .vitrine-root #services .service-flip-verso-tile-icon {
+    margin-bottom: 0.125rem;
+  }
+
+  .vitrine-root #services .service-flip-verso-tile__title {
+    font-family: Manrope, var(--font-body), ui-sans-serif, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: #0f2433;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-tile__title {
+      font-size: 0.8125rem;
+    }
+  }
+
+  .vitrine-root #services .service-flip-verso-tile__desc {
+    font-family: Manrope, var(--font-body), ui-sans-serif, sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--color-brand-muted);
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-tile__desc {
+      font-size: 0.75rem;
+    }
+  }
+
+  .vitrine-root #services .service-flip-verso-phrase {
+    margin: 1rem 0 0;
+    max-width: 16.5rem;
+    margin-inline: auto;
+    font-family: Manrope, var(--font-body), ui-sans-serif, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.018em;
+    color: #0f2433;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-phrase {
+      margin-top: 1.125rem;
+      max-width: 18rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  .vitrine-root #services .service-flip-card--carte-dechets .service-flip-verso-solutions .service-flip-front-footer {
+    padding-top: 0.875rem;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-card--carte-dechets .service-flip-verso-solutions .service-flip-front-footer {
+      padding-top: 1rem;
+    }
+  }
+
+  /* Carte 02 — verso lignes « CONCRÈTEMENT » */
+  .vitrine-root #services .service-flip-card--carte-contact .service-flip-back--concretement {
+    overflow: visible;
+    align-items: stretch;
+    text-align: left;
+  }
+
+  .vitrine-root #services .service-flip-verso-concretement {
+    width: 100%;
+    align-items: stretch;
+    text-align: left;
+  }
+
+  .vitrine-root #services .service-flip-verso-concretement__eyebrow {
+    margin: 0;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+  }
+
+  .vitrine-root #services .service-flip-verso-concretement__title {
+    margin: 0.625rem 0 0;
+    max-width: 17.5rem;
+    font-size: 1.3125rem;
+    font-weight: 800;
+    line-height: 1.22;
+    letter-spacing: -0.032em;
+    color: #0f2433;
+    text-align: left;
+    white-space: pre-line;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-concretement__title {
+      max-width: 19.5rem;
+      font-size: 1.375rem;
+      line-height: 1.2;
+    }
+  }
+
+  .vitrine-root #services .service-flip-verso-lignes {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    margin-top: 1.125rem;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-lignes {
+      margin-top: 1.25rem;
+    }
+  }
+
+  .vitrine-root #services .service-flip-verso-ligne {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+    padding: 0.875rem 0;
+    border-bottom: 1px solid rgb(15 36 51 / 0.065);
+    text-align: left;
+  }
+
+  .vitrine-root #services .service-flip-verso-ligne:first-child {
+    padding-top: 0;
+  }
+
+  .vitrine-root #services .service-flip-verso-ligne:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-ligne {
+      gap: 1rem;
+      padding: 0.9375rem 0;
+    }
+  }
+
+  .vitrine-root #services .service-flip-verso-ligne__icon-wrap {
+    display: inline-flex;
+    height: 2.5rem;
+    width: 2.5rem;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    background: #edf4ed;
+  }
+
+  .vitrine-root #services .service-flip-verso-ligne__icon {
+    display: block;
+  }
+
+  .vitrine-root #services .service-flip-verso-ligne__body {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.1875rem;
+    padding-top: 0.125rem;
+  }
+
+  .vitrine-root #services .service-flip-verso-ligne__title {
+    margin: 0;
+    font-family: Manrope, var(--font-body), ui-sans-serif, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.28;
+    letter-spacing: -0.02em;
+    color: #0f2433;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-ligne__title {
+      font-size: 0.9375rem;
+    }
+  }
+
+  .vitrine-root #services .service-flip-verso-ligne__desc {
+    margin: 0;
+    font-family: Manrope, var(--font-body), ui-sans-serif, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.42;
+    letter-spacing: -0.01em;
+    color: var(--color-brand-muted);
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-ligne__desc {
+      font-size: 0.875rem;
+      line-height: 1.44;
+    }
+  }
+
+  .vitrine-root #services .service-flip-verso-phrase--concretement {
+    display: block;
+    width: 100%;
+    margin: 1.125rem 0 0;
+    max-width: none;
+    align-self: center;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.018em;
+    color: #0f2433;
+    text-align: center;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-phrase--concretement {
+      margin-top: 1.25rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  .vitrine-root #services .service-flip-card--carte-contact .service-flip-verso-concretement__footer {
+    padding-top: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-card--carte-contact .service-flip-verso-concretement__footer {
+      padding-top: 1.125rem;
+    }
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered
+    #services
+    .service-flip-card--carte-contact
+    .service-flip-back--concretement {
+    align-items: stretch;
+    text-align: left;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered
+    #services
+    .service-flip-card--carte-contact
+    .service-flip-verso-concretement,
+  .vitrine-root.vitrine--pro-home-mobile-centered
+    #services
+    .service-flip-card--carte-contact
+    .service-flip-verso-concretement__main,
+  .vitrine-root.vitrine--pro-home-mobile-centered
+    #services
+    .service-flip-card--carte-contact
+    .service-flip-verso-ligne,
+  .vitrine-root.vitrine--pro-home-mobile-centered
+    #services
+    .service-flip-card--carte-contact
+    .service-flip-verso-concretement__title,
+  .vitrine-root.vitrine--pro-home-mobile-centered
+    #services
+    .service-flip-card--carte-contact
+    .service-flip-verso-concretement__eyebrow {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered
+    #services
+    .service-flip-card--carte-contact
+    .service-flip-verso-phrase--concretement {
+    align-self: stretch;
+    text-align: center;
+  }
+
+  /* Carte 03 — verso documents « VOTRE SUIVI DIGITAL » */
+  .vitrine-root #services .service-flip-card--carte-digital .service-flip-back--digital {
+    overflow: visible;
+    align-items: stretch;
+  }
+
+  .vitrine-root #services .service-flip-verso-digital {
+    width: 100%;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .vitrine-root #services .service-flip-verso-digital__eyebrow {
+    margin: 0;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-align: center;
+  }
+
+  .vitrine-root #services .service-flip-verso-digital__title {
+    margin: 0.5rem 0 0;
+    font-size: 1.1875rem;
+    font-weight: 800;
+    line-height: 1.22;
+    letter-spacing: -0.032em;
+    color: #0f2433;
+    text-align: center;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-digital__title {
+      margin-top: 0.625rem;
+      font-size: 1.3125rem;
+    }
+  }
+
+  .vitrine-root #services .service-flip-verso-digital__subtitle {
+    margin: 0.375rem auto 0;
+    max-width: 17.5rem;
+    font-family: Manrope, var(--font-body), ui-sans-serif, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.42;
+    letter-spacing: -0.01em;
+    color: var(--color-brand-muted);
+    text-align: center;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-digital__subtitle {
+      max-width: 19rem;
+      font-size: 0.875rem;
+      line-height: 1.44;
+    }
+  }
+
+  .vitrine-root #services .service-flip-verso-documents {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    margin-top: 0.875rem;
+    border-radius: 0.875rem;
+    background: rgb(243 246 244);
+    padding: 0.25rem 0.75rem;
+    text-align: left;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-documents {
+      margin-top: 1rem;
+      padding: 0.375rem 0.875rem;
+    }
+  }
+
+  .vitrine-root #services .service-flip-verso-document {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    padding: 0.625rem 0;
+    border-bottom: 1px solid rgb(15 36 51 / 0.06);
+  }
+
+  .vitrine-root #services .service-flip-verso-document:last-child {
+    border-bottom: none;
+    padding-bottom: 0.6875rem;
+  }
+
+  .vitrine-root #services .service-flip-verso-document:first-child {
+    padding-top: 0.6875rem;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-document {
+      gap: 0.75rem;
+      padding: 0.6875rem 0;
+    }
+  }
+
+  .vitrine-root #services .service-flip-verso-document__icon {
+    margin-top: 0.0625rem;
+  }
+
+  .vitrine-root #services .service-flip-verso-document__title {
+    margin: 0;
+    flex: 1;
+    min-width: 0;
+    font-family: Manrope, var(--font-body), ui-sans-serif, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.32;
+    letter-spacing: -0.018em;
+    color: #0f2433;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-document__title {
+      font-size: 0.875rem;
+      line-height: 1.34;
+    }
+  }
+
+  .vitrine-root #services .service-flip-verso-digital__pied {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0.875rem auto 0;
+    font-family: Manrope, var(--font-body), ui-sans-serif, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    color: var(--color-brand-green);
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-verso-digital__pied {
+      margin-top: 1rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  .vitrine-root #services .service-flip-card--carte-digital .service-flip-verso-digital__footer {
+    padding-top: 0.875rem;
+  }
+
+  @media (min-width: 640px) {
+    .vitrine-root #services .service-flip-card--carte-digital .service-flip-verso-digital__footer {
+      padding-top: 1rem;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .vitrine-root #services .service-flip-card--carte-digital.is-flipped {
+      min-height: 26.25rem;
+    }
+  }
+
+  .vitrine-root.vitrine--pro-home-mobile-centered
+    #services
+    .service-flip-card--carte-digital
+    .service-flip-verso-digital__title,
+  .vitrine-root.vitrine--pro-home-mobile-centered
+    #services
+    .service-flip-card--carte-digital
+    .service-flip-verso-digital__subtitle,
+  .vitrine-root.vitrine--pro-home-mobile-centered
+    #services
+    .service-flip-card--carte-digital
+    .service-flip-verso-digital__eyebrow {
+    text-align: center;
   }
 
   /* Hero — voile plein cadre sur la photo (image → overlay → contenu z-10) */
@@ -1161,7 +2106,7 @@
 }
 
 .vitrine-root #engagements .engagements-step__kicker-rule::before {
-  content: "—";
+  content: "-";
   color: var(--color-brand-border);
   font-weight: 400;
   letter-spacing: normal;
@@ -2351,8 +3296,16 @@
     text-align: center;
   }
 
-  .vitrine-root.vitrine--mobile-centered #conseils .cp-card :is(.cp-category, h3, .cp-copy, .cp-note) {
+  .vitrine-root.vitrine--mobile-centered #conseils .cp-card :is(h3, .cp-copy, .cp-note) {
     width: 100%;
+    text-align: center;
+  }
+
+  .vitrine-root.vitrine--mobile-centered #conseils .cp-card .cp-category {
+    width: fit-content;
+    max-width: 100%;
+    align-self: center;
+    margin-inline: auto;
     text-align: center;
   }
 
@@ -2431,110 +3384,36 @@
     @apply justify-center text-center;
   }
 
-  .vitrine-root.vitrine--pro-home-mobile-centered #engagements header {
-    @apply items-center text-center;
+  .vitrine-root.vitrine--pro-home-mobile-centered #services .service-flip-front-points {
+    @apply w-full items-center text-center;
   }
 
-  .vitrine-root.vitrine--pro-home-mobile-centered #engagements .engagements-step article {
-    @apply grid-cols-1 justify-items-center text-center;
+  .vitrine-root.vitrine--pro-home-mobile-centered #services .service-flip-front-points > li {
+    @apply justify-center text-center;
   }
 
-  .vitrine-root.vitrine--pro-home-mobile-centered #engagements .engagements-step .engagements-step__kicker {
-    @apply justify-center;
+  @media (min-width: 640px) {
+    .vitrine-root.vitrine--pro-home-mobile-centered #services .service-flip-front-points,
+    .vitrine-root.vitrine--pro-home-mobile-centered #services .service-flip-front-points > li {
+      @apply items-start justify-start text-left;
+    }
   }
 
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-panel-main,
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-panel {
+  .vitrine-root.vitrine--pro-home-mobile-centered #engagements .pro-engagements__header {
     @apply text-center;
   }
 
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-panel__head {
-    @apply mx-auto justify-center;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-panel--compact .how-after-panel__intro {
-    @apply mx-auto;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-tags--compact {
-    @apply mx-auto max-w-[19rem] justify-items-stretch;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-tag--compact {
+  .vitrine-root.vitrine--pro-home-mobile-centered #engagements .pro-engagements-card {
     @apply text-center;
   }
 
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-card .flex.flex-1.flex-col {
-    @apply items-center text-center;
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .pro-comment-marche__header {
+    @apply text-center;
   }
 
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-card--compact .how-step-card--compact__inner {
-    @apply justify-items-center text-center;
-    grid-template-columns: 1fr;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-main-card--pro-page .how-panel-main--pro-page {
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .pro-comment-marche__step-inner,
+  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .pro-comment-marche__docs-inner {
     @apply text-left;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-main-card--pro-page .how-step-phase,
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-main-card--pro-page .how-pro-flow-bridge .how-step-phase {
-    @apply w-full text-center;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-main-card--pro-page .how-step-card--compact .how-step-card--compact__inner {
-    @apply justify-items-start text-left;
-    grid-template-columns: 2.35rem minmax(0, 1fr);
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-card--compact .how-step-icon-circle--compact {
-    @apply col-start-1 row-start-1 mx-auto;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-main-card--pro-page .how-step-card--compact .how-step-icon-circle--compact {
-    @apply col-start-1 row-span-2 mx-0 mt-0.5;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-card--compact .how-step-kicker {
-    @apply col-start-1 justify-center;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-main-card--pro-page .how-step-card--compact .how-step-kicker {
-    @apply col-start-2 justify-start;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-card--compact p.col-start-2 {
-    @apply col-start-1;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-main-card--pro-page .how-step-card--compact p.col-start-2 {
-    @apply col-start-2 text-left;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered
-    #fonctionnement
-    .how-main-card--pro-page
-    .how-steps-grid--pro-account
-    > li:nth-child(2)
-    .how-step-card--compact
-    p.col-start-2 {
-    @apply text-center;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-icon-circle {
-    @apply mx-auto;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-step-icon-circle--compact {
-    @apply row-span-1;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-main-card--pro-page .how-step-icon-circle--compact {
-    @apply row-span-2;
-  }
-
-  .vitrine-root.vitrine--pro-home-mobile-centered #fonctionnement .how-after-tags {
-    @apply justify-items-center;
   }
 
   .vitrine-root.vitrine--pro-home-mobile-centered #faq h3 button,
@@ -2603,6 +3482,13 @@
   box-shadow: 0 8px 20px rgba(21, 42, 59, 0.055);
   display: flex;
   flex-direction: column;
+}
+.cp-section .cp-card > .cp-category {
+  align-self: center;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  text-align: center;
 }
 .cp-section .cp-category {
   margin: 0 0 18px;
@@ -3057,6 +3943,13 @@
   .cp-section .cp-category {
     margin-bottom: 14px;
   }
+
+  .cp-section .cp-card > .cp-category {
+    align-self: center;
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+  }
   .cp-section .cp-copy {
     font-size: 15px;
     line-height: 1.6;
@@ -3068,6 +3961,10 @@
   }
   .cp-section .cp-volume .cp-category {
     grid-column: 1 / -1;
+    justify-self: center;
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
   }
   .cp-section .cp-volume h3 {
     grid-column: 1;
@@ -3105,10 +4002,21 @@
     align-items: center;
     text-align: center;
   }
-  .vitrine-root.vitrine--mobile-centered .cp-section .cp-card :is(.cp-category, h3, .cp-copy, .cp-note, .cp-button) {
+  .vitrine-root.vitrine--mobile-centered .cp-section .cp-card :is(h3, .cp-copy, .cp-note, .cp-button) {
     grid-column: auto;
     grid-row: auto;
     width: 100%;
+    text-align: center;
+  }
+
+  .vitrine-root.vitrine--mobile-centered .cp-section .cp-card .cp-category {
+    grid-column: auto;
+    grid-row: auto;
+    width: fit-content;
+    max-width: 100%;
+    justify-self: center;
+    align-self: center;
+    margin-inline: auto;
     text-align: center;
   }
   .vitrine-root.vitrine--mobile-centered .cp-section .cp-card .cp-art {

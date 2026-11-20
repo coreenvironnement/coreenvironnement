@@ -161,7 +161,7 @@ export default async function AdminHomePage() {
                       <p className="text-muted-foreground">{row.chantier}</p>
                     </div>
                     <Link href={row.href} className="text-primary hover:underline">
-                      {row.datePrevue ? formatDateFr(row.datePrevue) : "—"}
+                      {row.datePrevue ? formatDateFr(row.datePrevue) : "-"}
                     </Link>
                   </li>
                 ))}

@@ -42,7 +42,7 @@ export function buildOrderReceiptContent(args: {
   const address = input.addressLabel || input.address
 
   const lines: OrderReceiptContent["lines"] = [
-    { label: "Benne", value: prestation?.label ?? "—" },
+    { label: "Benne", value: prestation?.label ?? "-" },
     { label: "Livraison", value: formatFrDate(input.deliveryDate) },
   ]
   if (input.pickupDate) {
@@ -81,7 +81,7 @@ export function buildOrderReceiptContent(args: {
     footerLines: [
       "E-mail récapitulatif envoyé.",
       "Suivi dans votre espace client.",
-      `Merci de votre confiance — ${SITE_ORG_NAME}`,
+      `Merci de votre confiance - ${SITE_ORG_NAME}`,
     ],
   }
 }

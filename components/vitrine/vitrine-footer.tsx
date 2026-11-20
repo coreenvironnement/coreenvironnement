@@ -141,7 +141,7 @@ export function VitrineFooter() {
         <div className="vitrine-footer__bottom">
           <div className="vitrine-footer__legal">
             <p className="vitrine-footer__copyright">
-              © {new Date().getFullYear()} CORE ENVIRONNEMENT — Tous droits réservés
+              © {new Date().getFullYear()} CORE ENVIRONNEMENT - Tous droits réservés
             </p>
             <p className="vitrine-footer__credit">
               Site réalisé par{" "}

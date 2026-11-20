@@ -9,7 +9,7 @@ import { Input } from "./input"
 
 type PasswordInputProps = Omit<React.ComponentProps<"input">, "type"> & {
   inputClassName?: string
-  /** Champs vitrine auth (`form-field-input`, h-12) — évite le style shadcn compact. */
+  /** Champs vitrine auth (`form-field-input`, h-12) - évite le style shadcn compact. */
   variant?: "shadcn" | "vitrine"
 }
 

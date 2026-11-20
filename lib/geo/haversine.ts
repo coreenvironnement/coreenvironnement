@@ -1,4 +1,4 @@
-/** Centre opérationnel — Élancourt (Yvelines), aligné sur le schéma Supabase. */
+/** Centre opérationnel - Élancourt (Yvelines), aligné sur le schéma Supabase. */
 export const ELIANCOURT_CENTER = {
   lat: 48.775,
   lng: 1.947,

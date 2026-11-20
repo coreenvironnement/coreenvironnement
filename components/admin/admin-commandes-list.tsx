@@ -48,7 +48,7 @@ export function ContactLinks({
   className?: string
 }) {
   if (!email && !telephone) {
-    return <p className={cn("text-xs text-muted-foreground", className)}>—</p>
+    return <p className={cn("text-xs text-muted-foreground", className)}>-</p>
   }
 
   return (
@@ -93,7 +93,7 @@ export function DevisEnvoyeCell({
       )}
       title={sent && devisSentAt ? `Envoyé le ${formatDateFr(devisSentAt)}` : undefined}
     >
-      {sent ? "Devis envoyé" : "—"}
+      {sent ? "Devis envoyé" : "-"}
     </span>
   )
 }
@@ -168,7 +168,7 @@ export function AdminCommandesList({
                 telephone={c.contact_telephone}
               />
               <p className="mt-2 text-sm text-brand-navy">
-                {c.prestation_label ?? dechet?.nom ?? "—"}
+                {c.prestation_label ?? dechet?.nom ?? "-"}
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {c.adresse_complete}
@@ -247,7 +247,7 @@ export function AdminCommandesList({
                     </p>
                   </td>
                   <td className="px-3 py-3">
-                    <p>{c.prestation_label ?? dechet?.nom ?? "—"}</p>
+                    <p>{c.prestation_label ?? dechet?.nom ?? "-"}</p>
                     {dechet?.nom && c.prestation_label ? (
                       <p className="text-xs text-muted-foreground">{dechet.nom}</p>
                     ) : null}

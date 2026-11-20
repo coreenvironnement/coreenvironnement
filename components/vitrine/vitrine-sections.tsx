@@ -2,7 +2,11 @@ import Link from "next/link"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Tick02Icon } from "@hugeicons/core-free-icons"
 
-import { comptePro, services, servicesSection } from "@/lib/cdc/contenu-vitrine"
+import {
+  comptePro,
+  pourquoiNousChoisir,
+  pourquoiNousChoisirSection,
+} from "@/lib/cdc/contenu-vitrine"
 
 import { ServiceFlipCard } from "./service-flip-card"
 import { VITRINE_ICON_STROKE } from "./icons"
@@ -15,17 +19,17 @@ export function VitrineServices() {
     <section id="services" className="bg-[#F3F7F5] py-16 sm:py-20 lg:py-[5.5rem]">
       <div className="container-x">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="section-eyebrow">Nos services</p>
-          <h2 className="section-title">Une solution pour chaque besoin</h2>
+          <p className="section-eyebrow">{pourquoiNousChoisirSection.eyebrow}</p>
+          <h2 className="section-title">{pourquoiNousChoisirSection.titre}</h2>
           <p className="vitrine-section-intro">
-            {servicesSection.intro}
+            {pourquoiNousChoisirSection.intro}
           </p>
         </div>
-        <div className="mt-10 grid gap-5 md:grid-cols-2 md:gap-6 lg:mt-12">
-          {services.map((service, index) => (
+        <div className="mt-10 grid gap-5 md:gap-6 lg:mt-12 lg:grid-cols-3">
+          {pourquoiNousChoisir.map((carte, index) => (
             <ServiceFlipCard
-              key={service.titre}
-              service={service}
+              key={carte.titre}
+              service={carte}
               index={index}
               featured={index === 0}
             />

@@ -22,8 +22,8 @@ function rowsToSheetData(rows: InterventionHistoryRow[]): string[][] {
       formatDateFr(row.dateSouhaitee),
       row.statutLabel,
       formatDateFr(row.dateReelle),
-      row.commentaire?.trim() || "—",
-      ...TYPES_DOCUMENTS.map((t) => (docByType[t.code] ? "Disponible (PDF)" : "—")),
+      row.commentaire?.trim() || "-",
+      ...TYPES_DOCUMENTS.map((t) => (docByType[t.code] ? "Disponible (PDF)" : "-")),
     ]
   })
 }
@@ -45,7 +45,7 @@ export function buildHistoriquePdfBase64(
 
   doc.setFontSize(14)
   doc.setTextColor(27, 65, 143)
-  doc.text(`Historique des prestations — ${chantierNom}`, 14, 14)
+  doc.text(`Historique des prestations - ${chantierNom}`, 14, 14)
 
   doc.setFontSize(9)
   doc.setTextColor(80, 80, 80)

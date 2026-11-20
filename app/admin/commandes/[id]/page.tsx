@@ -184,7 +184,7 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
       ) : null}
       {okParam === "refund_pending" ? (
         <p className="rounded-lg border border-orange-200 bg-orange-50 px-4 py-3 text-sm text-orange-950">
-          Annulation enregistrée. Remboursement demandé — en attente de confirmation Stripe.
+          Annulation enregistrée. Remboursement demandé - en attente de confirmation Stripe.
         </p>
       ) : null}
       {okParam === "already_refunded" ? (
@@ -204,7 +204,7 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
       ) : null}
       {paidStillCaptured ? (
         <p className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950">
-          Annulée — paiement toujours encaissé
+          Annulée - paiement toujours encaissé
         </p>
       ) : null}
       {commande.payment_status === "refund_pending" ? (
@@ -291,7 +291,7 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
           <CardContent className="space-y-2 text-sm">
             <p>
               <span className="text-muted-foreground">Nom :</span>{" "}
-              {commande.contact_nom ?? "—"}
+              {commande.contact_nom ?? "-"}
             </p>
             <p>
               <span className="text-muted-foreground">E-mail :</span>{" "}
@@ -303,7 +303,7 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
                   {commande.contact_email}
                 </a>
               ) : (
-                "—"
+                "-"
               )}
             </p>
             <p>
@@ -316,7 +316,7 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
                   {commande.contact_telephone}
                 </a>
               ) : (
-                "—"
+                "-"
               )}
             </p>
             <p>
@@ -339,10 +339,10 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
           <CardContent className="space-y-2 text-sm">
             <p>
               <span className="text-muted-foreground">Forfait :</span>{" "}
-              {commande.prestation_label ?? "—"}
+              {commande.prestation_label ?? "-"}
             </p>
             <p>
-              <span className="text-muted-foreground">Type déchet :</span> {dechet?.nom ?? "—"}
+              <span className="text-muted-foreground">Type déchet :</span> {dechet?.nom ?? "-"}
             </p>
             {commande.volume_m3 != null ? (
               <p>
@@ -395,7 +395,7 @@ export default async function AdminCommandeDetailPage({ params, searchParams }: 
             </p>
             <p className="break-all font-mono text-xs">
               <span className="text-muted-foreground">stripe_payment_intent_id :</span>{" "}
-              {commande.stripe_payment_intent_id ?? "—"}
+              {commande.stripe_payment_intent_id ?? "-"}
             </p>
             {commande.stripe_checkout_session_id ? (
               <p className="break-all font-mono text-xs text-muted-foreground">

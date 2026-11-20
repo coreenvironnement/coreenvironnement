@@ -137,7 +137,7 @@ export function CheckoutReassuranceBanner({
   )
 }
 
-/** Bloc compact sous le bouton payer — tunnel particulier uniquement. */
+/** Bloc compact sous le bouton payer - tunnel particulier uniquement. */
 export function CheckoutParticulierTrackingNote({ className }: { className?: string }) {
   return (
     <aside

@@ -1721,7 +1721,7 @@ export function OrderWidget({
                     </p>
                     <p className="mt-1 text-[11px] leading-snug text-brand-muted">
                       Tarifs TTC et poids inclus par benne. Ne dépassez pas le
-                      bord — supplément à la tonne sur chaque offre.
+                      bord - supplément à la tonne sur chaque offre.
                 </p>
               </div>
                 ) : (
@@ -1731,7 +1731,7 @@ export function OrderWidget({
                       embedded && "mx-auto max-w-md text-center"
                     )}
                   >
-                    Prix H.T. — détail des déchets acceptés par forfait.
+                    Prix H.T. - détail des déchets acceptés par forfait.
                     {volumeHintM3 ? (
                       <>
                         {" "}

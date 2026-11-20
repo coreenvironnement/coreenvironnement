@@ -16,7 +16,7 @@ type HeroBackdropImageProps = {
 
 /**
  * Fond hero : art direction via <picture> (Next 15).
- * Pas de `priority` (évite doubles preloads) — `fetchPriority` + `loading="eager"` sur l’img.
+ * Pas de `priority` (évite doubles preloads) - `fetchPriority` + `loading="eager"` sur l’img.
  */
 export function HeroBackdropImage({ alt, isParticulier }: HeroBackdropImageProps) {
   const quality = 75

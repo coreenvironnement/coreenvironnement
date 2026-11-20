@@ -241,7 +241,7 @@ export function drawNoteBox(doc: JsPDFDoc, y: number, title: string, paragraphs:
 
 export function drawLegalFooter(doc: JsPDFDoc) {
   const foot =
-    `${LEGAL_COMPANY.name} — ${LEGAL_COMPANY.legalForm} au capital de ${LEGAL_COMPANY.capital} — SIRET ${LEGAL_COMPANY.siret} — ${LEGAL_COMPANY.rcs} — Code APE : 82.99Z — TVA ${LEGAL_COMPANY.tva}`
+    `${LEGAL_COMPANY.name} - ${LEGAL_COMPANY.legalForm} au capital de ${LEGAL_COMPANY.capital} - SIRET ${LEGAL_COMPANY.siret} - ${LEGAL_COMPANY.rcs} - Code APE : 82.99Z - TVA ${LEGAL_COMPANY.tva}`
   doc.setFont("helvetica", "normal")
   doc.setFontSize(7)
   rgb(doc, PDF_COLORS.muted)

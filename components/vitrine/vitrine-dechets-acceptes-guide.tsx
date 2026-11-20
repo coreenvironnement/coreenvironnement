@@ -312,11 +312,11 @@ export function VitrineDechetsAcceptesGuide() {
                 <div className="mt-6 grid max-w-2xl grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
                   <DechetsAcceptesLottie
                     src={DECHETS_ACCEPTES_PACK_LOTTIE.triDechets}
-                    label="Tri des déchets — illustration animée"
+                    label="Tri des déchets - illustration animée"
                   />
                   <DechetsAcceptesLottie
                     src={DECHETS_ACCEPTES_PACK_LOTTIE.chargementBenne}
-                    label="Chargement conforme — illustration animée"
+                    label="Chargement conforme - illustration animée"
                   />
                 </div>
 
@@ -324,7 +324,7 @@ export function VitrineDechetsAcceptesGuide() {
                   {DECHETS_ACCEPTES_CHARGEMENT_STEPS.map((step, index) => (
                     <li key={step.title} className="rounded-[var(--radius-card)] border border-brand-border bg-brand-bg-alt px-4 py-4 sm:px-5">
                       <p className="text-sm font-semibold text-brand-navy">
-                        Étape {index + 1} — {step.title}
+                        Étape {index + 1} - {step.title}
                       </p>
                       <p className="mt-2 text-sm leading-relaxed text-brand-muted">{step.text}</p>
                     </li>

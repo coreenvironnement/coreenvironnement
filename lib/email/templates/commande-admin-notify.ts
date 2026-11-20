@@ -26,9 +26,9 @@ export function buildCommandeAdminNotifyEmail(data: CommandeAdminNotifyData) {
     "<ul>",
     `<li><strong>Référence :</strong> ${escapeHtml(data.reference)}</li>`,
     data.prestationLabel ? `<li><strong>Benne :</strong> ${escapeHtml(data.prestationLabel)}</li>` : "",
-    `<li><strong>Client :</strong> ${escapeHtml(data.contactNom ?? "—")}</li>`,
-    `<li><strong>E-mail :</strong> ${escapeHtml(data.contactEmail ?? "—")}</li>`,
-    `<li><strong>Téléphone :</strong> ${escapeHtml(data.contactTelephone ?? "—")}</li>`,
+    `<li><strong>Client :</strong> ${escapeHtml(data.contactNom ?? "-")}</li>`,
+    `<li><strong>E-mail :</strong> ${escapeHtml(data.contactEmail ?? "-")}</li>`,
+    `<li><strong>Téléphone :</strong> ${escapeHtml(data.contactTelephone ?? "-")}</li>`,
     `<li><strong>Adresse :</strong> ${escapeHtml(data.adresseComplete)}</li>`,
     data.dateLivraison
       ? `<li><strong>Livraison :</strong> ${escapeHtml(formatDateFr(data.dateLivraison))}</li>`
@@ -45,7 +45,7 @@ export function buildCommandeAdminNotifyEmail(data: CommandeAdminNotifyData) {
     "Nouvelle commande payée.",
     `Référence : ${data.reference}`,
     data.prestationLabel ? `Benne : ${data.prestationLabel}` : "",
-    `Client : ${data.contactNom ?? "—"}`,
+    `Client : ${data.contactNom ?? "-"}`,
     `Adresse : ${data.adresseComplete}`,
     breakdown ? `TTC : ${formatEuro(breakdown.ttc)}` : "",
     "",
@@ -55,7 +55,7 @@ export function buildCommandeAdminNotifyEmail(data: CommandeAdminNotifyData) {
     .join("\n")
 
   return {
-    subject: `Nouvelle commande CORE Environnement — ${data.reference}`,
+    subject: `Nouvelle commande CORE Environnement - ${data.reference}`,
     html: emailLayout(lines.join("\n")),
     text,
   }

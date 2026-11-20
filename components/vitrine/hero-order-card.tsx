@@ -138,7 +138,7 @@ export function HeroOrderCard({
         <p
           className={cn(
             ORDER_FIELD_SECTION_LABEL,
-            "text-[15px] max-lg:text-center lg:text-left sm:text-[15px]"
+            "text-center text-[15px] sm:text-[15px]"
           )}
         >
           {isPro ? "Où se trouve votre chantier ?" : "Où faut-il livrer la benne ?"}
@@ -165,7 +165,7 @@ export function HeroOrderCard({
         {addressError ? (
           <p
             id="hero-order-address-error"
-            className="text-xs font-medium text-amber-800 max-lg:text-center lg:text-left"
+            className="text-center text-xs font-medium text-amber-800"
             role="alert"
           >
             {addressError}
@@ -173,7 +173,7 @@ export function HeroOrderCard({
         ) : (
           <p
             id="hero-order-address-hint"
-            className="text-[12px] leading-snug text-brand-muted max-lg:text-center lg:text-left sm:text-[13px]"
+            className="text-center text-[12px] leading-snug text-brand-muted sm:text-[13px]"
           >
             {isPro
               ? "Indiquez votre adresse pour afficher bennes et tarifs HT de votre secteur."
@@ -184,24 +184,25 @@ export function HeroOrderCard({
 
       {isPro ? (
         <div
-          className={cn(
-            "hero-order-card__trust-badges flex w-full max-lg:flex-nowrap items-center justify-center gap-2 sm:gap-3 lg:flex-wrap lg:justify-start",
-            "max-lg:max-w-full max-lg:gap-2 max-lg:rounded-full max-lg:border max-lg:border-brand-navy/10 max-lg:bg-white/75 max-lg:px-3 max-lg:py-1.5 max-lg:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_4px_14px_-8px_rgb(14_32_16/0.2)] max-lg:backdrop-blur-md"
-          )}
+          className="hero-order-card__trust-badges flex w-full max-w-full flex-nowrap items-center justify-center gap-2 rounded-full border border-brand-navy/[0.08] bg-white/50 px-2.5 py-1 text-[11px] shadow-[0_1px_2px_rgb(14_32_16/0.035)] sm:gap-2.5 sm:px-3 lg:w-fit lg:justify-start"
+          role="group"
+          aria-label="Réassurance : avis Google et traçabilité Trackdéchets"
         >
           <GoogleRatingBadge
             variant="card"
             compact
-            className="max-lg:min-h-0 max-lg:shrink max-lg:justify-center"
+            embedded
+            className="min-h-0 min-w-0 shrink justify-center"
           />
           <span
-            className="hero-order-card__trust-sep hidden h-[1.125rem] w-px shrink-0 bg-brand-navy/15 opacity-45 max-lg:block"
+            className="hero-order-card__trust-sep h-3 w-px shrink-0 bg-brand-navy/10"
             aria-hidden
           />
           <TrackdechetsOfficialBadge
             variant="card"
             compact
-            className="max-lg:min-h-0 max-lg:shrink max-lg:justify-center"
+            embedded
+            className="min-h-0 min-w-0 shrink justify-center"
           />
         </div>
       ) : null}

@@ -50,7 +50,7 @@ export function buildCommandeConfirmationEmail(data: CommandeConfirmationData) {
 
   const htmlBody = [
     `<p style="margin:0 0 16px;font-size:16px">${escapeHtml(greeting)}</p>`,
-    `<p style="margin:0 0 14px">Nous avons bien reçu votre <strong>paiement</strong>. Votre commande de benne <strong>CORE Environnement</strong> est enregistrée — merci pour votre confiance.</p>`,
+    `<p style="margin:0 0 14px">Nous avons bien reçu votre <strong>paiement</strong>. Votre commande de benne <strong>CORE Environnement</strong> est enregistrée - merci pour votre confiance.</p>`,
     recapLines.length
       ? emailInset(`<p style="margin:0 0 10px;font-weight:600;color:#172033">Récapitulatif</p><ul style="margin:0;padding:0 0 0 18px">${recapLines.join("")}</ul>`)
       : "",
@@ -86,9 +86,9 @@ export function buildCommandeConfirmationEmail(data: CommandeConfirmationData) {
   ].filter(Boolean)
 
   return {
-    subject: "Paiement reçu — votre commande benne CORE Environnement",
+    subject: "Paiement reçu - votre commande benne CORE Environnement",
     html: emailLayout(htmlBody, {
-      preheader: "Paiement confirmé — nous vous recontactons très vite.",
+      preheader: "Paiement confirmé - nous vous recontactons très vite.",
     }),
     text: textLines.join("\n"),
   }

@@ -31,12 +31,12 @@ function MobileBarRasterIcon({
   )
 }
 
-/** Cube isométrique + repères — action Estimer */
+/** Cube isométrique + repères - action Estimer */
 export function MobileBarEstimateIcon({ className }: MobileBarIconProps) {
   return <MobileBarRasterIcon src={MOBILE_BAR_ICON_SRC.estimer} className={className} />
 }
 
-/** Benne de chantier — action Commander (blanc sur CTA vert) */
+/** Benne de chantier - action Commander (blanc sur CTA vert) */
 export function MobileBarCommanderIcon({ className }: MobileBarIconProps) {
   return (
     <MobileBarRasterIcon
@@ -47,12 +47,12 @@ export function MobileBarCommanderIcon({ className }: MobileBarIconProps) {
   )
 }
 
-/** Combiné + onde — action Appeler */
+/** Combiné + onde - action Appeler */
 export function MobileBarPhoneIcon({ className }: MobileBarIconProps) {
   return <MobileBarRasterIcon src={MOBILE_BAR_ICON_SRC.appeler} className={className} />
 }
 
-/** Profil utilisateur — Mon compte */
+/** Profil utilisateur - Mon compte */
 export function MobileBarAccountIcon({ className }: MobileBarIconProps) {
   return <MobileBarRasterIcon src={MOBILE_BAR_ICON_SRC.compte} className={className} />
 }

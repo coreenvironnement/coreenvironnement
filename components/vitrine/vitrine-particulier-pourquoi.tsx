@@ -26,7 +26,7 @@ export function VitrineParticulierPourquoi() {
           titleId="pourquoi-core-title"
         />
 
-        <ul className="pourquoi-core__grid mx-auto mt-10 list-none space-y-4 p-0 sm:mt-12 lg:mt-14 lg:grid lg:max-w-5xl lg:grid-cols-3 lg:gap-5 lg:space-y-0 xl:gap-6">
+        <ul className="pourquoi-core__grid mx-auto mt-10 list-none space-y-4 p-0 sm:mt-12 lg:mt-14 lg:grid lg:grid-cols-3 lg:gap-5 lg:space-y-0 xl:gap-6">
           {pourquoi.cartes.map((carte) => (
             <li key={carte.id} className="h-full">
               <article className="pourquoi-core-card card-vitrine h-full">

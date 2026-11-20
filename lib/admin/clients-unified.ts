@@ -41,7 +41,7 @@ export async function loadUnifiedClients(
       id: c.id,
       kind: "professionnel",
       label: c.raison_sociale ?? "Compte pro",
-      email: c.contact_email ?? "—",
+      email: c.contact_email ?? "-",
       phone: c.contact_telephone?.trim() || null,
       siret: c.siret ?? null,
       chantiersCount: 0,

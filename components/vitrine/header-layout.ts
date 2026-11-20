@@ -1,6 +1,6 @@
 /**
  * Layout du header vitrine compact (module sans "use client" : importable depuis
- * les composants serveur — guides, article).
+ * les composants serveur - guides, article).
  *
  * La hauteur réelle est portée par `--vitrine-header-height` (app/vitrine.css) :
  * ≈ 57px mobile / ≈ 64.6px desktop. Tout offset doit en dériver.
@@ -16,7 +16,7 @@ export const VITRINE_HEADER_CONTENT_OFFSET_CLASS =
 
 /**
  * VitrinePublicShell (login, inscription, /pro…) : le `main` compense déjà le header
- * fixe ; les sections auth ajoutent leur propre `pt-*` — éviter le double vide sur mobile.
+ * fixe ; les sections auth ajoutent leur propre `pt-*` - éviter le double vide sur mobile.
  */
 export const VITRINE_HEADER_AUTH_OFFSET_CLASS =
   "pt-[var(--vitrine-header-height)] sm:pt-[calc(var(--vitrine-header-height)+0.75rem)] lg:pt-[calc(var(--vitrine-header-height)+1.25rem)]"

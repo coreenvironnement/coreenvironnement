@@ -40,7 +40,7 @@ type EstimatorMode = "regular" | "irregular" | "bags"
 
 const VOLUME_INTENT_KNOWN = {
   src: SITE_IMAGES.tunnel.benneGravatsVue,
-  alt: "Benne de location verte — choisir directement la capacité en m³",
+  alt: "Benne de location verte - choisir directement la capacité en m³",
 } as const
 
 const VOLUME_INTENT_GUIDE = {

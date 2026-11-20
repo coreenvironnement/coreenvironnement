@@ -1,5 +1,5 @@
 /**
- * Référentiels métier — source : cahier des charges client.
+ * Référentiels métier - source : cahier des charges client.
  * Utilisés par l'espace client, l'admin et le formulaire de commande.
  */
 

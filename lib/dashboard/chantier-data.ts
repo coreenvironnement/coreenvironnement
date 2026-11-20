@@ -210,10 +210,10 @@ export async function loadChantierInterventions(
       numero: row.numero,
       dateDemande: row.date_demande,
       typeLabel:
-        (row.types_intervention as unknown as { label: string } | null)?.label ?? "—",
+        (row.types_intervention as unknown as { label: string } | null)?.label ?? "-",
       contenantLabel:
-        (row.types_contenants as unknown as { label: string } | null)?.label ?? "—",
-      dechetNom: (row.dechets_types as unknown as { nom: string } | null)?.nom ?? "—",
+        (row.types_contenants as unknown as { label: string } | null)?.label ?? "-",
+      dechetNom: (row.dechets_types as unknown as { nom: string } | null)?.nom ?? "-",
       dateSouhaitee: row.date_souhaitee,
       planifieeLe: row.planifiee_le as string | null,
       statut: row.statut,

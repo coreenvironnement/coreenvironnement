@@ -1,5 +1,5 @@
 /**
- * Mentions légales — informations d'identification de CORE ENVIRONNEMENT.
+ * Mentions légales - informations d'identification de CORE ENVIRONNEMENT.
  */
 
 import { SITE_PHONE_DISPLAY } from "@/lib/site"
@@ -14,7 +14,7 @@ export const LEGAL_COMPANY = {
   rcsNote: "inscrite au greffe de Bobigny le 23/02/2026",
   tva: "FR83101465839",
   capital: "1 000,00 €",
-  naf: "82.99Z — Autres activités de soutien aux entreprises n.c.a.",
+  naf: "82.99Z - Autres activités de soutien aux entreprises n.c.a.",
   director: "le président de CORE ENVIRONNEMENT",
   email: "contact@coreenvironnement.fr",
   phone: SITE_PHONE_DISPLAY,
@@ -53,7 +53,7 @@ export const mentionsLegalesSections: readonly LegalSection[] = [
       `Capital social : ${LEGAL_COMPANY.capital}.`,
       `Code NAF / APE : ${LEGAL_COMPANY.naf}`,
       `Directeur de la publication : ${LEGAL_COMPANY.director}.`,
-      `Contact : ${LEGAL_COMPANY.email} — ${LEGAL_COMPANY.phone}.`,
+      `Contact : ${LEGAL_COMPANY.email} - ${LEGAL_COMPANY.phone}.`,
     ],
   },
   {
@@ -86,7 +86,7 @@ export const mentionsLegalesSections: readonly LegalSection[] = [
   },
 ]
 
-/** Conditions Générales de Vente officielles — texte fourni par le client, sans modification de fond. */
+/** Conditions Générales de Vente officielles - texte fourni par le client, sans modification de fond. */
 export const cgvSections: readonly LegalSection[] = [
   {
     title: "ARTICLE\u00A01 – IDENTIFICATION DE LA SOCIÉTÉ",
@@ -259,8 +259,8 @@ export const politiqueConfidentialiteSections = [
     title: "Responsable du traitement",
     paragraphs: [
       `${LEGAL_COMPANY.name}, ${LEGAL_COMPANY.legalForm}, ${LEGAL_COMPANY.address}.`,
-      `SIRET : ${LEGAL_COMPANY.siret} — N° TVA : ${LEGAL_COMPANY.tva}.`,
-      `Contact données personnelles : ${LEGAL_COMPANY.email} — ${LEGAL_COMPANY.phone}.`,
+      `SIRET : ${LEGAL_COMPANY.siret} - N° TVA : ${LEGAL_COMPANY.tva}.`,
+      `Contact données personnelles : ${LEGAL_COMPANY.email} - ${LEGAL_COMPANY.phone}.`,
     ],
   },
   {

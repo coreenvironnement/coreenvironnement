@@ -50,7 +50,7 @@ export function EspaceCompteView({
 
       {subscriptionBanner === "success" ? (
         <p className="rounded-xl border border-[#35A238]/30 bg-[#ECF4E9] px-3 py-2 text-sm">
-          Paiement reçu — activation en cours.
+          Paiement reçu - activation en cours.
         </p>
       ) : subscriptionBanner === "cancelled" ? (
         <p className="rounded-xl border border-brand-navy/10 bg-white px-3 py-2 text-sm text-muted-foreground">

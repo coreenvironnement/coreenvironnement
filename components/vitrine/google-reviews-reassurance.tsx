@@ -41,7 +41,7 @@ export function GoogleReviewsReassurance({ className }: GoogleReviewsReassurance
               {SITE_GOOGLE_RATING}/5
             </span>
             <span className="text-brand-muted" aria-hidden>
-              —
+              -
             </span>
             <span className="text-brand-text">
               {SITE_GOOGLE_REVIEW_COUNT} avis clients Google

@@ -55,7 +55,7 @@ function CreneauCell({ row }: { row: AdminUnifiedRow }) {
   }
   return (
     <p className="text-muted-foreground">
-      {souhaitee ? `Souhaitée ${souhaitee}` : "—"}
+      {souhaitee ? `Souhaitée ${souhaitee}` : "-"}
     </p>
   )
 }

@@ -32,7 +32,7 @@ export function AdminClientPhoneCell({ phone }: { phone: string | null }) {
 
 export function AdminClientEmailCell({ email }: { email: string }) {
   const value = email.trim()
-  if (!value || value === "—") {
+  if (!value || value === "-") {
     return <span className="text-xs text-muted-foreground">Non renseigné</span>
   }
 

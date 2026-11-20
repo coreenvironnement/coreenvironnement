@@ -42,7 +42,7 @@ export function CompteProSeatsPanel({ seats, canManage, ownerEmail }: Props) {
   function activate(id: string) {
     startTransition(async () => {
       const result = await activateCompteProSeat(id)
-      setMessage("ok" in result ? "Utilisateur activé — facturation mise à jour." : result.error)
+      setMessage("ok" in result ? "Utilisateur activé - facturation mise à jour." : result.error)
     })
   }
 

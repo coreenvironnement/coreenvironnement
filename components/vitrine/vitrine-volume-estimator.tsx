@@ -19,7 +19,7 @@ export function VitrineVolumeEstimator({
   launchId = 0,
 }: {
   compactTop?: boolean
-  /** Incrémenté par `openVolumeEstimator` — enchaîne vers l’estimateur si le déchet est déjà choisi. */
+  /** Incrémenté par `openVolumeEstimator` - enchaîne vers l’estimateur si le déchet est déjà choisi. */
   launchId?: number
 }) {
   const { openOrder, patchDraft, draft } = useVitrineOrder()
@@ -41,7 +41,7 @@ export function VitrineVolumeEstimator({
   useEffect(() => {
     if (launchId === 0) return
     beginEstimate(particulierWasteId)
-    // Seulement quand openVolumeEstimator incrémente launchId — pas au retour (setFamily(null)).
+    // Seulement quand openVolumeEstimator incrémente launchId - pas au retour (setFamily(null)).
   }, [launchId])
 
   const handleContinueOrder = (

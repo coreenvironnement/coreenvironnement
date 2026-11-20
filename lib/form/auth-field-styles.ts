@@ -9,7 +9,7 @@ export const espaceFieldLabelClass = "text-sm font-medium text-brand-navy"
 /** Texte d’aide sous un champ espace profil. */
 export const espaceFieldHintClass = "text-xs leading-snug text-brand-muted"
 
-/** Champs profil espace (`.espace-profil-form` dans vitrine.css) — h-11, focus vert. */
+/** Champs profil espace (`.espace-profil-form` dans vitrine.css) - h-11, focus vert. */
 export const espaceProfilInputClass = cn(authFieldInputClass)
 
 /** E-mail ou identifiant en lecture seule (profil espace). */

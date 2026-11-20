@@ -41,7 +41,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.75,
     },
-    // /pro : parcours compte / onboarding — retiré du sitemap (toujours crawlable, pas de noindex).
+    // /pro : parcours compte / onboarding - retiré du sitemap (toujours crawlable, pas de noindex).
     {
       url: `${base}/professionnels`,
       changeFrequency: "monthly",

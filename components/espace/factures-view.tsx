@@ -36,7 +36,7 @@ export type FactureRow = {
 }
 
 function formatEuro(ht: number | null) {
-  if (ht == null) return "—"
+  if (ht == null) return "-"
   return new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency: "EUR",
@@ -55,11 +55,11 @@ function paymentHint(row: FactureRow): string {
   }
   switch (row.payment_status) {
     case "waived":
-      return "Règlement sur facture — échéance selon vos conditions pro."
+      return "Règlement sur facture - échéance selon vos conditions pro."
     case "pending":
       return "En attente de règlement."
     case "paid":
-      return "Paiement reçu — facture après livraison de la benne."
+      return "Paiement reçu - facture après livraison de la benne."
     default:
       return paymentStatusLabel(row.payment_status)
   }

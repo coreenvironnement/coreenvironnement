@@ -18,13 +18,13 @@ function parseIsoDate(value: string): Date | null {
 }
 
 export function formatDateFr(value: string | null | undefined): string {
-  if (!value) return "—"
+  if (!value) return "-"
   const date = parseIsoDate(value)
-  if (!date) return "—"
+  if (!date) return "-"
   return dateFormatter.format(date)
 }
 
-/** Affichage tunnel commande — ex. « mer. 29 oct. 2026 » */
+/** Affichage tunnel commande - ex. « mer. 29 oct. 2026 » */
 export function formatOrderDatePicker(value: string | null | undefined): string {
   if (!value) return ""
   const date = parseIsoDate(value)

@@ -62,7 +62,7 @@ export function buildDemandeProAdminEmail(data: PreparedProfessionalBenneRequest
     .join("\n")
 
   return {
-    subject: `Nouvelle demande professionnelle — ${data.companyName} — ${data.benneVolume}`,
+    subject: `Nouvelle demande professionnelle - ${data.companyName} - ${data.benneVolume}`,
     html: emailLayout(lines.join("\n")),
     text,
   }

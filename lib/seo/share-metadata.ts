@@ -7,7 +7,7 @@ export const SHARE_IMAGE_HEIGHT = 630
 export const SHARE_IMAGE_TYPE = "image/jpeg"
 
 export const DEFAULT_SHARE_IMAGE_ALT =
-  "Location de benne en Île-de-France — CORE ENVIRONNEMENT"
+  "Location de benne en Île-de-France - CORE ENVIRONNEMENT"
 
 export function getShareImageUrl() {
   return `${getSiteUrl()}${SHARE_IMAGE_PATH}`

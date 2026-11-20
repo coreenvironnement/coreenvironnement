@@ -279,7 +279,7 @@ export default async function AdminChantierDetailPage({
                 defaultValue={chantier.prestataire_id ?? ""}
                 className="h-8 w-full rounded-lg border border-input bg-transparent px-2 text-sm"
               >
-                <option value="">— Aucun —</option>
+                <option value="">- Aucun -</option>
                 {prestataires?.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.nom}
@@ -380,7 +380,7 @@ export default async function AdminChantierDetailPage({
                 <tbody>
                   {membres.map((m) => {
                     const profile = m.profile_id ? profilesById[m.profile_id] : null
-                    const email = profile?.email ?? m.invited_email ?? "—"
+                    const email = profile?.email ?? m.invited_email ?? "-"
                     const updateBound = updateChantierMemberForm.bind(null, m.id, id)
                     const removeBound = removeChantierMemberForm.bind(null, m.id, id)
                     return (
@@ -389,10 +389,10 @@ export default async function AdminChantierDetailPage({
                           <details className="group">
                             <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
                               <div className="grid grid-cols-[repeat(6,minmax(0,1fr))_auto] gap-2 py-3 pr-2">
-                                <span>{m.contact_prenom ?? "—"}</span>
-                                <span>{m.contact_nom ?? "—"}</span>
-                                <span>{m.contact_fonction ?? "—"}</span>
-                                <span>{m.contact_entreprise ?? "—"}</span>
+                                <span>{m.contact_prenom ?? "-"}</span>
+                                <span>{m.contact_nom ?? "-"}</span>
+                                <span>{m.contact_fonction ?? "-"}</span>
+                                <span>{m.contact_entreprise ?? "-"}</span>
                                 <span className="font-medium text-brand-navy">{email}</span>
                                 <span className="text-xs">
                                   {profile ? (
@@ -492,7 +492,7 @@ export default async function AdminChantierDetailPage({
                 required
                 className="h-8 w-full rounded-lg border border-input bg-transparent px-2 text-sm"
               >
-                <option value="">— Choisir —</option>
+                <option value="">- Choisir -</option>
                 {typesDechets?.map((d) => (
                   <option key={d.id} value={d.id}>
                     {d.nom}
@@ -556,7 +556,7 @@ export default async function AdminChantierDetailPage({
                 required
                 className="h-8 w-full rounded-lg border border-input px-2 text-sm"
               >
-                <option value="">—</option>
+                <option value="">-</option>
                 {typesIntervention?.map((t) => (
                   <option key={t.id} value={t.id}>
                     {t.label}
@@ -571,7 +571,7 @@ export default async function AdminChantierDetailPage({
                 required
                 className="h-8 w-full rounded-lg border border-input px-2 text-sm"
               >
-                <option value="">—</option>
+                <option value="">-</option>
                 {typesContenants?.map((t) => (
                   <option key={t.id} value={t.id}>
                     {t.label}
@@ -586,7 +586,7 @@ export default async function AdminChantierDetailPage({
                 required
                 className="h-8 w-full rounded-lg border border-input px-2 text-sm"
               >
-                <option value="">—</option>
+                <option value="">-</option>
                 {typesDechets?.map((d) => (
                   <option key={d.id} value={d.id}>
                     {d.nom}

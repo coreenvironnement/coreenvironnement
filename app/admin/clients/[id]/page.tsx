@@ -39,10 +39,10 @@ export default async function AdminClientFichePage({ params, searchParams }: Pag
             <CardTitle>Facturation & contact</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
-            <p>SIRET : {compte.siret ?? "—"}</p>
-            <p>Contact : {compte.contact_nom ?? "—"}</p>
+            <p>SIRET : {compte.siret ?? "-"}</p>
+            <p>Contact : {compte.contact_nom ?? "-"}</p>
             <p>E-mail : {compte.contact_email}</p>
-            <p>Téléphone : {compte.contact_telephone ?? "—"}</p>
+            <p>Téléphone : {compte.contact_telephone ?? "-"}</p>
             <p>Statut dossier : {statutCompteProLabel(compte.status)}</p>
             <p>Créé le : {formatDateFr(compte.created_at.slice(0, 10))}</p>
           </CardContent>
@@ -79,7 +79,7 @@ export default async function AdminClientFichePage({ params, searchParams }: Pag
   if (!profile && !commandes?.length) notFound()
 
   const title = profile?.full_name ?? commandes?.[0]?.contact_nom ?? "Client particulier"
-  const email = profile?.email ?? "—"
+  const email = profile?.email ?? "-"
 
   return (
     <ClientFicheShell title={title} subtitle="Client particulier">
@@ -107,7 +107,7 @@ export default async function AdminClientFichePage({ params, searchParams }: Pag
                     href={`/admin/interventions/${c.id}`}
                     className="text-primary hover:underline"
                   >
-                    {c.prestation_label ?? "Commande"} — {formatDateFr(c.date_creation.slice(0, 10))}
+                    {c.prestation_label ?? "Commande"} - {formatDateFr(c.date_creation.slice(0, 10))}
                   </Link>
                 </li>
               ))}

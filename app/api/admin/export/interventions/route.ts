@@ -36,7 +36,7 @@ export async function GET(request: Request) {
       value: (r) =>
         r.kind === "commande" && r.commande?.devis_sent_at
           ? `Devis envoyé (${formatDateFr(r.commande.devis_sent_at)})`
-          : "—",
+          : "-",
     },
     { header: "Date", value: (r) => r.dateSort.slice(0, 10) },
   ])

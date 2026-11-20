@@ -231,7 +231,7 @@ export function VitrineParticulierConseils() {
             <a
               href={SITE_PHONE_HREF}
               className="cp-acces-encart__advisor"
-              aria-label={`${conseils.conseiller.cta} — ${conseils.conseiller.texte}`}
+              aria-label={`${conseils.conseiller.cta} - ${conseils.conseiller.texte}`}
             >
               <AdvisorChatIcon className="size-5 shrink-0 text-brand-green" />
               {conseils.conseiller.cta}

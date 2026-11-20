@@ -77,7 +77,7 @@ export function AdminInterventionsList({ rows }: Props) {
                   <p className="text-xs text-muted-foreground">{audienceCommandeLabel(r.audience)}</p>
                 ) : null}
               </td>
-              <td className="px-4 py-3 text-muted-foreground">{r.typeLabel ?? "—"}</td>
+              <td className="px-4 py-3 text-muted-foreground">{r.typeLabel ?? "-"}</td>
               <td className="px-4 py-3">
                 <span
                   className={cn(
@@ -101,7 +101,7 @@ export function AdminInterventionsList({ rows }: Props) {
                     Devis envoyé
                   </span>
                 ) : (
-                  <span className="text-muted-foreground">—</span>
+                  <span className="text-muted-foreground">-</span>
                 )}
               </td>
               <td className="px-4 py-3 whitespace-nowrap">{formatDateFr(r.dateSort.slice(0, 10))}</td>

@@ -47,7 +47,7 @@ export function buildCompteProReviewEmail(data: CompteProReviewData) {
     ].join("\n")
 
     return {
-      subject: "Compte professionnel validé — CORE ENVIRONNEMENT",
+      subject: "Compte professionnel validé - CORE ENVIRONNEMENT",
       html,
       text,
     }
@@ -80,7 +80,7 @@ export function buildCompteProReviewEmail(data: CompteProReviewData) {
     .join("\n")
 
   return {
-    subject: "Compte professionnel — décision sur votre dossier",
+    subject: "Compte professionnel - décision sur votre dossier",
     html,
     text,
   }

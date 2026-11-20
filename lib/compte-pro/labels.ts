@@ -13,6 +13,6 @@ export function statutCompteProLabel(code: string): string {
 }
 
 export function paymentModeLabel(code: string | null): string {
-  if (!code) return "—"
+  if (!code) return "-"
   return MODES_PAIEMENT_PRO.find((m) => m.code === code)?.label ?? code
 }

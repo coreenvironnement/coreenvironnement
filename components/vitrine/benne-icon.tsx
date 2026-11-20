@@ -4,7 +4,7 @@ type BenneIconProps = {
   className?: string
 }
 
-/** Icône CTA mobile header — commander une benne */
+/** Icône CTA mobile header - commander une benne */
 export function BenneIcon({ className }: BenneIconProps) {
   return (
     <svg

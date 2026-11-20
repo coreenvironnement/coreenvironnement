@@ -25,7 +25,7 @@ export function isStripeConfigured(): boolean {
   return Boolean(process.env.STRIPE_SECRET_KEY && hasStripeBillingConfig())
 }
 
-/** Paiement one-shot (commande benne particulier) — price_data dynamique, pas de Price ID requis. */
+/** Paiement one-shot (commande benne particulier) - price_data dynamique, pas de Price ID requis. */
 export function isStripePaymentConfigured(): boolean {
   return Boolean(process.env.STRIPE_SECRET_KEY)
 }

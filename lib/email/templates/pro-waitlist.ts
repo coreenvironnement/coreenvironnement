@@ -37,7 +37,7 @@ export function buildProWaitlistEmail(data: ProWaitlistData) {
   ].join("\n")
 
   return {
-    subject: `Demande compte pro — ${data.societe}`,
+    subject: `Demande compte pro - ${data.societe}`,
     html: emailLayout(lines.join("\n")),
     text,
   }

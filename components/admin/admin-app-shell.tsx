@@ -132,7 +132,7 @@ function AdminBrandHeader({ onNavigate }: { onNavigate?: () => void }) {
         prefetch
         onClick={onNavigate}
         className="flex items-center gap-2.5"
-        aria-label="CORE Environnement — administration"
+        aria-label="CORE Environnement - administration"
       >
         <span className="relative block h-8 w-[118px] shrink-0">
           <Image

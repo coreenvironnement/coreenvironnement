@@ -22,7 +22,7 @@ const HEADER_LOGO_ON_DARK = {
 type VitrineLogoProps = {
   className?: string
   priority?: boolean
-  /** Header vitrine — logo lisible sans alourdir la barre (~160–178 px) */
+  /** Header vitrine - logo lisible sans alourdir la barre (~160–178 px) */
   variant?: "default" | "header" | "footer" | "login"
   /** État hero : barre transparente (logo bleu, identique à la variante scrollée). */
   transparent?: boolean

@@ -47,7 +47,7 @@ export function buildDemandeProClientEmail(data: PreparedProfessionalBenneReques
     .join("\n")
 
   return {
-    subject: "Votre demande a bien été reçue — CORE Environnement",
+    subject: "Votre demande a bien été reçue - CORE Environnement",
     html: emailLayout(lines.join("\n")),
     text,
   }

@@ -4,7 +4,7 @@ type RecyclingCenterIconProps = {
   className?: string
 }
 
-/** Icône accès déchetteries professionnelles — services vitrine */
+/** Icône accès déchetteries professionnelles - services vitrine */
 export function RecyclingCenterIcon({ className }: RecyclingCenterIconProps) {
   return (
     <svg

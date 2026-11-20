@@ -95,7 +95,7 @@ export function emailLayout(
           </tr>
           <tr>
             <td align="center" style="padding:22px 8px 0;font-size:12px;line-height:1.5;color:${EMAIL_BRAND.muted}">
-              <p style="margin:0 0 6px"><strong style="color:${EMAIL_BRAND.navy}">CORE Environnement</strong> — Location de bennes en Île-de-France</p>
+              <p style="margin:0 0 6px"><strong style="color:${EMAIL_BRAND.navy}">CORE Environnement</strong> - Location de bennes en Île-de-France</p>
               <p style="margin:0"><a href="${escapeHtml(appUrl)}" style="color:${EMAIL_BRAND.green};text-decoration:none">${escapeHtml(appUrl.replace(/^https?:\/\//, ""))}</a></p>
             </td>
           </tr>

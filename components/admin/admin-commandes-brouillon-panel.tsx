@@ -121,7 +121,7 @@ export function AdminCommandesBrouillonPanel({
                     telephone={c.contact_telephone}
                   />
                   <p className="mt-2 text-sm text-brand-navy">
-                    {c.prestation_label ?? dechet?.nom ?? "—"}
+                    {c.prestation_label ?? dechet?.nom ?? "-"}
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <Link
@@ -224,7 +224,7 @@ export function AdminCommandesBrouillonPanel({
                     </p>
                   </td>
                   <td className="px-3 py-3">
-                    <p>{c.prestation_label ?? dechet?.nom ?? "—"}</p>
+                    <p>{c.prestation_label ?? dechet?.nom ?? "-"}</p>
                     <p className="text-xs text-muted-foreground">
                       {formatEuro(c.price_ht == null ? null : Number(c.price_ht))}
                     </p>

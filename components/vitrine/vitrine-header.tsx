@@ -72,7 +72,7 @@ const MOBILE_HEADER_TOUCH_CLASS =
 
 const MOBILE_HEADER_TOUCH_WIDTH_CLASS = "w-[calc(2.75rem*0.95)] shrink-0"
 
-/** Libellé compact (44 px) — équilibre avec le bouton menu ; le libellé complet reste en aria-label. */
+/** Libellé compact (44 px) - équilibre avec le bouton menu ; le libellé complet reste en aria-label. */
 function AudienceMobileHeaderLabel({ isProPage }: { isProPage: boolean }) {
   const lineClass =
     "w-full text-center text-[8px] font-semibold leading-[1.05] tracking-tight"
@@ -255,7 +255,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
               <div className="hidden min-w-0 flex-col items-center gap-0.5 lg:flex">
                 <Link
                   href={logoHref}
-                  aria-label="CORE ENVIRONNEMENT — Accueil"
+                  aria-label="CORE ENVIRONNEMENT - Accueil"
                   className="inline-flex shrink-0"
                   onClick={closeMenu}
                 >
@@ -275,7 +275,7 @@ export function VitrineHeader({ forceSolid = false }: { forceSolid?: boolean }) 
             <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center lg:hidden">
               <Link
                 href={logoHref}
-                aria-label="CORE ENVIRONNEMENT — Accueil"
+                aria-label="CORE ENVIRONNEMENT - Accueil"
                 className="pointer-events-auto shrink-0"
                 onClick={closeMenu}
               >

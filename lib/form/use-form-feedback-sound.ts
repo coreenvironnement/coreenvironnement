@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * Retours sonores formulaire — opt-in via `--form-sound-enabled: 1` (CSS) ou activation future.
+ * Retours sonores formulaire - opt-in via `--form-sound-enabled: 1` (CSS) ou activation future.
  * Fichiers audio non livrés : chargement paresseux et échec silencieux à brancher ici.
  */
 export function useFormFeedbackSound() {

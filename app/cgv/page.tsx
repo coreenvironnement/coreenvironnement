@@ -6,7 +6,7 @@ import { publicPageMetadata } from "@/lib/seo/public-page"
 
 export const metadata: Metadata = publicPageMetadata(
   "Conditions Générales de Vente",
-  "Conditions Générales de Vente de CORE ENVIRONNEMENT — location de bennes et gestion des déchets en Île-de-France.",
+  "Conditions Générales de Vente de CORE ENVIRONNEMENT - location de bennes et gestion des déchets en Île-de-France.",
   "/cgv",
 )
 

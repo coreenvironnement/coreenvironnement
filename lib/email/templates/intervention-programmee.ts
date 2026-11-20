@@ -10,8 +10,8 @@ export function interventionProgrammeeEmail(input: {
   const when = input.creneauLabel ?? input.date
   const dateLine = when ? ` pour le <strong>${when}</strong>` : ""
   const subject = input.report
-    ? `CORE — Intervention ${input.numero} reportée`
-    : `CORE — Intervention ${input.numero} planifiée`
+    ? `CORE - Intervention ${input.numero} reportée`
+    : `CORE - Intervention ${input.numero} planifiée`
   const lead = input.report
     ? `Votre intervention <strong>${input.numero}</strong> sur le chantier <strong>${input.chantierNom}</strong> est reportée${when ? "" : ""}.`
     : `Votre intervention <strong>${input.numero}</strong> sur le chantier <strong>${input.chantierNom}</strong> est planifiée.`
@@ -23,7 +23,7 @@ export function interventionProgrammeeEmail(input: {
       <p>L'équipe CORE Environnement reste à votre disposition pour tout complément.</p>
     `)
   const text = input.report
-    ? `Intervention ${input.numero} sur ${input.chantierNom} reportée${when ? ` — ${when}` : ""}.`
-    : `Intervention ${input.numero} sur ${input.chantierNom} planifiée${when ? ` — ${when}` : dateLine.replace(/<[^>]+>/g, "")}.`
+    ? `Intervention ${input.numero} sur ${input.chantierNom} reportée${when ? ` - ${when}` : ""}.`
+    : `Intervention ${input.numero} sur ${input.chantierNom} planifiée${when ? ` - ${when}` : dateLine.replace(/<[^>]+>/g, "")}.`
   return { subject, html, text }
 }

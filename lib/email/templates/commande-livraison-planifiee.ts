@@ -12,8 +12,8 @@ export function commandeLivraisonPlanifieeEmail(input: {
     : `Votre livraison <strong>${input.reference}</strong> est confirmée au créneau suivant :`
 
   const subject = input.report
-    ? `CORE — ${title} (${input.reference})`
-    : `CORE — ${title} (${input.reference})`
+    ? `CORE - ${title} (${input.reference})`
+    : `CORE - ${title} (${input.reference})`
 
   const adresseLine = input.adresse
     ? `<p>Adresse : <strong>${input.adresse}</strong></p>`
@@ -27,7 +27,7 @@ export function commandeLivraisonPlanifieeEmail(input: {
       <p>Vous pouvez suivre l'avancement depuis votre espace client CORE.</p>
     `)
 
-  const text = `${title} ${input.reference} — ${input.creneauLabel}${input.adresse ? ` — ${input.adresse}` : ""}.`
+  const text = `${title} ${input.reference} - ${input.creneauLabel}${input.adresse ? ` - ${input.adresse}` : ""}.`
 
   return { subject, html, text }
 }

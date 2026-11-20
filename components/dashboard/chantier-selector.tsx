@@ -36,7 +36,7 @@ export function ChantierSelector({ chantiers, selectedId }: Props) {
         onChange={(e) => onChange(e.target.value)}
         className="h-10 w-full max-w-md rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
       >
-        <option value="">— Sélectionner un chantier —</option>
+        <option value="">- Sélectionner un chantier -</option>
         {chantiers.map((c) => (
           <option key={c.id} value={c.id}>
             {c.nom}

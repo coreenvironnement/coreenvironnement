@@ -6,13 +6,13 @@ export const TRACKDECHETS_LOGO_ALT = "Logo Trackdéchets"
 
 export const SITE_IMAGES = {
   logo: {
-    /** Logo bleu/navy — header vitrine (hero transparent + barre scrollée). */
+    /** Logo bleu/navy - header vitrine (hero transparent + barre scrollée). */
     headerBrand: "/images/stickyheaderlogo.png",
-    /** Version claire — footer vitrine et fonds sombres. */
+    /** Version claire - footer vitrine et fonds sombres. */
     headerOnDark: "/images/core-environnement-logo-header-transparent.png",
   },
   brand: {
-    /** Signature officielle (Marianne + pisteurs), PNG transparent — FAQ Trackdéchets. */
+    /** Signature officielle (Marianne + pisteurs), PNG transparent - FAQ Trackdéchets. */
     trackdechetsLogo: "/images/trackdechets-logo-officiel.png",
   },
   hero: {
@@ -76,19 +76,19 @@ export const PRIX_LOCATION_BENNE_ARTICLE_IMAGE_ALT = {
 export const VITRINE_GUIDE_ARTICLE_IMAGE_SIZES = "(max-width: 768px) 100vw, 768px"
 
 const HERO_ALT_BASE =
-  "Camion CORE Environnement transportant une benne — illustration pour la location de benne en Île-de-France"
+  "Camion CORE Environnement transportant une benne - illustration pour la location de benne en Île-de-France"
 
 /** Alt hero : suffixe local uniquement sur pages locales (offre, pas la photo). */
 export function buildHeroImageAlt(localPage?: LocalPage): string {
   if (!localPage) return HERO_ALT_BASE
-  return `${HERO_ALT_BASE} — prestation ${geoPrepositionalPhrase(localPage)}`
+  return `${HERO_ALT_BASE} - prestation ${geoPrepositionalPhrase(localPage)}`
 }
 
 export const PARCOURS_STEP_IMAGE_ALT = {
   dechets: "Benne vide prête à recevoir vos déchets de chantier",
   volume: "Camion déposant une benne vide sur votre adresse",
   dateLieu: "Benne verte remplie de gravats sur le lieu de pose",
-  paiement: "Camion porte-benne chargé de gravats — enlèvement",
+  paiement: "Camion porte-benne chargé de gravats - enlèvement",
 } as const
 
 export function buildParcoursStepImageAlt(

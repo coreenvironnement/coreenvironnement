@@ -136,12 +136,12 @@ export async function AdminInterventionChantierFiche({
       ) : null}
       {ok === "planned" ? (
         <p className="rounded-lg border border-[#35A238]/30 bg-[#ECF4E9] px-4 py-3 text-sm text-brand-navy">
-          Intervention planifiée — e-mail envoyé aux contacts chantier.
+          Intervention planifiée - e-mail envoyé aux contacts chantier.
         </p>
       ) : null}
       {ok === "rescheduled" ? (
         <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
-          Intervention reportée — contacts notifiés.
+          Intervention reportée - contacts notifiés.
         </p>
       ) : null}
       {tonnageAlert ? (
@@ -171,14 +171,14 @@ export async function AdminInterventionChantierFiche({
           <CardContent className="space-y-1 text-sm">
             <p>
               Type :{" "}
-              {(intervention.types_intervention as { label: string } | null)?.label ?? "—"}
+              {(intervention.types_intervention as { label: string } | null)?.label ?? "-"}
             </p>
             <p>
               Contenant :{" "}
-              {(intervention.types_contenants as { label: string } | null)?.label ?? "—"}
+              {(intervention.types_contenants as { label: string } | null)?.label ?? "-"}
             </p>
             <p>
-              Déchet : {(intervention.dechets_types as { nom: string } | null)?.nom ?? "—"}
+              Déchet : {(intervention.dechets_types as { nom: string } | null)?.nom ?? "-"}
             </p>
             <p>Date demande : {formatDateFr(intervention.date_demande)}</p>
           </CardContent>
@@ -229,7 +229,7 @@ export async function AdminInterventionChantierFiche({
                 defaultValue={intervention.prestataire_id ?? ""}
                 className="h-9 w-full rounded-lg border border-input px-2 text-sm"
               >
-                <option value="">—</option>
+                <option value="">-</option>
                 {prestataires?.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.nom}

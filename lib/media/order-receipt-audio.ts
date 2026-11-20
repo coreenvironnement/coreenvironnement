@@ -1,4 +1,4 @@
-/** Fichiers audio confirmation commande — lazy-load uniquement (hors chemin LCP). */
+/** Fichiers audio confirmation commande - lazy-load uniquement (hors chemin LCP). */
 export const ORDER_RECEIPT_AUDIO = {
   thermal: {
     webm: "/audio/commande-receipt-thermal.webm",

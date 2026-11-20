@@ -5,7 +5,7 @@ import {
   getFeaturedCityPagesForDepartement,
 } from "@/lib/seo/local-pages"
 
-/** Communes phares sous le hero — accueil particulier. */
+/** Communes phares sous le hero - accueil particulier. */
 export const HOME_EARLY_LOCAL_SECTOR_LINKS: SeoLink[] = [
   { href: "/location-benne/75-paris", label: "Paris (75)" },
   { href: "/location-benne/meaux", label: "Meaux (77)" },
@@ -21,7 +21,7 @@ export const HOME_EARLY_ALL_COMMUNES_LINK: SeoLink = {
   label: "Voir toutes les communes desservies",
 }
 
-/** Ancre accueil — ouvre l’estimateur inline (section conseils). */
+/** Ancre accueil - ouvre l’estimateur inline (section conseils). */
 export const HOME_VOLUME_ESTIMATOR_HASH = "estimer-volume"
 
 export const HOME_EARLY_VOLUME_ESTIMATE_LINK: SeoLink = {
@@ -39,7 +39,7 @@ export const HOME_EARLY_DECHETS_GUIDE_LINK: SeoLink = {
   label: "Déchets acceptés",
 }
 
-/** Liste plate — hub /location-benne (filtre « toutes les communes » côté UI). */
+/** Liste plate - hub /location-benne (filtre « toutes les communes » côté UI). */
 export const HOME_EARLY_LOCAL_LINKS: SeoLink[] = [
   ...HOME_EARLY_LOCAL_SECTOR_LINKS,
   HOME_EARLY_ALL_COMMUNES_LINK,

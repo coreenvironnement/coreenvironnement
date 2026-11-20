@@ -41,7 +41,7 @@ export function buildPasswordSetupEmail(data: PasswordSetupEmailData) {
   ].join("\n")
 
   return {
-    subject: "Choisissez votre mot de passe — CORE Environnement",
+    subject: "Choisissez votre mot de passe - CORE Environnement",
     html: emailLayout(htmlBody, {
       preheader: "Accédez à votre espace client en quelques secondes.",
     }),

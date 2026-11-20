@@ -71,7 +71,7 @@ function enrichResumeContacts(
     const parts = enrich.fallbackContactName.trim().split(/\s+/)
     if (parts.length === 1) {
       contactFirstName = parts[0]
-      contactLastName = "—"
+      contactLastName = "-"
     } else {
       contactFirstName = parts[0]
       contactLastName = parts.slice(1).join(" ")

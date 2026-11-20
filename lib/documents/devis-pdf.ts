@@ -70,7 +70,7 @@ export function buildDevisPdfBytes(input: DevisPdfInput): Uint8Array {
   const breakdown = priceBreakdownFromHt(input.priceHt)
   const issued = formatDateFr(new Date().toISOString().slice(0, 10))
 
-  let y = drawDocumentTitleBar(doc, "Devis", "Location de benne — particulier")
+  let y = drawDocumentTitleBar(doc, "Devis", "Location de benne - particulier")
 
   y = drawMetaChips(doc, y, [
     { label: "N°", value: input.reference },

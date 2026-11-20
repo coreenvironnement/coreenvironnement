@@ -33,7 +33,7 @@ export async function loadParticulierClients(
       map.set(key, {
         key,
         profileId: c.client_id,
-        email: email || "—",
+        email: email || "-",
         nom: c.contact_nom,
         phone: c.contact_telephone?.trim() || null,
         commandeCount: isBrouillon ? 0 : 1,

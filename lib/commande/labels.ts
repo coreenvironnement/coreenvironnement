@@ -24,14 +24,14 @@ export function statutCommandeLabel(code: string): string {
 }
 
 export function paymentStatusLabel(code: string | null): string {
-  if (!code) return "—"
+  if (!code) return "-"
   return PAYMENT_STATUSES.find((s) => s.code === code)?.label ?? code
 }
 
 export function audienceCommandeLabel(code: string | null): string {
   if (code === "particulier") return "Particulier"
   if (code === "professionnel") return "Professionnel"
-  return "—"
+  return "-"
 }
 
 export function commandeDevisEnvoye(devisSentAt: string | null | undefined): boolean {

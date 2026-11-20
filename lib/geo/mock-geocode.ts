@@ -68,10 +68,10 @@ export function mockGeocodeAddress(raw: string): MockGeocodeHit {
     }
   }
 
-  /* Démo : un code postal 78 hors bulle très rare mais testable — utilise fallback proche ÎdF encore hors rayon strict si besoin */
+  /* Démo : un code postal 78 hors bulle très rare mais testable - utilise fallback proche ÎdF encore hors rayon strict si besoin */
   if (/^78\d{3}$/.test(q.replace(/\s/g, ""))) {
-    /* Mantes-la-Jolie ~25 km ligne droite depuis Élancourt — approx hors 20 selon axe */
-    return { lat: 48.9896, lng: 1.7097, label: `${q} — Yvelines` }
+    /* Mantes-la-Jolie ~25 km ligne droite depuis Élancourt - approx hors 20 selon axe */
+    return { lat: 48.9896, lng: 1.7097, label: `${q} - Yvelines` }
   }
 
   return {

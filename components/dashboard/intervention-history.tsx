@@ -58,7 +58,7 @@ export function InterventionHistoryTable({ rows }: Props) {
                     {formatDateFr(row.dateReelle)}
                   </td>
                   <td className="px-3 py-3 max-w-[200px] text-muted-foreground">
-                    {row.commentaire?.trim() ? row.commentaire : "—"}
+                    {row.commentaire?.trim() ? row.commentaire : "-"}
                   </td>
                   {DOC_TYPES.map((type) => {
                     const doc = docByType[type]
@@ -71,7 +71,7 @@ export function InterventionHistoryTable({ rows }: Props) {
                             fileName={doc.fileName}
                           />
                         ) : (
-                          <span className="text-xs text-muted-foreground">—</span>
+                          <span className="text-xs text-muted-foreground">-</span>
                         )}
                       </td>
                     )

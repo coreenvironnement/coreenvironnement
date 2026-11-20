@@ -1,5 +1,5 @@
 /**
- * Règle métier valorisation — réponse client (juillet 2026)
+ * Règle métier valorisation - réponse client (juillet 2026)
  */
 
 export const REGLE_VALORISATION = {
@@ -13,7 +13,7 @@ export const REGLE_VALORISATION = {
     "Chaque prestataire a un taux différent par typologie. Ces taux varient annuellement (généralement en fin d'année).",
 } as const
 
-/** Exemple tableau client 2026 — aligné migration 005 */
+/** Exemple tableau client 2026 - aligné migration 005 */
 export const EXEMPLE_TAUX_2026 = [
   {
     prestataire: "Paprec",

@@ -3,7 +3,7 @@ import type { LocalPage } from "@/lib/seo/local-copy"
 import { getLocalPageBySlug } from "@/lib/seo/local-pages"
 import { LONGTAIL_PAGES } from "@/lib/seo/longtail-pages"
 
-/** Lot 1 — gravats, DIB, enlèvement gravats (44 URLs catalogue). */
+/** Lot 1 - gravats, DIB, enlèvement gravats (44 URLs catalogue). */
 export const PRESTATION_MESH_LOT1_PREFIXES = [
   "gravats",
   "dib",

@@ -1,7 +1,7 @@
 import { SITE_IMAGES, benneVolumeImageAlt } from "@/lib/media/site-images"
 import { prestationById } from "@/lib/prestations"
 
-/** Visuels forfait — mapping par volume (aligné tunnel). */
+/** Visuels forfait - mapping par volume (aligné tunnel). */
 export const BENNE_VISUAL_BY_VOLUME: Record<number, string> = {
   8: SITE_IMAGES.benneByVolume[8],
   10: SITE_IMAGES.benneByVolume[10],

@@ -127,7 +127,7 @@ export async function loadAdminDashboardMetrics(
       id: c.id,
       kind: "commande",
       label: c.prestation_label ?? "Commande web",
-      client: c.contact_nom ?? c.contact_email ?? "—",
+      client: c.contact_nom ?? c.contact_email ?? "-",
       dateSort: c.date_creation,
       href: `/admin/interventions/${c.id}`,
     })
@@ -139,7 +139,7 @@ export async function loadAdminDashboardMetrics(
       id: i.id,
       kind: "intervention",
       label: i.numero,
-      client: chantier?.nom ?? "—",
+      client: chantier?.nom ?? "-",
       dateSort: i.date_demande,
       href: `/admin/interventions/${i.id}`,
     })
@@ -152,7 +152,7 @@ export async function loadAdminDashboardMetrics(
     return {
       id: i.id,
       numero: i.numero,
-      chantier: chantier?.nom ?? "—",
+      chantier: chantier?.nom ?? "-",
       datePrevue: i.date_souhaitee ?? i.date_reelle,
       href: `/admin/interventions/${i.id}`,
     }
