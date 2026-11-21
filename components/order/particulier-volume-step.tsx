@@ -509,10 +509,17 @@ export function ParticulierVolumeStep({
   const stepExit = embedded ? { opacity: 0 } : { opacity: 0, y: -6 }
 
   return (
-    <div className={cn(!embedded && "space-y-4")}>
+    <div
+      className={cn(
+        !embedded && "space-y-4",
+        embedded && "flex min-h-0 flex-1 flex-col"
+      )}
+    >
       <div
         className={cn(
-          embedded ? "order-tunnel-step__stack space-y-4" : "space-y-4",
+          embedded
+            ? "order-tunnel-step__stack flex min-h-0 flex-1 flex-col gap-4"
+            : "space-y-4",
           embedded &&
             isVolumeIntentChoice &&
             "order-tunnel-volume-intent-choice order-tunnel-volume-intent-choice--embedded"
