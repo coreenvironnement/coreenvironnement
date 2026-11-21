@@ -1,7 +1,7 @@
 "use client"
 
 import type { LucideIcon } from "lucide-react"
-import { BrickWall, ChevronDown, Hammer, Recycle } from "lucide-react"
+import { BrickWall, ChevronDown, Hammer, Recycle, TriangleAlert } from "lucide-react"
 
 import {
   Select,
@@ -17,12 +17,14 @@ const FAMILIES: BenneFamily[] = [
   "melange_dnd",
   "gravats_melanges",
   "gravats_propres",
+  "dechets_dangereux",
 ]
 
 const FAMILY_ICONS: Record<BenneFamily, LucideIcon> = {
   melange_dnd: Recycle,
   gravats_melanges: Hammer,
   gravats_propres: BrickWall,
+  dechets_dangereux: TriangleAlert,
 }
 
 /** Langage particulier → famille tarifaire (étape intention). */

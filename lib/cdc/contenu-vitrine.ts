@@ -162,27 +162,36 @@ export const pourquoiNousChoisir = [
 /** Section #engagements - page /professionnels (3 cartes + CTA devis). */
 export const professionnelsEngagementsSection = {
   eyebrow: "NOS ENGAGEMENTS",
-  titre: "Des engagements concrets pour vos chantiers.",
+  titre: "Vos contraintes de chantier, nos priorités.",
+  intro:
+    "Des réponses concrètes pour faciliter vos interventions au quotidien.",
   cartes: [
     {
-      id: "j1",
-      titre: "J+1",
-      titreAsterisque: true as const,
-      texte: "Intervention possible dès le lendemain",
+      id: "reactivite",
+      label: "RÉACTIVITÉ",
+      icon: "reactivite",
+      titre: "Une benne pleine ?",
+      texte: "Rotation possible dès le lendemain, selon disponibilités.",
+      texteAsterisque: true as const,
     },
     {
-      id: "tracabilite",
-      titre: "Traçabilité",
-      texte: "Justificatifs et suivi réglementaire",
+      id: "organisation",
+      label: "ORGANISATION",
+      icon: "organisation",
+      titre: "Une livraison à organiser ?",
+      texte: "Notre équipe confirme avec vous les modalités de l'intervention.",
     },
     {
-      id: "valorisation",
-      titre: "Valorisation",
-      texte: "Filières de traitement adaptées",
+      id: "justificatifs",
+      label: "JUSTIFICATIFS",
+      icon: "justificatifs",
+      titre: "Des documents à fournir ?",
+      texte:
+        "Bons d'intervention, bons de pesée et bordereaux adaptés aux flux concernés.",
     },
   ],
   noteJ1:
-    "Sous réserve de disponibilité et de faisabilité, pour les commandes avant midi, hors week-ends et jours fériés.",
+    "Pour les demandes avant midi, hors week-ends et jours fériés, sous réserve de disponibilité et de faisabilité.",
   cta: "Parlons de vos chantiers",
 } as const
 
@@ -245,12 +254,25 @@ export const commentCaFonctionne = {
 } as const
 
 export const comptePro = {
-  titre: "Devenez Partenaire CORE ENVIRONNEMENT",
+  eyebrow: "ESPACE PROFESSIONNEL",
+  titre: "Votre compte pro, vos chantiers simplifiés.",
+  titreAvant: "Votre compte pro, vos chantiers",
+  titreHighlight: "simplifiés.",
   sousTitre:
-    "Simplifiez la gestion de vos chantiers avec l'ouverture d'un compte professionnel.",
+    "Commandez vos bennes et bénéficiez de modalités adaptées à votre entreprise.",
   description:
-    "Bénéficiez de conditions de règlement adaptées (30 jours fin de mois), d'une facturation centralisée et d'un interlocuteur dédié pour l'ensemble de vos chantiers en Île-de-France.",
+    "Compte professionnel CORE ENVIRONNEMENT : commande de bennes, paiement à 30 jours selon dossier, rotations planifiées et interlocuteur dédié en Île-de-France.",
   abonnement: ABONNEMENT_PRO_LABEL,
+  ctaPrincipal: "Créer mon compte professionnel",
+  ctaConnexion: "Se connecter",
+  sansAbonnementObligatoire: "Aucun abonnement obligatoire pour commander.",
+  optionDocumentaire: {
+    badge: "EN OPTION",
+    titre: "Vos justificatifs, accessibles en ligne.",
+    texte:
+      "Consultez vos documents depuis votre téléphone ou votre ordinateur, sans avoir à les réclamer.",
+    prix: `Espace documentaire : ${ABONNEMENT_PRO_HT} € HT/mois/utilisateur.`,
+  },
   sections: [
     {
       titre: "Informations Entreprise",
@@ -279,11 +301,13 @@ export const comptePro = {
     },
   ],
   reassurance: {
-    titre: "Pourquoi ouvrir un compte pro ?",
+    titre: "Les avantages de votre compte professionnel",
+    mentionAcceptationPaiement:
+      "* Sous réserve d'acceptation du dossier par le service financier (réponse en 24 heures max).",
     points: [
-      "Paiement différé : Réglez vos prestations à 30 jours date de facture.",
-      "Priorité logistique : Accès prioritaire sur les rotations de bennes en période de forte activité.",
-      "Reporting simplifié : Un récapitulatif mensuel de vos volumes de déchets et de votre taux de valorisation pour vos dossiers RSE/Labels.",
+      "Paiement à 30 jours : Selon acceptation de votre dossier par notre service financier.",
+      "Vos bennes à la demande : Commandez, planifiez vos rotations et organisez vos enlèvements.",
+      "Un interlocuteur dédié : Un contact pour coordonner vos interventions et vos différents chantiers.",
     ],
     footer:
       "Une fois le formulaire soumis, notre service financier étudiera votre demande sous 24h. Vous recevrez une confirmation d'ouverture de compte par e-mail.",
@@ -680,8 +704,11 @@ export const professionnelsCommentCaFonctionne = {
     champs: PRO_TUNNEL_EXEMPLE_DEMANDE_CHAMPS,
   },
   documents: {
-    titre: "Vos documents en ligne",
-    texte: "Justificatifs accessibles sur mobile et ordinateur.",
+    titre: "Vos documents, sans avoir à les réclamer.",
+    texte:
+      "Bordereaux, bons de pesée et justificatifs accessibles à tout moment, sur mobile ou ordinateur.",
+    ligne: "Un service en plus, à votre rythme.",
+    prixLibelle: "Accès documentaire facultatif",
     prixMontant: `${ABONNEMENT_PRO_HT} € HT`,
     prixUnite: "/mois/utilisateur",
     badge: "OPTIONNEL",

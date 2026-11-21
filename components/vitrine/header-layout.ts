@@ -3,7 +3,7 @@
  * les composants serveur - guides, article).
  *
  * La hauteur réelle est portée par `--vitrine-header-height` (app/vitrine.css) :
- * ≈ 57px mobile / ≈ 64.6px desktop. Tout offset doit en dériver.
+ * ≈ 57px mobile / ≈ 71px desktop (lg). Tout offset doit en dériver.
  */
 
 /** Hero plein écran sous le header fixe (home, locales, hub, pro). */

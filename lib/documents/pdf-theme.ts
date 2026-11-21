@@ -175,28 +175,34 @@ export function drawQuoteTableRow(
   stripe?: boolean
 ): number {
   const x0 = PDF_LAYOUT.marginX
-  if (stripe) {
-    fillRgb(doc, PDF_COLORS.panel)
-    doc.rect(x0, y - 3.5, PDF_LAYOUT.contentW, 14, "F")
-  }
-  doc.setDrawColor(PDF_COLORS.border.r, PDF_COLORS.border.g, PDF_COLORS.border.b)
-  doc.setLineWidth(0.1)
-  doc.rect(x0, y - 3.5, PDF_LAYOUT.contentW, 14)
+  const padTop = 3.5
+  const lineH = 3.5
 
   doc.setFont("helvetica", "normal")
   doc.setFontSize(8)
-  rgb(doc, PDF_COLORS.navy)
 
-  let x = x0 + 2
-  let maxLines = 1
-  for (const col of columns) {
+  const wrappedByCol = columns.map((col) => {
     const raw = cells[col.key] ?? ""
-    const wrapped = doc.splitTextToSize(raw, col.width - 3)
-    doc.text(wrapped, x, y)
-    maxLines = Math.max(maxLines, wrapped.length)
-    x += col.width
+    return doc.splitTextToSize(raw, col.width - 3)
+  })
+  const maxLines = Math.max(1, ...wrappedByCol.map((w) => w.length))
+  const rowH = Math.max(14, maxLines * lineH + padTop * 2)
+
+  if (stripe) {
+    fillRgb(doc, PDF_COLORS.panel)
+    doc.rect(x0, y - padTop, PDF_LAYOUT.contentW, rowH, "F")
   }
-  return y + Math.max(14, maxLines * 3.5 + 4)
+  doc.setDrawColor(PDF_COLORS.border.r, PDF_COLORS.border.g, PDF_COLORS.border.b)
+  doc.setLineWidth(0.1)
+  doc.rect(x0, y - padTop, PDF_LAYOUT.contentW, rowH)
+
+  rgb(doc, PDF_COLORS.navy)
+  let x = x0 + 2
+  for (let i = 0; i < columns.length; i++) {
+    doc.text(wrappedByCol[i]!, x, y)
+    x += columns[i]!.width
+  }
+  return y - padTop + rowH + 2
 }
 
 export function drawTotalsBlock(

@@ -41,7 +41,7 @@ export function buildDevisParticulierEmail(data: DevisParticulierEmailData) {
 
   const fullHtml = [
     `<p style="margin:0 0 14px">${greeting}</p>`,
-    `<p style="margin:0 0 14px">Votre <strong>devis</strong> et nos <strong>Conditions Générales de Vente</strong> sont en pièces jointes pour votre dossier.</p>`,
+    `<p style="margin:0 0 14px">Votre <strong>offre commerciale</strong> et nos <strong>Conditions Générales de Vente</strong> sont en pièces jointes pour votre dossier.</p>`,
     ctaBlock,
     emailInset(
       [
@@ -66,7 +66,7 @@ export function buildDevisParticulierEmail(data: DevisParticulierEmailData) {
   const textLines = [
     data.contactNom ? `Bonjour ${data.contactNom},` : "Bonjour,",
     "",
-    "Votre devis et les CGV sont en pièces jointes.",
+    "Votre offre commerciale et les CGV sont en pièces jointes.",
     data.resumeUrl
       ? `Reprendre ma commande (tout est déjà rempli) : ${data.resumeUrl}`
       : "",
@@ -79,11 +79,11 @@ export function buildDevisParticulierEmail(data: DevisParticulierEmailData) {
   ].filter(Boolean)
 
   return {
-    subject: `Votre devis CORE Environnement - ${data.reference}`,
+    subject: `Votre offre commerciale CORE Environnement - ${data.reference}`,
     html: emailLayout(fullHtml, {
       preheader: data.resumeUrl
         ? "Reprenez votre commande en 1 clic - benne, adresse et dates déjà enregistrées."
-        : "Devis benne + CGV en pièces jointes.",
+        : "Offre commerciale benne + CGV en pièces jointes.",
     }),
     text: textLines.join("\n"),
   }

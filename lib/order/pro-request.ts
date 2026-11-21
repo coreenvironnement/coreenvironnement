@@ -11,6 +11,7 @@ import {
 } from "@/lib/order/delivery-dates"
 import {
   FAMILY_LABELS,
+  isHazardousBenneFamily,
   prestationById,
   systemLabel,
   type BenneFamily,
@@ -73,6 +74,13 @@ export function prepareProfessionalBenneRequest(
 ): { error: string } | PreparedProfessionalBenneRequest {
   if (input.audience !== "professionnel") {
     return { error: "Cette demande est réservée aux professionnels." }
+  }
+
+  if (isHazardousBenneFamily(input.wasteFamily)) {
+    return {
+      error:
+        "Les déchets dangereux ne peuvent pas être commandés en ligne. Contactez notre équipe pour une étude personnalisée.",
+    }
   }
 
   const companyName = input.companyName.trim()

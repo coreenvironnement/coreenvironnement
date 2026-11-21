@@ -77,6 +77,8 @@ function subtitleFromFamily(family: BenneFamily): string {
       return "Pour les gravats mélangés"
     case "gravats_propres":
       return "Pour les gravats propres"
+    case "dechets_dangereux":
+      return "Pour les déchets dangereux"
   }
 }
 

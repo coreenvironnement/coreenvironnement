@@ -158,6 +158,8 @@ export async function POST(request: Request) {
     acceptedSummary: prestation.acceptedSummary,
     excludedSummary: prestation.excludedSummary,
     tonnageMax: prestation.tonnageMax,
+    surchargePerTonHt: prestation.surchargePerTonHt,
+    validityDays: 7,
   })
 
   const cgvPdf = await readCgvPdfBuffer()

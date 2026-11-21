@@ -62,6 +62,7 @@ import {
   benneImageForVolume,
   benneVolumeImageAlt,
 } from "@/lib/media/site-images"
+import { HazardousWasteTunnelNotice } from "@/components/order/hazardous-waste-tunnel-notice"
 import { WasteFamilySelect } from "@/components/order/waste-situation-picker"
 import {
   subtitleFromPrestationLabel,
@@ -85,6 +86,7 @@ import {
   type BenneSystem,
   type Prestation,
   FAMILY_LABELS,
+  isHazardousBenneFamily,
   prestationsByFamily,
   prestationById,
   systemLabel,
@@ -516,7 +518,9 @@ export function OrderWidget({
 
   const zoneOk = selectedAddress !== null
   const canLeaveIntentWaste =
-    audience === "particulier" ? particulierWasteId !== null : family !== null
+    audience === "particulier"
+      ? particulierWasteId !== null
+      : family !== null && !isHazardousBenneFamily(family)
 
   const syncDraftFromWidget = () => {
     if (!embedded) return
@@ -634,6 +638,9 @@ export function OrderWidget({
       setAddressError("Choisissez un type de déchet dans la liste.")
       return
     }
+    if (family && isHazardousBenneFamily(family)) {
+      return
+    }
     syncDraftFromWidget()
     setIntentPhase("volume")
     scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "auto" })
@@ -651,6 +658,9 @@ export function OrderWidget({
       }
     } else if (!family) {
       setAddressError("Choisissez un type de déchet dans la liste.")
+      return
+    }
+    if (family && isHazardousBenneFamily(family)) {
       return
     }
     if (preselectVolumeM3 != null && family) {
@@ -1589,9 +1599,13 @@ export function OrderWidget({
                         embedded={embedded}
                         onSelectFamily={(fid) => {
                           setFamily(fid)
+                          setSelectedPrestationId(null)
                           setAddressError(null)
                         }}
                     />
+                      {family && isHazardousBenneFamily(family) ? (
+                        <HazardousWasteTunnelNotice />
+                      ) : null}
                   </div>
                   </>
                 )}
@@ -1625,6 +1639,7 @@ export function OrderWidget({
           {step === "intent" &&
             intentPhase === "volume" &&
             family &&
+            !isHazardousBenneFamily(family) &&
             (audience === "particulier" ? particulierWasteId : true) ? (
             <motion.div
               key="intent-volume"
@@ -1656,7 +1671,7 @@ export function OrderWidget({
             </motion.div>
           ) : null}
 
-          {step === "forfait" && family && (
+          {step === "forfait" && family && !isHazardousBenneFamily(family) && (
             <motion.div
               key="forfait"
               initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 24 }}

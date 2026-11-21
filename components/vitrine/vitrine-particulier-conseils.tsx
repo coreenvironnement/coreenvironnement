@@ -14,6 +14,7 @@ import { HOME_VOLUME_ESTIMATOR_HASH } from "@/lib/seo/early-local-links"
 import { SITE_PHONE_HREF } from "@/lib/site"
 
 import { VITRINE_SCROLL_MARGIN_CLASS } from "./header-layout"
+import { CpAccesEncartLottie } from "./cp-acces-encart-lottie"
 import { PreparationLottieArt } from "./preparation-lottie-art"
 import { useVitrineOrder } from "./order-context"
 import { VitrineVolumeEstimator } from "./vitrine-volume-estimator"
@@ -197,7 +198,7 @@ export function VitrineParticulierConseils() {
         <aside className="cp-acces-encart" aria-labelledby="cp-acces-encart-title">
           <h3 id="cp-acces-encart-title">{accesEncart.titre}</h3>
           <div className="cp-acces-encart__main">
-            <PreparationLottieArt animation="02-acces" />
+            <CpAccesEncartLottie />
             <div className="cp-acces-encart__details">
               <p className="cp-space">{accesEncart.specsTitre}</p>
               <dl className="cp-dimensions">

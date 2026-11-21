@@ -62,6 +62,7 @@ const pdf = buildDevisPdfBytes({
   acceptedSummary: samplePrestation.acceptedSummary,
   excludedSummary: samplePrestation.excludedSummary,
   tonnageMax: samplePrestation.tonnageMax,
+  surchargePerTonHt: samplePrestation.surchargePerTonHt,
 })
 if (pdf.byteLength < 500) {
   console.error("devis pdf too small")

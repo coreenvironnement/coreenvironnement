@@ -458,8 +458,8 @@ export function ServiceFlipCard({
         >
           <div className="flex min-h-0 flex-1 flex-col">
             {versoLignes ? (
-              <div className="service-flip-verso-concretement flex min-h-0 flex-1 flex-col">
-                <div className="service-flip-verso-concretement__main min-h-0 w-full flex-1">
+              <div className="service-flip-verso-concretement flex min-h-0 w-full flex-1 flex-col items-center text-center">
+                <div className="service-flip-verso-concretement__head w-full shrink-0">
                   <p className="vitrine-label service-flip-verso-concretement__eyebrow text-brand-green">
                     {versoEyebrow}
                   </p>
@@ -468,6 +468,8 @@ export function ServiceFlipCard({
                       {versoTitre}
                     </h3>
                   ) : null}
+                </div>
+                <div className="service-flip-verso-concretement__fill flex min-h-0 w-full flex-1 flex-col items-center">
                   <div
                     className="service-flip-verso-lignes"
                     role="list"
@@ -492,12 +494,12 @@ export function ServiceFlipCard({
                     ))}
                   </div>
                   {hasPhraseVerso(service) ? (
-                    <p className="service-flip-verso-phrase service-flip-verso-phrase--concretement">
+                    <p className="service-flip-verso-phrase service-flip-verso-phrase--concretement shrink-0">
                       {service.phraseVerso}
                     </p>
                   ) : null}
                 </div>
-                <div className="service-flip-front-footer service-flip-verso-concretement__footer mt-auto flex w-full shrink-0 justify-center">
+                <div className="service-flip-front-footer service-flip-front-footer--illustration flex w-full shrink-0 justify-center">
                   <FlipActionButton
                     ref={backRef}
                     label="Retour"
@@ -508,8 +510,8 @@ export function ServiceFlipCard({
                 </div>
               </div>
             ) : versoDocuments ? (
-              <div className="service-flip-verso-digital flex min-h-0 flex-1 flex-col">
-                <div className="service-flip-verso-digital__main min-h-0 w-full flex-1">
+              <div className="service-flip-verso-digital flex min-h-0 w-full flex-1 flex-col items-center text-center">
+                <div className="service-flip-verso-digital__head w-full shrink-0">
                   <p className="vitrine-label service-flip-verso-digital__eyebrow text-brand-green">
                     {versoEyebrow}
                   </p>
@@ -523,6 +525,8 @@ export function ServiceFlipCard({
                       {service.sousTitreVerso}
                     </p>
                   ) : null}
+                </div>
+                <div className="service-flip-verso-digital__fill flex min-h-0 w-full flex-1 flex-col">
                   <div
                     className="service-flip-verso-documents"
                     role="list"
@@ -542,7 +546,7 @@ export function ServiceFlipCard({
                     ))}
                   </div>
                   {hasPhraseVerso(service) ? (
-                    <div className="service-flip-verso-digital__pied">
+                    <div className="service-flip-verso-digital__pied shrink-0">
                       <HugeiconsIcon
                         icon={SmartPhone02Icon}
                         size={18}
@@ -561,7 +565,7 @@ export function ServiceFlipCard({
                     </div>
                   ) : null}
                 </div>
-                <div className="service-flip-front-footer service-flip-verso-digital__footer mt-auto flex w-full shrink-0 justify-center">
+                <div className="service-flip-front-footer service-flip-front-footer--illustration flex w-full shrink-0 justify-center">
                   <FlipActionButton
                     ref={backRef}
                     label="Retour"
@@ -572,19 +576,23 @@ export function ServiceFlipCard({
                 </div>
               </div>
             ) : versoGrille ? (
-              <div className="service-flip-verso-solutions flex min-h-0 flex-1 flex-col items-center text-center">
-                <div className="service-flip-verso-solutions__main min-h-0 w-full flex-1">
+              <div className="service-flip-verso-solutions flex min-h-0 w-full flex-1 flex-col items-center text-center">
+                <div className="service-flip-verso-solutions__head w-full shrink-0">
                   <p className="vitrine-label text-brand-green">{versoEyebrow}</p>
-                  {showVersoTitle ? (
-                    <h3 className="vitrine-h3 service-flip-verso-solutions__title mt-2">
-                      {versoTitre}
-                    </h3>
-                  ) : null}
-                  {hasSousTitreVerso(service) ? (
-                    <p className="service-flip-front-subtitle service-flip-verso-solutions__subtitle mt-1.5">
-                      {service.sousTitreVerso}
-                    </p>
-                  ) : null}
+                  <div className="service-flip-front-headline service-flip-verso-solutions__headline min-h-0 w-full">
+                    {showVersoTitle ? (
+                      <h3 className="vitrine-h3 service-flip-front-title service-flip-verso-solutions__title">
+                        {versoTitre}
+                      </h3>
+                    ) : null}
+                    {hasSousTitreVerso(service) ? (
+                      <p className="service-flip-front-subtitle service-flip-verso-solutions__subtitle">
+                        {service.sousTitreVerso}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+                <div className="service-flip-verso-solutions__fill flex min-h-0 w-full flex-1 flex-col">
                   <div
                     className="service-flip-verso-grid"
                     role="list"
@@ -607,12 +615,12 @@ export function ServiceFlipCard({
                     ))}
                   </div>
                   {hasPhraseVerso(service) ? (
-                    <p className="service-flip-verso-phrase">
+                    <p className="service-flip-verso-phrase shrink-0">
                       {service.phraseVerso}
                     </p>
                   ) : null}
                 </div>
-                <div className="service-flip-front-footer mt-auto flex w-full shrink-0 justify-center">
+                <div className="service-flip-front-footer service-flip-front-footer--illustration flex w-full shrink-0 justify-center">
                   <FlipActionButton
                     ref={backRef}
                     label="Retour"

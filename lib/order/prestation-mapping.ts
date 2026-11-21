@@ -7,8 +7,9 @@ export function dechetCodeForFamily(family: BenneFamily): string {
       return "gravats_propres"
     case "melange_dnd":
     case "gravats_melanges":
-    default:
       return "dib"
+    case "dechets_dangereux":
+      return "peinture"
   }
 }
 

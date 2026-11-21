@@ -7,15 +7,15 @@ import {
   ArrowRight01Icon,
   Building02Icon,
   ContainerIcon,
-  File02Icon,
   SecurityCheckIcon,
-  SmartPhone02Icon,
   Tick02Icon,
 } from "@hugeicons/core-free-icons"
 
 import { professionnelsCommentCaFonctionne } from "@/lib/cdc/contenu-vitrine"
+import { COMMENT_MARCHE_LOTTIE } from "@/lib/vitrine/comment-marche-lottie-assets"
 
 import { VITRINE_ICON_STROKE } from "./icons"
+import { ProCommentMarcheLottie } from "./pro-comment-marche-lottie"
 import { VitrineSectionHeader } from "./vitrine-section-header"
 
 const STEP_ICONS = {
@@ -84,16 +84,11 @@ export function VitrineCommentCaMarchePro() {
                               <p className="m-0 font-[family-name:var(--font-display)] text-[13px] font-semibold text-brand-navy sm:text-sm">
                                 {content.exempleDemande.titre}
                               </p>
-                              <span
-                                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-brand-green/15 bg-brand-green/[0.06] text-brand-green"
-                                aria-hidden
-                              >
-                                <HugeiconsIcon
-                                  icon={File02Icon}
-                                  size={16}
-                                  strokeWidth={VITRINE_ICON_STROKE}
-                                />
-                              </span>
+                              <ProCommentMarcheLottie
+                                variant="example"
+                                src={COMMENT_MARCHE_LOTTIE.exempleDemande.json}
+                                staticSrc={COMMENT_MARCHE_LOTTIE.exempleDemande.static}
+                              />
                             </div>
                             <dl className="pro-comment-marche__example-grid grid grid-cols-2 gap-2 sm:gap-2.5">
                               {content.exempleDemande.champs.map((champ) => (
@@ -132,23 +127,11 @@ export function VitrineCommentCaMarchePro() {
             aria-labelledby="pro-comment-docs-title"
           >
             <div className="pro-comment-marche__docs-inner flex gap-3 sm:gap-3.5">
-              <span
-                className="pro-comment-marche__docs-icon relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-green/15 bg-white text-brand-green sm:h-11 sm:w-11"
-                aria-hidden
-              >
-                <HugeiconsIcon
-                  icon={File02Icon}
-                  size={19}
-                  strokeWidth={VITRINE_ICON_STROKE}
-                />
-                <span className="absolute -bottom-0.5 -right-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full border border-white bg-brand-green/[0.12] text-brand-green">
-                  <HugeiconsIcon
-                    icon={SmartPhone02Icon}
-                    size={11}
-                    strokeWidth={VITRINE_ICON_STROKE}
-                  />
-                </span>
-              </span>
+              <ProCommentMarcheLottie
+                variant="docs"
+                src={COMMENT_MARCHE_LOTTIE.documentsSync.json}
+                staticSrc={COMMENT_MARCHE_LOTTIE.documentsSync.static}
+              />
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
                   <h3
@@ -164,11 +147,17 @@ export function VitrineCommentCaMarchePro() {
                 <p className="mt-1 text-[12.5px] leading-relaxed text-brand-muted sm:text-[13px]">
                   {content.documents.texte}
                 </p>
-                <p className="pro-comment-marche__docs-price mt-2.5 font-[family-name:var(--font-display)] leading-none">
-                  <span className="text-lg font-bold tracking-[-0.02em] text-brand-navy sm:text-xl">
-                    {content.documents.prixMontant}
+                <p className="pro-comment-marche__docs-line mt-1.5 text-[12px] leading-snug text-brand-navy/75 sm:mt-2 sm:text-[12.5px]">
+                  {content.documents.ligne}
+                </p>
+                <p className="pro-comment-marche__docs-price mt-2 text-[11.5px] leading-snug text-brand-muted sm:mt-2.5 sm:text-[12px]">
+                  <span>{content.documents.prixLibelle}</span>
+                  <span className="text-brand-muted/50" aria-hidden="true">
+                    {" "}
+                    ·{" "}
                   </span>
-                  <span className="ml-0.5 text-[12px] font-normal text-brand-muted sm:text-[13px]">
+                  <span className="font-[family-name:var(--font-display)] font-semibold tracking-[-0.02em] text-brand-navy">
+                    {content.documents.prixMontant}
                     {content.documents.prixUnite}
                   </span>
                 </p>

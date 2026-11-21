@@ -50,6 +50,8 @@ export function buildCommandeDevisPdfBytes(
     acceptedSummary: prestation.acceptedSummary,
     excludedSummary: prestation.excludedSummary,
     tonnageMax: prestation.tonnageMax,
+    surchargePerTonHt: prestation.surchargePerTonHt,
+    validityDays: 7,
   })
 
   return { bytes, filename: `devis-${reference}.pdf` }

@@ -31,80 +31,118 @@ export type DevisPdfInput = {
   acceptedSummary: string
   excludedSummary: string
   tonnageMax?: number
+  surchargePerTonHt?: number
+  /** Validité affichée (particulier : 7 jours par défaut). */
+  validityDays?: number
 }
 
 const TABLE_COLS = [
-  { key: "desc", title: "Description", width: 78 },
-  { key: "unit", title: "Unité", width: 22 },
-  { key: "price", title: "Prix € HT", width: 28 },
-  { key: "note", title: "Détails", width: 54 },
+  { key: "desc", title: "Description", width: 72 },
+  { key: "unit", title: "Unité", width: 18 },
+  { key: "price", title: "Prix € HT", width: 24 },
+  { key: "note", title: "Commentaire", width: 68 },
 ] as const
 
-function buildDescriptionLines(input: DevisPdfInput): string {
-  const parts = [
-    input.prestationLabel,
-    `Livraison souhaitée : ${formatDateFr(input.deliveryDate)}`,
-  ]
-  if (input.pickupDate?.trim()) {
-    parts.push(`Enlèvement souhaité : ${formatDateFr(input.pickupDate)}`)
+const INFORMATIONS_COMPLEMENTAIRES = [
+  "Les déchets dangereux sont strictement interdits dans les bennes. En cas de constat de déchets dangereux, un supplément de 200,00 € HT par benne sera facturé au client, ainsi qu’un coût de 2,00 € HT par kilo pour le traitement des déchets concernés.",
+  "Les fonds de toupie à béton sont également interdits. En cas de présence de béton frais dans la benne, un forfait de 1 500,00 € HT par benne sera facturé au client.",
+  "Temps d’attente du chauffeur : le chauffeur ne peut dépasser 20 minutes sur place. En cas de dépassement, un supplément de 30,00 € HT par tranche de 15 minutes sera facturé.",
+  "TGAP (Taxe Générale sur les Activités Polluantes) : toute hausse de la TGAP sera intégralement et automatiquement répercutée au client. L’édition du Bordereau de Suivi des Déchets (BSD) pour les déchets non dangereux ou dangereux est facturée 15,00 € HT par BSD.",
+] as const
+
+const OBJET_PRESTATION =
+  "Mise à disposition de contenant, collecte et traitement des déchets"
+
+function buildForfaitDescription(input: DevisPdfInput): string {
+  const parts = [`Forfait – ${input.prestationLabel}`]
+  if (input.tonnageMax != null && input.tonnageMax > 0) {
+    const tonnage = String(input.tonnageMax).replace(".", ",")
+    parts.push(`Comprend un tonnage maximal de ${tonnage} tonnes`)
+    if (input.surchargePerTonHt != null && input.surchargePerTonHt > 0) {
+      parts.push(
+        `Tout dépassement fera l’objet d’une facturation complémentaire de ${formatEuro(input.surchargePerTonHt)} HT par tonne supplémentaire`
+      )
+    }
   }
-  parts.push(`Adresse : ${input.address}`)
-  return parts.join("\n")
+  return parts.join(" – ")
 }
 
-function buildNoteCell(input: DevisPdfInput): string {
-  const parts = [
+function buildCommentCell(input: DevisPdfInput): string {
+  return [
     `Déchets acceptés : ${input.acceptedSummary}`,
-    `À exclure : ${input.excludedSummary}`,
-  ]
-  if (input.tonnageMax != null && input.tonnageMax > 0) {
-    parts.push(
-      `Le forfait inclut un tonnage maximal de ${String(input.tonnageMax).replace(".", ",")} tonnes. Au-delà, une facturation complémentaire peut s’appliquer selon nos conditions.`
-    )
-  }
-  return parts.join("\n")
+    `Sont strictement exclus : ${input.excludedSummary}`,
+  ].join("\n")
+}
+
+function ensurePageRoom(doc: jsPDF, y: number, neededMm: number): number {
+  const pageH = doc.internal.pageSize.getHeight()
+  if (y + neededMm <= pageH - 16) return y
+  drawLegalFooter(doc)
+  doc.addPage()
+  return PDF_LAYOUT.marginX + 10
 }
 
 export function buildDevisPdfBytes(input: DevisPdfInput): Uint8Array {
   const doc = new jsPDF({ unit: "mm", format: "a4" })
   const breakdown = priceBreakdownFromHt(input.priceHt)
   const issued = formatDateFr(new Date().toISOString().slice(0, 10))
+  const validityDays = input.validityDays ?? 7
 
-  let y = drawDocumentTitleBar(doc, "Devis", "Location de benne - particulier")
+  let y = drawDocumentTitleBar(doc, "Offre commerciale 2026", LEGAL_COMPANY.name)
 
   y = drawMetaChips(doc, y, [
     { label: "N°", value: input.reference },
     { label: "Date", value: issued },
-    { label: "Validité", value: "7 jours" },
+    { label: "Validité", value: `${validityDays} jours` },
   ])
 
-  y = drawSectionHeading(doc, y, "Informations")
+  y = drawSectionHeading(doc, y, "Informations fournisseur / client")
   y = drawTwoColumnBlocks(
     doc,
     y,
-    "Fournisseur",
+    "Informations fournisseur",
     [
-      LEGAL_COMPANY.name,
-      LEGAL_COMPANY.address,
+      `Raison sociale : ${LEGAL_COMPANY.name}`,
+      `Adresse : ${LEGAL_COMPANY.address}`,
       `Téléphone : ${LEGAL_COMPANY.phone}`,
       `E-mail : ${LEGAL_COMPANY.email}`,
       `SIRET : ${LEGAL_COMPANY.siret}`,
     ],
-    "Client",
+    "Informations client",
     [
-      input.contactName,
+      `Nom : ${input.contactName}`,
       `Téléphone : ${input.contactPhone}`,
       `E-mail : ${input.contactEmail}`,
     ]
   )
 
+  y = drawLabeledParagraph(doc, y, "Objet", OBJET_PRESTATION)
+
+  y = drawSectionHeading(doc, y, "Intervention")
+  y = drawLabeledParagraph(doc, y, "Adresse d’intervention", input.address)
   y = drawLabeledParagraph(
     doc,
     y,
-    "Objet",
-    "Mise à disposition d’une benne, livraison sur votre adresse et enlèvement une fois remplie."
+    "Livraison souhaitée",
+    formatDateFr(input.deliveryDate)
+  )
+  if (input.pickupDate?.trim()) {
+    y = drawLabeledParagraph(
+      doc,
+      y,
+      "Enlèvement souhaité",
+      formatDateFr(input.pickupDate)
+    )
+  }
+  y = drawLabeledParagraph(doc, y, "Nom contact sur place", input.contactName)
+  y = drawLabeledParagraph(
+    doc,
+    y,
+    "Téléphone contact sur place",
+    input.contactPhone
   )
 
+  y = ensurePageRoom(doc, y, 50)
   y = drawSectionHeading(doc, y, "Prestation")
   y = drawQuoteTableHeader(doc, y, [...TABLE_COLS])
   y = drawQuoteTableRow(
@@ -112,10 +150,10 @@ export function buildDevisPdfBytes(input: DevisPdfInput): Uint8Array {
     y,
     [...TABLE_COLS],
     {
-      desc: buildDescriptionLines(input),
+      desc: buildForfaitDescription(input),
       unit: "Forfait",
       price: formatEuro(breakdown.ht),
-      note: buildNoteCell(input),
+      note: buildCommentCell(input),
     },
     true
   )
@@ -126,17 +164,29 @@ export function buildDevisPdfBytes(input: DevisPdfInput): Uint8Array {
     { label: "Total TTC", value: formatEuro(breakdown.ttc), bold: true },
   ])
 
-  y = drawNoteBox(doc, y + 2, "Modalités", [
-    "Ce devis est valable 7 jours à compter de sa date d’émission.",
-    "Pour confirmer, finalisez votre commande et le paiement sécurisé en ligne. Un conseiller CORE vous appelle pour fixer le créneau de livraison.",
-    "Les conditions générales de vente (document joint) s’appliquent à votre commande.",
+  y = ensurePageRoom(doc, y, 55)
+  y = drawNoteBox(doc, y + 2, "Informations complémentaires", [
+    ...INFORMATIONS_COMPLEMENTAIRES,
   ])
 
-  if (y > PDF_LAYOUT.marginX + 240) {
-    drawLegalFooter(doc)
-    doc.addPage()
-    y = PDF_LAYOUT.marginX + 10
-  }
+  y = ensurePageRoom(doc, y, 40)
+  y = drawNoteBox(doc, y, "Modalités de paiement", [
+    "Conditions de règlement : à la commande.",
+    "Moyen de paiement : lien de paiement sécurisé (carte bancaire en ligne).",
+    `Cette offre est valable ${validityDays} jours à compter de sa date d’émission.`,
+    "Pour confirmer, finalisez votre commande sur la plateforme et réglez en ligne. Un conseiller CORE vous contacte pour valider le créneau de livraison.",
+    "En validant votre commande et le paiement, vous acceptez nos conditions générales de vente (document joint).",
+  ])
+
+  y = ensurePageRoom(doc, y, 12)
+  doc.setFont("helvetica", "normal")
+  doc.setFontSize(7.5)
+  const latePay = doc.splitTextToSize(
+    "Conformément à l’article L. 441-6, une indemnité de 40 € est due en cas de retard de paiement ou de non-paiement total d’une facture à la date de paiement définie dans le document.",
+    PDF_LAYOUT.contentW
+  )
+  doc.text(latePay, PDF_LAYOUT.marginX, y)
+  y += latePay.length * 3.5 + 4
 
   drawLegalFooter(doc)
 

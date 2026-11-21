@@ -3,6 +3,7 @@ export type BenneFamily =
   | "melange_dnd"
   | "gravats_melanges"
   | "gravats_propres"
+  | "dechets_dangereux"
 
 export type BenneSystem = "chaine" | "ampliroll"
 
@@ -40,6 +41,16 @@ export const FAMILY_LABELS: Record<
     description:
       "Gravats, tuiles, terre non polluée, briques, béton, parpaings. Hors plâtre.",
   },
+  dechets_dangereux: {
+    title: "Déchets dangereux",
+    description:
+      "Amiante, solvants, peintures, batteries, aérosols… Réglementation ADR, sur étude.",
+  },
+}
+
+/** Familles sans forfait benne en ligne (prise en charge dédiée). */
+export function isHazardousBenneFamily(family: BenneFamily): boolean {
+  return family === "dechets_dangereux"
 }
 
 /** Forfaits bennes (zone livraison 20 km autour d’Élancourt : transport non affiché au client). */
